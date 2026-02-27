@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Almanca Öğrenme Platformu PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/main.css">
+</head>
+
+
+<body>
+
+<div class="container">
+
+<div class="card" id="menuArea">
+
+    <div class="xpCard">
+        <h3>🎖 Seviye: <span id="playerLevel">1</span></h3>
+        <div style="background:#334155; height:15px; border-radius:10px;">
+            <div id="xpBar" style="height:15px; width:0%; background:#22c55e; border-radius:10px;"></div>
+        </div>
+        <p>XP: <span id="playerXP">0</span> | 🔥 Combo: <span id="playerCombo">0</span></p>
+    </div>
+
+    <h1>🚀 Almanca Öğrenme Platformu PRO</h1>
+
+    <div class="menuCardsModern">
+
+        <div class="menuCard" onclick="showInput()">
+            <div class="menuIcon">📖</div>
+            <div class="menuTitle">Yeni Metin</div>
+        </div>
+
+
+        <div class="menuCard" onclick="showHistory()">
+            <div class="menuIcon">📂</div>
+            <div class="menuTitle">Geçmiş</div>
+        </div>
+
+        <div class="menuCard" onclick="startQuizSetup()">
+            <div class="menuIcon">🧠</div>
+            <div class="menuTitle">Quiz Başlat</div>
+        </div>
+
+        <div class="menuCard dangerCard" onclick="startWrongQuiz()">
+            <div class="menuIcon">🎯</div>
+            <div class="menuTitle">Yanlışlar</div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="card" id="menuWordsArea">
+    <button class="secondary" onclick="goMenu()">
+        🏠 Ana Menü
+    </button>
+    <div class="wordsHeader">
+        <h2>📚 Kelime Defterim</h2>
+    </div>
+
+
+    
+    <div class="wordFilters">
+        <button class="secondary" onclick="loadMenuWords('date')">📅 Tarih</button>
+        <button class="secondary" onclick="loadMenuWords('alpha')">🔤 Alfabetik</button>
+        <button class="secondary" onclick="loadMenuWords('difficulty')">🔴 Zorluk</button>
+        <button class="secondary" onclick="loadMenuWords('wrong')">🎯 Yanlışlar</button>
+    </div>
+    
+    <p>Toplam Kelime: <span id="menuWordCount">0</span></p>
+    
+    <input type="text"
+        id="menuSearchInput"
+        placeholder="Kelime ara..."
+        onkeyup="filterMenuWords()"
+        style="width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:15px;">
+    <div id="menuWordList"></div>
+</div>
+
+
+<div class="card" id="quizArea">
+    <h1>🧠 Kelime Quiz</h1>
+    <button class="secondary" onclick="goMenu()">
+        🏠 Ana Menü
+    </button>
+    <div id="quizSetup">
+        <p>Kaç soru olsun?</p>
+        <input type="number" id="questionCount" min="1"
+               style="padding:8px;border-radius:8px;border:none;">
+        <br><br>
+        <hr style="margin:20px 0;">
+
+        <button class="secondary" onclick="showCustomQuiz()">
+            📌 İstediğim Kelimelerle Quiz
+        </button>
+    </div>
+
+    <div id="customQuizArea" style="display:none; margin-top:20px;">
+        <h3>Çalışmak istediğin kelimeleri seç:</h3>
+        <p>Toplam Kelime: <span id="customWordCount">0</span></p>
+
+        <input type="text" 
+            id="customSearchInput"
+            placeholder="Kelime ara..."
+            onkeyup="filterCustomWords()"
+            style="width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:15px;">
+        <div id="customWordList" 
+            style="max-height:300px; overflow:auto; 
+            background:rgba(255,255,255,0.07); padding:15px; border-radius:12px;">
+        </div>
+
+        <br>
+        <button class="primary" onclick="startCustomQuiz()">
+            Seçilenlerle Başla
+        </button>
+
+        <button class="secondary" onclick="startQuizSetup()">
+            Geri
+        </button>
+    </div>
+
+    <div id="quizQuestionArea" style="display:none;">
+        <h2 id="quizWord"></h2>
+        <input type="text" id="quizAnswer"
+               placeholder="Cevabınızı yazın"
+               style="width:100%;padding:12px;border-radius:10px;border:none;">
+        <br><br>
+        <button class="primary" onclick="submitAnswer()">Cevapla</button>
+    </div>
+
+    <div id="quizResult" style="display:none;"></div>
+</div>
+
+<div class="card" id="inputArea">
+    <h1>📖 Metin</h1>
+    <button class="secondary" onclick="goMenu()">
+        🏠 Ana Menü
+    </button>
+    <textarea id="userText"></textarea>
+    <br><br>
+    <button class="primary" onclick="startReading()">Okuma Moduna Geç</button>
+</div>
+
+<div class="card" id="historyArea">
+    <button class="secondary" onclick="goMenu()">
+        🏠 Ana Menü
+    </button>
+    <h1>📂 Geçmiş</h1>
+    <div id="historyList"></div>
+</div>
+
+<div class="card" id="readingArea">
+    <h1>📘 Okuma</h1>
+    <button class="secondary" onclick="goMenu()">
+        🏠 Ana Menü
+    </button>
+    <div class="toolbar">
+        <button class="primary" onclick="learnMeaning()">Anlam (T)</button>
+        <button class="secondary" onclick="saveWord()">Kelime Kaydet</button>
+        <button class="secondary" onclick="increaseFont()">A+</button>
+        <button class="secondary" onclick="decreaseFont()">A-</button>
+    </div>
+
+    <div id="progressBar"></div>
+    <div class="textBox" id="displayText"></div>
+
+    <p>⏱ Okuma Süresi: <span id="readingTime">0</span> sn</p>
+
+</div>
+
+</div>
+
+
+<div id="translatePopup" 
+     style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%);
+     width:80%; height:70%; background:white; z-index:9999; border-radius:12px; overflow:hidden;">
+
+    <button onclick="closeTranslate()" 
+            style="position:absolute;top:10px;right:10px;z-index:10000;">
+        X
+    </button>
+
+    <iframe id="translateFrame" 
+            style="width:100%; height:100%; border:none;">
+    </iframe>
+</div>
+<div id="multiWordPanel" 
+     style="display:none; position:fixed; right:20px; top:20px; 
+     width:350px; background:white; color:black;
+     padding:20px; border-radius:15px; 
+     box-shadow:0 10px 30px rgba(0,0,0,0.4); z-index:9999;">
+    <h3>Toplu Anlam Girişi</h3>
+
+    <p id="multiWordCurrent"></p>
+
+    <input 
+        type="text"
+        id="multiMeaningInput"
+        placeholder="Anlam yaz..."
+        style="width:100%; padding:10px; margin-bottom:10px;"
+    >
+
+    <button onclick="saveMultiWord()">
+        Kaydet & Sonraki
+    </button>
+    <h3>Toplu Anlam Girişi</h3>
+
+    <p style="font-size:14px; opacity:0.7;">
+    Her satıra bir anlam yazın. Kelime sayısıyla aynı olmalı.
+    </p>
+
+    <textarea 
+        id="bulkMeaningInput"
+        style="width:100%; height:180px; padding:10px; margin-bottom:10px;">
+    </textarea>
+
+    <button onclick="saveBulkWords()" 
+            style="width:100%; padding:10px; background:#3b82f6; color:white; border:none; border-radius:8px;">
+        Hepsini Kaydet
+    </button>
+
+    <button onclick="closeMultiPanel()" 
+            style="width:100%; margin-top:10px; padding:8px;">
+        Kapat
+    </button>
+</div>
+
+
+<div id="floatingMeaningBtn"
+     style="display:none; position:absolute; z-index:10000;">
+    <button onclick="openMiniTranslate()"
+        style="padding:6px 10px; border-radius:8px;
+        border:none; background:#3b82f6; color:white;
+        cursor:pointer; font-size:13px;">
+        Anlam
+    </button>
+</div>
+
+<div id="miniTranslatePopup"
+     style="display:none; position:absolute; z-index:10000;
+     background:white; color:black;
+     padding:15px; border-radius:12px;
+     box-shadow:0 10px 30px rgba(0,0,0,0.35);
+     min-width:220px; max-width:320px;">
+</div>
+<script src="js/app.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/gecmis.js"></script>
+<script src="js/metin.js"></script>
+
+
+<button id="scrollTopBtn" onclick="scrollToTop()">
+    ↑
+</button>
+
+
+</body>
+</html>

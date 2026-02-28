@@ -1,0 +1,640 @@
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: radial-gradient(circle at top left, #1e293b, #0f172a 60%);
+    min-height: 100vh;
+    color: #e2e8f0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+    margin-bottom: 30px;
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+
+textarea {
+    width: 100%;
+    height: 220px;
+    padding: 20px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: none;
+    resize: vertical;
+    background: #f8fafc;
+    color: #111;
+}
+button {
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 4px;
+    transition: all 0.25s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+}
+
+
+
+.primary {
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color: white;
+}
+
+.secondary {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.danger {
+    background: linear-gradient(135deg,#ef4444,#dc2626);
+    color: white;
+}
+
+
+.textBox {
+    margin-top: 25px;
+    padding: 60px 80px;
+    height: 500px;
+    overflow-y: auto;
+    background: #ffffff;
+    color: #111827;
+    border-radius: 30px;
+    line-height: 2.2;
+    font-size: 22px;
+    font-weight: 400;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+    transition: 0.3s ease;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#readingArea, #inputArea, #historyArea, #menuWordsArea, #quizArea { display: none; }
+
+.highlight { background: yellow; }
+
+#progressBar {
+    height: 5px;
+    background: #3b82f6;
+    width: 0%;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.historyItem {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+}
+
+#savedWords {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 12px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+/* ===== MODERN MENU ===== */
+
+#menuArea {
+    text-align: center;
+}
+
+#menuArea h1 {
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin-bottom: 25px;
+}
+
+
+.menuButtons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.menuButtons button {
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 14px;
+    transition: all 0.25s ease;
+}
+
+.menuButtons button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.xpCard {
+    background: linear-gradient(135deg,#1e293b,#0f172a);
+    padding: 20px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+}
+.card {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.menuButtons {
+    display: none;
+}
+.menuCardsModern {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* min 160px */
+    gap: 15px; /* grid arası mesafe */
+    margin-top: 25px;
+}
+
+.menuCard {
+    padding: 20px;          /* eskiden 30px idi, biraz küçült */
+    border-radius: 14px;    /* hafif küçült */
+    font-size: 14px;         /* yazı boyutu biraz küçült */
+    aspect-ratio: 1 / 1;    /* kare şeklinde kalsın */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.menuCard:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    background: rgba(255,255,255,0.1);
+}
+
+.menuIcon {
+    font-size: 28px; /* eskiden 38px idi, biraz küçülttük */
+    margin-bottom: 10px;
+}
+
+.menuTitle {
+    font-size: 16px; /* başlık biraz daha küçük */
+}
+
+.dangerCard:hover {
+    background: rgba(239,68,68,0.2);
+}
+/* ===== WORDS AREA UPGRADE ===== */
+
+#menuWordsArea h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.wordFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.wordFilters button {
+    background: rgba(255,255,255,0.08);
+}
+
+#menuSearchInput {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+}
+
+#menuSearchInput::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+#menuWordList > div {
+    padding: 18px !important;
+    margin-bottom: 15px !important;
+    border-radius: 18px !important;
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: 0.2s ease;
+}
+
+#menuWordList > div:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+}
+
+#menuWordList b {
+    font-size: 20px;
+}
+
+#menuWordsArea p {
+    opacity: 0.8;
+    margin-bottom: 15px;
+}
+/* ===== WORDS AREA PRO DESIGN ===== */
+
+.wordsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.wordsHeader h2 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.createListBtn {
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.createListBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* Filtre butonları */
+
+.wordFilters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.wordFilters button {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.wordFilters button:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Arama alanı */
+
+#menuSearchInput {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    margin-bottom: 25px;
+}
+
+/* 2 SÜTUN GRID */
+#menuWordList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Kelime Kartı */
+
+#menuWordList > div {
+    padding: 12px !important;
+    border-radius: 14px !important;
+    font-size: 14px;
+}
+
+#menuWordList b {
+    font-size: 16px !important;
+}
+
+#menuWordList span {
+    font-size: 14px !important;
+}
+
+#menuWordList > div:hover {
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+#menuWordList b {
+    font-size: 18px;
+    color: #3b82f6;
+}
+#menuWordList b,
+#menuWordList span {
+    text-transform: capitalize;
+}
+#scrollTopBtn{
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+
+    background: rgba(59,130,246,0.6);
+    color: white;
+    backdrop-filter: blur(6px);
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    z-index: 9999;
+}
+
+#scrollTopBtn.show{
+    opacity: 1;
+    visibility: visible;
+}
+
+#scrollTopBtn:hover{
+    background: rgba(59,130,246,0.9);
+    transform: translateX(-50%) scale(1.1);
+}
+
+.list-container {
+    width: 90%;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.list-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.list-card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.list-card:hover {
+    transform: translateY(-5px);
+}
+
+.list-card h3 {
+    margin-bottom: 10px;
+}
+
+/* ===== GROUP LIST GRID ===== */
+
+.groupGrid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.groupCard{
+    padding: 20px;
+    border-radius: 18px;
+    color: white;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.groupCard:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+}
+
+
+#floatingMeaningBtn{
+    position:absolute;
+    z-index:9999;
+    display:none;
+}
+
+#miniTranslatePopup{
+    position:absolute;
+    z-index:9999;
+}
+
+.toolbar {
+    position: sticky;
+    top: 10px;
+    z-index: 1000;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    padding: 12px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.historyItemModern{
+    background: rgba(255,255,255,0.06);
+    padding:18px;
+    border-radius:14px;
+    margin-bottom:18px;
+    transition:0.25s;
+}
+
+.historyItemModern:hover{
+    transform:translateY(-3px);
+    background:rgba(255,255,255,0.1);
+}
+
+.historyTop{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    opacity:0.7;
+    margin-bottom:10px;
+}
+
+.historyPreview{
+    cursor:pointer;
+    margin-bottom:12px;
+    line-height:1.5;
+}
+
+.historyButtons{
+    display:flex;
+    gap:10px;
+}
+.quizCard {
+    background: rgba(255,255,255,0.07);
+    padding:25px;
+    border-radius:20px;
+    margin:20px auto;
+    max-width:500px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+}
+.quizButtons { display:flex; justify-content:center; gap:12px; margin-top:15px; }
+.quizButtons button {
+    padding:10px 18px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.2s ease;
+}
+.quizButtons button:hover { transform:translateY(-2px); }
+#quizProgressBar {
+    width:100%; height:8px; background: rgba(255,255,255,0.2); border-radius:6px; margin:10px 0;
+}
+#quizProgress { height:100%; width:0%; background:#3b82f6; border-radius:6px; transition:0.3s; }
+.progressText { font-weight:500; opacity:0.7; margin-bottom:10px; }
+.listsGrid{
+
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+gap:20px;
+margin-top:20px;
+
+}
+
+.listModernCard{
+
+background:rgba(255,255,255,0.07);
+padding:25px;
+border-radius:18px;
+text-align:center;
+transition:0.25s;
+
+}
+
+.listModernCard:hover{
+
+transform:translateY(-6px);
+background:rgba(255,255,255,0.12);
+
+}
+
+.wordsGrid{
+
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+gap:15px;
+margin-top:20px;
+
+}
+
+.wordCard{
+
+background:rgba(255,255,255,0.08);
+padding:18px;
+border-radius:14px;
+display:flex;
+flex-direction:column;
+gap:6px;
+position:relative;
+
+}
+
+.wordCard button{
+
+position:absolute;
+top:10px;
+right:10px;
+
+}
+
+.checkboxList{
+
+max-height:400px;
+overflow:auto;
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:14px;
+
+}
+
+.checkboxRow{
+
+padding:10px;
+border-radius:8px;
+transition:0.2s;
+
+}
+
+.checkboxRow:hover{
+
+background:rgba(255,255,255,0.08);
+
+}
+
+.modernInput{
+
+width:100%;
+padding:12px;
+border-radius:12px;
+border:none;
+margin-bottom:15px;
+background:rgba(255,255,255,0.08);
+color:white;
+
+}

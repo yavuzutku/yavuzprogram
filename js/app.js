@@ -63,11 +63,9 @@ function loginWithGoogle(){
         });
 }
 function showUser(user){
-    // Giriş başarılı olduğunda göster
     if(loginArea) loginArea.style.display = "none";
     if(mainArea) mainArea.style.display = "block";
 
-    // Firestore’da kullanıcı dokümanı oluştur
     const userRef = db.collection("users").doc(user.email);
 
     userRef.get().then(doc=>{
@@ -82,8 +80,7 @@ function showUser(user){
         }
     });
 
-    // Menü ekranını yükle
-    goMenu();
+    goMenu(); // Menü sadece login sonrası açılır
 }
 function logout(){
     auth.signOut().then(()=>{
@@ -433,14 +430,14 @@ function filterMenuWords(){
 const currentPage = window.location.pathname.split("/").pop();
 
 if(currentPage === "index.html" || currentPage === ""){
+    // Sayfa yüklendiğinde auth durumunu kontrol et ama sadece loginArea göster/gizle
     auth.onAuthStateChanged(user => {
         if(user){
             console.log("Giriş yapılmış:", user.displayName);
+            // loginArea kaybolacak ama menuArea açılmayacak, kullanıcı manuel olarak sayfayı açacak
             if(loginArea) loginArea.style.display = "none";
-            if(mainArea) mainArea.style.display = "block";
-
-            // Menü ekranını yükle
-            if(menuArea) goMenu();
+            if(mainArea) mainArea.style.display = "block"; 
+            // menuArea yüklemesini kaldırıyoruz, sadece giriş sonrası loginWithGoogle() ile açılacak
         } else {
             if(mainArea) mainArea.style.display = "none";
             if(loginArea) loginArea.style.display = "block";

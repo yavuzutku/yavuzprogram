@@ -138,8 +138,7 @@ function goMenu(){
         return;
     }
 
-    hideAll();
-
+    hideAll(); // tüm kartları gizle
     if(menuArea) menuArea.style.display = "block";
     if(menuWordsArea) menuWordsArea.style.display = "block";
 
@@ -426,21 +425,25 @@ function filterMenuWords(){
     menuWordCount.innerText = visibleCount;
 }
 // Sayfa yüklendiğinde auth durumunu kontrol et
-auth.onAuthStateChanged(user => {
+const currentPage = window.location.pathname.split("/").pop();
 
-    if(user){
-        console.log("Giriş yapılmış:", user.displayName);
+if(currentPage === "index.html" || currentPage === ""){
+    auth.onAuthStateChanged(user => {
 
-        if(loginArea) loginArea.style.display = "none";
-        if(mainArea) mainArea.style.display = "block";
+        if(user){
+            console.log("Giriş yapılmış:", user.displayName);
 
-        // Kullanıcı giriş yaptıysa menüyü göster
-        if(menuArea) goMenu();
+            if(loginArea) loginArea.style.display = "none";
+            if(mainArea) mainArea.style.display = "block";
 
-    } else {
-        // Kullanıcı giriş yapmamışsa hiçbir reload yok, sadece login ekranı göster
-        if(mainArea) mainArea.style.display = "none";
-        if(loginArea) loginArea.style.display = "block";
-    }
+            // Kullanıcı giriş yaptıysa menüyü göster
+            if(menuArea) goMenu();
 
-});
+        } else {
+            // Kullanıcı giriş yapmamışsa login ekranı göster
+            if(mainArea) mainArea.style.display = "none";
+            if(loginArea) loginArea.style.display = "block";
+        }
+
+    });
+}

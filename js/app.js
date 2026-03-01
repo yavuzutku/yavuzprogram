@@ -61,10 +61,11 @@ function loginWithGoogle(){
         });
 }
 function showUser(user){
+    // login ekranını gizle
     if(loginArea) loginArea.style.display = "none";
     if(mainArea) mainArea.style.display = "block";
 
-    // Firestore’da kullanıcıya özel document oluştur
+    // Firestore’da kullanıcı dokümanı oluştur
     const userRef = db.collection("users").doc(user.email);
 
     userRef.get().then(doc=>{
@@ -79,6 +80,8 @@ function showUser(user){
         }
     });
 
+    // Menü ekranını yükle
+    goMenu();
 }
 function logout(){
     auth.signOut().then(()=>{
@@ -429,21 +432,16 @@ const currentPage = window.location.pathname.split("/").pop();
 
 if(currentPage === "index.html" || currentPage === ""){
     auth.onAuthStateChanged(user => {
-
         if(user){
             console.log("Giriş yapılmış:", user.displayName);
-
             if(loginArea) loginArea.style.display = "none";
             if(mainArea) mainArea.style.display = "block";
 
-            // Kullanıcı giriş yaptıysa menüyü göster
+            // Menü ekranını yükle
             if(menuArea) goMenu();
-
         } else {
-            // Kullanıcı giriş yapmamışsa login ekranı göster
             if(mainArea) mainArea.style.display = "none";
             if(loginArea) loginArea.style.display = "block";
         }
-
     });
 }

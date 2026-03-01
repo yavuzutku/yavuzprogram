@@ -137,8 +137,8 @@ function goMenu(){
         return;
     }
 
-    window.location.href = "index.html";
-    menuWordsArea.style.display = "block";
+
+    if(menuWordsArea) menuWordsArea.style.display = "block";
 
     loadMenuWords("date");
 
@@ -424,20 +424,15 @@ function filterMenuWords(){
 }
 // Sayfa yüklendiğinde auth durumunu kontrol et
 auth.onAuthStateChanged(user => {
-
     if(user){
         console.log("Giriş yapılmış:", user.displayName);
 
         if(loginArea) loginArea.style.display = "none";
         if(mainArea) mainArea.style.display = "block";
 
-        goMenu();
-
+        goMenu(); // sadece UI güncelliyor
     } else {
-
         if(mainArea) mainArea.style.display = "none";
         if(loginArea) loginArea.style.display = "block";
-
     }
-
 });

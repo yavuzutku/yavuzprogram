@@ -22,6 +22,7 @@ Diğer modüller:
 Bu dosya uygulamanın ana kontrol merkezidir.
 */
 // app.js en başına ekle
+let timer = null;
 const menuWordList = document.getElementById("menuWordList") || null;
 const menuWordCount = document.getElementById("menuWordCount") || null;
 const menuSearchInput = document.getElementById("menuSearchInput") || null;
@@ -133,6 +134,10 @@ function showInput(){
 
 
 function goMenu(){
+    if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+    }
     if(!auth.currentUser){
         alert("Önce giriş yapmalısınız!");
         hideAll();

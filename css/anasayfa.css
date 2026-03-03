@@ -1,0 +1,97 @@
+body{
+  margin:0;
+  font-family:'DM Sans',sans-serif;
+  background:linear-gradient(135deg,#0a0a0f,#12121a);
+  color:white;
+}
+
+/* NAVBAR */
+
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 60px;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+  font-size:20px;
+  font-weight:600;
+}
+
+.logout-btn{
+  padding:10px 18px;
+  background:#c9a84c;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.logout-btn:hover{
+  background:#e0c270;
+  transform:translateY(-2px);
+}
+
+
+/* DASHBOARD */
+
+.dashboard{
+  max-width:1000px;
+  margin:100px auto;
+  padding:20px;
+}
+
+
+/* HERO */
+
+.hero h1{
+  font-size:38px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  color:#aaa;
+  font-size:18px;
+  margin-bottom:60px;
+}
+
+
+/* ACTION CARD */
+
+.action-card{
+  background:rgba(255,255,255,0.05);
+  padding:40px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:0.4s;
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(12px);
+  max-width:400px;
+}
+
+.action-card:hover{
+  transform:translateY(-10px) scale(1.03);
+  border-color:#c9a84c;
+  box-shadow:0 20px 60px rgba(201,168,76,0.3);
+}
+
+.action-icon{
+  font-size:40px;
+  margin-bottom:15px;
+}
+
+.action-title{
+  font-size:22px;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.action-desc{
+  color:#aaa;
+  line-height:1.5;
+}

@@ -2,93 +2,46 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Almanca Öğrenme Programı</title>
-<style>
-body{
-  margin:0;
-  font-family:'DM Sans',sans-serif;
-  background:#0a0a0f;
-  color:white;
-}
 
-.navbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 40px;
-  background:#12121a;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-}
+<link rel="stylesheet" href="css/anasayfa.css">
 
-.logo{
-  font-size:20px;
-  font-weight:600;
-}
-
-.logout-btn{
-  padding:8px 16px;
-  background:#c9a84c;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:500;
-}
-
-.center{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  height:80vh;
-  gap:30px;
-}
-
-.title{
-  font-size:40px;
-  font-weight:700;
-}
-
-.new-btn{
-  padding:16px 36px;
-  font-size:18px;
-  background:#c9a84c;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.new-btn:hover{
-  transform:scale(1.05);
-}
-</style>
 </head>
 <body>
 
 <div class="navbar">
   <div class="logo">YavuzProgram</div>
-  <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+  <button class="logout-btn" id="logoutBtn">Çıkış Yap</button>
 </div>
 
-<div class="center">
-  <div class="title">Almanca Öğrenme Programı</div>
-  <button class="new-btn" onclick="goNew()">Yeni Metin Girişi</button>
+
+<div class="dashboard">
+
+  <div class="hero">
+    <h1>Almanca Öğrenmeye Hazırsın 🚀</h1>
+    <p>Metin ekleyerek analiz yapabilir, kelimeleri çıkarabilir ve test oluşturabilirsin.</p>
+  </div>
+
+
+  <div class="action-card" id="newTextBtn">
+    <div class="action-icon">✍️</div>
+    <div class="action-title">Yeni Metin Ekle</div>
+    <div class="action-desc">
+      Almanca metnini buraya yapıştır ve sistem otomatik analiz etsin.
+    </div>
+  </div>
+
 </div>
 
-<script>
-function logout(){
-  localStorage.removeItem("userToken");
-  window.location.href = "index.html";
-}
 
-function goNew(){
-  window.location.href = "metin.html";
-}
-</script>
+<script src="js/anasayfa.js"></script>
 
-</body>
-</html>
+<!-- Auth Koruma -->
 <script src="js/core.js"></script>
 <script>
 requireAuth();
 </script>
+
+</body>
+</html>

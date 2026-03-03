@@ -2,65 +2,13 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Yeni Metin</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter&family=Roboto&family=Playfair+Display&display=swap" rel="stylesheet">
 
-<style>
-body{
-  margin:0;
-  font-family:Inter, sans-serif;
-  background:#0a0a0f;
-  color:white;
-}
+<link rel="stylesheet" href="css/metin.css">
 
-/* Navbar */
-.navbar{
-  padding:16px 30px;
-  background:#12121a;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-  font-size:18px;
-  font-weight:600;
-}
-
-/* Toolbar */
-.toolbar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  padding:12px 20px;
-  background:#181824;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-}
-
-.toolbar button, .toolbar select, .toolbar input{
-  padding:6px 10px;
-  border-radius:6px;
-  border:none;
-  cursor:pointer;
-}
-
-.toolbar button{
-  background:#2a2a35;
-  color:white;
-}
-
-.editor{
-  padding:40px;
-  max-width:900px;
-  margin:auto;
-}
-
-#textArea{
-  min-height:500px;
-  background:white;
-  color:black;
-  padding:40px;
-  border-radius:8px;
-  outline:none;
-  font-size:16px;
-}
-</style>
 </head>
 <body>
 
@@ -70,24 +18,25 @@ body{
 
 <div class="toolbar">
 
-  <select onchange="changeFont(this.value)">
+  <select id="fontSelector">
     <option value="Inter">Inter</option>
     <option value="Roboto">Roboto</option>
     <option value="Playfair Display">Playfair</option>
   </select>
 
-  <button onclick="format('bold')">B</button>
-  <button onclick="format('underline')">U</button>
+  <button data-cmd="bold">B</button>
+  <button data-cmd="underline">U</button>
 
-  <button onclick="alignText('left')">Sol</button>
-  <button onclick="alignText('center')">Ortala</button>
-  <button onclick="alignText('right')">Sağ</button>
+  <button data-align="left">Sol</button>
+  <button data-align="center">Ortala</button>
+  <button data-align="right">Sağ</button>
 
-  <button onclick="changeSize(1)">A+</button>
-  <button onclick="changeSize(-1)">A-</button>
+  <button id="increaseSize">A+</button>
+  <button id="decreaseSize">A-</button>
 
-  <input type="color" onchange="changeColor(this.value)">
-  <input type="color" onchange="highlight(this.value)">
+  <input type="color" id="textColor">
+  <input type="color" id="highlightColor">
+
 </div>
 
 <div class="editor">
@@ -96,38 +45,13 @@ body{
   </div>
 </div>
 
-<script>
-function format(cmd){
-  document.execCommand(cmd,false,null);
-}
+<script src="js/metin.js"></script>
 
-function changeFont(font){
-  document.execCommand("fontName", false, font);
-}
-
-function changeColor(color){
-  document.execCommand("foreColor", false, color);
-}
-
-function highlight(color){
-  document.execCommand("hiliteColor", false, color);
-}
-
-function alignText(alignment){
-  document.execCommand("justify"+alignment.charAt(0).toUpperCase()+alignment.slice(1));
-}
-
-function changeSize(dir){
-  let area = document.getElementById("textArea");
-  let size = window.getComputedStyle(area).fontSize;
-  size = parseFloat(size);
-  area.style.fontSize = (size + dir*2) + "px";
-}
-</script>
-
-</body>
-</html>
+<!-- Auth koruma -->
 <script src="js/core.js"></script>
 <script>
 requireAuth();
 </script>
+
+</body>
+</html>

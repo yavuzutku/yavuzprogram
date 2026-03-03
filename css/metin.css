@@ -1,0 +1,55 @@
+body{
+  margin:0;
+  font-family:Inter, sans-serif;
+  background:#0a0a0f;
+  color:white;
+}
+
+/* Navbar */
+.navbar{
+  padding:16px 30px;
+  background:#12121a;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  font-size:18px;
+  font-weight:600;
+}
+
+/* Toolbar */
+.toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:12px 20px;
+  background:#181824;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.toolbar button,
+.toolbar select,
+.toolbar input{
+  padding:6px 10px;
+  border-radius:6px;
+  border:none;
+  cursor:pointer;
+}
+
+.toolbar button{
+  background:#2a2a35;
+  color:white;
+}
+
+.editor{
+  padding:40px;
+  max-width:900px;
+  margin:auto;
+}
+
+#textArea{
+  min-height:500px;
+  background:white;
+  color:black;
+  padding:40px;
+  border-radius:8px;
+  outline:none;
+  font-size:16px;
+}

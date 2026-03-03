@@ -1,7 +1,5 @@
 import { Storage } from "./storage.js";
-window.startReading = startReading;
-window.increaseFont = increaseFont;
-window.decreaseFont = decreaseFont;
+
 const userText = document.getElementById("userText");
 const displayText = document.getElementById("displayText");
 const readingArea = document.getElementById("readingArea");
@@ -11,6 +9,7 @@ let fontSize = 20;
 let timer;
 let seconds = 0;
 let selectedWordGlobal = "";
+
 function startReading(id=null){
     let text;
 
@@ -60,7 +59,9 @@ function addFromMiniPopup(word, meaning){
     document.getElementById("miniTranslatePopup").style.display = "none";
 }
 
-
+window.startReading = startReading;
+window.increaseFont = increaseFont;
+window.decreaseFont = decreaseFont;
 function openMiniTranslate(){
 
     let popup = document.getElementById("miniTranslatePopup");

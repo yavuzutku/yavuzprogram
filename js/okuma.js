@@ -9,48 +9,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
   }
 
   reader.innerText = text;
-
-  initReaderControls();
 });
+
 
 function goBack(){
   window.location.href = "metin.html";
 }
-
-/* =========================
-   READER CONTROLS
-========================= */
-
-function initReaderControls(){
-
-  createToolbar();
-}
-
-/* Toolbar Oluştur */
-
-function createToolbar(){
-
-  const toolbar = document.createElement("div");
-  toolbar.className = "reader-toolbar";
-
-  toolbar.innerHTML = `
-    <button onclick="increaseFont()">A+</button>
-    <button onclick="decreaseFont()">A-</button>
-
-    <button onclick="toggleDark()">🌙</button>
-
-    <button onclick="alignLeft()">⬅</button>
-    <button onclick="alignCenter()">⬜</button>
-
-    <button onclick="changeFont()">Font</button>
-  `;
-
-  document.body.appendChild(toolbar);
-}
-
-/* =========================
-   FONT SIZE
-========================= */
 
 let currentSize = 20;
 
@@ -64,9 +28,9 @@ function decreaseFont(){
   document.getElementById("readerText").style.fontSize = currentSize + "px";
 }
 
-/* =========================
-   ALIGN
-========================= */
+function toggleDark(){
+  document.body.classList.toggle("light-mode");
+}
 
 function alignLeft(){
   document.getElementById("readerText").style.textAlign = "left";
@@ -76,23 +40,8 @@ function alignCenter(){
   document.getElementById("readerText").style.textAlign = "center";
 }
 
-/* =========================
-   DARK MODE
-========================= */
-
-function toggleDark(){
-  document.body.classList.toggle("light-mode");
-}
-
-/* =========================
-   FONT CHANGE
-========================= */
-
 function changeFont(){
-
   const fonts = ["Inter","Georgia","Roboto","Playfair Display"];
-
-  let random = fonts[Math.floor(Math.random()*fonts.length)];
-
+  const random = fonts[Math.floor(Math.random()*fonts.length)];
   document.getElementById("readerText").style.fontFamily = random;
 }

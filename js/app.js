@@ -147,7 +147,9 @@ function goMenu(){
 
     loadMenuWords("date");
 
-    clearInterval(timer);
+    if (typeof timer !== "undefined") {
+        clearInterval(timer);
+    }
     updateUI();
 }
 

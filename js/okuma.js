@@ -375,15 +375,17 @@ document.addEventListener("mousedown", function(e){
     const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
     const miniTranslatePopup = document.getElementById("miniTranslatePopup");
 
-    // Eğer elementler yoksa hiçbir şey yapma
-    if(!displayText || !floatingMeaningBtn || !miniTranslatePopup) return;
+    // Eğer displayText yoksa bu kod çalışmasın
+    if(!displayText) return;
 
-    if(!displayText.contains(e.target) &&
-       !floatingMeaningBtn.contains(e.target) &&
-       !miniTranslatePopup.contains(e.target)){
+    const clickedOutsideDisplay = !displayText.contains(e.target);
+    const clickedOutsideButton = !floatingMeaningBtn || !floatingMeaningBtn.contains(e.target);
+    const clickedOutsidePopup = !miniTranslatePopup || !miniTranslatePopup.contains(e.target);
 
-        floatingMeaningBtn.style.display = "none";
-        miniTranslatePopup.style.display = "none";
+    if(clickedOutsideDisplay && clickedOutsideButton && clickedOutsidePopup){
+
+        if(floatingMeaningBtn) floatingMeaningBtn.style.display = "none";
+        if(miniTranslatePopup) miniTranslatePopup.style.display = "none";
 
         if(window.getSelection){
             window.getSelection().removeAllRanges();

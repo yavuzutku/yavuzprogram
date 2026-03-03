@@ -1,3 +1,7 @@
+import { Storage } from "./storage.js";
+window.startReading = startReading;
+window.increaseFont = increaseFont;
+window.decreaseFont = decreaseFont;
 const userText = document.getElementById("userText");
 const displayText = document.getElementById("displayText");
 const readingArea = document.getElementById("readingArea");

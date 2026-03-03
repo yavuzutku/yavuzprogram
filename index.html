@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Giriş Yap</title>
@@ -81,7 +82,8 @@
       google.accounts.id.initialize({
         client_id: '279266692579-pcrjmld03761be73i2pr6iis9evclm4q.apps.googleusercontent.com',
         callback: handleCredentialResponse,
-        ux_mode: 'popup'
+        ux_mode: 'redirect',
+        login_uri: window.location.href
       });
       renderBtn();
     }
@@ -100,10 +102,13 @@
       document.getElementById('user-view').style.display = 'flex';
     }
     function signOut() {
-      google.accounts.id.disableAutoSelect();
-      document.getElementById('user-view').style.display = 'none';
-      document.getElementById('login-view').style.display = 'block';
-      renderBtn();
+        google.accounts.id.disableAutoSelect();
+
+        document.getElementById('user-view').style.display = 'none';
+        document.getElementById('login-view').style.display = 'block';
+
+        document.getElementById('google-btn-container').innerHTML = '';
+        renderBtn();
     }
   </script>
 </body>

@@ -4,11 +4,6 @@ body{
   background:linear-gradient(135deg,#0a0a0f,#12121a);
   color:white;
 }
-
-/* NAVBAR */
-
-
-
 /* DASHBOARD */
 
 .dashboard{
@@ -16,8 +11,6 @@ body{
   margin:100px auto;
   padding:20px;
 }
-
-
 /* HERO */
 
 .hero h1{
@@ -30,8 +23,6 @@ body{
   font-size:18px;
   margin-bottom:60px;
 }
-
-
 /* ACTION CARD */
 
 .action-card{

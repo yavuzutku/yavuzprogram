@@ -5,15 +5,6 @@ body{
   color:white;
 }
 
-/* Navbar */
-.navbar{
-  padding:16px 30px;
-  background:#12121a;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-  font-size:18px;
-  font-weight:600;
-}
-
 /* Toolbar */
 .toolbar{
   display:flex;

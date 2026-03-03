@@ -1,3 +1,5 @@
+const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
+const miniPopup = document.getElementById("miniTranslatePopup");
 let multiWordList = [];
 let multiIndex = 0;
 let fontSize = 20;
@@ -369,19 +371,29 @@ function closePopup(){
 
 document.addEventListener("mousedown", function(e){
 
-    // Eğer tıklanan yer displayText değilse
+    const displayText = document.getElementById("displayText");
+    const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
+    const miniTranslatePopup = document.getElementById("miniTranslatePopup");
+
+    // Eğer elementler yoksa hiçbir şey yapma
+    if(!displayText || !floatingMeaningBtn || !miniTranslatePopup) return;
+
     if(!displayText.contains(e.target) &&
        !floatingMeaningBtn.contains(e.target) &&
        !miniTranslatePopup.contains(e.target)){
 
         floatingMeaningBtn.style.display = "none";
         miniTranslatePopup.style.display = "none";
-        window.getSelection().removeAllRanges(); // seçimi temizle
-        selectedWordGlobal = "";
+
+        if(window.getSelection){
+            window.getSelection().removeAllRanges();
+        }
+
+        if(typeof selectedWordGlobal !== "undefined"){
+            selectedWordGlobal = "";
+        }
     }
 });
-
-
 document.addEventListener("click", function(e){
     if(!miniPopup.contains(e.target) && !floatingBtn.contains(e.target)){
         miniPopup.style.display = "none";

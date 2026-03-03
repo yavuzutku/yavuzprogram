@@ -10,6 +10,9 @@ let timer;
 let seconds = 0;
 let selectedWordGlobal = "";
 
+// ✅ FIX: Attach to window so HTML onclick attributes can access it from global scope
+window.currentTextId = null;
+
 function startReading(id=null){
     let text;
 
@@ -18,12 +21,12 @@ function startReading(id=null){
         let found=texts.find(t=>t.id===id);
         if(!found) return;
         text=found.content;
-        currentTextId=id;
+        window.currentTextId=id;
     } else {
         text=userText.value;
         if(text.trim()==="") return alert("Metin girin");
         let savedText = saveText(text);
-        currentTextId = savedText.id;
+        window.currentTextId = savedText.id;
     }
 
     hideAll();
@@ -32,8 +35,8 @@ function startReading(id=null){
     displayText.textContent = text;
     highlightSavedWords();
     startTimer();
-
 }
+
 function startTimer(){
     seconds=0;
     readingTime.innerText=0;
@@ -43,6 +46,7 @@ function startTimer(){
         readingTime.innerText=seconds;
     },1000);
 }
+
 function increaseFont(){
     fontSize+=2;
     displayText.style.fontSize=fontSize+"px";
@@ -52,24 +56,31 @@ function decreaseFont(){
     fontSize-=2;
     displayText.style.fontSize=fontSize+"px";
 }
+
 function addFromMiniPopup(word, meaning){
-
     addOrUpdateWord(word, meaning);
-
     document.getElementById("miniTranslatePopup").style.display = "none";
 }
 
+// ✅ FIX: All functions called from HTML onclick must be on window
 window.startReading = startReading;
 window.increaseFont = increaseFont;
 window.decreaseFont = decreaseFont;
-function openMiniTranslate(){
+window.addFromMiniPopup = addFromMiniPopup;
+window.learnMeaning = learnMeaning;
+window.saveWord = saveWord;
+window.closeMultiPanel = closeMultiPanel;
+window.saveBulkWords = saveBulkWords;
+window.showNextMultiWord = showNextMultiWord;
+window.closePopup = closePopup;
+window.closeTranslate = closeTranslate;
+window.scrollToTop = scrollToTop;
 
+function openMiniTranslate(){
     let popup = document.getElementById("miniTranslatePopup");
     let btn = document.getElementById("floatingMeaningBtn");
 
-    // BUTONU TAMAMEN KALDIR
     btn.style.display = "none";
-
 
     popup.style.display = "block";
     popup.style.top = btn.style.top;
@@ -80,7 +91,6 @@ function openMiniTranslate(){
     fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=tr&dt=t&q=${encodeURIComponent(selectedWordGlobal)}`)
     .then(res => res.json())
     .then(data => {
-
         let translated = data[0][0][0];
 
         popup.innerHTML = `
@@ -90,7 +100,6 @@ function openMiniTranslate(){
             <div style="margin-bottom:12px;">
                 ${translated}
             </div>
-
             <button 
                 style="padding:6px 10px;border:none;border-radius:8px;background:#22c55e;color:white;cursor:pointer;"
                 onclick="addFromMiniPopup('${selectedWordGlobal.replace(/'/g,"\\'")}', '${translated.replace(/'/g,"\\'")}')">
@@ -99,8 +108,8 @@ function openMiniTranslate(){
         `;
     });
 }
-function learnMeaning(){
 
+function learnMeaning(){
     const selectionObj = window.getSelection();
     let selection = selectionObj.toString().trim();
 
@@ -114,15 +123,9 @@ function learnMeaning(){
     }
 
     openMiniTranslate();
-
-    // floating buton gizle
-    }
-
-
-
+}
 
 function saveWord(){
-
     let selection = window.getSelection().toString().trim();
 
     if(selection === ""){
@@ -130,15 +133,12 @@ function saveWord(){
         return;
     }
 
-    // Çoklu seçim kontrolü (satır satır mı?)
     if(selection.includes("\n")){
-
         let choice = confirm(
             "Birden fazla kelime seçildi.\n\nTamam = Tek tek ekle\nİptal = Tek parça olarak kaydet"
         );
 
         if(choice){
-            // TEK TEK EKLEME
             let words = selection
                 .split("\n")
                 .map(w => formatWord(w))
@@ -147,10 +147,8 @@ function saveWord(){
             addWordsSequentially(words);
             return;
         }
-
     }
 
-    // Normal tek kelime ekleme
     addSingleWord(formatWord(selection));
 }
 
@@ -161,10 +159,12 @@ function normalizeWord(w){
         .replace(/[.,!?]/g,"")
         .trim();
 }
+
 function addOrUpdateWord(word, meaning){
     Storage.addOrUpdateWord(word, meaning);
     loadMenuWords();
 }
+
 function formatWord(word) {
     if (!word) return "";
 
@@ -175,16 +175,14 @@ function formatWord(word) {
         .map(w => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" / ");
 }
-function addSingleWord(word){
 
+function addSingleWord(word){
     let meaning = prompt(word + " kelimesinin Türkçesi:");
     if(meaning === null) return;
-
     addOrUpdateWord(word, meaning.trim());
 }
 
 function addWordsSequentially(wordArray){
-
     multiWordList = wordArray;
     multiIndex = 0;
 
@@ -192,8 +190,8 @@ function addWordsSequentially(wordArray){
 
     showNextMultiWord();
 }
-function showNextMultiWord(){
 
+function showNextMultiWord(){
     if(multiIndex >= multiWordList.length){
         alert("Tüm kelimeler eklendi ✅");
         document.getElementById("multiWordPanel").style.display = "none";
@@ -211,7 +209,6 @@ function showNextMultiWord(){
 }
 
 function saveBulkWords(){
-
     let meaningsText = document.getElementById("bulkMeaningInput").value;
 
     let meanings = meaningsText
@@ -224,15 +221,11 @@ function saveBulkWords(){
         return;
     }
 
-
     for(let i = 0; i < multiWordList.length; i++){
-
         let word = multiWordList[i];
         let meaning = meanings[i];
-
         Storage.addOrUpdateWord(word, meaning);
     }
-
 
     alert("Tüm kelimeler kaydedildi ✅");
 
@@ -240,11 +233,12 @@ function saveBulkWords(){
     closeMultiPanel();
     loadMenuWords();
 }
+
 function closeMultiPanel(){
     document.getElementById("multiWordPanel").style.display = "none";
 }
-function highlightSavedWords(){
 
+function highlightSavedWords(){
     displayText.innerHTML = displayText.textContent;
 
     let saved = Storage.getWords();
@@ -262,14 +256,11 @@ function highlightSavedWords(){
     }
 
     nodes.forEach(node => {
-
         let originalText = node.nodeValue;
         let newHTML = originalText;
 
         saved.forEach(wordObj => {
-
             let escaped = wordObj.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
             let regex = new RegExp(`(^|\\s|[.,!?])(${escaped})(?=$|\\s|[.,!?])`, "gi");
 
             newHTML = newHTML.replace(regex,
@@ -284,8 +275,8 @@ function highlightSavedWords(){
         }
     });
 }
-displayText.addEventListener("mouseup", function(e){
 
+displayText.addEventListener("mouseup", function(e){
     const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
     if(!floatingMeaningBtn) return;
 
@@ -319,9 +310,6 @@ displayText.addEventListener("mouseup", function(e){
     floatingMeaningBtn.style.left = (window.scrollX + rect.left) + "px";
 });
 
-
-
-
 function closePopup(){
     const miniPopup = document.getElementById("miniTranslatePopup");
     const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
@@ -335,14 +323,11 @@ function closePopup(){
     selectedWordGlobal = "";
 }
 
-
 document.addEventListener("mousedown", function(e){
-
     const displayText = document.getElementById("displayText");
     const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
     const miniTranslatePopup = document.getElementById("miniTranslatePopup");
 
-    // Eğer displayText yoksa bu kod çalışmasın
     if(!displayText) return;
 
     const clickedOutsideDisplay = !displayText.contains(e.target);
@@ -350,7 +335,6 @@ document.addEventListener("mousedown", function(e){
     const clickedOutsidePopup = !miniTranslatePopup || !miniTranslatePopup.contains(e.target);
 
     if(clickedOutsideDisplay && clickedOutsideButton && clickedOutsidePopup){
-
         if(floatingMeaningBtn) floatingMeaningBtn.style.display = "none";
         if(miniTranslatePopup) miniTranslatePopup.style.display = "none";
 
@@ -358,14 +342,11 @@ document.addEventListener("mousedown", function(e){
             window.getSelection().removeAllRanges();
         }
 
-        if(typeof selectedWordGlobal !== "undefined"){
-            selectedWordGlobal = "";
-        }
+        selectedWordGlobal = "";
     }
 });
 
 displayText.addEventListener("click", function(e){
-
     const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
     if(!floatingMeaningBtn) return;
 
@@ -374,7 +355,6 @@ displayText.addEventListener("click", function(e){
     let word = e.target.innerText.trim();
 
     if(word && word.split(/\s+/).length === 1){
-
         selectedWordGlobal = word;
 
         floatingMeaningBtn.style.display = "block";
@@ -389,10 +369,6 @@ displayText.addEventListener("click", function(e){
 function closeTranslate(){
     document.getElementById("translatePopup").style.display = "none";
 }
-// === SEÇİM ALGILAMA ===
-
-
-
 
 function scrollToTop(){
     window.scrollTo({
@@ -400,12 +376,11 @@ function scrollToTop(){
         behavior: "smooth"
     });
 }
-// Metni kaydetmek için
+
 function saveText(content){
     return Storage.saveText(content);
 }
 
-// Tüm metinleri almak için
 function getTexts(){
     return Storage.getTexts();
 }

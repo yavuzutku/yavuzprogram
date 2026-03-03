@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
       return;
     }
   }
-
+  updateAuthUI();
+  initLogout();
   initGoogle();
 });
 function initGoogle(){
@@ -50,8 +51,35 @@ function handleCredentialResponse(response){
   window.location.href="anasayfa.html";
 }
 
-document.getElementById("logoutBtn")?.addEventListener("click",function(){
-  google.accounts.id.disableAutoSelect();
-  localStorage.removeItem("userToken");
-  location.reload();
-});
+function initLogout(){
+
+  const btn = document.getElementById("logoutBtn");
+
+  if(!btn) return;
+
+  btn.addEventListener("click", ()=>{
+    google.accounts.id.disableAutoSelect();
+    localStorage.removeItem("userToken");
+
+    setTimeout(()=>{
+      window.location.reload();
+    },100);
+  });
+}
+function updateAuthUI(){
+
+  const token = localStorage.getItem("userToken");
+
+  const loginView = document.getElementById("login-view");
+  const userView  = document.getElementById("user-view");
+
+  if(!loginView || !userView) return;
+
+  if(token){
+    loginView.style.display = "none";
+    userView.style.display = "flex";
+  }else{
+    loginView.style.display = "block";
+    userView.style.display = "none";
+  }
+}

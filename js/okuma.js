@@ -1,5 +1,3 @@
-const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
-const miniPopup = document.getElementById("miniTranslatePopup");
 let multiWordList = [];
 let multiIndex = 0;
 let fontSize = 20;
@@ -110,7 +108,7 @@ function learnMeaning(){
     openMiniTranslate();
 
     // floating buton gizle
-    floatingMeaning}
+    }
 
 
 
@@ -324,6 +322,9 @@ function highlightSavedWords(){
 }
 displayText.addEventListener("mouseup", function(e){
 
+    const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
+    if(!floatingMeaningBtn) return;
+
     const selectionObj = window.getSelection();
 
     if(!selectionObj || selectionObj.rangeCount === 0){
@@ -332,7 +333,6 @@ displayText.addEventListener("mouseup", function(e){
     }
 
     let selection = selectionObj.toString().trim();
-
     selection = selection.replace(/^[^\p{L}]+|[^\p{L}]+$/gu,"");
 
     if(selection.length === 0){
@@ -359,11 +359,14 @@ displayText.addEventListener("mouseup", function(e){
 
 
 function closePopup(){
-    miniTranslatePopup.style.display = "none";
+    const miniPopup = document.getElementById("miniTranslatePopup");
+    const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
 
-    // Butonu tekrar aktif hale getir
-    floatingMeaningBtn.style.display = "block";
-    floatingMeaningBtn.style.opacity = "1";
+    if(miniPopup) miniPopup.style.display = "none";
+    if(floatingMeaningBtn){
+        floatingMeaningBtn.style.display = "block";
+        floatingMeaningBtn.style.opacity = "1";
+    }
 
     selectedWordGlobal = "";
 }
@@ -396,18 +399,16 @@ document.addEventListener("mousedown", function(e){
         }
     }
 });
-document.addEventListener("click", function(e){
-    if(!miniPopup.contains(e.target) && !floatingBtn.contains(e.target)){
-        miniPopup.style.display = "none";
-    }
-});
+
 displayText.addEventListener("click", function(e){
+
+    const floatingMeaningBtn = document.getElementById("floatingMeaningBtn");
+    if(!floatingMeaningBtn) return;
 
     if(readingArea.style.display !== "block") return;
 
     let word = e.target.innerText.trim();
 
-    // sadece tek kelime ise
     if(word && word.split(/\s+/).length === 1){
 
         selectedWordGlobal = word;

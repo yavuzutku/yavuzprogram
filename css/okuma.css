@@ -58,3 +58,50 @@ body{
 .back-bar button:hover{
   transform:scale(1.05);
 }
+/* =========================
+   TOOLBAR
+========================= */
+
+.reader-toolbar{
+  position:fixed;
+  right:30px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  background:#12121a;
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.6);
+}
+
+.reader-toolbar button{
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#1e1e2a;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.reader-toolbar button:hover{
+  background:#c9a84c;
+  transform:scale(1.1);
+}
+
+/* =========================
+   LIGHT MODE
+========================= */
+
+.light-mode{
+  background:white !important;
+  color:black !important;
+}
+
+.light-mode .reader-card{
+  background:#f4f4f4;
+  color:black;
+}

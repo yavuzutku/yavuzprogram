@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -78,6 +79,37 @@
 
   <script src="https://accounts.google.com/gsi/client" onload="initGoogle()" async defer></script>
   <script>
+    function parseJwt (token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch(e) {
+        return null;
+      }
+    }
+
+    // Sayfa açılınca kontrol
+    window.onload = function() {
+      const token = localStorage.getItem("userToken");
+
+      if(token){
+        const payload = parseJwt(token);
+
+        // expire kontrolü
+        if(payload && payload.exp * 1000 > Date.now()){
+          window.location.href = "anasayfa.html";
+        } else {
+          localStorage.removeItem("userToken");
+        }
+      }
+    }
     function initGoogle() {
         google.accounts.id.initialize({
             client_id: '279266692579-pcrjmld03761be73i2pr6iis9evclm4q.apps.googleusercontent.com',
@@ -96,8 +128,8 @@
       );
     }
     function handleCredentialResponse(response) {
-        localStorage.setItem("userToken", response.credential);
-        window.location.href = "anasayfa.html";
+      localStorage.setItem("userToken", response.credential);
+      window.location.href = "anasayfa.html";
     }
     function signOut() {
         google.accounts.id.disableAutoSelect();

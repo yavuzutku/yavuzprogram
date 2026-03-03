@@ -6,37 +6,66 @@
 <style>
 body{
   margin:0;
-  font-family:Arial;
+  font-family:'DM Sans',sans-serif;
   background:#0a0a0f;
   color:white;
 }
-.topbar{
+
+/* Navbar */
+.navbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:20px 40px;
+  padding:18px 40px;
+  background:#12121a;
+  border-bottom:1px solid rgba(255,255,255,0.08);
 }
+
+.logo{
+  font-size:20px;
+  font-weight:600;
+}
+
+.user-area{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.avatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:2px solid #c9a84c;
+}
+
 .logout-btn{
-  padding:8px 18px;
+  padding:8px 16px;
   background:#c9a84c;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
   cursor:pointer;
+  font-weight:500;
 }
+
 .center{
   display:flex;
   justify-content:center;
   align-items:center;
   height:80vh;
-  font-size:32px;
+  font-size:36px;
+  font-weight:600;
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div></div>
-  <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+<div class="navbar">
+  <div class="logo">YavuzProgram</div>
+  <div class="user-area">
+    <img id="avatar" class="avatar"/>
+    <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+  </div>
 </div>
 
 <div class="center">
@@ -45,15 +74,19 @@ body{
 
 <script>
 function parseJwt (token) {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split('')
-      .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-      .join('')
-  );
-  return JSON.parse(jsonPayload);
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch(e) {
+    return null;
+  }
 }
 
 const token = localStorage.getItem("userToken");
@@ -63,8 +96,17 @@ if(!token){
 }
 
 const payload = parseJwt(token);
+
+if(!payload || payload.exp * 1000 < Date.now()){
+  localStorage.removeItem("userToken");
+  window.location.href = "index.html";
+}
+
+// Kullanıcı bilgileri
 document.getElementById("welcome").innerText =
   "Hoşgeldiniz, " + payload.name;
+
+document.getElementById("avatar").src = payload.picture;
 
 function logout(){
   localStorage.removeItem("userToken");

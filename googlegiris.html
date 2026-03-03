@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google ile Giriş</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <!-- Google Giriş Butonu -->
+  <div id="g_id_onload"
+    data-client_id="279266692579-pcrjmld03761be73i2pr6iis9evclm4q.apps.googleusercontent.com"
+    data-callback="handleCredentialResponse">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <script>
+    function handleCredentialResponse(response) {
+      // JWT token'ı decode et
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      
+      console.log("Ad:", payload.name);
+      console.log("Email:", payload.email);
+      console.log("Profil Fotoğrafı:", payload.picture);
+
+      // Buraya giriş sonrası yönlendirme yapabilirsin
+      document.getElementById('user-info').innerHTML = `
+        <img src="${payload.picture}" width="50" style="border-radius:50%">
+        <p>Hoşgeldin, ${payload.name}!</p>
+        <p>${payload.email}</p>
+      `;
+    }
+  </script>
+
+  <div id="user-info"></div>
+
+</body>
+</html>

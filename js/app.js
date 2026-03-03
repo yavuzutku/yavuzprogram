@@ -124,6 +124,8 @@ function hideAll(){
         card.style.display = "none";
     });
 }
+window.hideAll = hideAll; // ← bunu ekle
+
 
 function showInput(){
     hideAll();
@@ -462,3 +464,15 @@ if(currentPage === "index.html" || currentPage === ""){
         }
     });
 }
+window.hideAll = hideAll;
+window.loadMenuWords = loadMenuWords;
+window.formatWord = formatWord;
+window.goMenu = goMenu;
+window.loginWithGoogle = loginWithGoogle;
+window.logout = logout;
+window.editWord = editWord;
+window.deleteWord = deleteWord;
+window.filterMenuWords = filterMenuWords;
+window.addXP = addXP;
+window.correctAnswer = correctAnswer;
+window.wrongAnswer = wrongAnswer;

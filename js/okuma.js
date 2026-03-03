@@ -1,4 +1,3 @@
-import { Storage } from "./storage.js";
 const userText = document.getElementById("userText");
 const displayText = document.getElementById("displayText");
 const readingArea = document.getElementById("readingArea");

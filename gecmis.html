@@ -44,10 +44,10 @@
 </div>
 
 <!-- ✅ 1. core.js normal script -->
-<script src="js/core.js"></script>
-<script>
-  requireAuth();
-  loadNavbar();
+<script type="module">
+  import { } from "./js/core.js";
+  window.requireAuth();
+  window.loadNavbar();
 </script>
 
 <!-- ✅ 2. gecmis.js module -->

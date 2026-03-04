@@ -27,10 +27,10 @@
 </div>
 
 <!-- ✅ İkisi de normal script (module değil, zaten import yok) -->
-<script src="js/core.js"></script>
-<script>
-  requireAuth();
-  loadNavbar();
+<script type="module">
+  import { } from "./js/core.js";
+  window.requireAuth();
+  window.loadNavbar();
 </script>
 <script src="js/okuma.js"></script>
 

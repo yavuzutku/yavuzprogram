@@ -22,5 +22,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ✅ window.saveMetinToDB kaldırıldı — storage.js artık kullanılmıyor
 });

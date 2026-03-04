@@ -1,6 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
   getFirestore,
   collection,
   addDoc,
@@ -22,57 +30,69 @@ const firebaseConfig = {
   measurementId: "G-X1RF550PTV"
 };
 
+const app      = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db   = getFirestore(app);
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
 
-/* METİN KAYDET */
+/* ============================
+   AUTH
+============================= */
 
-export async function saveMetin(userId,text){
+export function loginWithGoogle(){
+  return signInWithPopup(auth, provider);
+}
 
+export function logoutFirebase(){
+  return signOut(auth);
+}
+
+export function onAuthChange(callback){
+  return onAuthStateChanged(auth, callback);
+}
+
+
+/* ============================
+   METİN KAYDET
+============================= */
+
+export async function saveMetin(userId, text){
   await addDoc(
-    collection(db,"users",userId,"texts"),
+    collection(db, "users", userId, "texts"),
     {
-      text:text,
-      created:Date.now()
+      text: text,
+      created: Date.now()
     }
   );
-
 }
 
 
-/* METİNLERİ GETİR */
+/* ============================
+   METİNLERİ GETİR
+============================= */
 
 export async function getMetinler(userId){
-
   const q = query(
-    collection(db,"users",userId,"texts"),
-    orderBy("created","desc")
+    collection(db, "users", userId, "texts"),
+    orderBy("created", "desc")
   );
-
   const snapshot = await getDocs(q);
-
   const list = [];
-
-  snapshot.forEach(doc=>{
-    list.push({
-      id:doc.id,
-      ...doc.data()
-    });
+  snapshot.forEach(d => {
+    list.push({ id: d.id, ...d.data() });
   });
-
   return list;
-
 }
 
 
-/* METİN SİL */
+/* ============================
+   METİN SİL
+============================= */
 
-export async function deleteMetin(userId,id){
-
+export async function deleteMetin(userId, id){
   await deleteDoc(
-    doc(db,"users",userId,"texts",id)
+    doc(db, "users", userId, "texts", id)
   );
-
 }

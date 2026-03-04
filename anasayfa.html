@@ -37,10 +37,10 @@
 
 <!-- ✅ storage.js kaldırıldı -->
 <!-- ✅ core.js önce yüklenmeli ki requireAuth/loadNavbar tanımlı olsun -->
-<script src="js/core.js"></script>
-<script>
-  requireAuth();
-  loadNavbar();
+<script type="module">
+  import { } from "./js/core.js";
+  window.requireAuth();
+  window.loadNavbar();
 </script>
 <script src="js/anasayfa.js"></script>
 

@@ -1,101 +1,54 @@
-function parseJwt(token){
-  try{
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
-  }catch(e){
-    return null;
-  }
-}
+import { loginWithGoogle, logoutFirebase, onAuthChange } from "./firebase.js";
 
-/* TOKEN KONTROL */
-document.addEventListener("DOMContentLoaded", ()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
-  const token = localStorage.getItem("userToken");
-
-  // 🔥 Eğer token varsa direkt yönlendir ama kısa gecikmeyle
-  if(token){
-    const payload = parseJwt(token);
-
-    if(payload && payload.exp * 1000 > Date.now()){
-
-      setTimeout(()=>{
-        window.location.href = "anasayfa.html";
-      },50);
-
-      return;
+  // Kullanıcı zaten giriş yapmışsa direkt yönlendir
+  onAuthChange((user) => {
+    if(user){
+      window.location.href = "anasayfa.html";
     }
-  }
-
-  // 🔥 Eğer token yoksa UI ve google başlat
-  updateAuthUI();
-  initLogout();
-  initGoogle();
-
-});
-function initGoogle(){
-
-  if(!window.google || !google.accounts){
-    console.log("Google henüz yüklenmedi, tekrar deneniyor...");
-
-    setTimeout(initGoogle, 300);
-    return;
-  }
-
-  google.accounts.id.initialize({
-    client_id:'279266692579-pcrjmld03761be73i2pr6iis9evclm4q.apps.googleusercontent.com',
-    callback:handleCredentialResponse,
-    auto_select:true
   });
 
-  google.accounts.id.renderButton(
-    document.getElementById("google-btn-container"),
-    {theme:'filled_black',size:'large',width:324}
-  );
+  // Google ile giriş butonu
+  const googleBtn = document.getElementById("google-btn-container");
+  if(googleBtn){
+    // Önceki GSI render yerine kendi butonumuzu kullanıyoruz
+    googleBtn.innerHTML = `
+      <button id="googleSignInBtn" style="
+        display:flex; align-items:center; gap:12px;
+        background:#fff; color:#1f1f1f; border:none;
+        padding:12px 24px; border-radius:8px;
+        font-size:15px; font-weight:500; cursor:pointer;
+        box-shadow:0 2px 8px rgba(0,0,0,0.2); width:324px;
+        justify-content:center;
+      ">
+        <svg width="20" height="20" viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+        Google ile Giriş Yap
+      </button>
+    `;
 
-  google.accounts.id.prompt();
-}
+    document.getElementById("googleSignInBtn").addEventListener("click", async () => {
+      try{
+        await loginWithGoogle();
+        // onAuthChange zaten yönlendiriyor
+      }catch(err){
+        console.error("Giriş hatası:", err);
+        alert("Giriş yapılamadı. Lütfen tekrar deneyin.");
+      }
+    });
+  }
 
-function handleCredentialResponse(response){
-  localStorage.setItem("userToken",response.credential);
-  window.location.href="anasayfa.html";
-}
-
-function initLogout(){
-
-  const btn = document.getElementById("logoutBtn");
-
-  if(!btn) return;
-
-  btn.addEventListener("click", ()=>{
-    google.accounts.id.disableAutoSelect();
-    localStorage.removeItem("userToken");
-
-    setTimeout(()=>{
+  // Çıkış butonu (index.html'de varsa)
+  const logoutBtn = document.getElementById("logoutBtn");
+  if(logoutBtn){
+    logoutBtn.addEventListener("click", async () => {
+      await logoutFirebase();
       window.location.reload();
-    },100);
-  });
-}
-function updateAuthUI(){
-
-  const token = localStorage.getItem("userToken");
-
-  const loginView = document.getElementById("login-view");
-  const userView  = document.getElementById("user-view");
-
-  if(!loginView || !userView) return;
-
-  if(token){
-    loginView.style.display = "none";
-    userView.style.display = "flex";
-  }else{
-    loginView.style.display = "block";
-    userView.style.display = "none";
+    });
   }
-}
+});

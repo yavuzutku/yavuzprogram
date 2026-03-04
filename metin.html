@@ -19,10 +19,10 @@
 </div>
 
 <!-- ✅ 1. core.js normal script olarak (global fonksiyonlar için) -->
-<script src="js/core.js"></script>
-<script>
-  requireAuth();
-  loadNavbar();
+<script type="module">
+  import { } from "./js/core.js";
+  window.requireAuth();
+  window.loadNavbar();
 </script>
 
 <!-- ✅ 2. metin.js module olarak (firebase import için) -->

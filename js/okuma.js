@@ -65,10 +65,14 @@ function showMeaningButton(x, y, word){
   button.style.padding = "6px 10px";
   button.style.cursor = "pointer";
 
-  button.onclick = function(){
-    translateWord(word);
-    removeMeaningButton();
-    window.getSelection().removeAllRanges(); // seçimi temizle
+  button.onclick = function(e){
+
+    e.stopPropagation(); // click event zincirini durdur
+    removeMeaningButton(); // ÖNCE buton silinsin
+
+    showTranslationPopup(word, x, y);
+
+    window.getSelection().removeAllRanges();
   };
 
   document.body.appendChild(button);
@@ -139,6 +143,9 @@ function removeMeaningButton(){
 }
 async function showTranslationPopup(word, x, y){
 
+  removeMeaningButton();
+  removePopup();
+
   const cleanWord = word.replace(/[.,!?]/g, "");
 
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=tr&dt=t&q=${encodeURIComponent(cleanWord)}`;
@@ -147,8 +154,6 @@ async function showTranslationPopup(word, x, y){
     const response = await fetch(url);
     const data = await response.json();
     const meaning = data[0][0][0];
-
-    removePopup();
 
     const popup = document.createElement("div");
     popup.id = "translationPopup";
@@ -166,28 +171,28 @@ async function showTranslationPopup(word, x, y){
     popup.innerHTML = `
       <div style="font-weight:600; margin-bottom:8px;">${cleanWord}</div>
       <div style="margin-bottom:12px;">${meaning}</div>
-      <button id="addToDictionaryBtn" style="
-        padding:6px 10px;
-        border:none;
-        border-radius:8px;
-        cursor:pointer;
-      ">Sözlüğe Ekle</button>
+      <button id="addToDictionaryBtn"
+        style="padding:6px 10px;border:none;border-radius:8px;cursor:pointer;">
+        Sözlüğe Ekle
+      </button>
     `;
 
     document.body.appendChild(popup);
 
-    // Şimdilik boş
-    document.getElementById("addToDictionaryBtn").onclick = function(){
+    document.getElementById("addToDictionaryBtn").onclick = function(e){
+      e.stopPropagation();
       alert("Henüz aktif değil 🙂");
     };
 
-    // Popup dışına tıklayınca kapansın
-    document.addEventListener("click", function closePopup(event){
-      if(!popup.contains(event.target)){
-        popup.remove();
-        document.removeEventListener("click", closePopup);
-      }
-    });
+    // ⚠️ ÖNEMLİ: Popup açıldıktan SONRA click listener ekliyoruz
+    setTimeout(() => {
+      document.addEventListener("click", function closePopup(event){
+        if(!popup.contains(event.target)){
+          popup.remove();
+          document.removeEventListener("click", closePopup);
+        }
+      });
+    }, 0);
 
   }catch(error){
     console.log("Çeviri hatası:", error);

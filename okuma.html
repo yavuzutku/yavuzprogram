@@ -26,9 +26,8 @@
   <button onclick="goBack()">← Geri Dön</button>
 </div>
 
-<!-- ✅ İkisi de normal script (module değil, zaten import yok) -->
 <script type="module">
-  import "./js/core.js";   <!-- ✅ side-effect import, dosyayı çalıştırır -->
+  import "./js/core.js";  
   window.requireAuth();
   window.loadNavbar();
 </script>

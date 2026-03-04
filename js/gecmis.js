@@ -64,9 +64,9 @@ async function loadHistory(){
   allMetinler = await getMetinler(userId);
   renderList(allMetinler);
 }
+
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ✅ Auth hazır olunca yükle
   onAuthChange((user) => {
     if(user){
       loadHistory();
@@ -88,7 +88,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("modalRead").addEventListener("click", () => {
     const item = allMetinler.find(m => m.id === activeId);
     if(!item) return;
+
     sessionStorage.setItem("savedText", item.text);
+    // ✅ Geri dön butonu geçmişe dönsün
+    sessionStorage.setItem("returnPage", "gecmis.html");
     window.location.href = "okuma.html";
   });
 

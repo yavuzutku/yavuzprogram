@@ -9,13 +9,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
   }
 
   loadText(text);
-
-  // Floating buton ve popup oluştur
   createTranslateUI();
 });
 
 function goBack(){
-  window.location.href = "metin.html";
+  const returnPage = sessionStorage.getItem("returnPage") || "metin.html";
+  sessionStorage.removeItem("returnPage");
+  window.location.href = returnPage;
 }
 
 let currentSize = 20;
@@ -49,7 +49,6 @@ let selectedWordGlobal = "";
 
 function createTranslateUI(){
 
-  // Floating "Anlam" butonu
   const btn = document.createElement("button");
   btn.id = "floatingMeaningBtn";
   btn.innerText = "💬 Anlam";
@@ -69,7 +68,6 @@ function createTranslateUI(){
   btn.onclick = openMiniTranslate;
   document.body.appendChild(btn);
 
-  // Çeviri popup'ı
   const popup = document.createElement("div");
   popup.id = "miniTranslatePopup";
   popup.style.cssText = `
@@ -88,41 +86,31 @@ function createTranslateUI(){
   `;
   document.body.appendChild(popup);
 
-  // Seçim algılama
   readerText.addEventListener("mouseup", function(e){
-
     const selectionObj = window.getSelection();
-
     if(!selectionObj || selectionObj.rangeCount === 0){
       btn.style.display = "none";
       return;
     }
-
     let selection = selectionObj.toString().trim();
     selection = selection.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
-
     if(selection.length === 0){
       btn.style.display = "none";
       return;
     }
-
     selectedWordGlobal = selection;
-
     const range = selectionObj.getRangeAt(0);
     const rect = range.getBoundingClientRect();
-
     if(!rect || rect.width === 0){
       btn.style.display = "none";
       return;
     }
-
     popup.style.display = "none";
     btn.style.display = "block";
     btn.style.top  = (window.scrollY + rect.bottom + 8) + "px";
     btn.style.left = (window.scrollX + rect.left) + "px";
   });
 
-  // Dışarı tıklayınca kapat
   document.addEventListener("mousedown", function(e){
     if(
       !readerText.contains(e.target) &&
@@ -138,17 +126,13 @@ function createTranslateUI(){
 }
 
 function openMiniTranslate(){
-
   const btn   = document.getElementById("floatingMeaningBtn");
   const popup = document.getElementById("miniTranslatePopup");
-
   btn.style.display = "none";
-
   popup.style.display = "block";
   popup.style.top  = btn.style.top;
   popup.style.left = btn.style.left;
   popup.innerHTML  = "⏳ Çevriliyor...";
-
   fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=tr&dt=t&q=${encodeURIComponent(selectedWordGlobal)}`)
     .then(res => res.json())
     .then(data => {

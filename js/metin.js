@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if(!editor) return;
 
+  // ✅ Okuma sayfasından geri dönüldüyse metni geri yükle
+  const savedText = sessionStorage.getItem("savedText");
+  if(savedText){
+    editor.innerText = savedText;
+  }
+
   editor.addEventListener("paste", (e) => {
     e.preventDefault();
     const text    = (e.clipboardData || window.clipboardData).getData("text");
@@ -24,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ currentUser bekle
       const userId = window.getUserId();
       if(!userId){
         alert("Oturum bulunamadı, lütfen tekrar giriş yapın.");
@@ -38,7 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Kayıt hatası:", err);
       }
 
+      // ✅ metin.html'den gelindi bilgisini yaz
       sessionStorage.setItem("savedText", text);
+      sessionStorage.setItem("returnPage", "metin.html");
       window.location.href = "okuma.html";
     });
   }

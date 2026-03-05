@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   const text = sessionStorage.getItem("savedText");
   const reader = document.getElementById("readerText");
 
-  if(!text || text.trim().length < 10){
+  if(!text || text.trim().length < 1){
     reader.innerHTML = "<h2>Metin Bulunamadı</h2>";
     return;
   }

@@ -14,6 +14,7 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
+  updateDoc,
   doc,
   query,
   orderBy
@@ -141,4 +142,8 @@ export async function deleteWord(userId, wordId){
   await deleteDoc(
     doc(db, "users", userId, "words", wordId)
   );
+}
+export async function updateWord(userId, wordId, data) {
+  const ref = doc(db, "users", userId, "words", wordId);
+  await updateDoc(ref, data);
 }

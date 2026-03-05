@@ -1,4 +1,4 @@
-import { getWords, deleteWord, onAuthChange } from "./firebase.js";
+import { getWords, deleteWord, onAuthChange} from "./firebase.js";
 
 let allWords = [];
 
@@ -45,6 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div class="word-right">
           <button class="word-delete-btn" data-id="${item.id}">🗑 Sil</button>
+          <button class="word-edit-btn" data-id="${item.id}">✏️ Düzenle</button>
+
         </div>
       `;
 
@@ -57,7 +59,26 @@ document.addEventListener("DOMContentLoaded", () => {
         allWords = allWords.filter(w => w.id !== item.id);
         render(allWords);
       });
+      card.querySelector(".word-edit-btn").addEventListener("click", () => {
+        const userId = window.getUserId();
+        if (!userId) return;
 
+        const newWord    = prompt("Yeni kelime:", item.word);
+        if (newWord === null) return;
+        const newMeaning = prompt("Yeni anlam:", item.meaning);
+        if (newMeaning === null) return;
+
+        import("./firebase.js").then(({ updateWord }) => {
+          updateWord(userId, item.id, {
+            word: newWord.trim(),
+            meaning: newMeaning.trim()
+          }).then(() => {
+            item.word    = newWord.trim();
+            item.meaning = newMeaning.trim();
+            render(allWords);
+          });
+        });
+      });
       wordList.appendChild(card);
     });
   }

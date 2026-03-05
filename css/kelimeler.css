@@ -153,7 +153,21 @@ body {
 .word-delete-btn:hover {
   background: rgba(239, 68, 68, 0.25);
 }
+.word-edit-btn {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #3b82f6;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition: 0.2s;
+}
 
+.word-edit-btn:hover {
+  background: rgba(59, 130, 246, 0.25);
+}
 /* BOŞ DURUM */
 .empty-state {
   text-align: center;

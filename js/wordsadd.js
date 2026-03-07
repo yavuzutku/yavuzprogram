@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (tekTekEkleBtn) {
     tekTekEkleBtn.addEventListener("click", () => {
-      // TODO: tek tek kelime ekleme akışı
+      window.location.href = "singleadd.html";
     });
   }
 

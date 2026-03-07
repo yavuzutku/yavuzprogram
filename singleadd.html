@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelime Ekle</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/singleadd.css">
+</head>
+<body>
+
+<div class="singleadd-container">
+
+  <button class="back-btn" id="backBtn">← Geri</button>
+
+  <div class="singleadd-hero">
+    <h1>Tek Kelime Ekle 🔤</h1>
+    <p>Almanca kelimeyi ve Türkçe anlamını gir.</p>
+  </div>
+
+  <!-- ADIM 1: Kelime -->
+  <div class="step" id="stepWord">
+    <label class="step-label">Almanca Kelime</label>
+    <input
+      type="text"
+      id="wordInput"
+      class="word-input"
+      placeholder="z.B. der Hund"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button class="primary-btn" id="wordNextBtn">Devam Et →</button>
+  </div>
+
+  <!-- ADIM 2: Anlam (başta gizli) -->
+  <div class="step hidden" id="stepMeaning">
+    <div class="word-preview" id="wordPreview"></div>
+    <label class="step-label">Türkçe Anlam</label>
+    <input
+      type="text"
+      id="meaningInput"
+      class="word-input"
+      placeholder="z.B. köpek"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button class="primary-btn" id="saveBtn">Kelimeyi Ekle ✓</button>
+  </div>
+
+  <!-- DURUM MESAJLARI -->
+  <div class="status-msg hidden" id="statusMsg"></div>
+
+</div>
+
+<script type="module">
+  import "./js/core.js";
+  window.requireAuth();
+  window.loadNavbar();
+</script>
+<script type="module" src="js/singleadd.js"></script>
+
+</body>
+</html>

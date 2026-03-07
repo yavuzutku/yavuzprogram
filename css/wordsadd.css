@@ -5,72 +5,68 @@ body {
   color: white;
 }
 
-/* DASHBOARD */
-.dashboard {
-  max-width: 1200px;
+/* CONTAINER */
+.wordsadd-container {
+  max-width: 800px;
   margin: 100px auto;
   padding: 20px;
 }
 
 /* HERO */
-.hero h1 {
+.wordsadd-hero h1 {
   font-size: 38px;
   margin-bottom: 10px;
 }
 
-.hero p {
+.wordsadd-hero p {
   color: #aaa;
   font-size: 18px;
   margin-bottom: 60px;
 }
 
-/* ACTION CARDS — 4 sütun (geniş), 2 sütun (orta), 1 sütun (dar) */
-.action-cards {
+/* METHOD CARDS — 2 sütun yan yana */
+.method-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 }
 
-@media (max-width: 1000px) {
-  .action-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: 600px) {
-  .action-cards {
+  .method-cards {
     grid-template-columns: 1fr;
   }
 }
 
-.action-card {
+.method-card {
   background: rgba(255, 255, 255, 0.05);
-  padding: 40px;
+  padding: 48px 40px;
   border-radius: 20px;
   cursor: pointer;
   transition: 0.4s;
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
+  text-align: center;
 }
 
-.action-card:hover {
+.method-card:hover {
   transform: translateY(-10px) scale(1.03);
   border-color: #c9a84c;
   box-shadow: 0 20px 60px rgba(201, 168, 76, 0.3);
 }
 
-.action-icon {
-  font-size: 40px;
-  margin-bottom: 15px;
+.method-icon {
+  font-size: 48px;
+  margin-bottom: 18px;
 }
 
-.action-title {
+.method-title {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
-.action-desc {
+.method-desc {
   color: #aaa;
   line-height: 1.5;
+  font-size: 15px;
 }

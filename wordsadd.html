@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelime Ekle</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/wordsadd.css">
+</head>
+<body>
+
+<div class="wordsadd-container">
+
+  <div class="wordsadd-hero">
+    <h1>Kelime Ekle ➕</h1>
+    <p>Nasıl eklemek istersin?</p>
+  </div>
+
+  <div class="method-cards">
+
+    <div class="method-card" id="listeEkleBtn">
+      <div class="method-icon">📋</div>
+      <div class="method-title">Liste Halinde Ekle</div>
+      <div class="method-desc">
+        Birden fazla kelimeyi aynı anda yapıştır veya yükle.
+      </div>
+    </div>
+
+    <div class="method-card" id="tekTekEkleBtn">
+      <div class="method-icon">🔤</div>
+      <div class="method-title">Tek Tek Ekle</div>
+      <div class="method-desc">
+        Kelimeleri tek tek girerek her birine ayrı bilgi ekle.
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script type="module">
+  import "./js/core.js";
+  window.requireAuth();
+  window.loadNavbar();
+</script>
+<script src="js/wordsadd.js"></script>
+
+</body>
+</html>

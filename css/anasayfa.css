@@ -74,3 +74,19 @@ body {
   color: #aaa;
   line-height: 1.5;
 }
+
+/* ── Artikel Bul kartı – altın vurgu ── */
+.action-card--artikel {
+  border-color: rgba(201, 168, 76, 0.25);
+  background: rgba(201, 168, 76, 0.06);
+}
+
+.action-card--artikel .action-title {
+  color: #c9a84c;
+}
+
+.action-card--artikel:hover {
+  border-color: #c9a84c;
+  box-shadow: 0 20px 60px rgba(201, 168, 76, 0.45);
+  background: rgba(201, 168, 76, 0.1);
+}

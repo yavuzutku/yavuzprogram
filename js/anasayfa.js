@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const gecmisBtn     = document.getElementById("gecmisBtn");
   const kelimelerBtn  = document.getElementById("kelimelerBtn");
   const kelimeEkleBtn = document.getElementById("kelimeEkleBtn");
+  const artikelBtn    = document.getElementById("artikelBtn");
 
   if (newTextBtn) {
     newTextBtn.addEventListener("click", () => {
@@ -26,6 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (kelimeEkleBtn) {
     kelimeEkleBtn.addEventListener("click", () => {
       window.location.href = "wordsadd.html";
+    });
+  }
+
+  if (artikelBtn) {
+    artikelBtn.addEventListener("click", () => {
+      window.location.href = "artikel.html";
     });
   }
 

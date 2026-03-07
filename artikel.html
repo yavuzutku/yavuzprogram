@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artikel Bulucu – Almanca Öğrenme</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/artikel.css">
+</head>
+<body>
+
+<div class="artikel-page">
+
+  <div class="artikel-back">
+    <a href="anasayfa.html" class="back-link">← Anasayfa</a>
+  </div>
+
+  <div class="artikel-container">
+
+    <div class="artikel-header">
+      <div class="flag">
+        <div class="flag-stripe s1"></div>
+        <div class="flag-stripe s2"></div>
+        <div class="flag-stripe s3"></div>
+      </div>
+      <h1>Almanca <span>Artikel</span> Bulucu</h1>
+      <p>Wiktionary API · Almanca İsimler</p>
+    </div>
+
+    <div class="divider"><div class="diamond"></div></div>
+
+    <div class="input-group">
+      <div class="input-wrapper">
+        <input type="text" id="wordInput" placeholder="Almanca kelime girin…" autocomplete="off" spellcheck="false"/>
+      </div>
+      <button class="search-btn" id="searchBtn">Artikel Ara</button>
+    </div>
+
+    <div id="loading" class="loading hidden">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <span>Wiktionary'de aranıyor</span>
+    </div>
+
+    <div id="errorMsg" class="error-msg hidden"></div>
+
+    <div id="resultCard" class="result-card hidden">
+      <div class="result-top">
+        <div class="artikel-badge" id="artikelBadge">–</div>
+        <div class="result-word-block">
+          <div class="result-word" id="resultWord"></div>
+          <div class="result-genus-label" id="resultLabel"></div>
+        </div>
+      </div>
+      <div class="result-bottom">
+        <span class="genus-pill" id="genusPill"></span>
+        <span class="genus-name" id="genusName"></span>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot der"></div> der — maskulin</div>
+      <div class="legend-item"><div class="legend-dot die"></div> die — feminin</div>
+      <div class="legend-item"><div class="legend-dot das"></div> das — neutrum</div>
+    </div>
+
+    <div class="artikel-footer">Kaynak: de.wiktionary.org</div>
+
+  </div>
+</div>
+
+<script type="module">
+  import "./js/core.js";
+  window.requireAuth();
+  window.loadNavbar();
+</script>
+<script src="js/artikel.js"></script>
+
+</body>
+</html>

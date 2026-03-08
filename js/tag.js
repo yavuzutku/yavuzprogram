@@ -22,6 +22,14 @@ export function renderTagChips(containerId, selected = []) {
     container.appendChild(_makeChip(tag, selected.includes(tag)));
   });
 
+  // ↓ SADECE BU BLOK EKLENDİ ↓
+  // selected içinde TAG_OPTIONS'da olmayan özel etiketleri de göster
+  selected.forEach(tag => {
+    if (!TAG_OPTIONS.includes(tag)) {
+      container.appendChild(_makeChip(tag, true));
+    }
+  });
+  // ↑ SADECE BU BLOK EKLENDİ ↑
   // Özel etiket input'u
   const wrapper = document.createElement("div");
   wrapper.style.cssText = "display:flex;gap:6px;margin-top:8px;width:100%;";

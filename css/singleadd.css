@@ -183,3 +183,43 @@ body {
   border: 1px solid rgba(255, 69, 58, 0.35);
   color: #ff453a;
 }
+/* =========================
+   TAG SEÇİCİ
+========================= */
+
+.step-tag-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: #888;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+.tag-chip:hover {
+  border-color: #c9a84c;
+  color: #c9a84c;
+}
+
+.tag-chip.selected {
+  background: #c9a84c;
+  border-color: #c9a84c;
+  color: #0a0a0f;
+  font-weight: 700;
+}

@@ -13,6 +13,7 @@ const saveBtn       = document.getElementById("saveBtn");
 const statusMsg     = document.getElementById("statusMsg");
 const translateHint = document.getElementById("translateHint");
 const hintText      = document.getElementById("hintText");
+const tagChips      = document.getElementById("tagChips");
 
 let currentUser = null;
 
@@ -21,16 +22,31 @@ onAuthStateChanged(auth, (user) => {
   currentUser = user;
 });
 
+/* ── TAG CHİP TOGGLE ── */
+tagChips.querySelectorAll(".tag-chip").forEach(chip => {
+  chip.addEventListener("click", () => chip.classList.toggle("selected"));
+});
+
+function getSelectedTags(){
+  return [...tagChips.querySelectorAll(".tag-chip.selected")]
+    .map(c => c.dataset.tag);
+}
+
+function resetTags(){
+  tagChips.querySelectorAll(".tag-chip")
+    .forEach(c => c.classList.remove("selected"));
+}
+
 /* ── GERİ BUTONU ── */
 backBtn.addEventListener("click", () => {
   window.location.href = "wordsadd.html";
 });
 
-/* ── URL'İ YAZARKEN GÜNCELLE (Google Translate tarzı) ── */
+/* ── URL'İ YAZARKEN GÜNCELLE ── */
 wordInput.addEventListener("input", () => {
   const val = wordInput.value.trim();
   const newUrl = new URL(window.location.href);
-  if (val.length > 0) {
+  if(val.length > 0){
     newUrl.searchParams.set("word", val);
   } else {
     newUrl.searchParams.delete("word");
@@ -42,7 +58,7 @@ wordInput.addEventListener("input", () => {
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const prefilledWord = params.get("word");
-  if (prefilledWord) {
+  if(prefilledWord){
     wordInput.value = prefilledWord;
   }
 });
@@ -50,44 +66,40 @@ window.addEventListener("DOMContentLoaded", () => {
 /* ── ADIM 1 → ADIM 2 GEÇİŞİ ── */
 wordNextBtn.addEventListener("click", () => goToMeaningStep());
 wordInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") goToMeaningStep();
+  if(e.key === "Enter") goToMeaningStep();
 });
 
-function goToMeaningStep() {
+function goToMeaningStep(){
   const word = wordInput.value.trim();
 
-  if (!word) {
+  if(!word){
     showStatus("Lütfen bir kelime gir.", "error");
     wordInput.focus();
     return;
   }
 
   wordPreview.textContent = word;
-
   stepWord.classList.add("hidden");
   stepMeaning.classList.remove("hidden");
   hideStatus();
+  resetTags();
 
-  // Önce "yükleniyor" göster, sonra çeviriyi getir
   hintText.textContent = "⏳ yükleniyor…";
   hintText.classList.remove("hint-error");
   translateHint.classList.remove("hidden");
 
   fetchTranslationHint(word);
-
   meaningInput.focus();
 }
 
 /* ── ÇEVİRİ ÖNERİSİ ── */
-// okuma.js'deki fetch mantığıyla aynı endpoint
-function fetchTranslationHint(word) {
+function fetchTranslationHint(word){
   fetch(
     `https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=tr&dt=t&q=${encodeURIComponent(word)}`
   )
-    .then((res) => res.json())
-    .then((data) => {
-      const translated = data[0][0][0];
-      hintText.textContent = translated;
+    .then(res => res.json())
+    .then(data => {
+      hintText.textContent = data[0][0][0];
     })
     .catch(() => {
       hintText.textContent = "çeviri alınamadı";
@@ -98,67 +110,65 @@ function fetchTranslationHint(word) {
 /* ── KAYDET ── */
 saveBtn.addEventListener("click", () => addWord());
 meaningInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") addWord();
+  if(e.key === "Enter") addWord();
 });
 
-async function addWord() {
+async function addWord(){
   const word    = wordInput.value.trim();
   const meaning = meaningInput.value.trim();
+  const tags    = getSelectedTags();
 
-  if (!meaning) {
+  if(!meaning){
     showStatus("Lütfen bir anlam gir.", "error");
     meaningInput.focus();
     return;
   }
 
-  if (!currentUser) {
+  if(!currentUser){
     showStatus("Oturum bulunamadı. Lütfen tekrar giriş yap.", "error");
     return;
   }
 
-  saveBtn.disabled = true;
+  saveBtn.disabled    = true;
   saveBtn.textContent = "Kontrol ediliyor…";
 
   try {
     /* Duplicate kontrolü */
     const existing = await getWords(currentUser.uid);
-    const normalizedWord    = word.toLowerCase().trim();
-    const normalizedMeaning = meaning.toLowerCase().trim();
-
-    const duplicate = existing.find(
-      (w) =>
-        w.word.toLowerCase().trim()    === normalizedWord &&
-        w.meaning.toLowerCase().trim() === normalizedMeaning
+    const duplicate = existing.find(w =>
+      w.word.toLowerCase().trim()    === word.toLowerCase().trim() &&
+      w.meaning.toLowerCase().trim() === meaning.toLowerCase().trim()
     );
 
-    if (duplicate) {
+    if(duplicate){
       showStatus("⚠️ Bu kelime ve anlam zaten kayıtlı.", "error");
-      saveBtn.disabled = false;
+      saveBtn.disabled    = false;
       saveBtn.textContent = "Kelimeyi Ekle ✓";
       return;
     }
 
-    /* Firebase'e kaydet */
-    await saveWord(currentUser.uid, word, meaning);
+    /* Firebase'e kaydet — tags dahil */
+    await saveWord(currentUser.uid, word, meaning, tags);
 
-    showStatus("✅ Kelime başarıyla eklendi!", "success");
+    const tagSummary = tags.length > 0
+      ? ` [${tags.join(", ")}]`
+      : "";
+    showStatus(`✅ "${word}"${tagSummary} eklendi!`, "success");
 
-    setTimeout(() => {
-      resetForm();
-    }, 1800);
+    setTimeout(() => resetForm(), 1800);
 
-  } catch (err) {
+  } catch(err){
     console.error(err);
     showStatus("Bir hata oluştu: " + err.message, "error");
-    saveBtn.disabled = false;
+    saveBtn.disabled    = false;
     saveBtn.textContent = "Kelimeyi Ekle ✓";
   }
 }
 
 /* ── FORM SIFIRLA ── */
-function resetForm() {
-  wordInput.value    = "";
-  meaningInput.value = "";
+function resetForm(){
+  wordInput.value         = "";
+  meaningInput.value      = "";
   wordPreview.textContent = "";
   hintText.textContent    = "";
   hintText.classList.remove("hint-error");
@@ -171,20 +181,21 @@ function resetForm() {
   newUrl.searchParams.delete("word");
   history.replaceState(null, "", newUrl.toString());
 
+  resetTags();
   hideStatus();
   saveBtn.disabled    = false;
   saveBtn.textContent = "Kelimeyi Ekle ✓";
   wordInput.focus();
 }
 
-/* ── YARDIMCI: DURUM MESAJI ── */
-function showStatus(msg, type) {
+/* ── YARDIMCI ── */
+function showStatus(msg, type){
   statusMsg.textContent = msg;
   statusMsg.className   = `status-msg ${type}`;
   statusMsg.classList.remove("hidden");
 }
 
-function hideStatus() {
+function hideStatus(){
   statusMsg.classList.add("hidden");
   statusMsg.textContent = "";
   statusMsg.className   = "status-msg hidden";

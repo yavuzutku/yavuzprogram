@@ -149,6 +149,8 @@ function createTranslateUI(){
   });
 }
 
+// openMiniTranslate fonksiyonunu TAM OLARAK bununla değiştir:
+
 function openMiniTranslate(){
   const btn   = document.getElementById("floatingMeaningBtn");
   const popup = document.getElementById("miniTranslatePopup");
@@ -157,22 +159,83 @@ function openMiniTranslate(){
   popup.style.top  = btn.style.top;
   popup.style.left = btn.style.left;
   popup.innerHTML  = "⏳ Çevriliyor...";
+
   fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=tr&dt=t&q=${encodeURIComponent(selectedWordGlobal)}`)
     .then(res => res.json())
     .then(data => {
       const translated = data[0][0][0];
+      // Çeviriyi global'e kaydet, saveWordFromPopup'ta kullanmak için
+      window._lastTranslated = translated;
+
       popup.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
           <span style="font-weight:700;color:#3b82f6;font-size:15px;">${selectedWordGlobal}</span>
           <button onclick="closeMiniTranslate()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#94a3b8;">✕</button>
         </div>
-        <div style="color:#334155;">${translated}</div>
+        <div style="color:#334155;margin-bottom:10px;">${translated}</div>
+        <button 
+          id="popupSaveBtn"
+          onclick="saveWordFromPopup()"
+          style="
+            width:100%;
+            padding:7px 0;
+            background:#3b82f6;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:13px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.2s;
+          "
+        >➕ Sözlüğe Ekle</button>
       `;
     })
     .catch(() => {
       popup.innerHTML = `<span style="color:red;">Çeviri başarısız oldu.</span>`;
     });
 }
+
+
+// Bu yeni fonksiyonu da ekle (saveWordFromModal'ın hemen altına):
+
+async function saveWordFromPopup(){
+  const word    = selectedWordGlobal;
+  const meaning = window._lastTranslated;
+
+  if(!word || !meaning){
+    showToast("❌ Kelime veya çeviri bulunamadı.", true);
+    return;
+  }
+
+  const btn = document.getElementById("popupSaveBtn");
+  if(btn){
+    btn.disabled     = true;
+    btn.textContent  = "Kaydediliyor...";
+  }
+
+  try {
+    const userId = window.getUserId();
+    if(!userId) throw new Error("Oturum yok");
+
+    await saveWord(userId, word, meaning);
+    closeMiniTranslate();
+    selectedWordGlobal       = "";
+    window._lastTranslated   = "";
+    showToast("✅ Kelime kaydedildi!");
+
+  } catch(err){
+    console.error("Kelime kayıt hatası:", err);
+    showToast("❌ Kayıt başarısız.", true);
+    if(btn){
+      btn.disabled    = false;
+      btn.textContent = "➕ Sözlüğe Ekle";
+    }
+  }
+}
+
+// window'a da ekle (dosyanın sonundaki window.xxx = xxx bloğuna):
+window.saveWordFromPopup = saveWordFromPopup;
 
 function closeMiniTranslate(){
   document.getElementById("miniTranslatePopup").style.display = "none";

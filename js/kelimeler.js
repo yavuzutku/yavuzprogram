@@ -3,7 +3,6 @@ import { renderTagChips, getSelectedTags, extractAllTags } from "./tag.js";
 
 let allWords        = [];
 let activeTagFilter = null;
-let isRequestInProgress = false; // dosyanın en üstüne ekle
 const exampleCache = new Map();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -374,76 +373,30 @@ document.addEventListener("DOMContentLoaded", () => {
     `).join("");
   }
 
-  async function fetchExampleSentences(word, meaning, retryCount = 0) {
+  async function fetchExampleSentences(word, meaning) {
     if (exampleCache.has(word)) return exampleCache.get(word);
-
-    if (isRequestInProgress) {
-      if (retryCount >= 5) {
-        return [{ original: "İstek zaman aşımı.", turkish: "Lütfen tekrar deneyin." }];
-      }
-      await new Promise(r => setTimeout(r, 1500));
-      return fetchExampleSentences(word, meaning, retryCount + 1);
-    }
-
-    isRequestInProgress = true;
-    const GEMINI_API_KEY = "AIzaSyAuREkHAgZ07NBvl3daLHgxs-sZUoZl-t0";
 
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": GEMINI_API_KEY   // 👈 key artık header'da
-          },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: `"${word}" kelimesini (Türkçe anlamı: "${meaning}") kullanarak 2 farklı örnek cümle yaz.
-                
-  Cevabı SADECE şu JSON formatında ver, başka hiçbir şey yazma:
-  [
-    {"original": "Almanca cümle burada", "turkish": "Türkçe çevirisi burada"},
-    {"original": "Almanca cümle burada", "turkish": "Türkçe çevirisi burada"}
-  ]`
-              }]
-            }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 300 }
-          })
-        }
+        `https://tatoeba.org/en/api_v0/search?from=deu&to=tur&query=${encodeURIComponent(word)}&limit=2`
       );
+      const data = await response.json();
+      const results = data.results || [];
 
-      if (response.status === 429) {
-        if (retryCount < 3) {
-          const waitSeconds = (retryCount + 1) * 3;
-          const container = document.getElementById("exampleSentences");
-          if (container) {
-            container.innerHTML = `
-              <div style="padding:14px 16px;border-radius:12px;background:rgba(255,255,255,0.03);
-                border:1px solid rgba(255,255,255,0.06);color:#888;font-size:14px;text-align:center;">
-                ⏳ Rate limit — ${waitSeconds} saniye bekleniyor...
-              </div>`;
-          }
-          isRequestInProgress = false;
-          await new Promise(r => setTimeout(r, waitSeconds * 1000));
-          return fetchExampleSentences(word, meaning, retryCount + 1);
-        }
-        return [{ original: "Günlük limit doldu.", turkish: "Birkaç dakika sonra tekrar dene." }];
+      if (results.length === 0) {
+        return [{ original: "Cümle bulunamadı.", turkish: "Tatoeba'da bu kelime için örnek yok." }];
       }
 
-      const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      const clean = text.replace(/```json|```/g, "").trim();
-      const result = JSON.parse(clean);
+      const sentences = results.slice(0, 2).map(r => ({
+        original: r.text,
+        turkish: r.translations?.[0]?.[0]?.text || "Çeviri yok"
+      }));
 
-      exampleCache.set(word, result);
-      return result;
+      exampleCache.set(word, sentences);
+      return sentences;
 
     } catch (err) {
       return [{ original: "Hata oluştu.", turkish: "Lütfen tekrar deneyin." }];
-    } finally {
-      isRequestInProgress = false;
     }
   }
 });

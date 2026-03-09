@@ -3,7 +3,7 @@ import { renderTagChips, getSelectedTags, extractAllTags } from "./tag.js";
 
 let allWords        = [];
 let activeTagFilter = null;
-
+let isRequestInProgress = false; // dosyanın en üstüne ekle
 document.addEventListener("DOMContentLoaded", () => {
 
   const wordList       = document.getElementById("wordList");
@@ -372,17 +372,26 @@ document.addEventListener("DOMContentLoaded", () => {
     `).join("");
   }
 
-  const exampleCache = new Map(); // cache için
+  const exampleCache = new Map();
+  let isRequestInProgress = false;
 
   async function fetchExampleSentences(word, meaning, retryCount = 0) {
     // Cache'de varsa direkt dön
     if (exampleCache.has(word)) return exampleCache.get(word);
 
+    // Başka istek varsa bekle
+    if (isRequestInProgress) {
+      await new Promise(r => setTimeout(r, 1500));
+      return fetchExampleSentences(word, meaning, retryCount);
+    }
+
+    isRequestInProgress = true;
+
     const GEMINI_API_KEY = "AIzaSyAuREkHAgZ07NBvl3daLHgxs-sZUoZl-t0";
 
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -407,8 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.status === 429) {
         if (retryCount < 3) {
           const waitSeconds = (retryCount + 1) * 2;
-          
-          // Modal içinde bekleme mesajı göster
+
           const container = document.getElementById("exampleSentences");
           if (container) {
             container.innerHTML = `
@@ -434,6 +442,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (err) {
       return [{ original: "Hata oluştu.", turkish: "Lütfen tekrar deneyin." }];
+    } finally {
+      isRequestInProgress = false; // hata da olsa kilidi aç
     }
   }
 

@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(
-        `https://corsproxy.io/?https://tatoeba.org/en/api_v0/search?from=deu&to=tur&query=${encodeURIComponent(word)}&limit=2`      );
+        `https://api.allorigins.win/raw?url=${encodeURIComponent('https://tatoeba.org/en/api_v0/search?from=deu&to=tur&query=' + encodeURIComponent(word) + '&limit=2')}`     );
       const data = await response.json();
       const results = data.results || [];
 

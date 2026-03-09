@@ -143,7 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="word-edit-btn"   data-id="${item.id}">✏️ Düzenle</button>
         </div>
       `;
-
+      // word-german'a tıklayınca örnek cümleler
+      card.querySelector(".word-german").style.cursor = "pointer";
+      card.querySelector(".word-german").addEventListener("click", (e) => {
+        e.stopPropagation();
+        openExampleModal(item.word, item.meaning);
+      });
       card.querySelector(".add-tag-inline").addEventListener("click", () => {
         const userId = window.getUserId();
         if(!userId) return;
@@ -285,4 +290,124 @@ document.addEventListener("DOMContentLoaded", () => {
     const d = new Date(iso);
     return d.toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
   }
+  // =====================
+  // ÖRNEK CÜMLE MODALİ
+  // =====================
+
+  async function openExampleModal(word, meaning) {
+    document.getElementById("exampleModalOverlay")?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.id = "exampleModalOverlay";
+    overlay.style.cssText = `
+      position:fixed;inset:0;background:rgba(0,0,0,0.65);
+      backdrop-filter:blur(4px);z-index:10000;
+      display:flex;align-items:center;justify-content:center;
+      padding: 20px; box-sizing: border-box;
+    `;
+
+    overlay.innerHTML = `
+      <div style="
+        background:#1a1a26;border:1px solid rgba(201,168,76,0.3);
+        border-radius:20px;padding:28px 32px;width:460px;max-width:100%;
+        box-shadow:0 24px 60px rgba(0,0,0,0.7);
+      ">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+          <div>
+            <div style="font-size:20px;font-weight:700;color:#e2e8f0;">${word}</div>
+            <div style="font-size:13px;color:#c9a84c;margin-top:3px;">${meaning}</div>
+          </div>
+          <button id="exampleModalClose" style="background:none;border:none;color:#666;font-size:18px;cursor:pointer;padding:0 0 0 12px;">✕</button>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">
+          💬 Örnek Cümleler
+        </div>
+
+        <div id="exampleSentences" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="
+            padding:14px 16px;border-radius:12px;
+            background:rgba(255,255,255,0.03);
+            border:1px solid rgba(255,255,255,0.06);
+            color:#888;font-size:14px;text-align:center;
+          ">
+            <span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Yükleniyor...
+          </div>
+        </div>
+
+        <div style="margin-top:18px;font-size:11px;color:#444;text-align:right;">
+          Kelimeye tekrar tıklayarak yeni cümleler üretebilirsin
+        </div>
+      </div>
+    `;
+
+    // Spin animasyonu
+    const style = document.createElement("style");
+    style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+    document.head.appendChild(style);
+
+    document.body.appendChild(overlay);
+
+    overlay.querySelector("#exampleModalClose").addEventListener("click", () => overlay.remove());
+    overlay.addEventListener("click", e => { if (e.target === overlay) overlay.remove(); });
+
+    // API çağrısı
+    const sentences = await fetchExampleSentences(word, meaning);
+    const container = document.getElementById("exampleSentences");
+    if (!container) return;
+
+    container.innerHTML = sentences.map((s, i) => `
+      <div style="
+        padding:14px 16px;border-radius:12px;
+        background:rgba(255,255,255,0.03);
+        border:1px solid rgba(255,255,255,0.07);
+        transition:0.2s;
+      ">
+        <div style="font-size:11px;color:#c9a84c;font-weight:700;margin-bottom:6px;">
+          ${i + 1}. Cümle
+        </div>
+        <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">${s.original}</div>
+        <div style="font-size:13px;color:#888;margin-top:5px;font-style:italic;">${s.turkish}</div>
+      </div>
+    `).join("");
+  }
+
+  async function fetchExampleSentences(word, meaning) {
+    const GEMINI_API_KEY = "BURAYA_API_KEY_YAZ"; // 👈 tek değişiklik
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{
+                text: `"${word}" kelimesini (Türkçe anlamı: "${meaning}") kullanarak 2 farklı örnek cümle yaz.
+                
+  Cevabı SADECE şu JSON formatında ver, başka hiçbir şey yazma:
+  [
+    {"original": "Almanca cümle burada", "turkish": "Türkçe çevirisi burada"},
+    {"original": "Almanca cümle burada", "turkish": "Türkçe çevirisi burada"}
+  ]`
+              }]
+            }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 300 }
+          })
+        }
+      );
+
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const clean = text.replace(/```json|```/g, "").trim();
+      return JSON.parse(clean);
+
+    } catch (err) {
+      return [
+        { original: "Hata oluştu.", turkish: "Lütfen tekrar deneyin." }
+      ];
+    }
+  }
+
 });

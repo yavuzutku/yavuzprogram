@@ -378,8 +378,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (exampleCache.has(word)) return exampleCache.get(word);
 
     if (isRequestInProgress) {
+      if (retryCount >= 5) {
+        return [{ original: "İstek zaman aşımı.", turkish: "Lütfen tekrar deneyin." }];
+      }
       await new Promise(r => setTimeout(r, 1500));
-      return fetchExampleSentences(word, meaning, retryCount);
+      return fetchExampleSentences(word, meaning, retryCount + 1);
     }
 
     isRequestInProgress = true;
@@ -422,6 +425,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ⏳ Rate limit — ${waitSeconds} saniye bekleniyor...
               </div>`;
           }
+          isRequestInProgress = false;
           await new Promise(r => setTimeout(r, waitSeconds * 1000));
           return fetchExampleSentences(word, meaning, retryCount + 1);
         }

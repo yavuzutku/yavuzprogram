@@ -24,7 +24,7 @@ function loadNavbar(){
   const navbar = document.createElement("div");
   navbar.className = "navbar";
   navbar.innerHTML = `
-    <div class="logo">YavuzProgram</div>
+    <div class="logo">AlmancaPratik</div>
     <div style="display:flex; gap:12px; align-items:center;">
       <button class="home-btn" id="homeBtn">Anamenü</button>
 

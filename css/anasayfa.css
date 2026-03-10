@@ -90,7 +90,6 @@ body {
   box-shadow: 0 20px 60px rgba(201, 168, 76, 0.45);
   background: rgba(201, 168, 76, 0.1);
 }
-/* Mevcut anasayfa.css dosyanın SONUNA ekle */
 
 /* ── Cümle Bul kartı ── */
 .action-card--cumlebul {
@@ -106,4 +105,20 @@ body {
   border-color: #60c8f0;
   box-shadow: 0 20px 60px rgba(96, 200, 240, 0.35);
   background: rgba(96, 200, 240, 0.1);
+}
+
+/* ── Sponsorlar kartı ── */
+.action-card--sponsor {
+  border-color: rgba(255, 210, 80, 0.25);
+  background: rgba(255, 210, 80, 0.06);
+}
+
+.action-card--sponsor .action-title {
+  color: #ffd250;
+}
+
+.action-card--sponsor:hover {
+  border-color: #ffd250;
+  box-shadow: 0 20px 60px rgba(255, 210, 80, 0.35);
+  background: rgba(255, 210, 80, 0.1);
 }

@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const kelimeEkleBtn = document.getElementById("kelimeEkleBtn");
   const artikelBtn    = document.getElementById("artikelBtn");
   const cumlebulBtn   = document.getElementById("cumlebulBtn");
+  const sponsorBtn    = document.getElementById("sponsorBtn");
 
   if (newTextBtn)    newTextBtn.addEventListener("click",    () => window.location.href = "../metin/");
   if (gecmisBtn)     gecmisBtn.addEventListener("click",     () => window.location.href = "../gecmis/");
@@ -13,5 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (kelimeEkleBtn) kelimeEkleBtn.addEventListener("click", () => window.location.href = "../wordsadd/");
   if (artikelBtn)    artikelBtn.addEventListener("click",    () => window.location.href = "../artikel/");
   if (cumlebulBtn)   cumlebulBtn.addEventListener("click",   () => window.location.href = "../cumlebul/");
+  if (sponsorBtn)    sponsorBtn.addEventListener("click",    () => window.location.href = "../sponsorlar/");
 
 });

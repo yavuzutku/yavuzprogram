@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sponsorlar – Almanca Öğrenme</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #0a0a0f, #12121a);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 24px 80px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 13px;
+      color: #c9a84c;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fff 30%, #c9a84c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      color: #888;
+      font-size: 17px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── TOPLAM BAĞIŞ ── */
+    .total-box {
+      position: relative;
+      overflow: hidden;
+      background: rgba(201,168,76,0.07);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 24px;
+      padding: 40px 48px;
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .total-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 0%, rgba(201,168,76,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .total-label {
+      font-size: 13px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #c9a84c;
+      margin-bottom: 10px;
+    }
+
+    .total-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(42px, 7vw, 72px);
+      color: #fff;
+      line-height: 1;
+    }
+
+    .total-amount span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.45em;
+      color: #c9a84c;
+      vertical-align: super;
+      margin-right: 4px;
+    }
+
+    .total-count {
+      margin-top: 12px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* ── SPONSOR GRID ── */
+    .section-title {
+      font-size: 13px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 28px;
+    }
+
+    .sponsor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+      margin-bottom: 64px;
+    }
+
+    .sponsor-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 32px 24px 28px;
+      text-align: center;
+      transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sponsor-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 65%);
+      opacity: 0;
+      transition: opacity .35s;
+      pointer-events: none;
+    }
+
+    .sponsor-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(201,168,76,0.4);
+      box-shadow: 0 24px 56px rgba(201,168,76,0.15);
+    }
+
+    .sponsor-card:hover::after { opacity: 1; }
+
+    .sponsor-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 16px;
+      display: block;
+      border: 2px solid rgba(201,168,76,0.3);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .sponsor-avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      background: rgba(201,168,76,0.12);
+      border: 2px solid rgba(201,168,76,0.25);
+    }
+
+    .sponsor-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .sponsor-amount {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 100px;
+      padding: 5px 16px;
+      font-size: 14px;
+      color: #c9a84c;
+      font-weight: 600;
+    }
+
+    .sponsor-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #555;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state p { font-size: 16px; }
+
+    /* ── ADMIN PANEL ── */
+    .admin-section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 40px;
+      margin-top: 48px;
+    }
+
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .admin-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-badge {
+      font-size: 11px;
+      background: rgba(201,168,76,0.2);
+      color: #c9a84c;
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 100px;
+      padding: 3px 10px;
+      letter-spacing: .05em;
+    }
+
+    /* FORM */
+    .sponsor-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 600px) {
+      .sponsor-form { grid-template-columns: 1fr; }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full { grid-column: 1 / -1; }
+
+    .form-group label {
+      font-size: 12px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .25s;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: rgba(201,168,76,0.5);
+      background: rgba(201,168,76,0.04);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #555; }
+
+    /* IMAGE PREVIEW */
+    .img-preview-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    #imgPreview {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(201,168,76,0.3);
+      display: none;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all .25s;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #c9a84c, #e8c96a);
+      color: #0a0a0f;
+    }
+
+    .btn-gold:hover {
+      box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.06);
+      color: #aaa;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    .btn-danger {
+      background: rgba(255,80,80,0.12);
+      color: #ff6b6b;
+      border: 1px solid rgba(255,80,80,0.2);
+    }
+
+    .btn-danger:hover { background: rgba(255,80,80,0.2); }
+
+    .btn-sm { padding: 7px 16px; font-size: 13px; border-radius: 8px; }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* SPONSOR LIST IN ADMIN */
+    .admin-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .admin-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px 18px;
+      transition: border-color .2s;
+    }
+
+    .admin-item:hover { border-color: rgba(255,255,255,0.15); }
+
+    .admin-item-img {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(201,168,76,0.2);
+      flex-shrink: 0;
+    }
+
+    .admin-item-info { flex: 1; min-width: 0; }
+
+    .admin-item-name {
+      font-weight: 600;
+      font-size: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-item-meta {
+      font-size: 13px;
+      color: #c9a84c;
+      margin-top: 2px;
+    }
+
+    .admin-item-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* LOGIN FORM */
+    .login-section {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 60px 24px;
+    }
+
+    .login-icon { font-size: 48px; margin-bottom: 20px; }
+
+    .login-section h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .login-section p {
+      color: #666;
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .login-form input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .25s;
+    }
+
+    .login-form input:focus { border-color: rgba(201,168,76,0.5); }
+    .login-form input::placeholder { color: #555; }
+
+    .login-error {
+      color: #ff6b6b;
+      font-size: 13px;
+      margin-top: -6px;
+      display: none;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: rgba(20,20,28,0.96);
+      border: 1px solid rgba(201,168,76,0.4);
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 14px;
+      color: #c9a84c;
+      backdrop-filter: blur(12px);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .35s cubic-bezier(.34,1.56,.64,1);
+      z-index: 9999;
+      pointer-events: none;
+      max-width: 320px;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+      padding: 20px;
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: #14141e;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 36px;
+      width: 100%;
+      max-width: 500px;
+      transform: scale(.96) translateY(16px);
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+    }
+
+    .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+    .modal h3 { font-size: 20px; margin-bottom: 24px; }
+
+    .modal .form-actions { margin-top: 24px; }
+
+    /* NAV LINK */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #888;
+      font-size: 14px;
+      text-decoration: none;
+      margin-bottom: 40px;
+      transition: color .2s;
+    }
+
+    .back-link:hover { color: #c9a84c; }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 40px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- BACK -->
+  <a href="../anasayfa/" class="back-link">← Ana Sayfaya Dön</a>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">⭐ Destekçilerimiz</div>
+    <h1>Sponsorlarımız</h1>
+    <p>Bu projeyi ayakta tutan, katkılarıyla güç veren herkese sonsuz teşekkürler.</p>
+  </div>
+
+  <!-- TOPLAM BAĞIŞ -->
+  <div class="total-box">
+    <div class="total-label">Toplam Toplanan Bağış</div>
+    <div class="total-amount" id="totalAmount">
+      <span>₺</span><span id="totalNum">0</span>
+    </div>
+    <div class="total-count" id="totalCount">0 sponsor</div>
+  </div>
+
+  <!-- SPONSOR GRID -->
+  <div class="section-title">Sponsorlarımız</div>
+  <div class="sponsor-grid" id="sponsorGrid">
+    <div class="empty-state" style="grid-column:1/-1">
+      <div class="icon">🏅</div>
+      <p>Henüz sponsor eklenmemiş.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ADMIN BÖLÜMÜ -->
+  <div id="adminArea"></div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL (Düzenle) -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>✏️ Sponsoru Düzenle</h3>
+    <div class="sponsor-form" style="display:flex;flex-direction:column;gap:14px;">
+      <div class="form-group">
+        <label>İsim</label>
+        <input type="text" id="editName" placeholder="Sponsor adı">
+      </div>
+      <div class="form-group">
+        <label>Bağış Miktarı (₺)</label>
+        <input type="number" id="editAmount" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label>Görsel URL (opsiyonel)</label>
+        <input type="url" id="editImage" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label>Not (opsiyonel)</label>
+        <textarea id="editNote" rows="2" placeholder="Kısa bir mesaj..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-gold" onclick="saveEdit()">💾 Kaydet</button>
+      <button class="btn btn-ghost" onclick="closeModal()">İptal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── STORAGE HELPERS ──────────────────────────────────────────────
+  const STORAGE_KEY = 'sponsors-data';
+
+  async function loadSponsors() {
+    try {
+      const res = await window.storage.get(STORAGE_KEY, true);
+      return res ? JSON.parse(res.value) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  async function saveSponsors(list) {
+    await window.storage.set(STORAGE_KEY, JSON.stringify(list), true);
+  }
+
+  // ── STATE ────────────────────────────────────────────────────────
+  let sponsors = [];
+  let editingId = null;
+  const ADMIN_EMAIL = 'yavuzutku144@gmail.com';
+
+  // Session-only admin state (no real auth – password is checked client-side)
+  // For a real app, use Firebase / Supabase auth
+  let isAdmin = sessionStorage.getItem('sp_admin') === '1';
+
+  // ── INIT ─────────────────────────────────────────────────────────
+  (async () => {
+    sponsors = await loadSponsors();
+    renderSponsors();
+    renderAdminArea();
+  })();
+
+  // ── RENDER SPONSORS ──────────────────────────────────────────────
+  function renderSponsors() {
+    const grid = document.getElementById('sponsorGrid');
+    const totalNum = document.getElementById('totalNum');
+    const totalCount = document.getElementById('totalCount');
+
+    const sorted = [...sponsors].sort((a, b) => b.amount - a.amount);
+
+    const total = sponsors.reduce((s, x) => s + Number(x.amount || 0), 0);
+    totalNum.textContent = total.toLocaleString('tr-TR');
+    totalCount.textContent = sponsors.length + ' sponsor';
+
+    if (!sponsors.length) {
+      grid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="icon">🏅</div>
+          <p>Henüz sponsor eklenmemiş.</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = sorted.map(sp => `
+      <div class="sponsor-card">
+        ${sp.image
+          ? `<img class="sponsor-avatar" src="${esc(sp.image)}" alt="${esc(sp.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+          : ''}
+        <div class="sponsor-avatar-placeholder" ${sp.image ? 'style="display:none"' : ''}>
+          ${esc(sp.name).charAt(0).toUpperCase()}
+        </div>
+        <div class="sponsor-name">${esc(sp.name)}</div>
+        <div class="sponsor-amount">💛 ₺${Number(sp.amount).toLocaleString('tr-TR')}</div>
+        ${sp.note ? `<div class="sponsor-note">"${esc(sp.note)}"</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  // ── RENDER ADMIN AREA ────────────────────────────────────────────
+  function renderAdminArea() {
+    const area = document.getElementById('adminArea');
+
+    if (!isAdmin) {
+      area.innerHTML = `
+        <div class="login-section">
+          <div class="login-icon">🔐</div>
+          <h2>Yönetici Girişi</h2>
+          <p>Sponsor listesini düzenlemek için giriş yapın.</p>
+          <div class="login-form">
+            <input type="email" id="loginEmail" placeholder="E-posta adresi">
+            <input type="password" id="loginPass" placeholder="Şifre">
+            <p class="login-error" id="loginError">❌ Geçersiz e-posta veya şifre.</p>
+            <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="doLogin()">Giriş Yap</button>
+          </div>
+        </div>`;
+      return;
+    }
+
+    area.innerHTML = `
+      <div class="admin-section">
+        <div class="admin-header">
+          <div class="admin-title">
+            ⚙️ Sponsor Yönetimi
+            <span class="admin-badge">Admin</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="doLogout()">Çıkış Yap</button>
+        </div>
+
+        <!-- YENİ SPONSOR FORMU -->
+        <div class="sponsor-form">
+          <div class="form-group">
+            <label>Sponsor İsmi *</label>
+            <input type="text" id="newName" placeholder="Ad Soyad veya Kurum">
+          </div>
+          <div class="form-group">
+            <label>Bağış Miktarı (₺) *</label>
+            <input type="number" id="newAmount" placeholder="0" min="0">
+          </div>
+          <div class="form-group full">
+            <label>Görsel URL (opsiyonel)</label>
+            <div class="img-preview-wrap">
+              <input type="url" id="newImage" placeholder="https://örnek.com/foto.jpg" oninput="previewImg()">
+              <img id="imgPreview" src="" alt="önizleme">
+            </div>
+          </div>
+          <div class="form-group full">
+            <label>Not / Mesaj (opsiyonel)</label>
+            <textarea id="newNote" rows="2" placeholder="Destekçinin bir mesajı..."></textarea>
+          </div>
+        </div>
+        <div class="form-actions" style="margin-bottom:36px">
+          <button class="btn btn-gold" onclick="addSponsor()">➕ Sponsor Ekle</button>
+          <button class="btn btn-ghost" onclick="clearForm()">Temizle</button>
+        </div>
+
+        <div class="section-title">Mevcut Sponsorlar (${sponsors.length})</div>
+        <div class="admin-list" id="adminList">${buildAdminList()}</div>
+      </div>`;
+  }
+
+  function buildAdminList() {
+    if (!sponsors.length) return `<p style="color:#555;font-size:14px">Henüz sponsor yok.</p>`;
+    return [...sponsors].sort((a, b) => b.amount - a.amount).map(sp => `
+      <div class="admin-item">
+        ${sp.image
+          ? `<img class="admin-item-img" src="${esc(sp.image)}" alt="${esc(sp.name)}" onerror="this.src=''">`
+          : `<div class="admin-item-img" style="background:rgba(201,168,76,0.12);display:flex;align-items:center;justify-content:center;font-size:20px">${esc(sp.name).charAt(0).toUpperCase()}</div>`}
+        <div class="admin-item-info">
+          <div class="admin-item-name">${esc(sp.name)}</div>
+          <div class="admin-item-meta">₺${Number(sp.amount).toLocaleString('tr-TR')}</div>
+        </div>
+        <div class="admin-item-actions">
+          <button class="btn btn-ghost btn-sm" onclick="openEdit('${sp.id}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSponsor('${sp.id}')">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── AUTH ─────────────────────────────────────────────────────────
+  function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPass').value;
+    const err   = document.getElementById('loginError');
+
+    // Şifreyi burada sabit tutuyoruz; gerçek projede backend auth kullanın
+    if (email.toLowerCase() === ADMIN_EMAIL && pass === 'admin123') {
+      sessionStorage.setItem('sp_admin', '1');
+      isAdmin = true;
+      renderAdminArea();
+      showToast('✅ Giriş yapıldı!');
+    } else {
+      err.style.display = 'block';
+    }
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem('sp_admin');
+    isAdmin = false;
+    renderAdminArea();
+    showToast('👋 Çıkış yapıldı.');
+  }
+
+  // ── ADD ──────────────────────────────────────────────────────────
+  async function addSponsor() {
+    const name   = document.getElementById('newName').value.trim();
+    const amount = document.getElementById('newAmount').value;
+    const image  = document.getElementById('newImage').value.trim();
+    const note   = document.getElementById('newNote').value.trim();
+
+    if (!name || !amount) { showToast('⚠️ İsim ve miktar zorunlu!'); return; }
+
+    sponsors.push({ id: uid(), name, amount: Number(amount), image, note, createdAt: Date.now() });
+    await saveSponsors(sponsors);
+    renderSponsors();
+    renderAdminArea();
+    clearForm();
+    showToast('🎉 Sponsor eklendi!');
+  }
+
+  // ── DELETE ───────────────────────────────────────────────────────
+  async function deleteSponsor(id) {
+    if (!confirm('Bu sponsoru silmek istediğinize emin misiniz?')) return;
+    sponsors = sponsors.filter(s => s.id !== id);
+    await saveSponsors(sponsors);
+    renderSponsors();
+    renderAdminArea();
+    showToast('🗑️ Sponsor silindi.');
+  }
+
+  // ── EDIT ─────────────────────────────────────────────────────────
+  function openEdit(id) {
+    const sp = sponsors.find(s => s.id === id);
+    if (!sp) return;
+    editingId = id;
+    document.getElementById('editName').value   = sp.name;
+    document.getElementById('editAmount').value = sp.amount;
+    document.getElementById('editImage').value  = sp.image || '';
+    document.getElementById('editNote').value   = sp.note  || '';
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('editModal').classList.remove('open');
+    editingId = null;
+  }
+
+  async function saveEdit() {
+    const sp = sponsors.find(s => s.id === editingId);
+    if (!sp) return;
+    sp.name   = document.getElementById('editName').value.trim();
+    sp.amount = Number(document.getElementById('editAmount').value);
+    sp.image  = document.getElementById('editImage').value.trim();
+    sp.note   = document.getElementById('editNote').value.trim();
+
+    if (!sp.name || !sp.amount) { showToast('⚠️ İsim ve miktar zorunlu!'); return; }
+
+    await saveSponsors(sponsors);
+    closeModal();
+    renderSponsors();
+    renderAdminArea();
+    showToast('✅ Değişiklikler kaydedildi!');
+  }
+
+  // Modal dışına tıklayınca kapat
+  document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ── HELPERS ──────────────────────────────────────────────────────
+  function previewImg() {
+    const val = document.getElementById('newImage').value;
+    const img = document.getElementById('imgPreview');
+    if (val) { img.src = val; img.style.display = 'block'; }
+    else img.style.display = 'none';
+  }
+
+  function clearForm() {
+    ['newName','newAmount','newImage','newNote'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('imgPreview').style.display = 'none';
+  }
+
+  function uid() {
+    return Math.random().toString(36).slice(2) + Date.now().toString(36);
+  }
+
+  function esc(str = '') {
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+
+<script type="module">
+  import "../js/core.js";
+  window.loadNavbar?.();
+</script>
+
+</body>
+</html>

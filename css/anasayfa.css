@@ -122,3 +122,17 @@ body {
   box-shadow: 0 20px 60px rgba(255, 210, 80, 0.35);
   background: rgba(255, 210, 80, 0.1);
 }
+.action-card--quiz {
+  border-color: rgba(160, 100, 255, 0.25);
+  background: rgba(160, 100, 255, 0.06);
+}
+
+.action-card--quiz .action-title {
+  color: #a064ff;
+}
+
+.action-card--quiz:hover {
+  border-color: #a064ff;
+  box-shadow: 0 20px 60px rgba(160, 100, 255, 0.35);
+  background: rgba(160, 100, 255, 0.1);
+}

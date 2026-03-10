@@ -7,7 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const artikelBtn    = document.getElementById("artikelBtn");
   const cumlebulBtn   = document.getElementById("cumlebulBtn");
   const sponsorBtn    = document.getElementById("sponsorBtn");
-
+  const quizBtn = document.getElementById("quizBtn");
+  
+  if (quizBtn) quizBtn.addEventListener("click", () => window.location.href = "../quiz/");
   if (newTextBtn)    newTextBtn.addEventListener("click",    () => window.location.href = "../metin/");
   if (gecmisBtn)     gecmisBtn.addEventListener("click",     () => window.location.href = "../gecmis/");
   if (kelimelerBtn)  kelimelerBtn.addEventListener("click",  () => window.location.href = "../kelimeler/");

@@ -3,7 +3,108 @@ import { renderTagChips, getSelectedTags, extractAllTags } from "./tag.js";
 
 let allWords        = [];
 let activeTagFilter = null;
-const exampleCache = new Map();
+const exampleCache  = new Map();
+
+// ── Yardımcı: kelime sayısı ──────────────────────────────────────────────────
+function wordCount(text) {
+  return text.trim().split(/\s+/).length;
+}
+
+// ── Wikitext temizleyici ─────────────────────────────────────────────────────
+function cleanWikitext(text) {
+  return text
+    .replace(/\{\{[^{}]*\}\}/g, '')
+    .replace(/\{\{[^{}]*\}\}/g, '')
+    .replace(/\}\}/g, '')
+    .replace(/\{\{/g, '')
+    .replace(/'{2,3}/g, '')
+    .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/[„""\u201C\u201D\u201E\u00AB\u00BB'']/g, '')
+    .replace(/\s*[A-ZÄÖÜ][^.!?]*\d{4}\s*\.?\s*$/, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+// ── Wiktionary'den örnek cümleler ────────────────────────────────────────────
+async function fetchFromWiktionary(word) {
+  const capitalized = word.charAt(0).toUpperCase() + word.slice(1);
+  const params = new URLSearchParams({
+    action: 'parse', page: capitalized, prop: 'wikitext', format: 'json', origin: '*'
+  });
+  const res  = await fetch('https://de.wiktionary.org/w/api.php?' + params);
+  const data = await res.json();
+  const wikitext = data?.parse?.wikitext?.['*'] || '';
+
+  const lines = wikitext.split('\n');
+  const sentences = [];
+  let inBeispiele = false;
+
+  for (const line of lines) {
+    if (line.includes('Beispiele}}') || line.includes('Beispiele:')) {
+      inBeispiele = true; continue;
+    }
+    if (inBeispiele && line.match(/^\s*:?\{\{(Herkunft|Synonyme|Übersetzungen|Wortbildungen|Bedeutungen|Redewendungen)/)) {
+      inBeispiele = false; continue;
+    }
+    if (inBeispiele && line.trim()) {
+      const match = line.match(/^::?\[\d+\]\s*(.+)/);
+      if (match) {
+        const text = cleanWikitext(match[1]);
+        if (text.length > 10 && wordCount(text) > 5) sentences.push(text);
+      }
+    }
+  }
+
+  // En kısa 2 cümleyi seç
+  return sentences
+    .sort((a, b) => wordCount(a) - wordCount(b))
+    .slice(0, 2)
+    .map(s => ({ original: s, turkish: null }));
+}
+
+// ── Tatoeba'dan örnek cümleler ───────────────────────────────────────────────
+async function fetchFromTatoeba(word) {
+  const url = `https://api.tatoeba.org/v1/sentences?q=${encodeURIComponent(word)}&lang=deu&min_length=6`;
+  const res  = await fetch(url);
+  const data = await res.json();
+
+  if (!data.data || data.data.length === 0) return [];
+
+  return data.data
+    .filter(s => wordCount(s.text) > 5)
+    .sort((a, b) => wordCount(a.text) - wordCount(b.text))
+    .slice(0, 2)
+    .map(s => ({ original: s.text, turkish: null }));
+}
+
+// ── Ana fetch: Wiktionary → Tatoeba ─────────────────────────────────────────
+async function fetchExampleSentences(word) {
+  if (exampleCache.has(word)) return exampleCache.get(word);
+
+  let sentences = [];
+
+  try { sentences = await fetchFromWiktionary(word); } catch (_) {}
+
+  if (sentences.length < 2) {
+    try {
+      const tatoeba = await fetchFromTatoeba(word);
+      // Wiktionary'den gelenlere ekle, toplamı 2'ye tamamla
+      const needed = 2 - sentences.length;
+      sentences = [...sentences, ...tatoeba.slice(0, needed)];
+    } catch (_) {}
+  }
+
+  if (sentences.length === 0) {
+    sentences = [{ original: "Cümle bulunamadı.", turkish: "Bu kelime için örnek yok." }];
+  }
+
+  exampleCache.set(word, sentences);
+  return sentences;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -14,60 +115,47 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterTagList  = document.getElementById("filterTagList");
 
   onAuthChange(async (user) => {
-    if(user) await loadWords(user.uid);
+    if (user) await loadWords(user.uid);
   });
 
-  async function loadWords(userId){
+  async function loadWords(userId) {
     wordCountBadge.textContent = "Yükleniyor...";
     allWords = await getWords(userId);
     buildFilterSidebar();
     renderFiltered();
   }
 
-  // =====================
-  // FİLTRE SIDEBAR
-  // =====================
+  // ── Filtre Sidebar ─────────────────────────────────────────────────────────
 
-  function buildFilterSidebar(){
+  function buildFilterSidebar() {
     const tagMap = new Map();
     allWords.forEach(w => {
-      if(Array.isArray(w.tags)){
-        w.tags.forEach(t => tagMap.set(t, (tagMap.get(t) || 0) + 1));
-      }
+      if (Array.isArray(w.tags)) w.tags.forEach(t => tagMap.set(t, (tagMap.get(t) || 0) + 1));
     });
 
     filterTagList.innerHTML = "";
 
     const allItem = document.createElement("button");
     allItem.className = "filter-tag-item all-item" + (activeTagFilter === null ? " active" : "");
-    allItem.innerHTML = `
-      <span>Tüm Kelimeler</span>
-      <span class="filter-count-badge">${allWords.length}</span>
-    `;
-    allItem.addEventListener("click", () => {
-      activeTagFilter = null;
-      buildFilterSidebar();
-      renderFiltered();
-    });
+    allItem.innerHTML = `<span>Tüm Kelimeler</span><span class="filter-count-badge">${allWords.length}</span>`;
+    allItem.addEventListener("click", () => { activeTagFilter = null; buildFilterSidebar(); renderFiltered(); });
     filterTagList.appendChild(allItem);
 
-    if(tagMap.size > 0){
-      const sorted = [...tagMap.entries()].sort((a, b) => b[1] - a[1]);
-      sorted.forEach(([tag, count]) => {
+    if (tagMap.size > 0) {
+      [...tagMap.entries()].sort((a, b) => b[1] - a[1]).forEach(([tag, count]) => {
         const item = document.createElement("button");
         item.className = "filter-tag-item" + (activeTagFilter === tag ? " active" : "");
         item.innerHTML = `<span>${tag}</span><span class="filter-count-badge">${count}</span>`;
         item.addEventListener("click", () => {
           activeTagFilter = (activeTagFilter === tag) ? null : tag;
-          buildFilterSidebar();
-          renderFiltered();
+          buildFilterSidebar(); renderFiltered();
         });
         filterTagList.appendChild(item);
       });
     }
 
     const untagged = allWords.filter(w => !Array.isArray(w.tags) || w.tags.length === 0).length;
-    if(untagged > 0){
+    if (untagged > 0) {
       const sep = document.createElement("div");
       sep.style.cssText = "margin:10px 0 6px;border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;";
       const untaggedItem = document.createElement("button");
@@ -75,46 +163,35 @@ document.addEventListener("DOMContentLoaded", () => {
       untaggedItem.innerHTML = `<span>Etiketsiz</span><span class="filter-count-badge">${untagged}</span>`;
       untaggedItem.addEventListener("click", () => {
         activeTagFilter = (activeTagFilter === "__untagged__") ? null : "__untagged__";
-        buildFilterSidebar();
-        renderFiltered();
+        buildFilterSidebar(); renderFiltered();
       });
       filterTagList.appendChild(sep);
       filterTagList.appendChild(untaggedItem);
     }
   }
 
-  function renderFiltered(){
+  function renderFiltered() {
     const q = searchInput.value.toLowerCase();
     let list = allWords;
 
-    if(activeTagFilter === "__untagged__"){
+    if (activeTagFilter === "__untagged__") {
       list = list.filter(w => !Array.isArray(w.tags) || w.tags.length === 0);
-    } else if(activeTagFilter){
+    } else if (activeTagFilter) {
       list = list.filter(w => Array.isArray(w.tags) && w.tags.includes(activeTagFilter));
     }
 
-    if(q){
-      list = list.filter(w =>
-        w.word.toLowerCase().includes(q) ||
-        w.meaning.toLowerCase().includes(q)
-      );
-    }
+    if (q) list = list.filter(w => w.word.toLowerCase().includes(q) || w.meaning.toLowerCase().includes(q));
 
     render(list);
   }
 
-  // =====================
-  // RENDER
-  // =====================
+  // ── Render ─────────────────────────────────────────────────────────────────
 
-  function render(list){
+  function render(list) {
     [...wordList.querySelectorAll(".word-card")].forEach(el => el.remove());
     wordCountBadge.textContent = allWords.length + " kelime";
 
-    if(list.length === 0){
-      emptyState.style.display = "block";
-      return;
-    }
+    if (list.length === 0) { emptyState.style.display = "block"; return; }
     emptyState.style.display = "none";
 
     list.forEach((item, idx) => {
@@ -126,9 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const tagsHTML = `
         <div class="word-tags">
           ${hasTags ? item.tags.map(t => `<span class="word-tag-badge">${t}</span>`).join("") : ""}
-          <button class="add-tag-inline" data-id="${item.id}">
-            ${hasTags ? "+ etiket" : "+ etiket ekle"}
-          </button>
+          <button class="add-tag-inline" data-id="${item.id}">${hasTags ? "+ etiket" : "+ etiket ekle"}</button>
         </div>
       `;
 
@@ -144,31 +219,33 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="word-edit-btn"   data-id="${item.id}">✏️ Düzenle</button>
         </div>
       `;
-      // word-german'a tıklayınca örnek cümleler
-      card.querySelector(".word-german").style.cursor = "pointer";
-      card.querySelector(".word-german").addEventListener("click", (e) => {
+
+      const germanEl = card.querySelector(".word-german");
+      germanEl.style.cursor = "pointer";
+      germanEl.title = "Örnek cümleleri gör";
+      germanEl.addEventListener("click", (e) => {
         e.stopPropagation();
         openExampleModal(item.word, item.meaning);
       });
+
       card.querySelector(".add-tag-inline").addEventListener("click", () => {
         const userId = window.getUserId();
-        if(!userId) return;
+        if (!userId) return;
         openEditModal(userId, item, true);
       });
 
       card.querySelector(".word-delete-btn").addEventListener("click", async () => {
         const userId = window.getUserId();
-        if(!userId) return;
-        if(!confirm(`"${item.word}" silinsin mi?`)) return;
+        if (!userId) return;
+        if (!confirm(`"${item.word}" silinsin mi?`)) return;
         await deleteWord(userId, item.id);
         allWords = allWords.filter(w => w.id !== item.id);
-        buildFilterSidebar();
-        renderFiltered();
+        buildFilterSidebar(); renderFiltered();
       });
 
       card.querySelector(".word-edit-btn").addEventListener("click", () => {
         const userId = window.getUserId();
-        if(!userId) return;
+        if (!userId) return;
         openEditModal(userId, item, false);
       });
 
@@ -176,11 +253,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // =====================
-  // DÜZENLEME MODALİ
-  // =====================
+  // ── Düzenleme Modali ───────────────────────────────────────────────────────
 
-  function openEditModal(userId, item, tagFocused = false){
+  function openEditModal(userId, item, tagFocused = false) {
     document.getElementById("editModalOverlay")?.remove();
 
     const overlay = document.createElement("div");
@@ -246,54 +321,39 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     document.body.appendChild(overlay);
-
-    // tag.js ile chip'leri render et — mevcut tag'ler seçili gelsin
     renderTagChips("editTagChips", item.tags || [], extractAllTags(allWords));
-
 
     const close = () => overlay.remove();
     overlay.querySelector("#editModalClose").addEventListener("click", close);
     overlay.querySelector("#editCancelBtn").addEventListener("click", close);
-    overlay.addEventListener("click", e => { if(e.target === overlay) close(); });
+    overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
 
     overlay.querySelector("#editSaveBtn").addEventListener("click", async () => {
       const newWord    = tagFocused ? item.word    : overlay.querySelector("#editWordInput").value.trim();
       const newMeaning = tagFocused ? item.meaning : overlay.querySelector("#editMeaningInput").value.trim();
-      if(!newWord || !newMeaning) return;
+      if (!newWord || !newMeaning) return;
 
-      // tag.js'den seçili tag'leri al
       const newTags = getSelectedTags("editTagChips");
-
       const saveBtn = overlay.querySelector("#editSaveBtn");
-      saveBtn.disabled    = true;
+      saveBtn.disabled = true;
       saveBtn.textContent = "Kaydediliyor...";
 
       await updateWord(userId, item.id, { word: newWord, meaning: newMeaning, tags: newTags });
-
-      item.word    = newWord;
-      item.meaning = newMeaning;
-      item.tags    = newTags;
-
-      close();
-      buildFilterSidebar();
-      renderFiltered();
+      item.word = newWord; item.meaning = newMeaning; item.tags = newTags;
+      close(); buildFilterSidebar(); renderFiltered();
     });
   }
 
-  // =====================
-  // ARAMA
-  // =====================
+  // ── Arama ─────────────────────────────────────────────────────────────────
 
   searchInput.addEventListener("input", renderFiltered);
 
-  function formatDate(iso){
-    if(!iso) return "";
-    const d = new Date(iso);
-    return d.toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
+  function formatDate(iso) {
+    if (!iso) return "";
+    return new Date(iso).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
   }
-  // =====================
-  // ÖRNEK CÜMLE MODALİ
-  // =====================
+
+  // ── Örnek Cümle Modali ─────────────────────────────────────────────────────
 
   async function openExampleModal(word, meaning) {
     document.getElementById("exampleModalOverlay")?.remove();
@@ -304,13 +364,13 @@ document.addEventListener("DOMContentLoaded", () => {
       position:fixed;inset:0;background:rgba(0,0,0,0.65);
       backdrop-filter:blur(4px);z-index:10000;
       display:flex;align-items:center;justify-content:center;
-      padding: 20px; box-sizing: border-box;
+      padding:20px;box-sizing:border-box;
     `;
 
     overlay.innerHTML = `
       <div style="
         background:#1a1a26;border:1px solid rgba(201,168,76,0.3);
-        border-radius:20px;padding:28px 32px;width:460px;max-width:100%;
+        border-radius:20px;padding:28px 32px;width:480px;max-width:100%;
         box-shadow:0 24px 60px rgba(0,0,0,0.7);
       ">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
@@ -331,29 +391,21 @@ document.addEventListener("DOMContentLoaded", () => {
             background:rgba(255,255,255,0.03);
             border:1px solid rgba(255,255,255,0.06);
             color:#888;font-size:14px;text-align:center;
-          ">
-            <span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Yükleniyor...
-          </div>
+          ">⏳ Yükleniyor...</div>
         </div>
 
-        <div style="margin-top:18px;font-size:11px;color:#444;text-align:right;">
-          Kelimeye tekrar tıklayarak yeni cümleler üretebilirsin
+        <div style="margin-top:14px;font-size:11px;color:#3a3a3a;text-align:right;">
+          Kaynak: Wiktionary · Tatoeba
         </div>
       </div>
     `;
-
-    // Spin animasyonu
-    const style = document.createElement("style");
-    style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
-    document.head.appendChild(style);
 
     document.body.appendChild(overlay);
 
     overlay.querySelector("#exampleModalClose").addEventListener("click", () => overlay.remove());
     overlay.addEventListener("click", e => { if (e.target === overlay) overlay.remove(); });
 
-    // API çağrısı
-    const sentences = await fetchExampleSentences(word, meaning);
+    const sentences = await fetchExampleSentences(word);
     const container = document.getElementById("exampleSentences");
     if (!container) return;
 
@@ -362,40 +414,11 @@ document.addEventListener("DOMContentLoaded", () => {
         padding:14px 16px;border-radius:12px;
         background:rgba(255,255,255,0.03);
         border:1px solid rgba(255,255,255,0.07);
-        transition:0.2s;
       ">
-        <div style="font-size:11px;color:#c9a84c;font-weight:700;margin-bottom:6px;">
-          ${i + 1}. Cümle
-        </div>
-        <div style="font-size:14px;color:#e2e8f0;line-height:1.6;">${s.original}</div>
-        <div style="font-size:13px;color:#888;margin-top:5px;font-style:italic;">${s.turkish}</div>
+        <div style="font-size:11px;color:#c9a84c;font-weight:700;margin-bottom:6px;">${i + 1}. Cümle</div>
+        <div style="font-size:15px;color:#e2e8f0;line-height:1.6;">${s.original}</div>
       </div>
     `).join("");
   }
 
-  async function fetchExampleSentences(word, meaning) {
-    if (exampleCache.has(word)) return exampleCache.get(word);
-
-    try {
-      const response = await fetch(
-        `https://api.allorigins.win/raw?url=${encodeURIComponent('https://tatoeba.org/en/api_v0/search?from=deu&to=tur&query=' + encodeURIComponent(word) + '&limit=2')}`     );
-      const data = await response.json();
-      const results = data.results || [];
-
-      if (results.length === 0) {
-        return [{ original: "Cümle bulunamadı.", turkish: "Tatoeba'da bu kelime için örnek yok." }];
-      }
-
-      const sentences = results.slice(0, 2).map(r => ({
-        original: r.text,
-        turkish: r.translations?.[0]?.[0]?.text || "Çeviri yok"
-      }));
-
-      exampleCache.set(word, sentences);
-      return sentences;
-
-    } catch (err) {
-      return [{ original: "Hata oluştu.", turkish: "Lütfen tekrar deneyin." }];
-    }
-  }
 });

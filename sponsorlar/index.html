@@ -618,21 +618,51 @@
   </div>
 </div>
 
-<script>
-  // ── STORAGE HELPERS ──────────────────────────────────────────────
-  const STORAGE_KEY = 'sponsors-data';
+<script type="module">
+  // ── FIREBASE HELPERS ─────────────────────────────────────────────
+  const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+  const { getFirestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy }
+    = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCGpRMUNNSx4Kla2YrmDOBHlLSt4rOM1wQ",
+    authDomain: "lernen-deutsch-bea69.firebaseapp.com",
+    projectId: "lernen-deutsch-bea69",
+    storageBucket: "lernen-deutsch-bea69.firebasestorage.app",
+    messagingSenderId: "653560965391",
+    appId: "1:653560965391:web:545142e9be6d130a54b67a"
+  };
+
+  const app = initializeApp(firebaseConfig, 'sponsors-app');
+  const db  = getFirestore(app);
+  const SPONSORS_COL = collection(db, 'sponsors');
 
   async function loadSponsors() {
     try {
-      const res = await window.storage.get(STORAGE_KEY, true);
-      return res ? JSON.parse(res.value) : [];
-    } catch {
+      const q = query(SPONSORS_COL, orderBy('createdAt', 'asc'));
+      const snap = await getDocs(q);
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch(e) {
+      console.error(e);
       return [];
     }
   }
 
   async function saveSponsors(list) {
-    await window.storage.set(STORAGE_KEY, JSON.stringify(list), true);
+    // Kullanılmıyor - ekleme/silme/güncelleme ayrı fonksiyonlarla yapılıyor
+  }
+
+  async function addSponsorToDb(data) {
+    const docRef = await addDoc(SPONSORS_COL, data);
+    return docRef.id;
+  }
+
+  async function deleteSponsorFromDb(id) {
+    await deleteDoc(doc(db, 'sponsors', id));
+  }
+
+  async function updateSponsorInDb(id, data) {
+    await updateDoc(doc(db, 'sponsors', id), data);
   }
 
   // ── STATE ────────────────────────────────────────────────────────
@@ -798,8 +828,9 @@
 
     if (!name || !amount) { showToast('⚠️ İsim ve miktar zorunlu!'); return; }
 
-    sponsors.push({ id: uid(), name, amount: Number(amount), image, note, createdAt: Date.now() });
-    await saveSponsors(sponsors);
+    const data = { name, amount: Number(amount), image, note, createdAt: Date.now() };
+    const newId = await addSponsorToDb(data);
+    sponsors.push({ id: newId, ...data });
     renderSponsors();
     renderAdminArea();
     clearForm();
@@ -809,8 +840,8 @@
   // ── DELETE ───────────────────────────────────────────────────────
   async function deleteSponsor(id) {
     if (!confirm('Bu sponsoru silmek istediğinize emin misiniz?')) return;
+    await deleteSponsorFromDb(id);
     sponsors = sponsors.filter(s => s.id !== id);
-    await saveSponsors(sponsors);
     renderSponsors();
     renderAdminArea();
     showToast('🗑️ Sponsor silindi.');
@@ -843,7 +874,9 @@
 
     if (!sp.name || !sp.amount) { showToast('⚠️ İsim ve miktar zorunlu!'); return; }
 
-    await saveSponsors(sponsors);
+    await updateSponsorInDb(editingId, {
+      name: sp.name, amount: sp.amount, image: sp.image, note: sp.note
+    });
     closeModal();
     renderSponsors();
     renderAdminArea();
@@ -854,6 +887,17 @@
   document.getElementById('editModal').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
   });
+
+  // onclick="..." ile çağrılabilmesi için global yap
+  window.addSponsor    = addSponsor;
+  window.deleteSponsor = deleteSponsor;
+  window.openEdit      = openEdit;
+  window.saveEdit      = saveEdit;
+  window.closeModal    = closeModal;
+  window.doLogin       = doLogin;
+  window.doLogout      = doLogout;
+  window.previewImg    = previewImg;
+  window.clearForm     = clearForm;
 
   // ── HELPERS ──────────────────────────────────────────────────────
   function previewImg() {

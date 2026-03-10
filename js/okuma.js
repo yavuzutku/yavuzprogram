@@ -28,9 +28,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 // =====================
 
 function goBack(){
-  const returnPage = sessionStorage.getItem("returnPage") || "../metin/";
   sessionStorage.removeItem("returnPage");
-  window.location.href = returnPage;
+  window.location.href = "../metin/";
 }
 
 let currentSize = 20;

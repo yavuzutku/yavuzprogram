@@ -7,10 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if(!editor) return;
 
-  // ✅ Okuma sayfasından geri dönüldüyse metni geri yükle
-  const savedText = sessionStorage.getItem("savedText");
-  if(savedText){
-    editor.innerText = savedText;
+  // ✅ Extension'dan gelen ?text= parametresini oku
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlText   = urlParams.get('text');
+  if (urlText && urlText.trim().length > 0) {
+    editor.innerText = urlText.trim();
+    window.history.replaceState({}, '', window.location.pathname);
+  } else {
+    // Okuma sayfasından geri dönüldüyse metni geri yükle
+    const savedText = sessionStorage.getItem("savedText");
+    if (savedText) { editor.innerText = savedText; }
   }
 
   editor.addEventListener("paste", (e) => {

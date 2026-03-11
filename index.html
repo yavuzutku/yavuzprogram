@@ -4,55 +4,526 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<title>Giriş Yap</title>
+<title>AlmancaPratik — Almancayı Pratikle Öğren</title>
 <meta name="description" content="Almanca öğrenmek için kelime quizi, artikel bulucu, cümle örnekleri ve metin analizi. Ücretsiz Almanca pratik platformu.">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root {
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --bg-base:      #070709;
+  --bg-surface:   rgba(255,255,255,0.035);
+  --bg-hover:     rgba(255,255,255,0.06);
+  --border-subtle: rgba(255,255,255,0.07);
+  --border-hover:  rgba(255,255,255,0.16);
+  --text-primary:   #f0eee8;
+  --text-secondary: rgba(240,238,232,0.55);
+  --text-muted:     rgba(240,238,232,0.32);
+  --gold:        #c9a84c;
+  --gold-light:  #e8c97a;
+  --gold-dim:    rgba(201,168,76,0.15);
+  --blue:        #60c8f0;
+  --violet:      #a064ff;
+  --green:       #4fd69c;
+  --rose:        #f07068;
+  --amber:       #ffd250;
+  --radius-card: 16px;
+  --transition:  0.3s cubic-bezier(0.4,0,0.2,1);
+}
 
-<link rel="stylesheet" href="css/index.css">
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Background ── */
+.bg-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 100% 70% at 50% 0%, black 20%, transparent 100%);
+}
+.bg-glow {
+  position: absolute; border-radius: 50%; filter: blur(130px);
+  animation: drift 14s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.bg-glow--1 { width:700px; height:700px; top:-300px; left:-150px; background:radial-gradient(circle,#c9a84c,transparent 70%); opacity:0.09; }
+.bg-glow--2 { width:500px; height:500px; top:20%; right:-200px; background:radial-gradient(circle,#60c8f0,transparent 70%); opacity:0.06; animation-delay:-5s; }
+.bg-glow--3 { width:400px; height:400px; bottom:5%; left:30%; background:radial-gradient(circle,#a064ff,transparent 70%); opacity:0.05; animation-delay:-10s; }
+@keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,25px) scale(1.06)} }
+
+/* ══════════════════════════════════════════
+   NAV
+══════════════════════════════════════════ */
+.nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  padding: 18px 48px;
+  display: flex; align-items:center; justify-content:space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(7,7,9,0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.nav-logo { display:flex; align-items:center; gap:11px; text-decoration:none; }
+.nav-logo-icon {
+  width:36px; height:36px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius:10px; display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+}
+.nav-logo-icon svg { width:19px; height:19px; }
+.nav-logo-name { font-family:var(--font-display); font-size:17px; font-weight:800; color:var(--text-primary); letter-spacing:-0.02em; }
+.nav-cta {
+  display: flex; align-items:center; gap:10px;
+  padding: 9px 22px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: #0a0a0f; font-size:13.5px; font-weight:600;
+  border-radius: 999px; text-decoration:none;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  transition: var(--transition);
+  letter-spacing: -0.01em;
+}
+.nav-cta:hover { transform:translateY(-1px); box-shadow:0 8px 28px rgba(201,168,76,0.4); }
+.nav-cta svg { width:14px; height:14px; }
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+.hero {
+  position: relative; z-index:1;
+  max-width: 900px; margin:0 auto;
+  padding: 160px 32px 80px;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items:center; gap:8px;
+  font-size:11.5px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--text-muted); margin-bottom:28px;
+  padding:6px 16px 6px 12px;
+  border:1px solid var(--border-subtle); border-radius:999px;
+  background:rgba(255,255,255,0.025);
+  animation: fadeUp 0.6s cubic-bezier(0.4,0,0.2,1) both;
+}
+.eyebrow-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 10px var(--gold); animation:pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.45;transform:scale(0.75)} }
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 88px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.0;
+  margin-bottom: 24px;
+  animation: fadeUp 0.65s 0.08s cubic-bezier(0.4,0,0.2,1) both;
+}
+.hero-title-accent {
+  background: linear-gradient(135deg, #c9a84c 0%, #f0d080 45%, #c9a84c 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; background-size:200% 200%;
+  animation: fadeUp 0.65s 0.08s cubic-bezier(0.4,0,0.2,1) both, shimmer 5s ease-in-out infinite;
+}
+@keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+.hero-sub {
+  font-size: clamp(15px, 2vw, 18px);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 560px; margin:0 auto 40px;
+  animation: fadeUp 0.65s 0.14s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+.hero-actions {
+  display: flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;
+  animation: fadeUp 0.65s 0.2s cubic-bezier(0.4,0,0.2,1) both;
+}
+.btn-primary {
+  display: flex; align-items:center; gap:10px;
+  padding: 14px 30px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: #0a0a0f; font-size:15px; font-weight:700;
+  border-radius:12px; text-decoration:none;
+  box-shadow: 0 6px 28px rgba(201,168,76,0.35);
+  transition: var(--transition); letter-spacing:-0.01em;
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 36px rgba(201,168,76,0.45); }
+.btn-primary svg { width:16px; height:16px; }
+.btn-secondary {
+  display: flex; align-items:center; gap:8px;
+  padding: 14px 26px; font-size:15px; font-weight:500;
+  color: var(--text-secondary); background: var(--bg-surface);
+  border:1px solid var(--border-subtle); border-radius:12px; text-decoration:none;
+  transition: var(--transition);
+}
+.btn-secondary:hover { color:var(--text-primary); border-color:var(--border-hover); background:var(--bg-hover); }
+
+/* ── Hero stats ── */
+.hero-stats {
+  display: flex; align-items:center; justify-content:center; gap:0;
+  margin-top: 64px;
+  animation: fadeUp 0.65s 0.26s cubic-bezier(0.4,0,0.2,1) both;
+}
+.hstat { display:flex; flex-direction:column; align-items:center; gap:3px; padding:0 32px; }
+.hstat-num { font-family:var(--font-display); font-size:28px; font-weight:800; letter-spacing:-0.03em; color:var(--text-primary); line-height:1; }
+.hstat-label { font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+.hstat-div { width:1px; height:40px; background:var(--border-subtle); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+/* ══════════════════════════════════════════
+   FEATURES
+══════════════════════════════════════════ */
+.section {
+  position: relative; z-index:1;
+  max-width: 1120px; margin:0 auto;
+  padding: 0 32px 100px;
+}
+
+.section-header {
+  text-align:center; margin-bottom:48px;
+}
+.section-label {
+  display:inline-block;
+  font-size:11px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:14px; opacity:0.8;
+}
+.section-title {
+  font-family:var(--font-display); font-size:clamp(26px,4vw,40px); font-weight:800;
+  letter-spacing:-0.03em; color:var(--text-primary); line-height:1.1;
+}
+.section-title span { color:var(--text-secondary); font-weight:700; }
+
+/* Feature grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width:1000px) { .features-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:560px)  { .features-grid { grid-template-columns:1fr; } }
+
+.feat-card {
+  padding: 28px 24px 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  transition: var(--transition);
+  position: relative; overflow:hidden;
+}
+.feat-card::before {
+  content:''; position:absolute; inset:0; border-radius:var(--radius-card);
+  opacity:0; transition: opacity 0.4s;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--accent, rgba(201,168,76,0.07)), transparent);
+}
+.feat-card:hover { border-color:var(--border-hover); background:var(--bg-hover); transform:translateY(-4px); box-shadow:0 24px 48px -12px rgba(0,0,0,0.5); }
+.feat-card:hover::before { opacity:1; }
+
+.feat-card--gold  { --accent: rgba(201,168,76,0.08); }
+.feat-card--blue  { --accent: rgba(96,200,240,0.07); }
+.feat-card--green { --accent: rgba(79,214,156,0.07); }
+.feat-card--violet{ --accent: rgba(160,100,255,0.07); }
+.feat-card--rose  { --accent: rgba(240,112,104,0.07); }
+.feat-card--amber { --accent: rgba(255,210,80,0.07); }
+
+.feat-icon {
+  width:44px; height:44px; border-radius:11px;
+  border:1px solid var(--border-subtle);
+  background:rgba(255,255,255,0.04);
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:18px; font-size:20px; transition:var(--transition);
+}
+.feat-card:hover .feat-icon { border-color:var(--border-hover); }
+.feat-card--gold:hover  .feat-icon { background:rgba(201,168,76,0.1); }
+.feat-card--blue:hover  .feat-icon { background:rgba(96,200,240,0.1); }
+.feat-card--green:hover .feat-icon { background:rgba(79,214,156,0.1); }
+.feat-card--violet:hover .feat-icon { background:rgba(160,100,255,0.1); }
+.feat-card--rose:hover  .feat-icon { background:rgba(240,112,104,0.1); }
+.feat-card--amber:hover .feat-icon { background:rgba(255,210,80,0.1); }
+
+.feat-title {
+  font-family:var(--font-display); font-size:16px; font-weight:700;
+  letter-spacing:-0.01em; color:var(--text-primary); margin-bottom:8px;
+}
+.feat-desc { font-size:13.5px; line-height:1.65; color:var(--text-secondary); }
+.feat-tag {
+  display:inline-block; margin-top:14px;
+  font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+  padding:3px 10px; border-radius:999px; border:1px solid var(--border-subtle);
+  color:var(--text-muted); transition:var(--transition);
+}
+.feat-card--gold:hover  .feat-tag { color:var(--gold);   border-color:rgba(201,168,76,0.3); }
+.feat-card--blue:hover  .feat-tag { color:var(--blue);   border-color:rgba(96,200,240,0.3); }
+.feat-card--green:hover .feat-tag { color:var(--green);  border-color:rgba(79,214,156,0.3); }
+.feat-card--violet:hover .feat-tag{ color:var(--violet); border-color:rgba(160,100,255,0.3); }
+.feat-card--rose:hover  .feat-tag { color:var(--rose);   border-color:rgba(240,112,104,0.3); }
+.feat-card--amber:hover .feat-tag { color:var(--amber);  border-color:rgba(255,210,80,0.3); }
+
+/* ══════════════════════════════════════════
+   CTA BANNER
+══════════════════════════════════════════ */
+.cta-banner {
+  position:relative; z-index:1;
+  max-width:1120px; margin:0 auto;
+  padding:0 32px 100px;
+}
+.cta-inner {
+  padding:56px 48px;
+  background: var(--bg-surface);
+  border:1px solid rgba(201,168,76,0.18);
+  border-radius:24px;
+  text-align:center;
+  position:relative; overflow:hidden;
+}
+.cta-inner::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse 70% 80% at 50% 0%, rgba(201,168,76,0.07), transparent 60%);
+  pointer-events:none;
+}
+.cta-title {
+  font-family:var(--font-display); font-size:clamp(24px,4vw,40px);
+  font-weight:800; letter-spacing:-0.03em; margin-bottom:14px;
+}
+.cta-sub { font-size:15px; color:var(--text-secondary); margin-bottom:32px; line-height:1.6; }
+.cta-note { margin-top:16px; font-size:12px; color:var(--text-muted); }
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+.footer {
+  position:relative; z-index:1;
+  border-top:1px solid var(--border-subtle);
+  padding:32px 48px;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+}
+.footer-logo { display:flex; align-items:center; gap:9px; }
+.footer-logo-icon {
+  width:28px; height:28px; border-radius:7px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-light));
+  display:flex; align-items:center; justify-content:center;
+}
+.footer-logo-icon svg { width:14px; height:14px; }
+.footer-logo-name { font-family:var(--font-display); font-size:14px; font-weight:800; color:var(--text-primary); }
+.footer-links { display:flex; gap:24px; }
+.footer-links a { font-size:13px; color:var(--text-muted); text-decoration:none; transition:var(--transition); }
+.footer-links a:hover { color:var(--gold); }
+.footer-copy { font-size:12px; color:var(--text-muted); }
+
+@media (max-width:600px) {
+  .nav { padding:16px 20px; }
+  .hero { padding:130px 20px 60px; }
+  .hero-stats { flex-wrap:wrap; gap:16px; }
+  .hstat-div { display:none; }
+  .section, .cta-banner { padding-left:20px; padding-right:20px; }
+  .cta-inner { padding:40px 24px; }
+  .footer { padding:24px 20px; flex-direction:column; align-items:flex-start; }
+  .hero-actions { flex-direction:column; align-items:stretch; }
+  .btn-primary, .btn-secondary { justify-content:center; }
+}
+</style>
 </head>
 <body>
 
-<div class="bg-layer"></div>
-<div class="bg-grid"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-
-<div class="card">
-  <div id="login-view">
-    <div class="logo-wrap">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-          <path d="M2 17l10 5 10-5"/>
-          <path d="M2 12l10 5 10-5"/>
-        </svg>
-      </div>
-      <div class="logo-name">AlmancaPratik</div>
-      <div class="logo-tagline">Hesabına güvenle giriş yap</div>
-    </div>
-
-    <div class="divider"><span>Devam et</span></div>
-
-    <div id="google-btn-container"></div>
-
-    <div class="footer">
-      Giriş yaparak <a href="kullanim-sartlari.html">Kullanım Koşulları</a>'nı ve<br>
-      <a href="privacy.html">Gizlilik Politikası</a>'nı kabul etmiş olursunuz.
-    </div>
-  </div>
-
-  <div class="user-panel" id="user-view">
-    <img id="user-avatar" class="user-avatar"/>
-    <div>
-      <div class="user-name" id="user-name"></div>
-      <div class="user-email" id="user-email"></div>
-    </div>
-    <div class="badge">Giriş yapıldı</div>
-    <button class="signout-btn" id="logoutBtn">Çıkış Yap</button>
-  </div>
-
+<div class="bg-canvas">
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow--1"></div>
+  <div class="bg-glow bg-glow--2"></div>
+  <div class="bg-glow bg-glow--3"></div>
 </div>
-<script type="module" src="js/index.js"></script>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="/">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <span class="nav-logo-name">AlmancaPratik</span>
+  </a>
+  <a class="nav-cta" href="login.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+      <polyline points="10 17 15 12 10 7"/>
+      <line x1="15" y1="12" x2="3" y2="12"/>
+    </svg>
+    Giriş Yap
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span class="eyebrow-dot"></span>
+    Ücretsiz Almanca Öğrenme Platformu
+  </div>
+  <h1 class="hero-title">
+    Almancayı<br>
+    <span class="hero-title-accent">pratikle</span> öğren
+  </h1>
+  <p class="hero-sub">
+    Kelime quizleri, artikel bulucu, cümle örnekleri ve metin analizi ile
+    Almancana hız kat. Hesap aç, hemen başla.
+  </p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="login.html">
+      <svg viewBox="0 0 48 48" width="18" height="18">
+        <path fill="#0a0a0f" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#0a0a0f" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#0a0a0f" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#0a0a0f" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Google ile Ücretsiz Başla
+    </a>
+    <a class="btn-secondary" href="#ozellikler">
+      Özellikleri Keşfet
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hstat">
+      <span class="hstat-num">8+</span>
+      <span class="hstat-label">Özellik</span>
+    </div>
+    <div class="hstat-div"></div>
+    <div class="hstat">
+      <span class="hstat-num">A1–C1</span>
+      <span class="hstat-label">Seviyeler</span>
+    </div>
+    <div class="hstat-div"></div>
+    <div class="hstat">
+      <span class="hstat-num">%100</span>
+      <span class="hstat-label">Ücretsiz</span>
+    </div>
+    <div class="hstat-div"></div>
+    <div class="hstat">
+      <span class="hstat-num">TR</span>
+      <span class="hstat-label">Türkçe Arayüz</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="ozellikler">
+  <div class="section-header">
+    <div class="section-label">Ne Sunuyoruz?</div>
+    <h2 class="section-title">Almanca öğrenmek için <span>ihtiyacın olan her şey</span></h2>
+  </div>
+
+  <div class="features-grid">
+
+    <div class="feat-card feat-card--gold">
+      <div class="feat-icon">📝</div>
+      <div class="feat-title">Metin Analizi</div>
+      <p class="feat-desc">Almanca metin gir, kelime kelime analiz et. Bilinmeyen kelimeleri anında öğren.</p>
+      <span class="feat-tag">Analiz</span>
+    </div>
+
+    <div class="feat-card feat-card--violet">
+      <div class="feat-icon">🎯</div>
+      <div class="feat-title">Kelime Quizi</div>
+      <p class="feat-desc">Seviyene göre kelime quizleri çöz. Doğru/yanlış takibi ile gelişimini izle.</p>
+      <span class="feat-tag">Quiz</span>
+    </div>
+
+    <div class="feat-card feat-card--green">
+      <div class="feat-icon">📚</div>
+      <div class="feat-title">Kelime Listesi</div>
+      <p class="feat-desc">Kaydettiğin kelimeleri listele, tekrar et. Kendi kelime bankanı oluştur.</p>
+      <span class="feat-tag">Kelimeler</span>
+    </div>
+
+    <div class="feat-card feat-card--blue">
+      <div class="feat-icon">➕</div>
+      <div class="feat-title">Kelime Ekle</div>
+      <p class="feat-desc">Kendi kelimelerini ekle, notlar al. Kişisel öğrenme listeleri oluştur.</p>
+      <span class="feat-tag">Kişisel</span>
+    </div>
+
+    <div class="feat-card feat-card--amber">
+      <div class="feat-icon">🔤</div>
+      <div class="feat-title">Artikel Bulucu</div>
+      <p class="feat-desc">Der, die, das — Almancada en çok zorlayan konuyu pratikle öğren.</p>
+      <span class="feat-tag">Gramer</span>
+    </div>
+
+    <div class="feat-card feat-card--blue">
+      <div class="feat-icon">💬</div>
+      <div class="feat-title">Cümle Örnekleri</div>
+      <p class="feat-desc">Her kelime için gerçek cümle örnekleri. Kelimelerin bağlamını kavra.</p>
+      <span class="feat-tag">Cümleler</span>
+    </div>
+
+    <div class="feat-card feat-card--violet">
+      <div class="feat-icon">🧠</div>
+      <div class="feat-title">Akıllı Quiz</div>
+      <p class="feat-desc">Hata yaptığın kelimelere odaklan. Adaptif sistem ile daha hızlı öğren.</p>
+      <span class="feat-tag">Yapay Zeka</span>
+    </div>
+
+    <div class="feat-card feat-card--rose">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">İlerleme Takibi</div>
+      <p class="feat-desc">Kaç kelime öğrendin? Hangi konular zayıf? Gelişimini grafiklerle gör.</p>
+      <span class="feat-tag">İstatistik</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-banner">
+  <div class="cta-inner">
+    <h2 class="cta-title">Almancana bugün başla</h2>
+    <p class="cta-sub">Google hesabınla saniyeler içinde kayıt ol. Kredi kartı gerekmez.</p>
+    <a class="btn-primary" href="login.html" style="display:inline-flex;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <polyline points="10 17 15 12 10 7"/>
+        <line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+      Ücretsiz Başla
+    </a>
+    <p class="cta-note">Giriş yaparak <a href="kullanim-sartlari.html" style="color:var(--gold);text-decoration:none">Kullanım Koşulları</a>'nı ve <a href="privacy.html" style="color:var(--gold);text-decoration:none">Gizlilik Politikası</a>'nı kabul etmiş olursunuz.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">
+    <div class="footer-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <span class="footer-logo-name">AlmancaPratik</span>
+  </div>
+  <div class="footer-links">
+    <a href="privacy.html">Gizlilik Politikası</a>
+    <a href="kullanim-sartlari.html">Kullanım Koşulları</a>
+    <a href="login.html">Giriş Yap</a>
+  </div>
+  <span class="footer-copy">© 2025 AlmancaPratik</span>
+</footer>
+
 </body>
 </html>

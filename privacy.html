@@ -1,29 +1,273 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gizlilik Politikası – AlmancaPratik Kelime Ekle</title>
-  <style>
-    body { font-family: -apple-system, sans-serif; max-width: 700px; margin: 60px auto; padding: 0 20px; color: #333; line-height: 1.7; }
-    h1 { font-size: 24px; } h2 { font-size: 18px; margin-top: 32px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<title>Gizlilik Politikası — Almanca Pratik</title>
+<meta name="description" content="Almanca Pratik gizlilik politikası. Kişisel verilerinizin nasıl toplandığı ve kullanıldığı hakkında bilgi edinin.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --bg-base:      #070709;
+  --bg-surface:   rgba(255,255,255,0.035);
+  --bg-hover:     rgba(255,255,255,0.06);
+  --border-subtle: rgba(255,255,255,0.07);
+  --border-hover:  rgba(255,255,255,0.16);
+  --text-primary:   #f0eee8;
+  --text-secondary: rgba(240,238,232,0.55);
+  --text-muted:     rgba(240,238,232,0.32);
+  --gold:   #c9a84c;
+  --gold-light: #e8c97a;
+  --radius-card: 16px;
+  --transition:  0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bg-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%);
+}
+.bg-glow { position: absolute; border-radius: 50%; filter: blur(120px); animation: drift 12s ease-in-out infinite alternate; }
+.bg-glow--1 { width:500px; height:500px; top:-150px; left:-80px; background:radial-gradient(circle,#c9a84c,transparent 70%); opacity:0.10; }
+.bg-glow--2 { width:400px; height:400px; bottom:10%; right:-100px; background:radial-gradient(circle,#a064ff,transparent 70%); opacity:0.06; animation-delay:-6s; }
+@keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,20px) scale(1.05)} }
+
+.nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  padding: 20px 40px;
+  display: flex; align-items:center; justify-content:space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(7,7,9,0.85);
+  backdrop-filter: blur(16px);
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo-icon {
+  width:34px; height:34px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius:9px; display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.2);
+}
+.nav-logo-icon svg { width:18px; height:18px; }
+.nav-logo-name { font-family:var(--font-display); font-size:16px; font-weight:800; color:var(--text-primary); letter-spacing:-0.01em; }
+.nav-back {
+  font-size:13px; color:var(--text-muted); text-decoration:none;
+  display:flex; align-items:center; gap:6px; transition:var(--transition);
+  padding:6px 14px; border:1px solid var(--border-subtle); border-radius:999px;
+}
+.nav-back:hover { color:var(--text-primary); border-color:var(--border-hover); }
+.nav-back svg { width:14px; height:14px; }
+
+.page {
+  position:relative; z-index:1;
+  max-width:760px; margin:0 auto;
+  padding:120px 32px 100px;
+  animation: fadeUp 0.7s cubic-bezier(0.4,0,0.2,1) both;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+.page-header { margin-bottom:56px; }
+.page-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-muted); margin-bottom:20px;
+  padding:5px 14px 5px 10px; border:1px solid var(--border-subtle);
+  border-radius:999px; background:rgba(255,255,255,0.02);
+}
+.eyebrow-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold); animation:pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+.page-title { font-family:var(--font-display); font-size:clamp(32px,5vw,52px); font-weight:800; letter-spacing:-0.03em; line-height:1.05; margin-bottom:16px; }
+.page-title span { background:linear-gradient(135deg,#c9a84c 0%,#f0d080 50%,#c9a84c 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-meta { font-size:14px; color:var(--text-muted); }
+
+.section {
+  margin-bottom:16px; padding:28px 32px;
+  background:var(--bg-surface); border:1px solid var(--border-subtle);
+  border-radius:var(--radius-card); transition:var(--transition);
+}
+.section:hover { border-color:var(--border-hover); background:var(--bg-hover); }
+.section-num { font-family:var(--font-display); font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; opacity:0.7; }
+.section h2 { font-family:var(--font-display); font-size:18px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); margin-bottom:14px; }
+.section p { font-size:14.5px; line-height:1.75; color:var(--text-secondary); margin-bottom:10px; }
+.section p:last-child { margin-bottom:0; }
+.section ul { list-style:none; display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.section ul li { font-size:14.5px; line-height:1.7; color:var(--text-secondary); padding-left:20px; position:relative; }
+.section ul li::before { content:''; position:absolute; left:0; top:10px; width:5px; height:5px; border-radius:50%; background:var(--gold); opacity:0.6; }
+.section a { color:var(--gold); text-decoration:none; }
+.section a:hover { text-decoration:underline; }
+
+.contact-box {
+  margin-top:40px; padding:28px 32px;
+  border:1px solid rgba(201,168,76,0.2); border-radius:var(--radius-card);
+  background:rgba(201,168,76,0.04); display:flex; align-items:center; gap:20px;
+}
+.contact-box-icon {
+  width:44px; height:44px; flex-shrink:0; border-radius:12px;
+  background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.2);
+  display:flex; align-items:center; justify-content:center; color:var(--gold);
+}
+.contact-box-icon svg { width:20px; height:20px; }
+.contact-box p { font-size:14px; color:var(--text-secondary); line-height:1.6; }
+.contact-box a { color:var(--gold); text-decoration:none; }
+.contact-box a:hover { text-decoration:underline; }
+
+.page-footer {
+  margin-top:56px; padding-top:28px; border-top:1px solid var(--border-subtle);
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+}
+.page-footer span { font-size:12px; color:var(--text-muted); }
+.page-footer a { font-size:12px; color:var(--text-muted); text-decoration:none; transition:var(--transition); }
+.page-footer a:hover { color:var(--gold); }
+
+@media (max-width:600px) {
+  .nav { padding:16px 20px; }
+  .page { padding:100px 20px 80px; }
+  .section { padding:22px 20px; }
+  .contact-box { flex-direction:column; align-items:flex-start; }
+  .page-footer { flex-direction:column; }
+}
+</style>
 </head>
 <body>
-  <h1>Gizlilik Politikası – AlmancaPratik Kelime Ekle</h1>
-  <p>Son güncelleme: Mart 2026</p>
 
-  <h2>Toplanan Veriler</h2>
-  <p>Uzantı, kullanıcının Google hesabıyla giriş yapması sırasında yalnızca Google hesap kimliğini (User ID) kullanır. Ad, e-posta veya diğer kişisel bilgiler saklanmaz.</p>
-  <p>Kullanıcının seçip kaydettiği kelimeler ve çevirileri, yalnızca o kullanıcıya ait Firebase Firestore veritabanında saklanır.</p>
+<div class="bg-canvas">
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow--1"></div>
+  <div class="bg-glow bg-glow--2"></div>
+</div>
 
-  <h2>Verilerin Kullanımı</h2>
-  <p>Toplanan veriler yalnızca kişisel sözlük işlevini sağlamak amacıyla kullanılır. Veriler hiçbir üçüncü tarafla paylaşılmaz, satılmaz veya reklam amacıyla kullanılmaz.</p>
+<nav class="nav">
+  <a class="nav-logo" href="/">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <span class="nav-logo-name">AlmancaPratik</span>
+  </a>
+  <a class="nav-back" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    Ana Sayfa
+  </a>
+</nav>
 
-  <h2>Üçüncü Taraf Hizmetler</h2>
-  <p>Uzantı, çeviri işlemi için Google Translate API'yi ve veri depolama için Google Firebase'i kullanır. Bu hizmetlerin kendi gizlilik politikaları geçerlidir.</p>
+<main class="page">
 
-  <h2>İletişim</h2>
-  <p>Sorularınız için: <a href="mailto:yavuzutku144@gmail.com">yavuzutku144@gmail.com</a></p>
+  <header class="page-header">
+    <div class="page-eyebrow"><span class="eyebrow-dot"></span>Yasal Bilgi</div>
+    <h1 class="page-title">Gizlilik <span>Politikası</span></h1>
+    <p class="page-meta">Son güncelleme: Ocak 2025</p>
+  </header>
+
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2>Genel Bakış</h2>
+    <p>AlmancaPratik olarak gizliliğinize saygı duyuyor ve kişisel verilerinizi korumayı taahhüt ediyoruz. Bu politika, almancapratik.com adresini ziyaret ettiğinizde hangi bilgilerin toplandığını, nasıl kullanıldığını ve nasıl korunduğunu açıklamaktadır.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2>Toplanan Bilgiler</h2>
+    <p>Siteyi kullanırken aşağıdaki bilgiler toplanabilir:</p>
+    <ul>
+      <li>Google ile giriş yaptığınızda: adınız, e-posta adresiniz ve profil fotoğrafınız (Google OAuth aracılığıyla)</li>
+      <li>Kullanım verileri: ziyaret ettiğiniz sayfalar, kullandığınız özellikler, oturum süresi</li>
+      <li>Teknik veriler: IP adresi, tarayıcı türü, cihaz bilgisi</li>
+      <li>Çerezler ve benzeri izleme teknolojileri</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2>Bilgilerin Kullanımı</h2>
+    <p>Topladığımız bilgileri şu amaçlarla kullanıyoruz:</p>
+    <ul>
+      <li>Hesabınızı oluşturmak ve yönetmek</li>
+      <li>Kişiselleştirilmiş Almanca öğrenme deneyimi sunmak</li>
+      <li>Site performansını ve kullanıcı deneyimini iyileştirmek</li>
+      <li>Güvenliği sağlamak ve kötüye kullanımı önlemek</li>
+      <li>Google AdSense aracılığıyla ilgili reklamlar göstermek</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2>Google Hizmetleri</h2>
+    <p>Site aşağıdaki Google hizmetlerini kullanmaktadır:</p>
+    <ul>
+      <li><strong style="color:var(--text-primary)">Google Firebase Authentication:</strong> Güvenli giriş altyapısı için</li>
+      <li><strong style="color:var(--text-primary)">Google Analytics:</strong> Anonim ziyaretçi istatistikleri için</li>
+      <li><strong style="color:var(--text-primary)">Google AdSense:</strong> Alakalı reklam gösterimi için</li>
+    </ul>
+    <p>Bu hizmetler Google'ın kendi gizlilik politikasına tabidir: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a></p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2>Çerezler</h2>
+    <p>Site, oturum yönetimi ve analiz amacıyla çerezler kullanmaktadır. Tarayıcınızın ayarlarından çerezleri devre dışı bırakabilirsiniz; ancak bu durumda bazı özellikler çalışmayabilir.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">06</div>
+    <h2>Üçüncü Taraflarla Paylaşım</h2>
+    <p>Kişisel verileriniz; yasal zorunluluklar dışında, açık rızanız olmadan üçüncü taraflarla satılmaz, kiralanmaz veya paylaşılmaz. Yukarıda belirtilen Google hizmetleri kendi gizlilik sözleşmeleri kapsamında veri işleyebilir.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">07</div>
+    <h2>Haklarınız</h2>
+    <p>Kişisel verilerinizle ilgili aşağıdaki haklara sahipsiniz:</p>
+    <ul>
+      <li>Verilerinize erişim talep etme</li>
+      <li>Yanlış verilerin düzeltilmesini isteme</li>
+      <li>Verilerinizin silinmesini talep etme</li>
+      <li>Hesabınızı istediğiniz zaman silme</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-num">08</div>
+    <h2>Değişiklikler</h2>
+    <p>Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler olduğunda site üzerinden bilgilendirileceksiniz.</p>
+  </div>
+
+  <div class="contact-box">
+    <div class="contact-box-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+    </div>
+    <p>Gizlilik konusundaki sorularınız için <a href="mailto:yavuzutku144@gmail.com">yavuzutku144@gmail.com</a> adresine ulaşabilirsiniz.</p>
+  </div>
+
+  <footer class="page-footer">
+    <span>© 2025 AlmancaPratik — Tüm hakları saklıdır.</span>
+    <a href="/">Ana Sayfa</a>
+  </footer>
+
+</main>
 </body>
 </html>

@@ -1,7 +1,19 @@
-import { getMetinler, deleteMetin, auth, onAuthChange } from "./firebase.js";
+import { getMetinler, deleteMetin, onAuthChange } from "./firebase.js";
 
 let allMetinler = [];
 let activeId    = null;
+
+/* ============================
+   GÜVENLİK: HTML ESCAPE
+============================= */
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 function formatDate(ts){
   const d = new Date(ts);
@@ -13,6 +25,20 @@ function formatDate(ts){
 
 function wordCount(text){
   return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+/* ── Hata mesajı göster ─────────────────────────────────────────────────── */
+function showError(msg) {
+  const container = document.getElementById("historyList");
+  if (!container) return;
+  container.innerHTML = `
+    <div style="
+      padding:24px;border-radius:12px;
+      background:rgba(224,82,82,0.08);
+      border:1px solid rgba(224,82,82,0.2);
+      color:#e05252;font-size:14px;text-align:center;
+    ">⚠️ ${escapeHtml(msg)}</div>
+  `;
 }
 
 function renderList(list){
@@ -31,13 +57,29 @@ function renderList(list){
     const card = document.createElement("div");
     card.className = "history-card";
     card.style.animationDelay = (idx * 40) + "ms";
-    card.innerHTML = `
-      <div class="card-meta">
-        <span class="card-date">${formatDate(item.created)}</span>
-        <span class="card-wordcount">${wordCount(item.text)} kelime</span>
-      </div>
-      <div class="card-preview">${item.text}</div>
-    `;
+
+    /* ── Güvenli DOM oluşturma ── */
+    const metaDiv = document.createElement("div");
+    metaDiv.className = "card-meta";
+
+    const dateSpan = document.createElement("span");
+    dateSpan.className = "card-date";
+    dateSpan.textContent = formatDate(item.created);  // ← textContent: güvenli
+
+    const wcSpan = document.createElement("span");
+    wcSpan.className = "card-wordcount";
+    wcSpan.textContent = wordCount(item.text) + " kelime";  // ← textContent: güvenli
+
+    metaDiv.appendChild(dateSpan);
+    metaDiv.appendChild(wcSpan);
+
+    const previewDiv = document.createElement("div");
+    previewDiv.className = "card-preview";
+    previewDiv.textContent = item.text;  // ← textContent: güvenli (innerHTML DEĞİL)
+
+    card.appendChild(metaDiv);
+    card.appendChild(previewDiv);
+
     card.addEventListener("click", () => openModal(item));
     container.appendChild(card);
   });
@@ -45,6 +87,7 @@ function renderList(list){
 
 function openModal(item){
   activeId = item.id;
+  /* textContent ile set et — innerHTML kullanma */
   document.getElementById("modalDate").textContent = formatDate(item.created);
   document.getElementById("modalText").textContent = item.text;
   document.getElementById("previewModal").style.display = "flex";
@@ -61,8 +104,12 @@ async function loadHistory(){
     console.warn("Kullanıcı henüz yüklenmedi");
     return;
   }
-  allMetinler = await getMetinler(userId);
-  renderList(allMetinler);
+  try {
+    allMetinler = await getMetinler(userId);
+    renderList(allMetinler);
+  } catch (err) {
+    showError(err.message);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -90,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!item) return;
 
     sessionStorage.setItem("savedText", item.text);
-    // ✅ Geri dön butonu geçmişe dönsün
     sessionStorage.setItem("returnPage", "../gecmis/");
     window.location.href = "../okuma/";
   });
@@ -98,8 +144,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("modalDelete").addEventListener("click", async () => {
     if(activeId === null) return;
     const userId = window.getUserId();
-    await deleteMetin(userId, activeId);
-    closeModal();
-    await loadHistory();
+    if (!userId) return;
+
+    try {
+      await deleteMetin(userId, activeId);
+      closeModal();
+      await loadHistory();
+    } catch (err) {
+      alert("Silme hatası: " + err.message);
+    }
   });
 });

@@ -60,13 +60,21 @@ export function onAuthChange(callback){
 ============================= */
 
 export async function saveMetin(userId, text){
-  await addDoc(
-    collection(db, "users", userId, "texts"),
-    {
-      text: text,
-      created: Date.now()
-    }
-  );
+  if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
+  if (!text || text.trim().length === 0) throw new Error("Metin boş olamaz.");
+
+  try {
+    await addDoc(
+      collection(db, "users", userId, "texts"),
+      {
+        text: text.trim(),
+        created: Date.now()
+      }
+    );
+  } catch (err) {
+    console.error("[saveMetin] Firestore hatası:", err);
+    throw new Error("Metin kaydedilemedi. Lütfen tekrar dene.");
+  }
 }
 
 
@@ -75,16 +83,23 @@ export async function saveMetin(userId, text){
 ============================= */
 
 export async function getMetinler(userId){
-  const q = query(
-    collection(db, "users", userId, "texts"),
-    orderBy("created", "desc")
-  );
-  const snapshot = await getDocs(q);
-  const list = [];
-  snapshot.forEach(d => {
-    list.push({ id: d.id, ...d.data() });
-  });
-  return list;
+  if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
+
+  try {
+    const q = query(
+      collection(db, "users", userId, "texts"),
+      orderBy("created", "desc")
+    );
+    const snapshot = await getDocs(q);
+    const list = [];
+    snapshot.forEach(d => {
+      list.push({ id: d.id, ...d.data() });
+    });
+    return list;
+  } catch (err) {
+    console.error("[getMetinler] Firestore hatası:", err);
+    throw new Error("Metinler yüklenemedi. Lütfen sayfayı yenile.");
+  }
 }
 
 
@@ -93,9 +108,16 @@ export async function getMetinler(userId){
 ============================= */
 
 export async function deleteMetin(userId, id){
-  await deleteDoc(
-    doc(db, "users", userId, "texts", id)
-  );
+  if (!userId || !id) throw new Error("Geçersiz parametre.");
+
+  try {
+    await deleteDoc(
+      doc(db, "users", userId, "texts", id)
+    );
+  } catch (err) {
+    console.error("[deleteMetin] Firestore hatası:", err);
+    throw new Error("Metin silinemedi. Lütfen tekrar dene.");
+  }
 }
 
 
@@ -104,16 +126,24 @@ export async function deleteMetin(userId, id){
 ============================= */
 
 export async function saveWord(userId, word, meaning, tags = []){
-  await addDoc(
-    collection(db, "users", userId, "words"),
-    {
-      word:    word,
-      meaning: meaning,
-      tags:    tags,           // ← yeni alan
-      date:    new Date().toISOString(),
-      created: Date.now()
-    }
-  );
+  if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
+  if (!word || !meaning) throw new Error("Kelime ve anlam boş olamaz.");
+
+  try {
+    await addDoc(
+      collection(db, "users", userId, "words"),
+      {
+        word:    word.trim(),
+        meaning: meaning.trim(),
+        tags:    Array.isArray(tags) ? tags : [],
+        date:    new Date().toISOString(),
+        created: Date.now()
+      }
+    );
+  } catch (err) {
+    console.error("[saveWord] Firestore hatası:", err);
+    throw new Error("Kelime kaydedilemedi. Lütfen tekrar dene.");
+  }
 }
 
 
@@ -122,16 +152,23 @@ export async function saveWord(userId, word, meaning, tags = []){
 ============================= */
 
 export async function getWords(userId){
-  const q = query(
-    collection(db, "users", userId, "words"),
-    orderBy("created", "desc")
-  );
-  const snapshot = await getDocs(q);
-  const list = [];
-  snapshot.forEach(d => {
-    list.push({ id: d.id, ...d.data() });
-  });
-  return list;
+  if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
+
+  try {
+    const q = query(
+      collection(db, "users", userId, "words"),
+      orderBy("created", "desc")
+    );
+    const snapshot = await getDocs(q);
+    const list = [];
+    snapshot.forEach(d => {
+      list.push({ id: d.id, ...d.data() });
+    });
+    return list;
+  } catch (err) {
+    console.error("[getWords] Firestore hatası:", err);
+    throw new Error("Kelimeler yüklenemedi. Lütfen sayfayı yenile.");
+  }
 }
 
 
@@ -140,11 +177,31 @@ export async function getWords(userId){
 ============================= */
 
 export async function deleteWord(userId, wordId){
-  await deleteDoc(
-    doc(db, "users", userId, "words", wordId)
-  );
+  if (!userId || !wordId) throw new Error("Geçersiz parametre.");
+
+  try {
+    await deleteDoc(
+      doc(db, "users", userId, "words", wordId)
+    );
+  } catch (err) {
+    console.error("[deleteWord] Firestore hatası:", err);
+    throw new Error("Kelime silinemedi. Lütfen tekrar dene.");
+  }
 }
+
+
+/* ============================
+   KELİME GÜNCELLE
+============================= */
+
 export async function updateWord(userId, wordId, data) {
-  const ref = doc(db, "users", userId, "words", wordId);
-  await updateDoc(ref, data);
+  if (!userId || !wordId) throw new Error("Geçersiz parametre.");
+
+  try {
+    const ref = doc(db, "users", userId, "words", wordId);
+    await updateDoc(ref, data);
+  } catch (err) {
+    console.error("[updateWord] Firestore hatası:", err);
+    throw new Error("Kelime güncellenemedi. Lütfen tekrar dene.");
+  }
 }

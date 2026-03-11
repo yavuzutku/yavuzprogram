@@ -23,32 +23,36 @@ function requireAuth(){
 function loadNavbar(){
   const navbar = document.createElement("div");
   navbar.className = "navbar";
+
+  /* İskelet HTML — kullanıcı verisi YOK */
   navbar.innerHTML = `
     <div class="logo">AlmancaPratik</div>
     <div style="display:flex; gap:10px; align-items:center;">
       <button class="home-btn" id="homeBtn">Anamenü</button>
-
-      <!-- Profil Fotoğrafı + Dropdown -->
       <div class="profile-wrapper" id="profileWrapper">
         <img
           class="profile-avatar"
           id="profileAvatar"
           src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64"
-          alt="Profil"
+          alt="Profil fotoğrafı"
         />
-        <div class="profile-dropdown" id="profileDropdown">
+        <div class="profile-dropdown" id="profileDropdown" role="menu" aria-label="Profil menüsü">
           <div class="profile-dropdown__header">
             <img
               class="profile-dropdown__avatar"
               id="profileAvatarSmall"
               src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64"
-              alt="Profil"
+              alt="Profil fotoğrafı"
             />
             <span class="profile-email" id="profileEmail">Yükleniyor...</span>
           </div>
           <div class="profile-dropdown__divider"></div>
-          <button class="logout-btn" id="logoutBtn">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <button class="logout-btn" id="logoutBtn" role="menuitem">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
             Çıkış Yap
           </button>
         </div>
@@ -56,16 +60,13 @@ function loadNavbar(){
     </div>
   `;
 
-  // Stil enjeksiyonu
   const style = document.createElement("style");
   style.textContent = `
-    /* ── Profile Wrapper ── */
     .profile-wrapper {
       position: relative;
       display: inline-block;
     }
 
-    /* ── Avatar Ring ── */
     .profile-avatar {
       width: 34px;
       height: 34px;
@@ -82,7 +83,6 @@ function loadNavbar(){
       box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
     }
 
-    /* ── Dropdown Panel ── */
     .profile-dropdown {
       display: none;
       position: absolute;
@@ -109,7 +109,6 @@ function loadNavbar(){
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* ── Dropdown Header (avatar + email) ── */
     .profile-dropdown__header {
       display: flex;
       align-items: center;
@@ -139,14 +138,12 @@ function loadNavbar(){
       max-width: 150px;
     }
 
-    /* ── Divider ── */
     .profile-dropdown__divider {
       height: 1px;
       background: rgba(255,255,255,0.07);
       margin: 2px 0;
     }
 
-    /* ── Logout Button ── */
     .profile-dropdown .logout-btn {
       display: flex;
       align-items: center;
@@ -175,41 +172,58 @@ function loadNavbar(){
   document.head.appendChild(style);
   document.body.prepend(navbar);
 
-  // Anamenü
+  /* ── Anamenü ── */
   document.getElementById("homeBtn").addEventListener("click", () => {
     window.location.href = "../anasayfa/";
   });
 
-  // Çıkış
+  /* ── Çıkış ── */
   document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await logoutFirebase();
-    window.location.href = "../";
+    try {
+      await logoutFirebase();
+    } catch (err) {
+      console.error("Çıkış hatası:", err);
+    } finally {
+      window.location.href = "../";
+    }
   });
 
-  // Dropdown aç/kapat
+  /* ── Dropdown aç/kapat ── */
   const avatar   = document.getElementById("profileAvatar");
   const dropdown = document.getElementById("profileDropdown");
 
   avatar.addEventListener("click", (e) => {
     e.stopPropagation();
+    const isOpen = dropdown.classList.contains("open");
     dropdown.classList.toggle("open");
+    avatar.setAttribute("aria-expanded", String(!isOpen));
   });
 
-  // Dışarı tıklayınca kapat
+  /* Klavye erişilebilirliği: Escape ile kapat */
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      dropdown.classList.remove("open");
+      avatar.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  /* Dışarı tıklayınca kapat */
   document.addEventListener("click", () => {
     dropdown.classList.remove("open");
+    avatar.setAttribute("aria-expanded", "false");
   });
 
-  // Kullanıcı bilgilerini doldur
+  /* ── Kullanıcı bilgilerini doldur ── */
   onAuthChange((user) => {
     if(user){
+      /* textContent ile set et — innerHTML değil */
       document.getElementById("profileEmail").textContent = user.email || "Kullanıcı";
 
       const avatarSrc = user.photoURL
         ? user.photoURL
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email || "U")}&background=1e1830&color=a064ff&size=64`;
 
-      document.getElementById("profileAvatar").src = avatarSrc;
+      document.getElementById("profileAvatar").src      = avatarSrc;
       document.getElementById("profileAvatarSmall").src = avatarSrc;
     }
   });
@@ -224,6 +238,18 @@ function getUserId(){
   return user ? user.uid : null;
 }
 
+/* ============================
+   EXPORT
+   NOT: window'a bağlamak yerine
+   ES Module export kullanıyoruz.
+   Ancak mevcut sayfalar window.*
+   ile çağırdığından geçici olarak
+   ikisini de destekliyoruz.
+============================= */
+
+export { requireAuth, loadNavbar, getUserId };
+
+// Geriye dönük uyumluluk — ileride kaldırılacak
 window.requireAuth = requireAuth;
 window.loadNavbar  = loadNavbar;
 window.getUserId   = getUserId;

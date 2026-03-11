@@ -1,93 +1,111 @@
 /* =========================
-   MODERN NAVBAR
+   NAVBAR
 ========================= */
 
-.navbar{
-  position:sticky;
-  top:0;
-  z-index:1000;
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
-  padding:14px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  background:rgba(18,18,26,0.85);
-  backdrop-filter:blur(15px);
-  border-bottom:1px solid rgba(255,255,255,0.06);
+  padding: 0 44px;
+  height: 62px;
 
-  transition:0.3s ease;
+  background: rgba(7, 7, 9, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  /* subtle gold accent line at very bottom */
+  box-shadow:
+    0 1px 0 0 rgba(201, 168, 76, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.35);
+
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* LOGO */
-
-.logo{
-  font-size:18px;
-  font-weight:600;
-  letter-spacing:0.5px;
-  color:#ffffff;
+/* ── Logo ── */
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f0eee8;
+  position: relative;
+  user-select: none;
 }
 
-/* LOGOUT BUTTON (SAĞDA ZATEN) */
-
-.logout-btn{
-  padding:8px 16px;
-  background:linear-gradient(135deg,#c9a84c,#e0c270);
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-
-  font-size:14px;
-  font-weight:600;
-  color:#111;
-
-  transition:0.3s ease;
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: linear-gradient(90deg, #c9a84c, transparent);
+  border-radius: 2px;
+  opacity: 0.7;
 }
 
-.logout-btn:hover{
-  transform:translateY(-2px) scale(1.05);
-  box-shadow:0 10px 25px rgba(201,168,76,0.4);
-}
-/* ANAMENU BUTTON */
-
-.home-btn{
-  padding:8px 16px;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:10px;
-  cursor:pointer;
-
-  font-size:14px;
-  font-weight:600;
-  color:#fff;
-
-  transition:0.3s ease;
+/* ── Nav Right (wrapper for buttons + avatar) ── */
+.navbar > div:last-child {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
-.home-btn:hover{
-  background:rgba(255,255,255,0.15);
-  transform:translateY(-2px);
+/* ── Anamenü Button ── */
+.home-btn {
+  padding: 7px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(240, 238, 232, 0.65);
+  letter-spacing: 0.01em;
+
+  transition: all 0.2s ease;
 }
+
+.home-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #f0eee8;
+  transform: translateY(-1px);
+}
+
+/* ── Tag chips (used elsewhere in app) ── */
 .tag-chip {
   padding: 5px 12px;
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
-  color: #888;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(240, 238, 232, 0.45);
   font-size: 12px;
-  font-family: inherit;
+  font-family: 'DM Sans', sans-serif;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.2s ease;
   font-weight: 500;
 }
+
 .tag-chip:hover {
-  border-color: #c9a84c;
+  border-color: rgba(201, 168, 76, 0.5);
   color: #c9a84c;
+  background: rgba(201, 168, 76, 0.06);
 }
+
 .tag-chip.selected {
-  background: #c9a84c;
-  border-color: #c9a84c;
-  color: #0a0a0f;
-  font-weight: 700;
+  background: rgba(201, 168, 76, 0.15);
+  border-color: rgba(201, 168, 76, 0.5);
+  color: #c9a84c;
+  font-weight: 600;
 }

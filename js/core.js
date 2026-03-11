@@ -25,7 +25,7 @@ function loadNavbar(){
   navbar.className = "navbar";
   navbar.innerHTML = `
     <div class="logo">AlmancaPratik</div>
-    <div style="display:flex; gap:12px; align-items:center;">
+    <div style="display:flex; gap:10px; align-items:center;">
       <button class="home-btn" id="homeBtn">Anamenü</button>
 
       <!-- Profil Fotoğrafı + Dropdown -->
@@ -37,9 +37,20 @@ function loadNavbar(){
           alt="Profil"
         />
         <div class="profile-dropdown" id="profileDropdown">
-          <span class="profile-email" id="profileEmail">Yükleniyor...</span>
-          <hr style="border-color:#ffffff22; margin:6px 0;">
-          <button class="logout-btn" id="logoutBtn">🚪 Çıkış Yap</button>
+          <div class="profile-dropdown__header">
+            <img
+              class="profile-dropdown__avatar"
+              id="profileAvatarSmall"
+              src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64"
+              alt="Profil"
+            />
+            <span class="profile-email" id="profileEmail">Yükleniyor...</span>
+          </div>
+          <div class="profile-dropdown__divider"></div>
+          <button class="logout-btn" id="logoutBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Çıkış Yap
+          </button>
         </div>
       </div>
     </div>
@@ -48,73 +59,117 @@ function loadNavbar(){
   // Stil enjeksiyonu
   const style = document.createElement("style");
   style.textContent = `
+    /* ── Profile Wrapper ── */
     .profile-wrapper {
       position: relative;
       display: inline-block;
     }
 
+    /* ── Avatar Ring ── */
     .profile-avatar {
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       object-fit: cover;
       cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.35);
-      transition: border-color 0.2s, transform 0.2s;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      display: block;
     }
     .profile-avatar:hover {
-      border-color: rgba(255,255,255,0.85);
-      transform: scale(1.07);
+      border-color: rgba(201,168,76,0.7);
+      transform: scale(1.06);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
     }
 
+    /* ── Dropdown Panel ── */
     .profile-dropdown {
       display: none;
       position: absolute;
       right: 0;
-      top: calc(100% + 10px);
-      background: #1e1e2e;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 10px;
-      padding: 10px 12px;
-      min-width: 180px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+      top: calc(100% + 12px);
+      background: #0f0f14;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 12px;
+      padding: 6px;
+      min-width: 210px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03),
+        0 16px 40px rgba(0,0,0,0.6),
+        0 4px 12px rgba(0,0,0,0.4);
       z-index: 9999;
-      animation: fadeDown 0.18s ease;
+      animation: dropdownIn 0.18s cubic-bezier(0.4,0,0.2,1) both;
     }
     .profile-dropdown.open {
       display: block;
     }
 
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes dropdownIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── Dropdown Header (avatar + email) ── */
+    .profile-dropdown__header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+
+    .profile-dropdown__avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
     }
 
     .profile-email {
       display: block;
+      font-family: 'DM Sans', sans-serif;
       font-size: 12px;
-      color: #aaa;
+      font-weight: 400;
+      color: rgba(240,238,232,0.45);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 160px;
+      max-width: 150px;
     }
 
+    /* ── Divider ── */
+    .profile-dropdown__divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      margin: 2px 0;
+    }
+
+    /* ── Logout Button ── */
     .profile-dropdown .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       width: 100%;
-      margin-top: 6px;
-      padding: 7px 10px;
-      background: #e74c3c22;
-      color: #e74c3c;
-      border: 1px solid #e74c3c55;
-      border-radius: 6px;
+      padding: 9px 12px;
+      background: transparent;
+      color: rgba(240,112,104,0.8);
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
       font-size: 13px;
+      font-weight: 500;
       text-align: left;
-      transition: background 0.15s;
+      transition: background 0.15s, color 0.15s;
     }
     .profile-dropdown .logout-btn:hover {
-      background: #e74c3c44;
+      background: rgba(240,112,104,0.1);
+      color: #f07068;
+    }
+    .profile-dropdown .logout-btn svg {
+      flex-shrink: 0;
     }
   `;
   document.head.appendChild(style);
@@ -150,13 +205,12 @@ function loadNavbar(){
     if(user){
       document.getElementById("profileEmail").textContent = user.email || "Kullanıcı";
 
-      if(user.photoURL){
-        avatar.src = user.photoURL;
-      } else {
-        // İsim baş harfiyle avatar oluştur
-        const name = encodeURIComponent(user.displayName || user.email || "U");
-        avatar.src = `https://ui-avatars.com/api/?name=${name}&background=4f46e5&color=fff&size=64`;
-      }
+      const avatarSrc = user.photoURL
+        ? user.photoURL
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email || "U")}&background=1e1830&color=a064ff&size=64`;
+
+      document.getElementById("profileAvatar").src = avatarSrc;
+      document.getElementById("profileAvatarSmall").src = avatarSrc;
     }
   });
 }

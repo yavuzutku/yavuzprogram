@@ -25,9 +25,11 @@ body {
   background: var(--bg);
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px 16px;
   color: var(--text);
 }
 
@@ -87,9 +89,7 @@ body {
 /* ── <main> sıfırla ── */
 main {
   display: flex;
-  align-items: center;
   justify-content: center;
-  min-height: 100vh;
   width: 100%;
   position: relative;
   z-index: 10;
@@ -115,7 +115,7 @@ main {
 .logo-wrap {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 36px;
 }
 
@@ -126,7 +126,7 @@ main {
   background: linear-gradient(135deg, var(--gold), var(--gold-light));
   border-radius: 16px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   box-shadow: 0 8px 32px rgba(201,168,76,.25);
 }
@@ -148,7 +148,7 @@ main {
 /* ── Divider ── */
 .divider {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   margin-bottom: 28px;
 }
@@ -199,7 +199,7 @@ main {
 .user-panel {
   display: none;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
 }
 
@@ -258,16 +258,16 @@ main {
 /* ── Mobil ── */
 @media (max-width: 480px) {
   .card {
-    width: calc(100vw - 32px);
-    padding: 40px 28px;
-    border-radius: 20px;
+    width: 100%;
+    padding: 32px 20px;
+    border-radius: 18px;
   }
 }
 /* login.css sonuna ekle — Google butonu */
 
 .google-btn {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   background: #ffffff;
   color: #1f1f1f;
@@ -356,7 +356,7 @@ main {
 
 .field-label-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 

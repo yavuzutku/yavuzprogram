@@ -40,6 +40,13 @@
       <button class="word-modal-close" onclick="closeAddWordModal()">✕</button>
     </div>
     <div class="word-modal-word" id="modalWordDisplay">—</div>
+
+    <!-- Temel form önerisi (gehe → gehen) -->
+    <div id="modalBaseFormWrap" style="display:none;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.18);border-radius:8px;margin-bottom:4px;font-size:12px;color:#aaa;">
+      <span>Temel form: <strong id="modalBaseFormText" style="color:#e2e8f0;font-family:monospace;"></strong></span>
+      <button onclick="applyModalBaseForm()" style="padding:3px 9px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:6px;color:#c9a84c;font-size:11px;font-weight:600;cursor:pointer;">kullan →</button>
+    </div>
+
     <input
       type="text"
       id="modalMeaningInput"

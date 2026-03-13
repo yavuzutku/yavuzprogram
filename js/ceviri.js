@@ -9,6 +9,7 @@ let currentUser     = null;
 let allWords        = [];
 let currentLang     = "de-tr";   // "de-tr" veya "tr-de"
 let lastTranslation = null;      // { source, target, sl, tl }
+let lastWikiData    = null;      // { artikel, wordType, plural, genitive, autoTags }
 let exampleCache    = new Map();
 let historyVisible  = false;
 
@@ -90,6 +91,7 @@ clearBtn.addEventListener("click", () => {
   hideError();
   resetDetailPanel();
   lastTranslation = null;
+  lastWikiData    = null;
   sourceInput.focus();
 });
 
@@ -201,6 +203,7 @@ async function translate() {
     } else if (tl === "de" && isSingleWord(mainTranslation)) {
       loadWordDetails(mainTranslation, text);
     } else {
+      lastWikiData = null;
       showDetailEmpty();
     }
 
@@ -229,6 +232,15 @@ async function loadWordDetails(deWord, trMeaning) {
       fetchArtikelAndInfo(deWord),
       fetchExamples(deWord),
     ]);
+
+    // lastWikiData'yı güncelle (modal için)
+    const tagMap = {
+      "İsim": "isim", "Fiil": "fiil", "Sıfat": "sıfat", "Zarf": "zarf"
+    };
+    lastWikiData = {
+      ...artikelInfo,
+      autoTags: tagMap[artikelInfo.wordType] ? [tagMap[artikelInfo.wordType]] : [],
+    };
 
     // Artikel
     const artikel = artikelInfo.artikel;
@@ -495,18 +507,26 @@ copyBtn.addEventListener("click", async () => {
 saveWordBtn.addEventListener("click", () => {
   if (!lastTranslation) return;
 
-  const deWord = lastTranslation.sl === "de"
+  const deWordRaw = lastTranslation.sl === "de"
     ? lastTranslation.source
     : lastTranslation.target;
   const trWord = lastTranslation.sl === "de"
     ? lastTranslation.target
     : lastTranslation.source;
 
+  // Artikel varsa kelimeye ekle (der Hund), baş harfi büyüt
+  const artikel  = lastWikiData?.artikel || "";
+  const deWord   = artikel
+    ? `${artikel} ${deWordRaw.charAt(0).toUpperCase() + deWordRaw.slice(1)}`
+    : deWordRaw;
+
+  // autoTag: Wiktionary'den gelen kelime türü
+  const autoTags = lastWikiData?.autoTags || [];
+
   modalWord.value    = deWord;
   modalMeaning.value = trWord;
 
-  // Tag chip'leri render et
-  renderTagChips("modalTagChips", [], extractAllTags(allWords));
+  renderTagChips("modalTagChips", autoTags, extractAllTags(allWords));
 
   hideModalStatus();
   saveModal.style.display = "flex";

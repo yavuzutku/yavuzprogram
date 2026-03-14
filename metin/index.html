@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yeni Metin</title>
+  <title>Yeni Metin — AlmancaPratik</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/global.css">
@@ -11,30 +11,39 @@
 </head>
 <body>
 
-<!-- Arka plan desen -->
-<div class="bg-pattern"></div>
+<!-- Arka plan -->
+<div class="bg-pattern" aria-hidden="true"></div>
 
-<!-- Üst bilgi şeridi -->
-<header class="site-header">
-  <div class="header-inner">
-    <div class="header-brand">
-      <span class="brand-icon">✦</span>
-      <span class="brand-name">Almanca Pratik</span>
-    </div>
-    <div class="header-meta" id="autosave-indicator">
-      <span class="save-dot" id="saveDot"></span>
-      <span id="saveLabel">Kaydedilmedi</span>
-    </div>
+<!--
+  NAVBAR: core.js → window.loadNavbar() tarafından body'nin başına eklenir.
+  global.css: .navbar { position:sticky; top:0; height:62px }
+
+  .metin-toolbar aşağıda:  position:sticky; top:62px  (tablet→56px, mobil→52px)
+  Okuma sayfasındaki .reader-header ile aynı mantık — navbar altında yapışık.
+-->
+
+<!-- Sub-toolbar: autosave göstergesi + geri butonu -->
+<div class="metin-toolbar" id="metinToolbar">
+  <button class="toolbar-back-btn" onclick="history.back()" title="Geri dön">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    Geri
+  </button>
+  <span class="toolbar-title">Metin Editörü</span>
+  <div class="toolbar-save" id="autosave-indicator">
+    <span class="save-dot" id="saveDot"></span>
+    <span id="saveLabel">Kaydedilmedi</span>
   </div>
-</header>
+</div>
 
-<!-- Ana içerik -->
+<!-- Ana layout -->
 <main class="main-layout">
 
-  <!-- Sol: Araçlar + İstatistikler -->
+  <!-- Sol panel: istatistikler + araçlar -->
   <aside class="sidebar">
 
-    <div class="sidebar-card" id="stats-card">
+    <div class="sidebar-card">
       <h3 class="sidebar-title">İstatistikler</h3>
       <div class="stat-row"><span class="stat-label">Kelime</span><span class="stat-val" id="statWords">0</span></div>
       <div class="stat-row"><span class="stat-label">Karakter</span><span class="stat-val" id="statChars">0</span></div>
@@ -42,7 +51,7 @@
       <div class="stat-row"><span class="stat-label">Okuma süresi</span><span class="stat-val" id="statTime">0 dk</span></div>
     </div>
 
-    <div class="sidebar-card" id="structure-card">
+    <div class="sidebar-card">
       <h3 class="sidebar-title">Yapı Analizi</h3>
       <div class="stat-row"><span class="stat-label">📌 Başlık</span><span class="stat-val" id="structTitles">0</span></div>
       <div class="stat-row"><span class="stat-label">💬 Diyalog</span><span class="stat-val" id="structDialogs">0</span></div>
@@ -50,32 +59,32 @@
       <div class="stat-row"><span class="stat-label">✦ Bölüm</span><span class="stat-val" id="structSections">0</span></div>
     </div>
 
-    <div class="sidebar-card" id="tools-card">
+    <div class="sidebar-card">
       <h3 class="sidebar-title">Araçlar</h3>
-      <button class="tool-btn" id="btnClean" title="Fazla boşlukları, garip karakterleri temizle">
+      <button class="tool-btn" id="btnClean" title="Fazla boşlukları, tekrar eden satırları temizle">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
         Metni Temizle
       </button>
-      <button class="tool-btn" id="btnFixDashes" title="Tire karakterlerini Almanca standardına getir">
+      <button class="tool-btn" id="btnFixDashes" title="-- → — (em-dash), - → – (en-dash)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
         Tireleri Düzelt
       </button>
-      <button class="tool-btn" id="btnFixQuotes" title="Tırnak işaretlerini Almanca formatına dönüştür">
+      <button class="tool-btn" id="btnFixQuotes" title='"text" → „text" (Almanca tırnak)'>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
         Tırnakları Düzelt
       </button>
       <button class="tool-btn danger" id="btnClear">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        Temizle
+        Editörü Temizle
       </button>
     </div>
 
   </aside>
 
-  <!-- Orta: Editör -->
+  <!-- Editör alanı -->
   <section class="editor-section">
     <div class="editor-header">
-      <div class="editor-label">Metin Editörü</div>
+      <div class="editor-label">Almanca Metin</div>
       <div class="editor-actions">
         <button class="action-pill" id="btnPreview">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -89,7 +98,13 @@
     </div>
 
     <div class="editor-wrap">
-      <div id="textArea" contenteditable="true" data-placeholder="Almanca metninizi buraya yapıştırın veya yazın…"></div>
+      <div
+        id="textArea"
+        contenteditable="true"
+        data-placeholder="Almanca metninizi buraya yapıştırın veya yazın…"
+        spellcheck="false"
+        lang="de"
+      ></div>
     </div>
 
     <div class="editor-footer">
@@ -103,22 +118,24 @@
 </main>
 
 <!-- Önizleme Modal -->
-<div class="preview-modal" id="previewModal">
+<div class="preview-modal" id="previewModal" role="dialog" aria-modal="true" aria-label="Metin Önizleme">
   <div class="preview-backdrop" id="previewBackdrop"></div>
   <div class="preview-panel">
     <div class="preview-top">
       <span class="preview-title">Metin Önizleme</span>
-      <button class="preview-close" id="previewClose">✕</button>
+      <button class="preview-close" id="previewClose" aria-label="Kapat">✕</button>
     </div>
     <div class="preview-content" id="previewContent"></div>
   </div>
 </div>
 
+<!-- 1. global navbar + auth -->
 <script type="module">
   import "../js/core.js";
   window.requireAuth();
   window.loadNavbar();
 </script>
+<!-- 2. editör mantığı -->
 <script type="module" src="../js/metin.js"></script>
 
 </body>

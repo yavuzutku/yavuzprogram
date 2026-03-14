@@ -291,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await saveMetin(userId, text);
       sessionStorage.setItem("savedText",    text);
       sessionStorage.setItem("parsedBlocks", JSON.stringify(blocks));
-      sessionStorage.setItem("returnPage",   "metin.html");
+      sessionStorage.setItem("returnPage",   "../metin/");
       window.location.href = "../okuma/";
     } catch (err) {
       console.error("Kay\u0131t hatas\u0131:", err);

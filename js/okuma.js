@@ -123,7 +123,24 @@ function bindToolbar() {
   on("backBtn", "click", () => {
     sessionStorage.removeItem("parsedBlocks");
     const ret = sessionStorage.getItem("returnPage");
-    location.href = ret ? "../" + ret : "../metin/";
+
+    /* returnPage değeri eski formatlarda "metin.html" veya "../gecmis/"
+       gibi gelebilir. Her durumda doğru URL'e yönlendir. */
+    let href;
+    if (!ret) {
+      href = "../metin/";
+    } else if (ret === "metin.html" || ret === "metin/" || ret === "../metin/") {
+      href = "../metin/";
+    } else if (ret === "gecmis" || ret === "gecmis/" || ret === "../gecmis/") {
+      href = "../gecmis/";
+    } else if (ret.startsWith("../")) {
+      href = ret;          /* zaten doğru format */
+    } else {
+      /* "foo.html" → "../foo/" ya da "foo/" → "../foo/" */
+      href = "../" + ret.replace(/\.html$/, "/").replace(/\/?$/, "/");
+    }
+
+    location.href = href;
   });
 
   on("addWordBtn", "click", () => {

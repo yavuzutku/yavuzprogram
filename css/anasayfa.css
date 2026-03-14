@@ -1,33 +1,4 @@
-/* ══════════════════════════════════════════════
-   DESIGN TOKENS
-══════════════════════════════════════════════ */
-:root {
-  --font-display: 'Syne', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
-
-  --bg-base:    #070709;
-  --bg-surface: rgba(255,255,255,0.035);
-  --bg-hover:   rgba(255,255,255,0.06);
-
-  --border-subtle: rgba(255,255,255,0.07);
-  --border-hover:  rgba(255,255,255,0.16);
-
-  --text-primary:   #f0eee8;
-  --text-secondary: rgba(240,238,232,0.55);
-  --text-muted:     rgba(240,238,232,0.38);
-
-  --gold:   #c9a84c;
-  --blue:   #60c8f0;
-  --violet: #a064ff;
-  --green:  #4fd69c;
-  --rose:   #f07068;
-  --amber:  #ffd250;
-
-  --radius-card: 16px;
-  --radius-sm:   8px;
-  --transition:  0.3s cubic-bezier(0.4,0,0.2,1);
-}
-
+@import '../src/styles/tokens.css';
 /* ══════════════════════════════════════════════
    RESET / BASE
 ══════════════════════════════════════════════ */

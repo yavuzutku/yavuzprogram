@@ -9,40 +9,7 @@
    Çakışmayı önlemek için TÜM değişkenler --ok- prefix'li.
    body override: sadece background (global.css'i ezerek).
    ═══════════════════════════════════════════════════════════ */
-
-/* ── Değişkenler ─────────────────────────────────────────── */
-:root {
-  /* Layout */
-  --ok-navbar-h:   62px;
-  --ok-toolbar-h:  46px;
-
-  /* Renkler */
-  --ok-bg:         #0d0e14;
-  --ok-surface:    #12141e;
-  --ok-surface2:   #191b28;
-  --ok-border:     rgba(255,255,255,0.07);
-  --ok-border2:    rgba(255,255,255,0.13);
-  --ok-gold:       #c9a84c;
-  --ok-gold-l:     #e0c270;
-  --ok-gold-dim:   rgba(201,168,76,0.14);
-  --ok-gold-glow:  rgba(201,168,76,0.30);
-  --ok-text:       #e8e4da;
-  --ok-text2:      #8a8a9a;
-  --ok-text3:      #44445a;
-  --ok-success:    #22c55e;
-  --ok-error:      #ef4444;
-
-  /* Tipografi */
-  --ok-serif:      'Lora', Georgia, serif;
-  --ok-sans:       'DM Sans', system-ui, sans-serif;
-  --ok-mono:       'DM Mono', monospace;
-
-  /* Okuma */
-  --ok-font-size:  19px;
-  --ok-line-h:     1.95;
-  --ok-col:        680px;
-}
-
+@import '../src/styles/tokens.css';
 /* ── Temalar ─────────────────────────────────────────────── */
 body.ok-sepia {
   --ok-bg:       #18140a;

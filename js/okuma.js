@@ -1,74 +1,185 @@
+/* ═══════════════════════════════════════════════════════════
+   okuma.js  —  AlmancaPratik Okuma Modu
+   ═══════════════════════════════════════════════════════════
+   - sessionStorage'dan hem savedText hem parsedBlocks okur
+   - parsedBlocks varsa kitap gibi biçimlendirilmiş HTML üretir
+   - Yoksa plain-text fallback kullanır
+   - Kelime seçimi → anlam popup → sözlüğe kaydet
+   - Tema, font boyutu, odak modu, ilerleme çubuğu
+   ═══════════════════════════════════════════════════════════ */
+
 import { saveWord, getWords } from "./firebase.js";
 import { renderTagChips, getSelectedTags, extractAllTags } from "./tag.js";
 import {
-  fetchWikiData, fetchTranslate, normalizeGermanWord,
-  artikelBadgeHtml, escapeHtml, ARTIKEL_COLORS
+  fetchWikiData,
+  fetchTranslate,
+  normalizeGermanWord,
+  artikelBadgeHtml,
+  escapeHtml,
 } from "./german.js";
 
+/* ══════════════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════════════ */
+let _selectedWord  = "";
+let _popupWikiData = null;
+let _lastTranslated = "";
+let _userWords     = [];
+let _currentFontSize = 19;
+let _themeIdx      = 0;
+let _serifMode     = true;
+
+const THEMES = ["dark", "sepia", "light"];
+
+/* ══════════════════════════════════════════════════════════
+   BAŞLANGIÇ
+   ══════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  const text   = sessionStorage.getItem("savedText");
-  const reader = document.getElementById("readerText");
+  const rawText     = sessionStorage.getItem("savedText") || "";
+  const blocksJson  = sessionStorage.getItem("parsedBlocks");
+  const readerBody  = document.getElementById("readerBody");
 
-  if (!text || text.trim().length < 1) {
-    reader.innerHTML = "<h2 style='color:var(--text-muted);font-family:var(--ui-font);'>Metin Bulunamadı</h2>";
+  if (!rawText.trim()) {
+    readerBody.innerHTML = `<p style="color:var(--text-muted);font-style:italic;text-align:center;padding:40px 0">
+      Metin bulunamadı. Lütfen <a href="../metin/" style="color:var(--gold)">Metin sayfasına</a> dönüp tekrar deneyin.</p>`;
     return;
   }
 
-  loadText(text);
-  updateMeta(text);
-  createTranslateUI();
-  initProgressBar();
-  restorePrefs();
+  /* Metin yükleme: parsedBlocks varsa kitap görünümü */
+  if (blocksJson) {
+    try {
+      const blocks = JSON.parse(blocksJson);
+      readerBody.innerHTML = blocksToHtml(blocks);
+    } catch {
+      loadPlainText(readerBody, rawText);
+    }
+  } else {
+    loadPlainText(readerBody, rawText);
+  }
 
+  /* Meta: kelime sayısı + okuma süresi */
+  updateMeta(rawText);
+
+  /* Kullanıcı kelimelerini yükle */
   try {
     const userId = window.getUserId?.();
     if (userId) _userWords = await getWords(userId);
-  } catch(e) {}
+  } catch (_) {}
 
+  /* Tercihler */
+  restorePrefs();
+  initProgressBar();
+  initWordSelection();
+  bindToolbar();
+
+  /* Modal Enter tuşu */
   document.getElementById("modalMeaningInput")
-    .addEventListener("keydown", (e) => {
-      if (e.key === "Enter") saveWordFromModal();
-    });
-
-  // Banner dismiss durumu
-  if (sessionStorage.getItem("bannerDismissed")) dismissBanner(false);
+    .addEventListener("keydown", e => { if (e.key === "Enter") saveWordFromModal(); });
 });
 
-/* ══════════════════════════════════════════════
-   META / İSTATİSTİK
-══════════════════════════════════════════════ */
-function updateMeta(text) {
-  const wordCount = text.trim().split(/\s+/).length;
-  const minutes   = Math.max(1, Math.round(wordCount / 200));
-  const el        = document.getElementById("readingMeta");
-  if (el) el.textContent = `${wordCount.toLocaleString()} kelime · ~${minutes} dk`;
+/* ══════════════════════════════════════════════════════════
+   METİN RENDER
+   ══════════════════════════════════════════════════════════ */
+
+/** parsedBlocks dizisini okuma sayfası HTML'ine çevirir */
+function blocksToHtml(blocks) {
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  let html = "";
+  for (const b of blocks) {
+    if      (b.type === "title")   html += `<h2 class="rb-title">${esc(b.text)}</h2>`;
+    else if (b.type === "dialog")  html += `<p class="rb-dialog">${esc(b.text)}</p>`;
+    else if (b.type === "quote")   html += `<p class="rb-quote">${esc(b.text)}</p>`;
+    else if (b.type === "section") html += `<div class="rb-section">\u2726 \u2003 \u2726 \u2003 \u2726</div>`;
+    else if (b.type === "para")    html += `<p class="rb-para">${b.lines.map(esc).join("<br>")}</p>`;
+  }
+  return html;
 }
 
-/* ══════════════════════════════════════════════
+/** parsedBlocks yoksa plain metin fallback */
+function loadPlainText(el, text) {
+  el.classList.add("plain-text");
+  el.textContent = text;
+}
+
+/* ══════════════════════════════════════════════════════════
+   META
+   ══════════════════════════════════════════════════════════ */
+function updateMeta(text) {
+  const words   = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.round(words / 200));
+  const el      = document.getElementById("readingMeta");
+  if (el) el.textContent = `${words.toLocaleString("tr")} kelime \u00b7 ~${minutes} dk`;
+}
+
+/* ══════════════════════════════════════════════════════════
    İLERLEME ÇUBUĞU
-══════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════ */
 function initProgressBar() {
   const bar = document.getElementById("progressBar");
   if (!bar) return;
-  const container = document.getElementById("readerText");
   window.addEventListener("scroll", () => {
     const total   = document.documentElement.scrollHeight - window.innerHeight;
     const current = window.scrollY;
-    bar.style.width = total > 0 ? ((current / total) * 100) + "%" : "0%";
+    bar.style.width = total > 0 ? Math.min(100, (current / total) * 100) + "%" : "0%";
   });
 }
 
-/* ══════════════════════════════════════════════
-   TEMA SİSTEMİ
-══════════════════════════════════════════════ */
-const THEMES = ["dark", "sepia", "light"];
-let _themeIdx = 0;
+/* ══════════════════════════════════════════════════════════
+   TOOLBAR BUTONLARI
+   ══════════════════════════════════════════════════════════ */
+function bindToolbar() {
+  document.getElementById("backBtn")?.addEventListener("click", () => {
+    sessionStorage.removeItem("parsedBlocks");
+    const ret = sessionStorage.getItem("returnPage");
+    window.location.href = ret ? "../" + ret : "../metin/";
+  });
 
-function cycleTheme() {
-  _themeIdx = (_themeIdx + 1) % THEMES.length;
-  applyTheme(THEMES[_themeIdx]);
-  sessionStorage.setItem("readerTheme", _themeIdx);
+  document.getElementById("addWordBtn")?.addEventListener("click", () => {
+    if (!_selectedWord) {
+      showToast("Önce metinden bir kelime seçin.", "error");
+      return;
+    }
+    openWordModal();
+  });
+
+  document.getElementById("fontDecBtn")?.addEventListener("click", () => {
+    _currentFontSize = Math.max(13, _currentFontSize - 1);
+    applyFontSize();
+  });
+
+  document.getElementById("fontIncBtn")?.addEventListener("click", () => {
+    _currentFontSize = Math.min(32, _currentFontSize + 1);
+    applyFontSize();
+  });
+
+  document.getElementById("fontToggleBtn")?.addEventListener("click", () => {
+    _serifMode = !_serifMode;
+    document.getElementById("readerBody").style.fontFamily = _serifMode
+      ? "var(--reader-font)"
+      : "'DM Sans', system-ui, sans-serif";
+    const btn = document.getElementById("fontToggleBtn");
+    if (btn) btn.textContent = _serifMode ? "Tf" : "Ss";
+    sessionStorage.setItem("rd_serif", _serifMode ? "1" : "0");
+  });
+
+  document.getElementById("themeBtn")?.addEventListener("click", () => {
+    _themeIdx = (_themeIdx + 1) % THEMES.length;
+    applyTheme(THEMES[_themeIdx]);
+    sessionStorage.setItem("rd_theme", _themeIdx);
+  });
+
+  document.getElementById("focusBtn")?.addEventListener("click", () => {
+    document.body.classList.toggle("focus-mode");
+    const on  = document.body.classList.contains("focus-mode");
+    const btn = document.getElementById("focusBtn");
+    if (btn) btn.textContent = on ? "\u229E" : "\u22A1";
+  });
+}
+
+function applyFontSize() {
+  document.getElementById("readerBody").style.fontSize = _currentFontSize + "px";
+  sessionStorage.setItem("rd_fontSize", _currentFontSize);
 }
 
 function applyTheme(name) {
@@ -76,405 +187,291 @@ function applyTheme(name) {
   if (name === "sepia") document.body.classList.add("theme-sepia");
   if (name === "light") document.body.classList.add("theme-light");
   const btn = document.getElementById("themeBtn");
-  if (btn) btn.textContent = name === "light" ? "🌙" : name === "sepia" ? "📜" : "☀";
+  if (btn) btn.textContent = name === "light" ? "\uD83C\uDF19" : name === "sepia" ? "\uD83D\uDCDC" : "\u2600";
 }
 
-/* ══════════════════════════════════════════════
-   YAZI TİPİ TOGGLE
-══════════════════════════════════════════════ */
-let _serifMode = true;
-
-function toggleFont() {
-  _serifMode = !_serifMode;
-  const el = document.getElementById("readerText");
-  el.style.fontFamily = _serifMode
-    ? "var(--reader-font)"
-    : "'DM Sans', system-ui, sans-serif";
-  const btn = document.getElementById("fontToggleBtn");
-  if (btn) btn.textContent = _serifMode ? "Tf" : "Ss";
-  sessionStorage.setItem("readerSerifMode", _serifMode ? "1" : "0");
-}
-
-/* ══════════════════════════════════════════════
-   ODAK MODU
-══════════════════════════════════════════════ */
-let _focusMode = false;
-
-function toggleFocus() {
-  _focusMode = !_focusMode;
-  document.body.classList.toggle("focus-mode", _focusMode);
-  const btn = document.getElementById("focusBtn");
-  if (btn) btn.textContent = _focusMode ? "⊠" : "⊡";
-}
-
-/* ══════════════════════════════════════════════
-   BANNER
-══════════════════════════════════════════════ */
-function dismissBanner(save = true) {
-  const el = document.getElementById("featuresBanner");
-  if (el) el.classList.add("hidden");
-  if (save) sessionStorage.setItem("bannerDismissed", "1");
-}
-
-/* ══════════════════════════════════════════════
-   PREFS RESTORE
-══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   TERCIHLER KAYDET / GERİ YÜKLE
+   ══════════════════════════════════════════════════════════ */
 function restorePrefs() {
-  const themeIdx = parseInt(sessionStorage.getItem("readerTheme") || "0", 10);
+  const themeIdx = parseInt(sessionStorage.getItem("rd_theme") || "0", 10);
   _themeIdx = themeIdx;
   applyTheme(THEMES[_themeIdx]);
 
-  const serif = sessionStorage.getItem("readerSerifMode");
-  if (serif === "0") toggleFont();
+  if (sessionStorage.getItem("rd_serif") === "0") {
+    _serifMode = false;
+    document.getElementById("readerBody").style.fontFamily = "'DM Sans', system-ui, sans-serif";
+    const btn = document.getElementById("fontToggleBtn");
+    if (btn) btn.textContent = "Ss";
+  }
 
-  const size = sessionStorage.getItem("readerFontSize");
-  if (size) {
-    currentSize = parseInt(size, 10);
-    document.getElementById("readerText").style.fontSize = currentSize + "px";
+  const savedSize = parseInt(sessionStorage.getItem("rd_fontSize") || "0", 10);
+  if (savedSize >= 13 && savedSize <= 32) {
+    _currentFontSize = savedSize;
+    applyFontSize();
   }
 }
 
-/* ══════════════════════════════════════════════
-   GENEL
-══════════════════════════════════════════════ */
-function goBack() {
-  sessionStorage.removeItem("returnPage");
-  window.location.href = "../metin/";
-}
+/* ══════════════════════════════════════════════════════════
+   KELİME SEÇİMİ + ANLAM POPUP
+   ══════════════════════════════════════════════════════════ */
+function initWordSelection() {
+  const body    = document.getElementById("readerBody");
+  const trigger = document.getElementById("floatingMeaningBtn");
+  const popup   = document.getElementById("meaningPopup");
 
-let currentSize = 19;
+  body.addEventListener("mouseup", () => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) { trigger.style.display = "none"; return; }
 
-function increaseFont() {
-  currentSize = Math.min(32, currentSize + 1);
-  document.getElementById("readerText").style.fontSize = currentSize + "px";
-  sessionStorage.setItem("readerFontSize", currentSize);
-}
+    let word = sel.toString().trim().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
+    if (!word) { trigger.style.display = "none"; return; }
 
-function decreaseFont() {
-  currentSize = Math.max(13, currentSize - 1);
-  document.getElementById("readerText").style.fontSize = currentSize + "px";
-  sessionStorage.setItem("readerFontSize", currentSize);
-}
-
-function loadText(text) {
-  document.getElementById("readerText").innerText = text;
-}
-
-/* global erişim */
-window.goBack             = goBack;
-window.increaseFont       = increaseFont;
-window.decreaseFont       = decreaseFont;
-window.cycleTheme         = cycleTheme;
-window.toggleFont         = toggleFont;
-window.toggleFocus        = toggleFocus;
-window.dismissBanner      = dismissBanner;
-window.openAddWordModal   = openAddWordModal;
-window.closeAddWordModal  = closeAddWordModal;
-window.saveWordFromModal  = saveWordFromModal;
-window.closeMiniTranslate = closeMiniTranslate;
-window.saveWordFromPopup  = saveWordFromPopup;
-
-/* ══════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════ */
-let selectedWordGlobal = "";
-let _userWords         = [];
-let _popupWikiData     = null;
-
-/* ══════════════════════════════════════════════
-   ÇEVİRİ POPUP SİSTEMİ
-══════════════════════════════════════════════ */
-function createTranslateUI() {
-  const readerText = document.getElementById("readerText");
-  const btn   = document.getElementById("floatingMeaningBtn");
-  const popup = document.getElementById("miniTranslatePopup");
-
-  readerText.addEventListener("mouseup", function() {
-    const selObj = window.getSelection();
-    if (!selObj || selObj.rangeCount === 0) { btn.style.display = "none"; return; }
-
-    let selection = selObj.toString().trim();
-    selection = selection.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
-    if (selection.length === 0) { btn.style.display = "none"; return; }
-
-    selectedWordGlobal = selection;
-    const range = selObj.getRangeAt(0);
-    const rect  = range.getBoundingClientRect();
-    if (!rect || rect.width === 0) { btn.style.display = "none"; return; }
+    _selectedWord = word;
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    if (!rect || rect.width === 0) { trigger.style.display = "none"; return; }
 
     popup.style.display = "none";
-    btn.style.display   = "flex";
-    btn.style.top  = (window.scrollY + rect.bottom + 10) + "px";
-    btn.style.left = (window.scrollX + rect.left) + "px";
+    trigger.style.display = "flex";
+    trigger.style.top  = (window.scrollY + rect.bottom + 10) + "px";
+    trigger.style.left = (window.scrollX + rect.left) + "px";
   });
 
-  btn.addEventListener("click", openMiniTranslate);
+  trigger.addEventListener("click", openMeaningPopup);
 
-  document.addEventListener("mousedown", function(e) {
-    const wordModalOverlay = document.getElementById("wordModalOverlay");
-    const clickedInside =
-      readerText.contains(e.target) ||
-      btn.contains(e.target)        ||
-      popup.contains(e.target)      ||
-      (wordModalOverlay && wordModalOverlay.contains(e.target));
+  /* Dışarı tıklayınca kapat */
+  document.addEventListener("mousedown", e => {
+    const overlay = document.getElementById("wordModalOverlay");
+    const inside  =
+      body.contains(e.target)    ||
+      trigger.contains(e.target) ||
+      popup.contains(e.target)   ||
+      (overlay && overlay.contains(e.target));
 
-    if (!clickedInside) {
-      btn.style.display   = "none";
-      popup.style.display = "none";
-      window.getSelection().removeAllRanges();
-      selectedWordGlobal = "";
+    if (!inside) {
+      trigger.style.display = "none";
+      popup.style.display   = "none";
+      window.getSelection()?.removeAllRanges();
+      _selectedWord = "";
     }
   });
 }
 
-function openMiniTranslate() {
-  const btn   = document.getElementById("floatingMeaningBtn");
-  const popup = document.getElementById("miniTranslatePopup");
+/* ══════════════════════════════════════════════════════════
+   ANLAM POPUP İÇERİĞİ
+   ══════════════════════════════════════════════════════════ */
+async function openMeaningPopup() {
+  const trigger = document.getElementById("floatingMeaningBtn");
+  const popup   = document.getElementById("meaningPopup");
 
-  // Popup'ı butonun yerine konumlandır
-  popup.style.top  = btn.style.top;
-  popup.style.left = btn.style.left;
-  btn.style.display   = "none";
-  popup.style.display = "block";
-
+  popup.style.top  = trigger.style.top;
+  popup.style.left = trigger.style.left;
+  trigger.style.display = "none";
+  popup.style.display   = "block";
   _popupWikiData = null;
 
   popup.innerHTML = `
     <div class="popup-loading">
       <div class="dots"><span></span><span></span><span></span></div>
-      <span>Çevriliyor…</span>
+      <span>Çevriliyor\u2026</span>
     </div>`;
 
-  Promise.all([
-    fetchTranslate(selectedWordGlobal),
-    fetchWikiData(selectedWordGlobal),
-  ])
-  .then(([{ main, alts }, wiki]) => {
-    window._lastTranslated = main;
-    _popupWikiData = wiki;
+  try {
+    const [{ main, alts }, wiki] = await Promise.all([
+      fetchTranslate(_selectedWord),
+      fetchWikiData(_selectedWord),
+    ]);
+
+    _lastTranslated = main;
+    _popupWikiData  = wiki;
 
     const artikelHtml = artikelBadgeHtml(wiki.artikel, { size: 11 });
+    const typeHtml    = wiki.wordType
+      ? `<span class="popup-type-badge">${wiki.wordType}</span>` : "";
 
-    const typeHtml = wiki.wordType
-      ? `<span class="popup-type-badge">${wiki.wordType}</span>`
-      : "";
-
-    const baseFormHtml = wiki.baseForm
+    const baseHtml = wiki.baseForm
       ? `<div class="popup-base-form">
            <span>Temel form: <strong>${escapeHtml(wiki.baseForm)}</strong></span>
-           <button class="popup-apply-base" id="popupApplyBase">kullan →</button>
-         </div>`
-      : "";
+           <button class="popup-apply-base" id="popupApplyBase">kullan \u2192</button>
+         </div>` : "";
 
-    const altsHtml = alts.length > 0
-      ? `<div class="popup-alts">
-           ${alts.slice(0, 5).map(a =>
-             `<button class="popup-alt-chip" data-alt="${escapeHtml(a)}">${escapeHtml(a)}</button>`
-           ).join("")}
-         </div>`
-      : "";
+    const altsHtml = alts.length
+      ? `<div class="popup-alts">${alts.slice(0,5).map(a =>
+          `<button class="popup-alt-chip" data-alt="${escapeHtml(a)}">${escapeHtml(a)}</button>`
+        ).join("")}</div>` : "";
 
     popup.innerHTML = `
       <div class="popup-header">
         <div class="popup-word-row">
           ${artikelHtml}
-          <span class="popup-word">${escapeHtml(selectedWordGlobal)}</span>
+          <span class="popup-word">${escapeHtml(_selectedWord)}</span>
           ${typeHtml}
         </div>
-        <button class="popup-close" onclick="closeMiniTranslate()">✕</button>
+        <button class="popup-close" id="popupCloseBtn">\u2715</button>
       </div>
-
       <div class="popup-body">
-        <div class="popup-main-tr" id="popupMainTranslation">${escapeHtml(main)}</div>
+        <div class="popup-main-tr" id="popupMainTr">${escapeHtml(main)}</div>
         ${altsHtml}
-        ${baseFormHtml}
-
+        ${baseHtml}
         <div class="popup-tag-section">
           <div class="popup-tag-label">Etiket</div>
-          <div id="popupTagChips" class="tag-chips" style="gap:5px;"></div>
+          <div id="popupTagChips" class="tag-chips" style="gap:5px"></div>
         </div>
       </div>
-
       <div class="popup-footer">
-        <button class="popup-save-btn" id="popupSaveBtn">＋ Sözlüğe Ekle</button>
-      </div>
-    `;
+        <button class="popup-save-btn" id="popupSaveBtn">\uFF0B S\u00f6zl\u00fc\u011fe Ekle</button>
+      </div>`;
 
-    renderTagChips("popupTagChips", wiki.autoTags, extractAllTags(_userWords));
+    renderTagChips("popupTagChips", wiki.autoTags || [], extractAllTags(_userWords));
 
+    /* Alternatif chip tıklaması */
     popup.querySelectorAll(".popup-alt-chip").forEach(chip => {
       chip.addEventListener("click", () => {
-        window._lastTranslated = chip.dataset.alt;
-        popup.querySelector("#popupMainTranslation").textContent = chip.dataset.alt;
+        _lastTranslated = chip.dataset.alt;
+        document.getElementById("popupMainTr").textContent = chip.dataset.alt;
       });
     });
 
-    const applyBtn = popup.querySelector("#popupApplyBase");
-    if (applyBtn) {
-      applyBtn.addEventListener("click", () => {
-        selectedWordGlobal = wiki.baseForm;
-        closeMiniTranslate();
-        document.getElementById("floatingMeaningBtn").style.display = "flex";
-        openMiniTranslate();
-      });
-    }
+    /* Temel form uygula */
+    document.getElementById("popupApplyBase")?.addEventListener("click", () => {
+      _selectedWord = wiki.baseForm;
+      closeMeaningPopup();
+      document.getElementById("floatingMeaningBtn").style.display = "flex";
+      openMeaningPopup();
+    });
 
-    popup.querySelector("#popupSaveBtn").addEventListener("click", saveWordFromPopup);
-  })
-  .catch(() => {
-    popup.innerHTML = `
-      <div style="padding:16px;color:var(--error);font-size:13px;">
-        Çeviri alınamadı. Lütfen tekrar deneyin.
-      </div>`;
-  });
-}
+    document.getElementById("popupCloseBtn")?.addEventListener("click", closeMeaningPopup);
+    document.getElementById("popupSaveBtn")?.addEventListener("click", saveFromPopup);
 
-function closeMiniTranslate() {
-  const popup = document.getElementById("miniTranslatePopup");
-  if (popup) popup.style.display = "none";
-  selectedWordGlobal = "";
-  _popupWikiData = null;
-}
-
-async function saveWordFromPopup() {
-  let word      = selectedWordGlobal;
-  const meaning = window._lastTranslated;
-
-  if (!word || !meaning) {
-    showToast("Kelime veya çeviri bulunamadı.", "error");
-    return;
+  } catch {
+    popup.innerHTML = `<div style="padding:16px;color:var(--error);font-size:13px">
+      Çeviri alınamadı. Tekrar deneyin.</div>`;
   }
+}
 
-  const saveBtn = document.getElementById("popupSaveBtn");
-  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Kaydediliyor…"; }
+function closeMeaningPopup() {
+  document.getElementById("meaningPopup").style.display = "none";
+  _selectedWord   = "";
+  _popupWikiData  = null;
+}
+
+/* ══════════════════════════════════════════════════════════
+   POPUP'TAN KAYDET
+   ══════════════════════════════════════════════════════════ */
+async function saveFromPopup() {
+  const word    = normalizeGermanWord(_selectedWord, _popupWikiData);
+  const meaning = _lastTranslated;
+
+  if (!word || !meaning) { showToast("Kelime veya çeviri eksik.", "error"); return; }
+
+  const btn = document.getElementById("popupSaveBtn");
+  if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor\u2026"; }
 
   try {
     const userId = window.getUserId();
     if (!userId) throw new Error("Oturum yok");
-
-    word = normalizeGermanWord(word, _popupWikiData);
     const tags = getSelectedTags("popupTagChips");
-
     await saveWord(userId, word, meaning, tags);
-    closeMiniTranslate();
-    window._lastTranslated = "";
-    showToast(`"${word}" sözlüğe eklendi`, "success");
-
-  } catch(err) {
-    console.error(err);
-    showToast("Kayıt başarısız.", "error");
-    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "＋ Sözlüğe Ekle"; }
+    _userWords = await getWords(userId).catch(() => _userWords);
+    closeMeaningPopup();
+    showToast(`\u201C${word}\u201D sözlüğe eklendi`, "success");
+  } catch (err) {
+    showToast("Kayıt başarısız: " + err.message, "error");
+    if (btn) { btn.disabled = false; btn.textContent = "\uFF0B S\u00f6zl\u00fc\u011fe Ekle"; }
   }
 }
 
-/* ══════════════════════════════════════════════
-   MANUEL MODAL
-══════════════════════════════════════════════ */
-function openAddWordModal() {
-  if (!selectedWordGlobal) {
-    showToast("Önce metinden bir kelime seçin.", "error");
-    return;
-  }
-
+/* ══════════════════════════════════════════════════════════
+   KELİME KAYDETME MODALI (toolbar butonu ile)
+   ══════════════════════════════════════════════════════════ */
+function openWordModal() {
   const wiki      = _popupWikiData || {};
-  const artikel   = wiki.artikel || "";
   const displayEl = document.getElementById("modalWordDisplay");
+  const word      = normalizeGermanWord(_selectedWord, wiki);
 
-  if (artikel) {
-    displayEl.innerHTML = artikelBadgeHtml(artikel, { size: 14 })
-      + ` ${escapeHtml(wiki.baseForm
-          ? wiki.baseForm.charAt(0).toUpperCase() + wiki.baseForm.slice(1)
-          : selectedWordGlobal.charAt(0).toUpperCase() + selectedWordGlobal.slice(1))}`;
+  /* Kelime gösterimi: artikel varsa renkli badge */
+  if (wiki.artikel) {
+    displayEl.innerHTML = artikelBadgeHtml(wiki.artikel, { size: 14 })
+      + " " + escapeHtml(_selectedWord.charAt(0).toUpperCase() + _selectedWord.slice(1));
   } else {
-    displayEl.textContent = selectedWordGlobal;
+    displayEl.textContent = word;
   }
 
+  /* Temel form satırı */
   const baseWrap = document.getElementById("modalBaseFormWrap");
-  const baseSpan = document.getElementById("modalBaseFormText");
-  if (baseWrap && baseSpan && wiki.baseForm) {
-    baseSpan.textContent   = wiki.baseForm;
+  const baseText = document.getElementById("modalBaseFormText");
+  if (baseWrap && baseText && wiki.baseForm) {
+    baseText.textContent = wiki.baseForm;
     baseWrap.style.display = "flex";
   } else if (baseWrap) {
     baseWrap.style.display = "none";
   }
 
-  document.getElementById("modalMeaningInput").value = "";
+  document.getElementById("modalMeaningInput").value = _lastTranslated || "";
   renderTagChips("modalTagChips", wiki.autoTags || [], extractAllTags(_userWords));
 
-  document.getElementById("wordModalOverlay").classList.add("active");
-  setTimeout(() => document.getElementById("modalMeaningInput").focus(), 100);
-}
+  const overlay = document.getElementById("wordModalOverlay");
+  overlay.classList.add("active");
+  setTimeout(() => document.getElementById("modalMeaningInput").focus(), 80);
 
-window.applyModalBaseForm = function() {
-  const wiki = _popupWikiData;
-  if (!wiki?.baseForm) return;
-  selectedWordGlobal = wiki.baseForm;
-
-  const baseWrap = document.getElementById("modalBaseFormWrap");
-  if (baseWrap) baseWrap.style.display = "none";
-
-  fetchWikiData(wiki.baseForm).then(newWiki => {
-    _popupWikiData = newWiki;
-    const displayEl = document.getElementById("modalWordDisplay");
-    const a = newWiki.artikel;
-    if (a) {
-      displayEl.innerHTML = artikelBadgeHtml(a, { size: 14 })
-        + ` ${escapeHtml(wiki.baseForm.charAt(0).toUpperCase() + wiki.baseForm.slice(1))}`;
-    } else {
-      displayEl.textContent = wiki.baseForm;
-    }
-    renderTagChips("modalTagChips", newWiki.autoTags, extractAllTags(_userWords));
+  /* Temel formu uygula butonu */
+  document.getElementById("applyBaseFormBtn")?.addEventListener("click", () => {
+    if (!wiki.baseForm) return;
+    _selectedWord = wiki.baseForm;
+    fetchWikiData(wiki.baseForm).then(newWiki => {
+      _popupWikiData = newWiki;
+      const a = newWiki.artikel;
+      displayEl.innerHTML = a
+        ? artikelBadgeHtml(a, { size: 14 }) + " " + escapeHtml(wiki.baseForm.charAt(0).toUpperCase() + wiki.baseForm.slice(1))
+        : escapeHtml(wiki.baseForm);
+      renderTagChips("modalTagChips", newWiki.autoTags || [], extractAllTags(_userWords));
+    });
   });
-};
 
-function closeAddWordModal() {
-  document.getElementById("wordModalOverlay").classList.remove("active");
+  /* Kapatma */
+  const closeModal = () => overlay.classList.remove("active");
+  document.getElementById("wordModalClose")?.addEventListener("click",  closeModal, { once: true });
+  document.getElementById("wordModalCancelBtn")?.addEventListener("click", closeModal, { once: true });
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
+
+  document.getElementById("wordModalSaveBtn")?.addEventListener("click", saveWordFromModal, { once: true });
 }
 
 async function saveWordFromModal() {
   const meaning = document.getElementById("modalMeaningInput").value.trim();
-  if (!meaning) {
-    document.getElementById("modalMeaningInput").focus();
-    return;
-  }
+  if (!meaning) { document.getElementById("modalMeaningInput").focus(); return; }
 
-  const wiki    = _popupWikiData || {};
+  const word    = normalizeGermanWord(_selectedWord, _popupWikiData || {});
   const tags    = getSelectedTags("modalTagChips");
-  const saveBtn = document.querySelector(".word-modal-save");
-  saveBtn.disabled    = true;
-  saveBtn.textContent = "Kaydediliyor…";
+  const saveBtn = document.getElementById("wordModalSaveBtn");
+
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Kaydediliyor\u2026"; }
 
   try {
     const userId = window.getUserId();
     if (!userId) throw new Error("Oturum yok");
-
-    const word = normalizeGermanWord(selectedWordGlobal, wiki);
-
     await saveWord(userId, word, meaning, tags);
-    closeAddWordModal();
-    selectedWordGlobal = "";
-    showToast(`"${word}" sözlüğe eklendi`, "success");
-
-  } catch(err) {
-    console.error(err);
-    showToast("Kayıt başarısız.", "error");
-  } finally {
-    saveBtn.disabled    = false;
-    saveBtn.textContent = "Kaydet";
+    _userWords = await getWords(userId).catch(() => _userWords);
+    document.getElementById("wordModalOverlay").classList.remove("active");
+    showToast(`\u201C${word}\u201D sözlüğe eklendi`, "success");
+    _selectedWord = "";
+  } catch (err) {
+    showToast("Kayıt başarısız: " + err.message, "error");
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Kaydet"; }
   }
 }
 
-/* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
    TOAST
-══════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════ */
 function showToast(msg, type = "success") {
-  const toast = document.createElement("div");
-  toast.className = `reader-toast ${type}`;
-  toast.textContent = msg;
-  document.body.appendChild(toast);
+  const el = document.createElement("div");
+  el.className = `reader-toast ${type}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
   setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transition = "opacity 0.3s";
-    setTimeout(() => toast.remove(), 300);
-  }, 2400);
+    el.style.opacity = "0";
+    el.style.transition = "opacity .3s";
+    setTimeout(() => el.remove(), 300);
+  }, 2500);
 }

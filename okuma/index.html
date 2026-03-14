@@ -12,105 +12,109 @@
 </head>
 <body>
 
-<!--
-  NAVBAR: core.js → window.loadNavbar() tarafından body'ye prepend edilir.
-  global.css: .navbar { position:sticky; top:0; height:62px }
+<!-- Arka plan gradyanı -->
+<div class="ok-bg" aria-hidden="true"></div>
 
-  .reader-toolbar: position:sticky; top:62px (metin.css ile aynı mantık)
+<!--
+  NAVBAR: core.js → window.loadNavbar() body'nin başına prepend eder.
+  global.css: .navbar { position:sticky; top:0; height:62px }
+  .ok-toolbar: position:sticky; top:var(--navbar-h) — metin.css ile aynı mantık.
 -->
 
-<!-- Okuma araç çubuğu — navbar'ın hemen altına yapışır -->
-<header class="reader-toolbar" id="readerToolbar">
+<!-- Alt araç çubuğu -->
+<header class="ok-toolbar" id="okToolbar">
 
-  <!-- Sol: geri + kelime ekle -->
-  <div class="rtb-left">
-    <button class="rtb-btn rtb-back" id="backBtn" title="Metin sayfasına dön">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Geri
+  <div class="ok-tb-left">
+    <button class="ok-btn ok-btn-back" id="backBtn" title="Geri dön">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      <span>Geri</span>
     </button>
-    <button class="rtb-btn rtb-word-add" id="addWordBtn" title="Seçili kelimeyi sözlüğe ekle">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-      Kelime Ekle
+    <button class="ok-btn ok-btn-word" id="addWordBtn" title="Seçili kelimeyi kaydet">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+      </svg>
+      <span>Kelime Ekle</span>
     </button>
   </div>
 
-  <!-- Orta: başlık + meta -->
-  <div class="rtb-center">
-    <span class="rtb-title">Okuma Modu</span>
-    <span class="rtb-meta" id="readingMeta">— kelime yükleniyor</span>
+  <div class="ok-tb-center">
+    <span class="ok-tb-title">Okuma Modu</span>
+    <span class="ok-tb-meta" id="readingMeta"></span>
   </div>
 
-  <!-- Sağ: görünüm araçları -->
-  <div class="rtb-right">
-    <button class="rtb-btn rtb-icon" id="fontDecBtn" title="Yazıyı küçült" aria-label="Yazı küçült">A<sup>−</sup></button>
-    <button class="rtb-btn rtb-icon" id="fontIncBtn" title="Yazıyı büyüt"  aria-label="Yazı büyüt">A<sup>+</sup></button>
-    <button class="rtb-btn rtb-icon" id="fontToggleBtn" title="Yazı tipi değiştir">Tf</button>
-    <button class="rtb-btn rtb-icon" id="themeBtn"  title="Tema değiştir">☀</button>
-    <button class="rtb-btn rtb-icon" id="focusBtn"  title="Odak modu">⊡</button>
+  <div class="ok-tb-right">
+    <button class="ok-btn ok-btn-icon" id="fontDecBtn"    title="Küçült">A<sup>−</sup></button>
+    <button class="ok-btn ok-btn-icon" id="fontIncBtn"    title="Büyüt">A<sup>+</sup></button>
+    <button class="ok-btn ok-btn-icon" id="fontToggleBtn" title="Yazı tipi">Tf</button>
+    <button class="ok-btn ok-btn-icon" id="themeBtn"      title="Tema">&#9728;</button>
+    <button class="ok-btn ok-btn-icon" id="focusBtn"      title="Odak modu">&#8865;</button>
   </div>
 
 </header>
 
-<!-- İlerleme çubuğu — toolbar altında fixed -->
-<div class="progress-bar-wrap" id="progressWrap">
-  <div class="progress-bar-fill" id="progressBar"></div>
+<!-- İlerleme çubuğu -->
+<div class="ok-progress" id="okProgress">
+  <div class="ok-progress-fill" id="okProgressFill"></div>
 </div>
 
-<!-- ─── Ana okuma alanı ─── -->
-<main class="reader-main" id="readerMain">
-  <article class="reader-card">
-
-    <!-- Metni okuma başlamadan kitap gibi formatlı göster (parsedBlocks varsa) -->
-    <div id="readerBody" class="reader-body"></div>
-
+<!-- Ana okuma alanı -->
+<main class="ok-main">
+  <article class="ok-card">
+    <div id="readerBody" class="ok-body"></div>
   </article>
 </main>
 
-<!-- ─── Anlam butonu (seçimde beliren floating button) ─── -->
-<button id="floatingMeaningBtn" class="meaning-trigger" style="display:none" aria-label="Kelime anlamı">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+<!-- Floating "Anlam" butonu — position:fixed, JS konumlandırır -->
+<!-- inline display:none: CSS load olmasa bile gizli kalır -->
+<button id="floatingMeaningBtn" class="ok-meaning-btn" style="display:none" aria-label="Kelime anlamı">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+  </svg>
   Anlam
 </button>
 
-<!-- ─── Anlam popup ─── -->
-<div id="meaningPopup" class="meaning-popup" style="display:none"></div>
+<!-- Anlam popup — position:fixed -->
+<div id="meaningPopup" class="ok-popup" style="display:none"></div>
 
-<!-- ─── Kelime Kaydetme Modalı ─── -->
-<div class="word-modal-overlay" id="wordModalOverlay" role="dialog" aria-modal="true" aria-label="Kelime Kaydet">
-  <div class="word-modal">
-    <div class="word-modal-header">
-      <span>Kelimeyi Kaydet</span>
-      <button class="word-modal-close" id="wordModalClose" aria-label="Kapat">✕</button>
+<!-- Kelime kaydetme modalı -->
+<!-- inline display:none: CSS olmasa da modal görünmez -->
+<div class="ok-modal-overlay" id="wordModalOverlay" style="display:none" role="dialog" aria-modal="true">
+  <div class="ok-modal">
+    <div class="ok-modal-head">
+      <span class="ok-modal-label">Kelimeyi Kaydet</span>
+      <button class="ok-modal-x" id="wordModalClose" aria-label="Kapat">&#x2715;</button>
     </div>
 
-    <div class="word-modal-word" id="modalWordDisplay">—</div>
+    <div class="ok-modal-word" id="modalWordDisplay">—</div>
 
-    <div class="base-form-row" id="modalBaseFormWrap" style="display:none">
-      <span>Temel form: <strong id="modalBaseFormText" class="mono"></strong></span>
-      <button class="apply-base-btn" id="applyBaseFormBtn">kullan →</button>
+    <div class="ok-base-row" id="modalBaseFormWrap" style="display:none">
+      <span>Temel form: <strong id="modalBaseFormText" class="ok-mono"></strong></span>
+      <button class="ok-base-apply" id="applyBaseFormBtn">kullan &#x2192;</button>
     </div>
 
     <input
       type="text"
       id="modalMeaningInput"
-      class="word-modal-input"
+      class="ok-modal-input"
       placeholder="Türkçe anlamını gir…"
       autocomplete="off"
     />
 
-    <div class="word-modal-tags">
-      <div class="tag-label">Etiket <span class="tag-opt">(opsiyonel)</span></div>
-      <div class="tag-chips" id="modalTagChips"></div>
+    <div class="ok-modal-tags">
+      <div class="ok-tag-label">Etiket <span class="ok-tag-opt">(opsiyonel)</span></div>
+      <div class="ok-tag-chips" id="modalTagChips"></div>
     </div>
 
-    <div class="word-modal-actions">
-      <button class="word-modal-cancel" id="wordModalCancelBtn">İptal</button>
-      <button class="word-modal-save"   id="wordModalSaveBtn">Kaydet</button>
+    <div class="ok-modal-actions">
+      <button class="ok-modal-cancel" id="wordModalCancelBtn">İptal</button>
+      <button class="ok-modal-save"   id="wordModalSaveBtn">Kaydet</button>
     </div>
   </div>
 </div>
 
-<!-- ─── Scripts ─── -->
+<!-- Scripts: metin.html ile birebir aynı pattern -->
 <script type="module">
   import "../js/core.js";
   window.requireAuth();

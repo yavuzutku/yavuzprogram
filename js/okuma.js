@@ -1,11 +1,12 @@
 /* ═══════════════════════════════════════════════════════════
    okuma.js  —  AlmancaPratik Okuma Modu
-   ═══════════════════════════════════════════════════════════
+
    Düzeltmeler:
-   - Tüm event listener'lar DOMContentLoaded içinde tek kez bağlandı
-   - { once: true } kullanımı kaldırıldı (Promise leak'e neden oluyordu)
-   - Modal aç/kapat state flag ile yönetiliyor
-   - Promise'ler try/catch ile düzgün kapatılıyor
+   1. Floating buton/popup position:fixed → koordinat hesabı
+      window.scrollY OLMADAN, viewport-relative rect kullanılıyor.
+   2. Tüm event listener'lar DOMContentLoaded içinde TEK KERE bağlandı.
+   3. Modal toggle: display manipülasyonu JS'de, CSS class sadece flex açar.
+   4. Promise'ler kapatılmış; hiç { once:true } kullanılmıyor.
    ═══════════════════════════════════════════════════════════ */
 
 import { saveWord, getWords } from "./firebase.js";
@@ -18,497 +19,460 @@ import {
   escapeHtml,
 } from "./german.js";
 
-/* ══════════════════════════════════════════════
-   STATE
-   ══════════════════════════════════════════════ */
-let _selectedWord   = "";
-let _popupWikiData  = null;
-let _lastTranslated = "";
-let _userWords      = [];
-let _fontSize       = 19;
-let _themeIdx       = 0;
-let _serifMode      = true;
-let _modalOpen      = false;
+/* ── State ───────────────────────────────────────────────── */
+let _word       = "";   /* seçili kelime */
+let _wiki       = null; /* Wiktionary verisi */
+let _tr         = "";   /* son çeviri */
+let _userWords  = [];
+let _fontSize   = 19;
+let _themeIdx   = 0;
+let _serifMode  = true;
+let _modalOpen  = false;
 
-const THEMES = ["dark", "sepia", "light"];
+const THEMES = ["", "ok-sepia", "ok-light"];
+const THEME_ICONS = ["☀", "📜", "🌙"];
 
-/* ══════════════════════════════════════════════
-   DOM REFS (sayfa yüklendikten sonra atanır)
-   ══════════════════════════════════════════════ */
-let readerBody, trigger, popup, overlay;
+/* ── DOM referansları ────────────────────────────────────── */
+let $body, $meaning, $popup, $overlay;
 
-/* ══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    BAŞLANGIÇ
-   ══════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", async () => {
-  readerBody = document.getElementById("readerBody");
-  trigger    = document.getElementById("floatingMeaningBtn");
-  popup      = document.getElementById("meaningPopup");
-  overlay    = document.getElementById("wordModalOverlay");
+  $body    = document.getElementById("readerBody");
+  $meaning = document.getElementById("floatingMeaningBtn");
+  $popup   = document.getElementById("meaningPopup");
+  $overlay = document.getElementById("wordModalOverlay");
 
-  /* Metni yükle */
-  const rawText    = sessionStorage.getItem("savedText") || "";
-  const blocksJson = sessionStorage.getItem("parsedBlocks");
+  /* ── Metin yükle ── */
+  const raw    = sessionStorage.getItem("savedText") || "";
+  const blocks = tryParse(sessionStorage.getItem("parsedBlocks"));
 
-  if (!rawText.trim()) {
-    readerBody.innerHTML =
-      `<p style="color:var(--text-muted);font-style:italic;text-align:center;padding:40px 0">
-        Metin bulunamadı. <a href="../metin/" style="color:var(--gold)">Metin sayfasına dön</a>.
-      </p>`;
+  if (!raw.trim()) {
+    $body.innerHTML = `<p style="color:var(--ok-text2);font-style:italic;text-align:center;padding:40px 0">
+      Metin bulunamadı. <a href="../metin/" style="color:var(--ok-gold)">Metin sayfasına dön</a>.</p>`;
     return;
   }
 
-  if (blocksJson) {
-    try {
-      readerBody.innerHTML = blocksToHtml(JSON.parse(blocksJson));
-    } catch {
-      loadPlain(rawText);
-    }
+  if (blocks) {
+    $body.innerHTML = renderBlocks(blocks);
   } else {
-    loadPlain(rawText);
+    $body.classList.add("ok-plain");
+    $body.textContent = raw;
   }
 
-  updateMeta(rawText);
+  updateMeta(raw);
 
-  /* Kullanıcı kelimelerini arka planda yükle — hata sayfayı durdurmasın */
-  try {
-    const uid = window.getUserId?.();
-    if (uid) _userWords = await getWords(uid);
-  } catch (_) { /* sessizce geç */ }
+  /* Kullanıcı kelimelerini arka planda yükle */
+  const uid = window.getUserId?.();
+  if (uid) getWords(uid).then(list => { _userWords = list; }).catch(() => {});
 
   restorePrefs();
-  initProgressBar();
-
-  /* Event listener'ları SADECE BİR KEZ bağla */
+  initProgress();
   bindToolbar();
-  bindWordSelection();
+  bindSelection();
   bindModal();
 });
 
-/* ══════════════════════════════════════════════
-   METİN RENDER
-   ══════════════════════════════════════════════ */
-function blocksToHtml(blocks) {
-  const esc = s => String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-  let html = "";
-  for (const b of blocks) {
-    switch (b.type) {
-      case "title":   html += `<h2 class="rb-title">${esc(b.text)}</h2>`; break;
-      case "dialog":  html += `<p class="rb-dialog">${esc(b.text)}</p>`; break;
-      case "quote":   html += `<p class="rb-quote">${esc(b.text)}</p>`; break;
-      case "section": html += `<div class="rb-section">\u2726 \u2003 \u2726 \u2003 \u2726</div>`; break;
-      case "para":    html += `<p class="rb-para">${b.lines.map(esc).join("<br>")}</p>`; break;
-    }
-  }
-  return html;
+/* ═══════════════════════════════════════════════════════════
+   YARDIMCI
+   ═══════════════════════════════════════════════════════════ */
+function tryParse(json) {
+  if (!json) return null;
+  try { return JSON.parse(json); } catch { return null; }
 }
 
-function loadPlain(text) {
-  readerBody.classList.add("plain-text");
-  readerBody.textContent = text;
+function renderBlocks(blocks) {
+  const e = s => String(s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return blocks.map(b => {
+    switch (b.type) {
+      case "title":   return `<h2 class="ok-title">${e(b.text)}</h2>`;
+      case "dialog":  return `<p class="ok-dialog">${e(b.text)}</p>`;
+      case "quote":   return `<p class="ok-quote">${e(b.text)}</p>`;
+      case "section": return `<div class="ok-section">&#x2726; &emsp; &#x2726; &emsp; &#x2726;</div>`;
+      case "para":    return `<p class="ok-para">${b.lines.map(e).join("<br>")}</p>`;
+      default:        return "";
+    }
+  }).join("");
 }
 
 function updateMeta(text) {
   const words = text.trim().split(/\s+/).filter(Boolean).length;
   const mins  = Math.max(1, Math.round(words / 200));
   const el    = document.getElementById("readingMeta");
-  if (el) el.textContent = `${words.toLocaleString("tr")} kelime \u00b7 ~${mins} dk`;
+  if (el) el.textContent = `${words.toLocaleString("tr")} kelime · ~${mins} dk`;
 }
 
-/* ══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    İLERLEME ÇUBUĞU
-   ══════════════════════════════════════════════ */
-function initProgressBar() {
-  const bar = document.getElementById("progressBar");
-  if (!bar) return;
-  const onScroll = () => {
-    const total = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.width = total > 0 ? Math.min(100, (window.scrollY / total) * 100) + "%" : "0%";
-  };
-  window.addEventListener("scroll", onScroll, { passive: true });
+   ═══════════════════════════════════════════════════════════ */
+function initProgress() {
+  const fill = document.getElementById("okProgressFill");
+  if (!fill) return;
+  window.addEventListener("scroll", () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    fill.style.width = max > 0 ? Math.min(100, (window.scrollY / max) * 100) + "%" : "0%";
+  }, { passive: true });
 }
 
-/* ══════════════════════════════════════════════
-   TOOLBAR — tüm listener'lar tek seferde
-   ══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   TOOLBAR
+   ═══════════════════════════════════════════════════════════ */
 function bindToolbar() {
-
-  document.getElementById("backBtn")?.addEventListener("click", () => {
+  on("backBtn", "click", () => {
     sessionStorage.removeItem("parsedBlocks");
     const ret = sessionStorage.getItem("returnPage");
-    window.location.href = ret ? "../" + ret : "../metin/";
+    location.href = ret ? "../" + ret : "../metin/";
   });
 
-  document.getElementById("addWordBtn")?.addEventListener("click", () => {
-    if (!_selectedWord) {
-      showToast("Önce metinden bir kelime seçin.", "error");
-      return;
-    }
+  on("addWordBtn", "click", () => {
+    if (!_word) { toast("Önce metinden bir kelime seçin.", false); return; }
     openModal();
   });
 
-  document.getElementById("fontDecBtn")?.addEventListener("click", () => {
-    _fontSize = Math.max(13, _fontSize - 1);
-    readerBody.style.fontSize = _fontSize + "px";
-    sessionStorage.setItem("rd_fontSize", _fontSize);
-  });
+  on("fontDecBtn", "click", () => setFont(Math.max(13, _fontSize - 1)));
+  on("fontIncBtn", "click", () => setFont(Math.min(32, _fontSize + 1)));
 
-  document.getElementById("fontIncBtn")?.addEventListener("click", () => {
-    _fontSize = Math.min(32, _fontSize + 1);
-    readerBody.style.fontSize = _fontSize + "px";
-    sessionStorage.setItem("rd_fontSize", _fontSize);
-  });
-
-  document.getElementById("fontToggleBtn")?.addEventListener("click", () => {
+  on("fontToggleBtn", "click", () => {
     _serifMode = !_serifMode;
-    readerBody.style.fontFamily = _serifMode
-      ? "var(--reader-font)"
-      : "'DM Sans', system-ui, sans-serif";
-    const btn = document.getElementById("fontToggleBtn");
-    if (btn) btn.textContent = _serifMode ? "Tf" : "Ss";
-    sessionStorage.setItem("rd_serif", _serifMode ? "1" : "0");
+    $body.style.fontFamily = _serifMode ? "var(--ok-serif)" : "var(--ok-sans)";
+    setText("fontToggleBtn", _serifMode ? "Tf" : "Ss");
+    ss("ok_serif", _serifMode ? "1" : "0");
   });
 
-  document.getElementById("themeBtn")?.addEventListener("click", () => {
+  on("themeBtn", "click", () => {
     _themeIdx = (_themeIdx + 1) % THEMES.length;
-    applyTheme(THEMES[_themeIdx]);
-    sessionStorage.setItem("rd_theme", _themeIdx);
+    setTheme(_themeIdx);
+    ss("ok_theme", _themeIdx);
   });
 
-  document.getElementById("focusBtn")?.addEventListener("click", () => {
-    const on = document.body.classList.toggle("focus-mode");
-    const btn = document.getElementById("focusBtn");
-    if (btn) btn.textContent = on ? "\u229E" : "\u22A1";
+  on("focusBtn", "click", () => {
+    const on = document.body.classList.toggle("ok-focus");
+    setText("focusBtn", on ? "⊞" : "⊡");
   });
 }
 
-function applyTheme(name) {
-  document.body.classList.remove("theme-sepia", "theme-light");
-  if (name === "sepia") document.body.classList.add("theme-sepia");
-  if (name === "light") document.body.classList.add("theme-light");
-  const icons = { dark: "\u2600", sepia: "\uD83D\uDCDC", light: "\uD83C\uDF19" };
-  const btn = document.getElementById("themeBtn");
-  if (btn) btn.textContent = icons[name] || "\u2600";
+function setFont(size) {
+  _fontSize = size;
+  $body.style.fontSize = size + "px";
+  ss("ok_font", size);
+}
+
+function setTheme(idx) {
+  document.body.classList.remove(...THEMES.filter(Boolean));
+  if (THEMES[idx]) document.body.classList.add(THEMES[idx]);
+  setText("themeBtn", THEME_ICONS[idx] || "☀");
 }
 
 function restorePrefs() {
-  const ti = parseInt(sessionStorage.getItem("rd_theme") || "0", 10);
-  _themeIdx = ti;
-  applyTheme(THEMES[_themeIdx]);
+  const ti = parseInt(sg("ok_theme") || "0", 10);
+  _themeIdx = isNaN(ti) ? 0 : ti % THEMES.length;
+  setTheme(_themeIdx);
 
-  if (sessionStorage.getItem("rd_serif") === "0") {
+  if (sg("ok_serif") === "0") {
     _serifMode = false;
-    readerBody.style.fontFamily = "'DM Sans', system-ui, sans-serif";
-    const btn = document.getElementById("fontToggleBtn");
-    if (btn) btn.textContent = "Ss";
+    $body.style.fontFamily = "var(--ok-sans)";
+    setText("fontToggleBtn", "Ss");
   }
 
-  const fs = parseInt(sessionStorage.getItem("rd_fontSize") || "0", 10);
-  if (fs >= 13 && fs <= 32) {
-    _fontSize = fs;
-    readerBody.style.fontSize = _fontSize + "px";
-  }
+  const fs = parseInt(sg("ok_font") || "0", 10);
+  if (fs >= 13 && fs <= 32) setFont(fs);
 }
 
-/* ══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    KELİME SEÇİMİ
-   ══════════════════════════════════════════════ */
-function bindWordSelection() {
+   ═══════════════════════════════════════════════════════════ */
+function bindSelection() {
+  /* Metin seçilince floating buton göster */
+  $body.addEventListener("mouseup", onBodyMouseUp);
+  $body.addEventListener("touchend", onBodyMouseUp);
 
-  readerBody.addEventListener("mouseup", () => {
-    const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) { hideTrigger(); return; }
+  /* Butona tıklanınca popup aç */
+  $meaning.addEventListener("click", openPopup);
 
-    let word = sel.toString().trim().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
-    if (!word) { hideTrigger(); return; }
-
-    _selectedWord = word;
-    const rect = sel.getRangeAt(0).getBoundingClientRect();
-    if (!rect || rect.width === 0) { hideTrigger(); return; }
-
-    popup.style.display   = "none";
-    trigger.style.display = "flex";
-    trigger.style.top     = (window.scrollY + rect.bottom + 10) + "px";
-    trigger.style.left    = (window.scrollX + rect.left) + "px";
-  });
-
-  trigger.addEventListener("click", openMeaningPopup);
-
-  /* Dışarıya tıklayınca kapat */
+  /* Dış tıklamada kapat */
   document.addEventListener("mousedown", e => {
-    if (_modalOpen) return; /* modal açıkken popup'ı etkileme */
-    const inside =
-      readerBody.contains(e.target) ||
-      trigger.contains(e.target)   ||
-      popup.contains(e.target)     ||
-      overlay.contains(e.target);
+    if (_modalOpen) return;
+    const inside = [$body, $meaning, $popup, $overlay].some(el => el && el.contains(e.target));
     if (!inside) {
-      hideTrigger();
-      popup.style.display = "none";
+      hideMeaning();
+      hidePopup();
       window.getSelection()?.removeAllRanges();
-      _selectedWord = "";
+      _word = "";
     }
   });
 }
 
-function hideTrigger() {
-  trigger.style.display = "none";
+function onBodyMouseUp() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) { hideMeaning(); return; }
+
+  /* Unicode letter-only trim */
+  const raw = sel.toString().trim().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
+  if (!raw) { hideMeaning(); return; }
+
+  _word = raw;
+  const rect = sel.getRangeAt(0).getBoundingClientRect();
+  if (!rect.width) { hideMeaning(); return; }
+
+  /* position:fixed → koordinatlar viewport-relative, scrollY YOK */
+  hidePopup();
+  $meaning.style.top  = (rect.bottom + 10) + "px";
+  $meaning.style.left = rect.left + "px";
+  $meaning.style.display = "inline-flex";
+  $meaning.classList.remove("pop");
+  /* reflow sonrası animasyon class ekle */
+  requestAnimationFrame(() => $meaning.classList.add("pop"));
 }
 
-/* ══════════════════════════════════════════════
-   ANLAM POPUP
-   ══════════════════════════════════════════════ */
-async function openMeaningPopup() {
-  popup.style.top  = trigger.style.top;
-  popup.style.left = trigger.style.left;
-  hideTrigger();
-  popup.style.display = "block";
-  _popupWikiData = null;
+function hideMeaning() {
+  $meaning.style.display = "none";
+  $meaning.classList.remove("pop");
+}
+function hidePopup() {
+  $popup.style.display = "none";
+  $popup.classList.remove("slide");
+}
 
-  popup.innerHTML = `
-    <div class="popup-loading">
-      <div class="dots"><span></span><span></span><span></span></div>
-      <span>Çevriliyor\u2026</span>
+/* ═══════════════════════════════════════════════════════════
+   ANLAM POPUP
+   ═══════════════════════════════════════════════════════════ */
+async function openPopup() {
+  /* Popup'u meaning butonunun hemen altında göster */
+  const btnRect = $meaning.getBoundingClientRect();
+  $popup.style.top  = (btnRect.bottom + 8) + "px";
+  $popup.style.left = btnRect.left + "px";
+  $popup.style.display = "block";
+  $popup.classList.remove("slide");
+  requestAnimationFrame(() => $popup.classList.add("slide"));
+
+  hideMeaning();
+  _wiki = null;
+
+  $popup.innerHTML = `
+    <div class="ok-loading">
+      <div class="ok-dots"><span></span><span></span><span></span></div>
+      <span>Çevriliyor…</span>
     </div>`;
 
-  let main = "—", alts = [], wiki = {};
+  let mainTr = "—", alts = [], wikiData = {};
 
   try {
-    [{ main, alts }, wiki] = await Promise.all([
-      fetchTranslate(_selectedWord),
-      fetchWikiData(_selectedWord),
+    [ {main: mainTr, alts}, wikiData ] = await Promise.all([
+      fetchTranslate(_word),
+      fetchWikiData(_word),
     ]);
   } catch {
-    popup.innerHTML = `<div style="padding:16px;color:var(--error);font-size:13px">
-      Çeviri alınamadı.</div>`;
+    $popup.innerHTML = `<div style="padding:16px;color:var(--ok-error);font-size:13px">Çeviri alınamadı.</div>`;
     return;
   }
 
-  _lastTranslated = main;
-  _popupWikiData  = wiki;
+  _tr   = mainTr;
+  _wiki = wikiData;
 
-  const artikelHtml = artikelBadgeHtml(wiki.artikel, { size: 11 });
-  const typeHtml    = wiki.wordType
-    ? `<span class="popup-type-badge">${wiki.wordType}</span>` : "";
-  const baseHtml    = wiki.baseForm
-    ? `<div class="popup-base-form">
-         <span>Temel form: <strong>${escapeHtml(wiki.baseForm)}</strong></span>
-         <button class="popup-apply-base" id="popupApplyBase">kullan \u2192</button>
+  /* Popup içeriğini oluştur */
+  const artHtml  = artikelBadgeHtml(wikiData.artikel, { size: 11 });
+  const typeHtml = wikiData.wordType
+    ? `<span class="ok-ptb">${wikiData.wordType}</span>` : "";
+  const baseHtml = wikiData.baseForm
+    ? `<div class="ok-pbase">
+         <span>Temel form: <strong>${escapeHtml(wikiData.baseForm)}</strong></span>
+         <button class="ok-papply" id="ppApply">kullan →</button>
        </div>` : "";
   const altsHtml = alts.length
-    ? `<div class="popup-alts">${alts.slice(0,5).map(a =>
-        `<button class="popup-alt-chip" data-alt="${escapeHtml(a)}">${escapeHtml(a)}</button>`
+    ? `<div class="ok-palts">${alts.slice(0,5).map(a =>
+        `<button class="ok-palt" data-a="${escapeHtml(a)}">${escapeHtml(a)}</button>`
       ).join("")}</div>` : "";
 
-  popup.innerHTML = `
-    <div class="popup-header">
-      <div class="popup-word-row">
-        ${artikelHtml}
-        <span class="popup-word">${escapeHtml(_selectedWord)}</span>
-        ${typeHtml}
-      </div>
-      <button class="popup-close" id="popupCloseBtn">\u2715</button>
+  $popup.innerHTML = `
+    <div class="ok-ph">
+      <div class="ok-pw-row">${artHtml}<span class="ok-pw">${escapeHtml(_word)}</span>${typeHtml}</div>
+      <button class="ok-px" id="ppClose">✕</button>
     </div>
-    <div class="popup-body">
-      <div class="popup-main-tr" id="popupMainTr">${escapeHtml(main)}</div>
+    <div class="ok-pb">
+      <div class="ok-pmain" id="ppMain">${escapeHtml(mainTr)}</div>
       ${altsHtml}
       ${baseHtml}
-      <div class="popup-tag-section">
-        <div class="popup-tag-label">Etiket</div>
-        <div id="popupTagChips" class="tag-chips" style="gap:5px"></div>
+      <div class="ok-ptags">
+        <div class="ok-ptag-label">Etiket</div>
+        <div class="ok-tag-chips" id="ppTags"></div>
       </div>
     </div>
-    <div class="popup-footer">
-      <button class="popup-save-btn" id="popupSaveBtn">+ Sözlüğe Ekle</button>
+    <div class="ok-pfoot">
+      <button class="ok-psave" id="ppSave">+ Sözlüğe Ekle</button>
     </div>`;
 
-  renderTagChips("popupTagChips", wiki.autoTags || [], extractAllTags(_userWords));
+  renderTagChips("ppTags", wikiData.autoTags || [], extractAllTags(_userWords));
 
   /* Alt çeviri chip'leri */
-  popup.querySelectorAll(".popup-alt-chip").forEach(chip => {
+  $popup.querySelectorAll(".ok-palt").forEach(chip => {
     chip.addEventListener("click", () => {
-      _lastTranslated = chip.dataset.alt;
-      const el = document.getElementById("popupMainTr");
-      if (el) el.textContent = chip.dataset.alt;
+      _tr = chip.dataset.a;
+      const el = document.getElementById("ppMain");
+      if (el) el.textContent = chip.dataset.a;
     });
   });
 
   /* Temel form uygula */
-  document.getElementById("popupApplyBase")?.addEventListener("click", async () => {
-    _selectedWord = wiki.baseForm;
-    popup.style.display = "none";
-    /* Yeni kelime için popup yeniden aç */
-    trigger.style.display = "flex";
-    await openMeaningPopup();
+  document.getElementById("ppApply")?.addEventListener("click", async () => {
+    _word = wikiData.baseForm;
+    hidePopup();
+    try {
+      const nw = await fetchWikiData(_word);
+      _wiki = nw;
+    } catch { _wiki = {}; }
+    /* Popup'u yeniden aç */
+    $meaning.style.top  = $popup.style.top;
+    $meaning.style.left = $popup.style.left;
+    $meaning.style.display = "inline-flex";
+    await openPopup();
   });
 
-  /* Kapat */
-  document.getElementById("popupCloseBtn")?.addEventListener("click", () => {
-    popup.style.display = "none";
-    _selectedWord = "";
-  });
-
-  /* Kaydet */
-  document.getElementById("popupSaveBtn")?.addEventListener("click", saveFromPopup);
+  document.getElementById("ppClose")?.addEventListener("click", hidePopup);
+  document.getElementById("ppSave")?.addEventListener("click",  saveFromPopup);
 }
 
-/* ══════════════════════════════════════════════
-   POPUP'TAN KAYDET
-   ══════════════════════════════════════════════ */
+/* ── Popup'tan kaydet ────────────────────────────────────── */
 async function saveFromPopup() {
-  const word    = normalizeGermanWord(_selectedWord, _popupWikiData);
-  const meaning = _lastTranslated;
-  if (!word || !meaning || meaning === "—") {
-    showToast("Kelime veya çeviri eksik.", "error");
-    return;
+  const word = normalizeGermanWord(_word, _wiki);
+  if (!word || !_tr || _tr === "—") {
+    toast("Kelime veya çeviri eksik.", false); return;
   }
 
-  const btn = document.getElementById("popupSaveBtn");
-  if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor\u2026"; }
+  const btn = document.getElementById("ppSave");
+  if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor…"; }
 
   try {
     const uid = window.getUserId?.();
-    if (!uid) throw new Error("Oturum bulunamadı");
-    const tags = getSelectedTags("popupTagChips");
-    await saveWord(uid, word, meaning, tags);
-    /* Kelime listesini arka planda güncelle */
-    getWords(uid).then(list => { _userWords = list; }).catch(() => {});
-    popup.style.display = "none";
-    _selectedWord = "";
-    showToast(`"${word}" sözlüğe eklendi`, "success");
+    if (!uid) throw new Error("Oturum yok");
+    await saveWord(uid, word, _tr, getSelectedTags("ppTags"));
+    getWords(uid).then(l => { _userWords = l; }).catch(() => {});
+    hidePopup();
+    _word = "";
+    toast(`"${word}" sözlüğe eklendi`);
   } catch (err) {
-    showToast("Kayıt başarısız: " + err.message, "error");
+    toast("Kayıt başarısız: " + err.message, false);
     if (btn) { btn.disabled = false; btn.textContent = "+ Sözlüğe Ekle"; }
   }
 }
 
-/* ══════════════════════════════════════════════
-   KELİME KAYDETME MODALI
-   Tüm listener'lar burada tek kez bağlanır.
-   ══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   KELIME KAYDETME MODALI
+   Tüm listener'lar tek kez bindModal() içinde bağlanır.
+   ═══════════════════════════════════════════════════════════ */
 function bindModal() {
-
-  /* Kapatma işlemleri */
-  const closeModal = () => {
-    overlay.classList.remove("active");
+  const close = () => {
+    $overlay.style.display = "none";
+    $overlay.classList.remove("active");
     _modalOpen = false;
   };
 
-  document.getElementById("wordModalClose")?.addEventListener("click", closeModal);
-  document.getElementById("wordModalCancelBtn")?.addEventListener("click", closeModal);
+  on("wordModalClose",    "click",   close);
+  on("wordModalCancelBtn","click",   close);
 
-  overlay.addEventListener("click", e => {
-    if (e.target === overlay) closeModal();
+  $overlay.addEventListener("click", e => { if (e.target === $overlay) close(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && _modalOpen) close(); });
+
+  on("applyBaseFormBtn", "click", async () => {
+    const base = _wiki?.baseForm;
+    if (!base) return;
+    _word = base;
+    try { _wiki = await fetchWikiData(_word); } catch { _wiki = {}; }
+    fillModalWord();
+    renderTagChips("modalTagChips", _wiki?.autoTags || [], extractAllTags(_userWords));
   });
 
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && _modalOpen) closeModal();
-  });
-
-  /* Temel form uygula */
-  document.getElementById("applyBaseFormBtn")?.addEventListener("click", async () => {
-    if (!_popupWikiData?.baseForm) return;
-    _selectedWord = _popupWikiData.baseForm;
-    try {
-      const newWiki = await fetchWikiData(_selectedWord);
-      _popupWikiData = newWiki;
-      _fillModalWord(newWiki);
-      renderTagChips("modalTagChips", newWiki.autoTags || [], extractAllTags(_userWords));
-    } catch (_) { /* sessizce geç */ }
-  });
-
-  /* Enter ile kaydet */
-  document.getElementById("modalMeaningInput")?.addEventListener("keydown", e => {
-    if (e.key === "Enter") _saveFromModal();
-  });
-
-  /* Kaydet butonu */
-  document.getElementById("wordModalSaveBtn")?.addEventListener("click", _saveFromModal);
+  on("modalMeaningInput", "keydown", e => { if (e.key === "Enter") doSaveModal(); });
+  on("wordModalSaveBtn",  "click",   doSaveModal);
 }
 
-/** Modal'ı açar ve mevcut seçili kelime + wiki verisiyle doldurur */
 function openModal() {
-  const wiki = _popupWikiData || {};
-  _fillModalWord(wiki);
+  fillModalWord();
 
-  document.getElementById("modalMeaningInput").value = _lastTranslated || "";
-  renderTagChips("modalTagChips", wiki.autoTags || [], extractAllTags(_userWords));
+  const inp = document.getElementById("modalMeaningInput");
+  if (inp) inp.value = _tr || "";
 
-  /* Temel form satırı */
   const baseWrap = document.getElementById("modalBaseFormWrap");
   const baseText = document.getElementById("modalBaseFormText");
   if (baseWrap && baseText) {
-    if (wiki.baseForm) {
-      baseText.textContent  = wiki.baseForm;
-      baseWrap.style.display = "flex";
-    } else {
-      baseWrap.style.display = "none";
-    }
+    const base = _wiki?.baseForm;
+    baseText.textContent  = base || "";
+    baseWrap.style.display = base ? "flex" : "none";
   }
 
-  overlay.classList.add("active");
+  renderTagChips("modalTagChips", _wiki?.autoTags || [], extractAllTags(_userWords));
+
+  /* Inline display:none → display:flex override */
+  $overlay.style.display = "flex";
+  $overlay.classList.add("active");
   _modalOpen = true;
-  setTimeout(() => document.getElementById("modalMeaningInput")?.focus(), 80);
+  setTimeout(() => document.getElementById("modalMeaningInput")?.focus(), 60);
 }
 
-/** Modal başlığındaki kelime gösterimini günceller */
-function _fillModalWord(wiki) {
-  const displayEl = document.getElementById("modalWordDisplay");
-  if (!displayEl) return;
-  if (wiki.artikel) {
-    displayEl.innerHTML = artikelBadgeHtml(wiki.artikel, { size: 14 })
-      + " " + escapeHtml(_selectedWord.charAt(0).toUpperCase() + _selectedWord.slice(1));
+function fillModalWord() {
+  const el = document.getElementById("modalWordDisplay");
+  if (!el) return;
+  if (_wiki?.artikel) {
+    const cap = _word.charAt(0).toUpperCase() + _word.slice(1);
+    el.innerHTML = artikelBadgeHtml(_wiki.artikel, { size: 14 }) + " " + escapeHtml(cap);
   } else {
-    displayEl.textContent = normalizeGermanWord(_selectedWord, wiki);
+    el.textContent = normalizeGermanWord(_word, _wiki || {});
   }
 }
 
-/** Modal'dan kelimeyi kaydet */
-async function _saveFromModal() {
-  const meaningEl = document.getElementById("modalMeaningInput");
-  const meaning   = meaningEl?.value.trim();
-  if (!meaning) { meaningEl?.focus(); return; }
+async function doSaveModal() {
+  const inp     = document.getElementById("modalMeaningInput");
+  const meaning = inp?.value.trim();
+  if (!meaning) { inp?.focus(); return; }
 
-  const word    = normalizeGermanWord(_selectedWord, _popupWikiData || {});
-  const tags    = getSelectedTags("modalTagChips");
-  const saveBtn = document.getElementById("wordModalSaveBtn");
+  const word = normalizeGermanWord(_word, _wiki || {});
+  const tags = getSelectedTags("modalTagChips");
+  const btn  = document.getElementById("wordModalSaveBtn");
 
-  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Kaydediliyor\u2026"; }
+  if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor…"; }
 
   try {
     const uid = window.getUserId?.();
-    if (!uid) throw new Error("Oturum bulunamadı");
+    if (!uid) throw new Error("Oturum yok");
     await saveWord(uid, word, meaning, tags);
-    /* Arka planda güncelle */
-    getWords(uid).then(list => { _userWords = list; }).catch(() => {});
-    overlay.classList.remove("active");
-    _modalOpen    = false;
-    _selectedWord = "";
-    showToast(`"${word}" sözlüğe eklendi`, "success");
+    getWords(uid).then(l => { _userWords = l; }).catch(() => {});
+    $overlay.style.display = "none";
+    $overlay.classList.remove("active");
+    _modalOpen = false;
+    _word      = "";
+    toast(`"${word}" sözlüğe eklendi`);
   } catch (err) {
-    showToast("Kayıt başarısız: " + err.message, "error");
-    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Kaydet"; }
+    toast("Kayıt başarısız: " + err.message, false);
+    if (btn) { btn.disabled = false; btn.textContent = "Kaydet"; }
   }
 }
 
-/* ══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    TOAST
-   ══════════════════════════════════════════════ */
-function showToast(msg, type = "success") {
-  /* Varsa önceki toast'u temizle */
-  document.querySelectorAll(".reader-toast").forEach(el => el.remove());
-
+   ═══════════════════════════════════════════════════════════ */
+function toast(msg, ok = true) {
+  document.querySelectorAll(".ok-toast").forEach(e => e.remove());
   const el = document.createElement("div");
-  el.className   = `reader-toast ${type}`;
+  el.className   = `ok-toast ${ok ? "ok-ok" : "ok-err"}`;
   el.textContent = msg;
   document.body.appendChild(el);
-
   setTimeout(() => {
     el.style.transition = "opacity .3s";
-    el.style.opacity    = "0";
+    el.style.opacity = "0";
     setTimeout(() => el.remove(), 300);
   }, 2400);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   MINI YARDIMCILAR
+   ═══════════════════════════════════════════════════════════ */
+function on(id, ev, fn) {
+  document.getElementById(id)?.addEventListener(ev, fn);
+}
+function setText(id, t) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = t;
+}
+function ss(k, v) { sessionStorage.setItem(k, v); }
+function sg(k)    { return sessionStorage.getItem(k); }

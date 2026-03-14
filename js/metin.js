@@ -11,20 +11,9 @@
 
 import { saveMetin } from "./firebase.js";
 
-/* ── Toast ───────────────────────────────────────────────── */
-function toast(msg, type = "") {
-  let el = document.getElementById("_toast");
-  if (!el) {
-    el = document.createElement("div");
-    el.id = "_toast";
-    el.className = "toast";
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-  el.className = `toast show${type ? " toast-" + type : ""}`;
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove("show"), 2800);
-}
+import { showToast } from "../src/components/toast.js";
+
+
 
 /* ── Metin Parser ────────────────────────────────────────── */
 function parseText(raw) {
@@ -218,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editor.innerText = cleaned;
     updateStats(cleaned);
     updateStructure(parseText(cleaned));
-    toast("Metin temizlendi", "ok");
+    showToast("Metin temizlendi", "ok");
   });
 
   document.getElementById("btnFixDashes")?.addEventListener("click", () => {
@@ -226,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editor.innerText = fixed;
     updateStats(fixed);
     updateStructure(parseText(fixed));
-    toast("Tireler d\u00fczeldi (\u2013 ve \u2014)", "ok");
+    showToast("Tireler d\u00fczeldi (\u2013 ve \u2014)", "ok");
   });
 
   document.getElementById("btnFixQuotes")?.addEventListener("click", () => {
@@ -234,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editor.innerText = fixed;
     updateStats(fixed);
     updateStructure(parseText(fixed));
-    toast("T\u0131rnaklar Almanca format\u0131na d\u00f6n\u00fc\u015ft\u00fcr\u00fcld\u00fc", "ok");
+    showToast("T\u0131rnaklar Almanca format\u0131na d\u00f6n\u00fc\u015ft\u00fcr\u00fcld\u00fc", "ok");
   });
 
   document.getElementById("btnClear")?.addEventListener("click", () => {
@@ -245,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
       updateStructure([]);
       sessionStorage.removeItem("savedText");
       setAutoSaveState("unsaved");
-      toast("Metin silindi");
+      showToast("Metin silindi");
     }
   });
 
@@ -271,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = editor.innerText.trim();
 
     if (!text) {
-      toast("Metin bo\u015f!", "err");
+      showToast("Metin bo\u015f!", "err");
       return;
     }
 
@@ -295,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "../okuma/";
     } catch (err) {
       console.error("Kay\u0131t hatas\u0131:", err);
-      toast("Kay\u0131t s\u0131ras\u0131nda bir hata olu\u015ftu", "err");
+      showToast("Kay\u0131t s\u0131ras\u0131nda bir hata olu\u015ftu", "err");
       readBtn.disabled = false;
       readBtn.innerHTML = `
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

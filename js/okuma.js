@@ -18,6 +18,7 @@ import {
   artikelBadgeHtml,
   escapeHtml,
 } from "./german.js";
+import { showToast } from "../src/components/toast.js";
 
 /* ── State ───────────────────────────────────────────────── */
 let _word       = "";   /* seçili kelime */
@@ -144,7 +145,7 @@ function bindToolbar() {
   });
 
   on("addWordBtn", "click", () => {
-    if (!_word) { toast("Önce metinden bir kelime seçin.", false); return; }
+    if (!_word) { showToast("Önce metinden bir kelime seçin.", false); return; }
     openModal();
   });
 
@@ -354,7 +355,7 @@ async function openPopup() {
 async function saveFromPopup() {
   const word = normalizeGermanWord(_word, _wiki);
   if (!word || !_tr || _tr === "—") {
-    toast("Kelime veya çeviri eksik.", false); return;
+    showToast("Kelime veya çeviri eksik.", false); return;
   }
 
   const btn = document.getElementById("ppSave");
@@ -367,9 +368,9 @@ async function saveFromPopup() {
     getWords(uid).then(l => { _userWords = l; }).catch(() => {});
     hidePopup();
     _word = "";
-    toast(`"${word}" sözlüğe eklendi`);
+    showToast(`"${word}" sözlüğe eklendi`);
   } catch (err) {
-    toast("Kayıt başarısız: " + err.message, false);
+    showToast("Kayıt başarısız: " + err.message, false);
     if (btn) { btn.disabled = false; btn.textContent = "+ Sözlüğe Ekle"; }
   }
 }
@@ -458,28 +459,14 @@ async function doSaveModal() {
     $overlay.classList.remove("active");
     _modalOpen = false;
     _word      = "";
-    toast(`"${word}" sözlüğe eklendi`);
+    showToast(`"${word}" sözlüğe eklendi`);
   } catch (err) {
-    toast("Kayıt başarısız: " + err.message, false);
+    showToast("Kayıt başarısız: " + err.message, false);
     if (btn) { btn.disabled = false; btn.textContent = "Kaydet"; }
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   TOAST
-   ═══════════════════════════════════════════════════════════ */
-function toast(msg, ok = true) {
-  document.querySelectorAll(".ok-toast").forEach(e => e.remove());
-  const el = document.createElement("div");
-  el.className   = `ok-toast ${ok ? "ok-ok" : "ok-err"}`;
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => {
-    el.style.transition = "opacity .3s";
-    el.style.opacity = "0";
-    setTimeout(() => el.remove(), 300);
-  }, 2400);
-}
+
 
 /* ═══════════════════════════════════════════════════════════
    MINI YARDIMCILAR

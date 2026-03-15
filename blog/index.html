@@ -288,9 +288,10 @@ body { font-family: var(--font-b); background: var(--bg); color: var(--text); mi
 }
 
 .editor-toolbar {
-  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
-  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 3px; flex-wrap: wrap;
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
   background: rgba(255,255,255,0.02);
+  row-gap: 6px;
 }
 
 .tb-btn {
@@ -303,6 +304,29 @@ body { font-family: var(--font-b); background: var(--bg); color: var(--text); mi
 .tb-btn:hover { background: var(--surface2); color: var(--text); }
 .tb-btn.active { background: rgba(201,168,76,0.12); color: var(--gold); }
 .tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+.tb-select {
+  height: 32px; padding: 0 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: 7px; color: var(--text-2);
+  font-family: var(--font-b); font-size: 11px; cursor: pointer;
+  outline: none; transition: var(--tr); max-width: 90px;
+}
+.tb-select:hover { border-color: var(--border-h); color: var(--text); }
+.tb-select option { background: #12121a; color: var(--text); }
+/* Highlight */
+mark { background: rgba(255,210,80,0.28); color: var(--text); border-radius: 2px; padding: 0 2px; }
+/* Editor içi tablo */
+.editor-content table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+.editor-content th, .editor-content td { border: 1px solid var(--border); padding: 8px 12px; font-size: 14px; text-align: left; }
+.editor-content th { background: rgba(255,255,255,0.04); color: var(--text); font-weight: 600; }
+.editor-content td { color: var(--text-2); }
+/* Post görünümünde tablo */
+.post-body table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+.post-body th, .post-body td { border: 1px solid var(--border); padding: 10px 14px; font-size: 15px; text-align: left; }
+.post-body th { background: rgba(255,255,255,0.04); color: var(--text); font-weight: 600; font-family: var(--font-d); }
+.post-body td { color: rgba(240,238,232,0.75); }
+/* Editor içi görsel */
+.editor-content img { max-width: 100%; border-radius: 10px; margin: 12px 0; border: 1px solid var(--border); }
 
 /* Title input */
 .editor-title-input {
@@ -542,22 +566,52 @@ body { font-family: var(--font-b); background: var(--bg); color: var(--text); mi
     <!-- Sol: editör -->
     <div class="editor-main">
       <div class="editor-toolbar">
+        <!-- Geri al / Yinele -->
+        <button class="tb-btn" data-cmd="undo"  title="Geri al (Ctrl+Z)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></button>
+        <button class="tb-btn" data-cmd="redo"  title="Yinele (Ctrl+Y)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg></button>
+        <div class="tb-sep"></div>
+        <!-- Yazı boyutu -->
+        <select class="tb-select" id="tbFontSize" title="Yazı boyutu (Ctrl+Shift+S)">
+          <option value="">Boyut</option>
+          <option value="1">Çok Küçük</option>
+          <option value="2">Küçük</option>
+          <option value="3">Normal</option>
+          <option value="4">Büyük</option>
+          <option value="5">Çok Büyük</option>
+          <option value="6">Dev</option>
+        </select>
+        <div class="tb-sep"></div>
         <!-- Format -->
         <button class="tb-btn" data-cmd="bold"           title="Kalın (Ctrl+B)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg></button>
         <button class="tb-btn" data-cmd="italic"         title="İtalik (Ctrl+I)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
-        <button class="tb-btn" data-cmd="underline"      title="Altı çizili"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></button>
+        <button class="tb-btn" data-cmd="underline"      title="Altı çizili (Ctrl+U)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></button>
+        <button class="tb-btn" data-cmd="strikeThrough"  title="Üstü çizili (Ctrl+Shift+X)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4H9a3 3 0 0 0-2.83 4"/><path d="M14 12a4 4 0 0 1 0 8H6"/><line x1="4" y1="12" x2="20" y2="12"/></svg></button>
+        <button class="tb-btn" data-cmd="highlight"      title="Vurgula (Ctrl+Shift+H)" style="font-size:14px;font-weight:700;color:#ffd250;">H</button>
         <div class="tb-sep"></div>
-        <button class="tb-btn" data-cmd="h2"             title="Başlık 2">H2</button>
-        <button class="tb-btn" data-cmd="h3"             title="Başlık 3">H3</button>
+        <!-- Başlıklar -->
+        <button class="tb-btn" data-cmd="h2" title="Büyük başlık (Ctrl+2)">H2</button>
+        <button class="tb-btn" data-cmd="h3" title="Küçük başlık (Ctrl+3)">H3</button>
         <div class="tb-sep"></div>
-        <button class="tb-btn" data-cmd="insertUnorderedList" title="Liste"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></button>
+        <!-- Hizalama -->
+        <button class="tb-btn" data-cmd="justifyLeft"   title="Sola hizala (Ctrl+Shift+L)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button>
+        <button class="tb-btn" data-cmd="justifyCenter" title="Ortala (Ctrl+Shift+E)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg></button>
+        <button class="tb-btn" data-cmd="justifyRight"  title="Sağa hizala (Ctrl+Shift+R)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg></button>
+        <div class="tb-sep"></div>
+        <!-- Listeler -->
+        <button class="tb-btn" data-cmd="insertUnorderedList" title="Madde listesi"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></button>
         <button class="tb-btn" data-cmd="insertOrderedList" title="Numaralı liste"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
-        <button class="tb-btn" data-cmd="blockquote"     title="Alıntı"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg></button>
+        <button class="tb-btn" data-cmd="blockquote"    title="Alıntı"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg></button>
         <div class="tb-sep"></div>
-        <button class="tb-btn" data-cmd="createLink"     title="Link ekle"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
-        <button class="tb-btn" data-cmd="unlink"         title="Link kaldır"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.84 12.25l1.72-1.71h-.02a5.004 5.004 0 0 0-.12-7.07 5.006 5.006 0 0 0-6.95 0l-1.72 1.71"/><path d="M5.17 11.75l-1.71 1.71a5.004 5.004 0 0 0 .12 7.07 5.006 5.006 0 0 0 6.95 0l1.71-1.71"/><line x1="8" y1="2" x2="8" y2="5"/><line x1="2" y1="8" x2="5" y2="8"/><line x1="16" y1="19" x2="16" y2="22"/><line x1="19" y1="16" x2="22" y2="16"/></svg></button>
+        <!-- Ekle -->
+        <button class="tb-btn" data-cmd="insertHR"      title="Yatay çizgi"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/></svg></button>
+        <button class="tb-btn" data-cmd="insertTable"   title="Tablo ekle"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg></button>
+        <button class="tb-btn" data-cmd="insertImage"   title="Görsel ekle (URL)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
         <div class="tb-sep"></div>
-        <button class="tb-btn" data-cmd="removeFormat"   title="Formatı temizle"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/><line x1="3" y1="21" x2="17" y2="7"/></svg></button>
+        <!-- Link -->
+        <button class="tb-btn" data-cmd="createLink"    title="Link ekle (Ctrl+K)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+        <button class="tb-btn" data-cmd="unlink"        title="Link kaldır"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.84 12.25l1.72-1.71h-.02a5.004 5.004 0 0 0-.12-7.07 5.006 5.006 0 0 0-6.95 0l-1.72 1.71"/><path d="M5.17 11.75l-1.71 1.71a5.004 5.004 0 0 0 .12 7.07 5.006 5.006 0 0 0 6.95 0l1.71-1.71"/><line x1="8" y1="2" x2="8" y2="5"/><line x1="2" y1="8" x2="5" y2="8"/><line x1="16" y1="19" x2="16" y2="22"/><line x1="19" y1="16" x2="22" y2="16"/></svg></button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" data-cmd="removeFormat"  title="Formatı temizle"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/><line x1="3" y1="21" x2="17" y2="7"/></svg></button>
       </div>
 
       <textarea id="editorTitle" class="editor-title-input" placeholder="Yazı başlığı…" rows="2" spellcheck="false"></textarea>
@@ -938,6 +992,7 @@ document.querySelectorAll(".tb-btn").forEach(btn => {
     e.preventDefault();
     const cmd = btn.dataset.cmd;
     if (!cmd) return;
+    const ed = document.getElementById("editorContent");
 
     if (cmd === "h2") {
       document.execCommand("formatBlock", false, "h2");
@@ -948,11 +1003,61 @@ document.querySelectorAll(".tb-btn").forEach(btn => {
     } else if (cmd === "createLink") {
       const url = prompt("Link URL:");
       if (url) document.execCommand("createLink", false, url);
+    } else if (cmd === "highlight") {
+      /* Vurgulama: seçili metni <mark> içine al */
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount && !sel.isCollapsed) {
+        const range = sel.getRangeAt(0);
+        const mark  = document.createElement("mark");
+        range.surroundContents(mark);
+        sel.removeAllRanges();
+      }
+    } else if (cmd === "insertHR") {
+      document.execCommand("insertHTML", false, "<hr>");
+    } else if (cmd === "insertTable") {
+      const rows = parseInt(prompt("Satır sayısı:", "3")) || 3;
+      const cols = parseInt(prompt("Sütun sayısı:", "3")) || 3;
+      let html = "<table><thead><tr>";
+      for (let c2 = 0; c2 < cols; c2++) html += `<th>Başlık ${c2+1}</th>`;
+      html += "</tr></thead><tbody>";
+      for (let r = 0; r < rows - 1; r++) {
+        html += "<tr>";
+        for (let c2 = 0; c2 < cols; c2++) html += "<td>Hücre</td>";
+        html += "</tr>";
+      }
+      html += "</tbody></table><p></p>";
+      document.execCommand("insertHTML", false, html);
+    } else if (cmd === "insertImage") {
+      const url = prompt("Görsel URL'si:");
+      if (url) document.execCommand("insertHTML", false, `<img src="${url}" alt="görsel" style="max-width:100%;border-radius:10px;margin:12px 0;">`);
     } else {
       document.execCommand(cmd, false, null);
     }
-    document.getElementById("editorContent").focus();
+    ed.focus();
   });
+});
+
+/* Yazı boyutu select */
+document.getElementById("tbFontSize").addEventListener("change", function() {
+  if (!this.value) return;
+  document.execCommand("fontSize", false, this.value);
+  document.getElementById("editorContent").focus();
+  this.value = "";
+});
+
+/* Kısayol tuşları */
+document.getElementById("editorContent").addEventListener("keydown", e => {
+  if (!e.ctrlKey && !e.metaKey) return;
+  if (e.key === "z") { e.preventDefault(); document.execCommand("undo"); }
+  if (e.key === "y") { e.preventDefault(); document.execCommand("redo"); }
+  if (e.key === "k") { e.preventDefault(); const url = prompt("Link URL:"); if (url) document.execCommand("createLink", false, url); }
+  if (e.shiftKey && e.key === "X") { e.preventDefault(); document.execCommand("strikeThrough"); }
+  if (e.shiftKey && e.key === "H") { e.preventDefault(); document.getElementById("editorContent").dispatchEvent(new MouseEvent("mousedown")); document.querySelector('[data-cmd="highlight"]').dispatchEvent(new MouseEvent("mousedown")); }
+  if (e.shiftKey && e.key === "L") { e.preventDefault(); document.execCommand("justifyLeft"); }
+  if (e.shiftKey && e.key === "E") { e.preventDefault(); document.execCommand("justifyCenter"); }
+  if (e.shiftKey && e.key === "R") { e.preventDefault(); document.execCommand("justifyRight"); }
+  if (e.key === "2") { e.preventDefault(); document.execCommand("formatBlock", false, "h2"); }
+  if (e.key === "3") { e.preventDefault(); document.execCommand("formatBlock", false, "h3"); }
 });
 
 /* ── Word count ── */

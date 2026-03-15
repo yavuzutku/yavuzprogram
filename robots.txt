@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# Giriş gerektiren uygulama sayfalarını indexleme
+Disallow: /anasayfa/
+Disallow: /ai/
+
+# Sitemap
 Sitemap: https://almancapratik.com/sitemap.xml

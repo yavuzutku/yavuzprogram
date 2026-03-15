@@ -3,7 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz – AlmancaPratik</title>
+
+  <title>Almanca Kelime Quizi — A1-C1 Kelime Testi | AlmancaPratik</title>
+  <meta name="description" content="Kendi kelime listenle Almanca quiz çöz. Çoktan seçmeli ve yazarak cevaplama modları, Almanca-Türkçe yönlü sorular. A1'den C1'e ücretsiz kelime testi.">
+  <meta name="keywords" content="almanca kelime quizi, almanca kelime testi, almanca a1 quiz türkçe, almanca öğrenme quizi, almanca pratik testi">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://almancapratik.com/quiz/">
+
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://almancapratik.com/quiz/">
+  <meta property="og:title"       content="Almanca Kelime Quizi — AlmancaPratik">
+  <meta property="og:description" content="Kendi kelime listenle Almanca quiz çöz. Çoktan seçmeli ve yazarak cevaplama modları ile A1-C1 arası pratik yap.">
+  <meta property="og:locale"      content="tr_TR">
+  <meta property="og:site_name"   content="AlmancaPratik">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Almanca Kelime Quizi",
+    "url": "https://almancapratik.com/quiz/",
+    "description": "Kişisel kelime listesine göre Almanca-Türkçe kelime quizi oluşturan ücretsiz uygulama.",
+    "applicationCategory": "EducationalApplication",
+    "inLanguage": "tr",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Ana Sayfa", "item": "https://almancapratik.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Kelime Quizi", "item": "https://almancapratik.com/quiz/" }
+      ]
+    }
+  }
+  </script>
+
   <link rel="icon" href="../favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/global.css">
@@ -14,22 +47,23 @@
 <!-- ── BAŞLANGIÇ EKRANI ───────────────────────────────── -->
 <div class="screen" id="screen-start">
   <div class="start-wrap">
-    <div class="start-badge">🧠 QUIZ</div>
+    <div class="start-badge">🧠 ALMANCA QUIZ</div>
+    <!-- H1 -->
     <h1 class="start-title">Kelime Testi</h1>
-    <p class="start-sub">Kaydettiğin kelimelerden karışık yönlü sorular üretilir.<br>Her soru çoktan seçmeli <em>veya</em> yazarak cevaplama modunda gelir.</p>
+    <p class="start-sub">Kaydettiğin Almanca kelimelerden karışık yönlü sorular üretilir.<br>Her soru çoktan seçmeli <em>veya</em> yazarak cevaplama modunda gelir.</p>
 
     <div class="settings-row">
       <div class="setting-box">
-        <label>Soru sayısı</label>
+        <label for="countVal">Soru sayısı</label>
         <div class="stepper">
-          <button id="countDown">−</button>
-          <span id="countVal">10</span>
-          <button id="countUp">+</button>
+          <button id="countDown" aria-label="Soru sayısını azalt">−</button>
+          <span id="countVal" aria-live="polite">10</span>
+          <button id="countUp" aria-label="Soru sayısını artır">+</button>
         </div>
       </div>
     </div>
 
-    <button class="btn-start" id="startBtn">Başla →</button>
+    <button class="btn-start" id="startBtn">Quize Başla →</button>
     <div class="start-info" id="wordCountInfo"></div>
   </div>
 </div>
@@ -37,7 +71,7 @@
 <!-- ── YÜKLEME ────────────────────────────────────────── -->
 <div class="screen hidden" id="screen-loading">
   <div class="loader-wrap">
-    <div class="loader-ring"></div>
+    <div class="loader-ring" aria-hidden="true"></div>
     <p>Kelimeler yükleniyor…</p>
   </div>
 </div>
@@ -46,33 +80,30 @@
 <div class="screen hidden" id="screen-quiz">
   <div class="quiz-layout">
 
-    <!-- Üst bar -->
     <div class="quiz-topbar">
       <div class="progress-wrap">
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-        <span class="progress-label" id="progressLabel">1 / 10</span>
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span class="progress-label" id="progressLabel" aria-live="polite">1 / 10</span>
       </div>
-      <div class="score-badge" id="scoreBadge">✓ 0</div>
+      <div class="score-badge" id="scoreBadge" aria-live="polite">✓ 0</div>
     </div>
 
-    <!-- Kart -->
     <div class="question-card" id="questionCard">
       <div class="q-direction" id="qDirection">Almanca → Türkçe</div>
-      <div class="q-word" id="qWord">—</div>
+      <div class="q-word" id="qWord" aria-live="polite">—</div>
       <div class="q-mode-tag" id="qModeTag">Çoktan Seçmeli</div>
     </div>
 
-    <!-- Çoktan seçmeli alanı -->
-    <div class="choices-grid" id="choicesGrid"></div>
+    <div class="choices-grid" id="choicesGrid" role="list"></div>
 
-    <!-- Yazarak cevaplama alanı -->
     <div class="type-area hidden" id="typeArea">
-      <input type="text" id="typeInput" placeholder="Cevabını yaz…" autocomplete="off" spellcheck="false">
+      <input type="text" id="typeInput" placeholder="Cevabını yaz…" autocomplete="off" spellcheck="false" aria-label="Cevabınızı yazın">
       <button class="btn-check" id="checkBtn">Kontrol Et</button>
     </div>
 
-    <!-- Feedback -->
-    <div class="feedback hidden" id="feedback">
+    <div class="feedback hidden" id="feedback" aria-live="polite">
       <div class="feedback-icon" id="feedbackIcon"></div>
       <div class="feedback-text" id="feedbackText"></div>
       <button class="btn-next" id="nextBtn">Sonraki →</button>
@@ -84,13 +115,11 @@
 <!-- ── SONUÇ EKRANI ───────────────────────────────────── -->
 <div class="screen hidden" id="screen-result">
   <div class="result-wrap">
-    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <div class="result-emoji" id="resultEmoji" aria-hidden="true">🎉</div>
     <h2 class="result-title" id="resultTitle">Harika!</h2>
-    <div class="result-score" id="resultScore">8 / 10</div>
+    <div class="result-score" id="resultScore" aria-live="polite">8 / 10</div>
     <p class="result-msg" id="resultMsg">Mükemmel bir performans!</p>
-
     <div class="result-breakdown" id="resultBreakdown"></div>
-
     <div class="result-actions">
       <button class="btn-restart" id="restartBtn">Tekrar Dene</button>
       <button class="btn-home" id="homeBtn">Ana Sayfa</button>
@@ -103,5 +132,6 @@
   window.requireAuth();
   window.loadNavbar();
 </script>
-<script type="module" src="../js/quiz.js"></script></body>
+<script type="module" src="../js/quiz.js"></script>
+</body>
 </html>

@@ -3,41 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cümle Bul</title>
+
+  <title>Almanca Cümle Örnekleri — Kelime Bağlamında Gör | AlmancaPratik</title>
+  <meta name="description" content="Almanca kelimeler için gerçek cümle örnekleri bul. Wiktionary ve Tatoeba'dan doğrulanmış Almanca cümleler ile kelimeleri bağlamında öğren. Ücretsiz, Türkçe.">
+  <meta name="keywords" content="almanca cümle örnekleri, almanca kelime bağlamı, almanca örnek cümle bul, wiktionary almanca türkçe, almanca pratik cümleler">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://almancapratik.com/cumlebul/">
+
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://almancapratik.com/cumlebul/">
+  <meta property="og:title"       content="Almanca Cümle Örnekleri — AlmancaPratik">
+  <meta property="og:description" content="Almanca kelimeler için Wiktionary ve Tatoeba'dan gerçek cümle örnekleri. Kelimeleri bağlamında öğren.">
+  <meta property="og:locale"      content="tr_TR">
+  <meta property="og:site_name"   content="AlmancaPratik">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Almanca Cümle Örnekleri Bulucu",
+    "url": "https://almancapratik.com/cumlebul/",
+    "description": "Wiktionary ve Tatoeba kaynaklarından Almanca cümle örnekleri bulan ücretsiz araç.",
+    "applicationCategory": "EducationalApplication",
+    "inLanguage": "tr",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Ana Sayfa", "item": "https://almancapratik.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Cümle Örnekleri", "item": "https://almancapratik.com/cumlebul/" }
+      ]
+    }
+  }
+  </script>
+
   <link rel="icon" href="../favicon.ico">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/cumlebul.css">
 </head>
 <body>
 
-  <!-- navbar buraya prepend edilir -->
-
   <div class="page-content">
     <div class="container">
       <header>
-        <p class="eyebrow">🇩🇪 Almanca Örnek Cümle</p>
-        <h1>Kelimeyi <em>bağlamında</em> gör.</h1>
-        <p class="subtitle">Wiktionary · Tatoeba — gerçek kullanım örnekleri</p>
+        <p class="eyebrow">🇩🇪 Almanca Örnek Cümle Bulucu</p>
+        <!-- H1 -->
+        <h1>Kelimeyi <em>bağlamında</em> öğren.</h1>
+        <p class="subtitle">Wiktionary · Tatoeba — gerçek Almanca kullanım örnekleri</p>
       </header>
 
       <div class="search-box">
-        <input id="wordInput" type="text" placeholder="ein deutsches Wort…" autocomplete="off" spellcheck="false" />
-        <button id="btn">Ara</button>
+        <input id="wordInput" type="text" placeholder="Almanca kelime yaz… (ör: gehen, Haus)" autocomplete="off" spellcheck="false" aria-label="Cümle örneği aramak için Almanca kelime girin" />
+        <button id="btn" aria-label="Cümle örneklerini ara">Ara</button>
       </div>
 
       <div class="range-row">
-        <span class="range-label">Kelime aralığı</span>
-        <input class="range-input" id="minWords" type="number" min="1" max="100" value="4" />
+        <span class="range-label">Cümle uzunluğu</span>
+        <input class="range-input" id="minWords" type="number" min="1" max="100" value="4" aria-label="Minimum kelime sayısı" />
         <span class="range-sep">—</span>
-        <input class="range-input" id="maxWords" type="number" min="1" max="100" value="20" />
+        <input class="range-input" id="maxWords" type="number" min="1" max="100" value="20" aria-label="Maximum kelime sayısı" />
         <span class="range-label">kelime</span>
       </div>
 
-      <p id="error"></p>
-      <div id="results"></div>
+      <p id="error" role="alert"></p>
+      <div id="results" aria-live="polite"></div>
 
       <hr class="divider"/>
-      <footer>wiktionary.org &amp; tatoeba.org üzerinden sorgulanır</footer>
+      <footer>
+        <p style="font-size:11px;color:#444;text-align:center;line-height:1.6;">
+          Cümle örnekleri <a href="https://de.wiktionary.org" target="_blank" rel="noopener">wiktionary.org</a> 
+          ve <a href="https://tatoeba.org" target="_blank" rel="noopener">tatoeba.org</a> üzerinden sorgulanır.
+        </p>
+      </footer>
     </div>
   </div>
 

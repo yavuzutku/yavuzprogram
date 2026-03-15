@@ -3,8 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Artikel Bulucu – Almanca Öğrenme</title>
-  <link rel="icon" href="data:,">
+
+  <title>Der Die Das Artikel Bulucu — Almanca Artikel Öğren | AlmancaPratik</title>
+  <meta name="description" content="Almanca der, die, das artikellerini anında bul. Wiktionary tabanlı ücretsiz artikel bulucu ile Almanca isim artikellerini pratik yap. Türkçe açıklamalar.">
+  <meta name="keywords" content="der die das quiz türkçe, almanca artikel bulucu, almanca artikel öğren, der die das nasıl öğrenilir, almanca isim artikeli">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://almancapratik.com/artikel/">
+
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://almancapratik.com/artikel/">
+  <meta property="og:title"       content="Der Die Das Artikel Bulucu — AlmancaPratik">
+  <meta property="og:description" content="Almancada herhangi bir kelimenin der, die veya das olduğunu anında öğren. Ücretsiz, Türkçe arayüz.">
+  <meta property="og:locale"      content="tr_TR">
+  <meta property="og:site_name"   content="AlmancaPratik">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Almanca Der Die Das Artikel Bulucu",
+    "url": "https://almancapratik.com/artikel/",
+    "description": "Almanca isim artikellerini (der, die, das) Wiktionary API kullanarak bulan ücretsiz araç.",
+    "applicationCategory": "EducationalApplication",
+    "inLanguage": "tr",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Ana Sayfa", "item": "https://almancapratik.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Artikel Bulucu", "item": "https://almancapratik.com/artikel/" }
+      ]
+    }
+  }
+  </script>
+
+  <link rel="icon" href="../favicon.ico">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/artikel.css">
 </head>
@@ -24,27 +57,28 @@
         <div class="flag-stripe s2"></div>
         <div class="flag-stripe s3"></div>
       </div>
+      <!-- H1: Ana anahtar kelimeler içeriyor -->
       <h1>Almanca <span>Artikel</span> Bulucu</h1>
-      <p>Wiktionary API · Almanca İsimler</p>
+      <p>Der · Die · Das — Wiktionary API ile anında bul</p>
     </div>
 
     <div class="divider"><div class="diamond"></div></div>
 
     <div class="input-group">
       <div class="input-wrapper">
-        <input type="text" id="wordInput" placeholder="Almanca kelime girin…" autocomplete="off" spellcheck="false"/>
+        <input type="text" id="wordInput" placeholder="Almanca kelime girin… (ör: Hund, Schule)" autocomplete="off" spellcheck="false" aria-label="Artikel aramak için Almanca kelime girin"/>
       </div>
-      <button class="search-btn" id="searchBtn">Artikel Ara</button>
+      <button class="search-btn" id="searchBtn" aria-label="Artikel ara">Artikel Ara</button>
     </div>
 
-    <div id="loading" class="loading hidden">
+    <div id="loading" class="loading hidden" aria-live="polite">
       <div class="dots"><span></span><span></span><span></span></div>
-      <span>Wiktionary'de aranıyor</span>
+      <span>Wiktionary'de aranıyor…</span>
     </div>
 
-    <div id="errorMsg" class="error-msg hidden"></div>
+    <div id="errorMsg" class="error-msg hidden" role="alert"></div>
 
-    <div id="resultCard" class="result-card hidden">
+    <div id="resultCard" class="result-card hidden" aria-live="polite">
       <div class="result-top">
         <div class="artikel-badge" id="artikelBadge">–</div>
         <div class="result-word-block">
@@ -58,15 +92,24 @@
       </div>
       <div class="result-link-row">
         <a id="wiktionaryLink" href="#" target="_blank" rel="noopener noreferrer" class="wikt-link">
-          Daha fazla bilgi için <span class="wikt-arrow">→</span>
+          Wiktionary'de daha fazla bilgi <span class="wikt-arrow">→</span>
         </a>
       </div>
     </div>
 
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot der"></div> der — maskulin</div>
-      <div class="legend-item"><div class="legend-dot die"></div> die — feminin</div>
-      <div class="legend-item"><div class="legend-dot das"></div> das — neutrum</div>
+    <div class="legend" aria-label="Artikel renk göstergesi">
+      <div class="legend-item"><div class="legend-dot der"></div> <strong>der</strong> — maskulin</div>
+      <div class="legend-item"><div class="legend-dot die"></div> <strong>die</strong> — feminin</div>
+      <div class="legend-item"><div class="legend-dot das"></div> <strong>das</strong> — neutrum</div>
+    </div>
+
+    <!-- SEO içerik bloğu -->
+    <div style="margin-top:28px;padding:20px 0;border-top:1px solid rgba(255,255,255,0.07);">
+      <p style="font-size:12px;color:#5a5650;line-height:1.7;text-align:center;">
+        Almancada her ismin bir artikeli vardır: <strong style="color:#4a90d9">der</strong> (maskulin), 
+        <strong style="color:#d96b8a">die</strong> (feminin) veya <strong style="color:#6bbf8a">das</strong> (neutrum).
+        Bu araç, Wiktionary'deki bilgileri kullanarak doğru artikeli anında gösterir.
+      </p>
     </div>
 
     <div class="artikel-footer">Kaynak: de.wiktionary.org</div>

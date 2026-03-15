@@ -12,7 +12,6 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  /* Dokunmada highlight kaldır */
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -55,15 +54,13 @@ body {
 
 /* ══════════════════════════════════════════════
    DASHBOARD WRAPPER
-   ─ Masaüstü: geniş, üstte çok boşluk (navbar için)
-   ─ Mobil:    dar padding, daha az üst boşluk
 ══════════════════════════════════════════════ */
 .dashboard {
   position: relative;
   z-index: 1;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 96px 32px 80px;   /* üst: navbar yüksekliği + nefes */
+  padding: 96px 32px 80px;
 }
 
 /* ══════════════════════════════════════════════
@@ -186,9 +183,6 @@ body {
 
 /* ══════════════════════════════════════════════
    CARDS GRID
-   ─ 4 sütun  → masaüstü (≥1060px)
-   ─ 2 sütun  → tablet / büyük mobil (≥480px)
-   ─ 2 sütun  → küçük mobil (<480px) — kompakt
 ══════════════════════════════════════════════ */
 .action-cards {
   display: grid;
@@ -198,12 +192,10 @@ body {
 
 /* ── Base Card ── */
 .action-card {
-  /* <button> sıfırlaması */
   appearance: none;
   -webkit-appearance: none;
   font-family: var(--font-body);
   text-align: left;
-
   position: relative;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -218,7 +210,6 @@ body {
   gap: 8px;
 }
 
-/* staggered entrance */
 .action-card:nth-child(1) { animation-delay: 0.12s; }
 .action-card:nth-child(2) { animation-delay: 0.17s; }
 .action-card:nth-child(3) { animation-delay: 0.22s; }
@@ -233,7 +224,6 @@ body {
   to   { opacity:1; transform:translateY(0); }
 }
 
-/* Ambient glow per card */
 .card-glow {
   position: absolute;
   width: 160px; height: 160px;
@@ -245,7 +235,6 @@ body {
   pointer-events: none;
 }
 
-/* ── Hover (masaüstü) ── */
 .action-card:hover {
   border-color: var(--border-hover);
   background: var(--bg-hover);
@@ -253,17 +242,8 @@ body {
   box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
 }
 .action-card:hover .card-glow { opacity: 0.25; }
+.action-card:active { transform: scale(0.97); transition: transform 0.1s; }
 
-/* ── Active / Dokunma feedback ──
-   Mobilde hover çalışmaz, :active ile
-   parmak basan kullanıcıya görsel geri bildirim ver
-── */
-.action-card:active {
-  transform: scale(0.97);
-  transition: transform 0.1s;
-}
-
-/* ── Card Top Row ── */
 .card-top {
   display: flex;
   align-items: flex-start;
@@ -300,7 +280,6 @@ body {
   transform: translate(0,0);
 }
 
-/* ── Card Content ── */
 .card-title {
   font-family: var(--font-display);
   font-size: 16px;
@@ -335,7 +314,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════
-   CARD VARIANTS — RENK AKSANLAR
+   CARD VARIANTS
 ══════════════════════════════════════════════ */
 .action-card--primary .card-glow    { background: var(--gold); }
 .action-card--primary:hover         { border-color:rgba(201,168,76,0.35); box-shadow:0 20px 40px -10px rgba(201,168,76,0.15); }
@@ -377,156 +356,135 @@ body {
 .action-card--sponsor:hover .card-icon { color:var(--amber); border-color:rgba(255,210,80,0.25); }
 .action-card--sponsor:hover .card-tag  { color:var(--amber); border-color:rgba(255,210,80,0.25); }
 
-
-/* ══════════════════════════════════════════════
-   RESPONSIVE BREAKPOINTS
-
-   Profesyonel yaklaşım:
-   ─ Büyükten küçüğe override ederek yaz
-   ─ Her breakpoint'te sadece değişen şeyi yaz
-══════════════════════════════════════════════ */
-
-/* ── Tablet (≤1060px) → 2 sütun ── */
-@media (max-width: 1060px) {
-  .action-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ── Büyük Mobil (≤768px) ── */
-@media (max-width: 768px) {
-  .dashboard {
-    padding: 80px 16px 60px;   /* navbar daha alçak + kenar boşluğu az */
-  }
-
-  .hero {
-    margin-bottom: 32px;
-  }
-
-  .stats-strip {
-    width: 100%;              /* tam genişlik */
-    margin-bottom: 32px;
-    padding: 14px 0;
-    justify-content: space-around;
-  }
-
-  .stat-item {
-    padding: 0 12px;
-    flex: 1;
-  }
-
-  .stat-num {
-    font-size: 22px;
-  }
-
-  .action-cards {
-    gap: 10px;
-  }
-
-  .action-card {
-    padding: 18px 16px 14px;
-  }
-
-  .card-title {
-    font-size: 15px;
-  }
-
-  .card-desc {
-    font-size: 12.5px;
-  }
-}
-
-/* ── Küçük Mobil (≤480px) → 2 sütun kompakt ── */
-@media (max-width: 480px) {
-  .dashboard {
-    padding: 72px 12px 48px;
-  }
-
-  .hero__eyebrow {
-    font-size: 10px;
-    padding: 5px 12px 5px 8px;
-    margin-bottom: 14px;
-  }
-
-  .hero {
-    margin-bottom: 24px;
-  }
-
-  .stats-strip {
-    padding: 12px 0;
-  }
-
-  .stat-num  { font-size: 20px; }
-  .stat-label { font-size: 10px; }
-  .stat-divider { height: 28px; }
-
-  .action-cards {
-    /* Küçük mobilde de 2 sütun — tek sütun çok uzun liste yaratır */
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
-  .action-card {
-    padding: 16px 14px 12px;
-    gap: 6px;
-    /* Minimum dokunma hedefi: 44×44px (Apple HIG / WCAG) */
-    min-height: 44px;
-  }
-
-  .card-icon {
-    width: 36px; height: 36px;
-  }
-
-  .card-icon svg {
-    width: 18px; height: 18px;
-  }
-
-  .card-title {
-    font-size: 14px;
-  }
-
-  .card-desc {
-    /* Küçük ekranda açıklamayı gizle — başlık + tag yeterli */
-    display: none;
-  }
-
-  .card-tag {
-    font-size: 9px;
-    padding: 2px 7px;
-  }
-
-  /* Ok ikonunu mobilde hep göster (hover yok) */
-  .card-arrow {
-    opacity: 0.4;
-    transform: translate(0,0);
-  }
-}
-
-/* ── Çok küçük (≤360px) ── */
-@media (max-width: 360px) {
-  .dashboard {
-    padding: 68px 10px 40px;
-  }
-
-  .action-cards {
-    gap: 6px;
-  }
-
-  .action-card {
-    padding: 14px 12px 10px;
-  }
-}
-
-
-/* ── Çeviri kartı (mavi-yeşil — bilgi/keşif tonu) ── */
 .action-card--ceviri .card-glow    { background: #38bdf8; }
 .action-card--ceviri:hover         { border-color:rgba(56,189,248,0.3); box-shadow:0 20px 40px -10px rgba(56,189,248,0.12); }
 .action-card--ceviri:hover .card-icon { color:#38bdf8; border-color:rgba(56,189,248,0.25); }
 .action-card--ceviri:hover .card-tag  { color:#38bdf8; border-color:rgba(56,189,248,0.25); }
 
-
-/* AI Kontrol kartı — admin rengi */
 .action-card--ai .card-glow     { background: #a064ff; }
 .action-card--ai:hover          { border-color:rgba(160,100,255,0.3); box-shadow:0 20px 40px -10px rgba(160,100,255,0.12); }
 .action-card--ai:hover .card-icon { color:#a064ff; border-color:rgba(160,100,255,0.25); }
 .action-card--ai:hover .card-tag  { color:#a064ff; border-color:rgba(160,100,255,0.25); }
+
+/* ══════════════════════════════════════════════
+   DERSLER — BOŞALT DURUMU
+══════════════════════════════════════════════ */
+.dersler-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px 100px;
+  animation: fadeUp 0.5s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+.dersler-empty__icon {
+  font-size: 56px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+.dersler-empty__title {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0 0 12px;
+}
+
+.dersler-empty__desc {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  max-width: 420px;
+  margin: 0 0 36px;
+}
+
+.dersler-empty__levels {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dersler-level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  transition: var(--transition);
+  animation: fadeUp 0.5s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+.dersler-level:nth-child(1) { animation-delay: 0.1s; }
+.dersler-level:nth-child(2) { animation-delay: 0.16s; }
+.dersler-level:nth-child(3) { animation-delay: 0.22s; }
+.dersler-level:nth-child(4) { animation-delay: 0.28s; }
+.dersler-level:nth-child(5) { animation-delay: 0.34s; }
+
+.dersler-level--a1 { color: #22c55e; border-color: rgba(34,197,94,0.2);  background: rgba(34,197,94,0.06); }
+.dersler-level--a2 { color: #86efac; border-color: rgba(134,239,172,0.2); background: rgba(134,239,172,0.05); }
+.dersler-level--b1 { color: var(--blue); border-color: rgba(96,200,240,0.2); background: rgba(96,200,240,0.05); }
+.dersler-level--b2 { color: #818cf8;  border-color: rgba(129,140,248,0.2); background: rgba(129,140,248,0.05); }
+.dersler-level--c1 { color: var(--gold); border-color: rgba(201,168,76,0.25); background: rgba(201,168,76,0.07); }
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 1060px) {
+  .action-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .dashboard { padding: 80px 16px 60px; }
+  .hero { margin-bottom: 32px; }
+  .stats-strip { width: 100%; margin-bottom: 32px; padding: 14px 0; justify-content: space-around; }
+  .stat-item { padding: 0 12px; flex: 1; }
+  .stat-num { font-size: 22px; }
+  .action-cards { gap: 10px; }
+  .action-card { padding: 18px 16px 14px; }
+  .card-title { font-size: 15px; }
+  .card-desc { font-size: 12.5px; }
+  .dersler-empty { padding: 60px 16px 80px; }
+}
+
+@media (max-width: 480px) {
+  .dashboard { padding: 72px 12px 48px; }
+  .hero__eyebrow { font-size: 10px; padding: 5px 12px 5px 8px; margin-bottom: 14px; }
+  .hero { margin-bottom: 24px; }
+  .stats-strip { padding: 12px 0; }
+  .stat-num { font-size: 20px; }
+  .stat-label { font-size: 10px; }
+  .stat-divider { height: 28px; }
+  .action-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .action-card { padding: 16px 14px 12px; gap: 6px; min-height: 44px; }
+  .card-icon { width: 36px; height: 36px; }
+  .card-icon svg { width: 18px; height: 18px; }
+  .card-title { font-size: 14px; }
+  .card-desc { display: none; }
+  .card-tag { font-size: 9px; padding: 2px 7px; }
+  .card-arrow { opacity: 0.4; transform: translate(0,0); }
+  .dersler-level { width: 44px; height: 44px; font-size: 13px; border-radius: 11px; }
+}
+
+@media (max-width: 360px) {
+  .dashboard { padding: 68px 10px 40px; }
+  .action-cards { gap: 6px; }
+  .action-card { padding: 14px 12px 10px; }
+}

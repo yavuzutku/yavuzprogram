@@ -56,162 +56,192 @@
     </div>
   </div>
 
-  <!-- ACTION CARDS -->
-  <div class="action-cards" role="list">
+  <!-- ══════════════════════════════════════
+       PRATİK İÇERİĞİ
+  ══════════════════════════════════════ -->
+  <div id="pratikContent" style="display:none">
+    <div class="action-cards" role="list">
 
-    <button class="action-card action-card--primary" id="newTextBtn" role="listitem" aria-label="Yeni Metin Ekle sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <button class="action-card action-card--primary" id="newTextBtn" role="listitem" aria-label="Yeni Metin Ekle sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
         </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        <div class="card-title">Yeni Metin Ekle</div>
+        <div class="card-desc">Almanca metnini yapıştır, sistem otomatik analiz etsin ve yeni kelimeler çıkarsın.</div>
+        <div class="card-tag">Analiz</div>
+      </button>
+
+      <button class="action-card action-card--gecmis" id="gecmisBtn" role="listitem" aria-label="Geçmiş sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
         </div>
+        <div class="card-title">Geçmiş</div>
+        <div class="card-desc">Daha önce eklediğin metinlere geri dön, tekrar oku ve çalışmaya devam et.</div>
+        <div class="card-tag">Arşiv</div>
+      </button>
+
+      <button class="action-card action-card--kelimeler" id="kelimelerBtn" role="listitem" aria-label="Kelimeler sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
+        </div>
+        <div class="card-title">Kelimeler</div>
+        <div class="card-desc">Kaydettiğin tüm Almanca kelimeleri görüntüle, filtrele ve tekrar et.</div>
+        <div class="card-tag">Sözlük</div>
+      </button>
+
+      <button class="action-card action-card--ekle" id="kelimeEkleBtn" role="listitem" aria-label="Kelime Ekle sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
+        </div>
+        <div class="card-title">Kelime Ekle</div>
+        <div class="card-desc">Yeni Almanca kelimeler ekle. Liste halinde veya tek tek girebilirsin.</div>
+        <div class="card-tag">Ekle</div>
+      </button>
+
+      <button class="action-card action-card--artikel" id="artikelBtn" role="listitem" aria-label="Artikel Bul sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
+        </div>
+        <div class="card-title">Artikel Bul</div>
+        <div class="card-desc">Almanca bir kelimenin der / die / das artikelini anında öğren.</div>
+        <div class="card-tag">der / die / das</div>
+      </button>
+
+      <button class="action-card action-card--cumle" id="cumlebulBtn" role="listitem" aria-label="Cümle Bul sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
+        </div>
+        <div class="card-title">Cümle Bul</div>
+        <div class="card-desc">Wiktionary ve Tatoeba'dan gerçek kullanım örneklerini anında gör.</div>
+        <div class="card-tag">Bağlam</div>
+      </button>
+
+      <button class="action-card action-card--quiz" id="quizBtn" role="listitem" aria-label="Quiz sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
+        </div>
+        <div class="card-title">Quiz</div>
+        <div class="card-desc">Kaydettiğin kelimelerden çoktan seçmeli ve yazarak cevaplama testleri çöz.</div>
+        <div class="card-tag">Test</div>
+      </button>
+
+      <button class="action-card action-card--ceviri" id="ceviriBtn" role="listitem" aria-label="Çeviri sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
+        </div>
+        <div class="card-title">Çeviri</div>
+        <div class="card-desc">Almanca kelimeleri çevir, artikel ve örnek cümlelerini gör, sözlüğüne ekle.</div>
+        <div class="card-tag">Wiktionary</div>
+      </button>
+
+      <button class="action-card action-card--sponsor" id="sponsorBtn" role="listitem" aria-label="Sponsorlar sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
+        </div>
+        <div class="card-title">Sponsorlar</div>
+        <div class="card-desc">Projeyi destekleyen sponsorlarımıza göz at ve katkılarını gör.</div>
+        <div class="card-tag">Destek</div>
+      </button>
+
+      <button class="action-card action-card--ai hidden" id="aiBtn" role="listitem" aria-label="AI Kontrol sayfasına git">
+        <div class="card-glow" aria-hidden="true"></div>
+        <div class="card-top">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </div>
+          <div class="card-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </div>
+        </div>
+        <div class="card-title">AI Kontrol</div>
+        <div class="card-desc">Gemini AI ile cümle düzelt, gramer sor, kelime analizi yap.</div>
+        <div class="card-tag">✦ Admin</div>
+      </button>
+
+    </div><!-- /action-cards -->
+  </div><!-- /pratikContent -->
+
+
+  <!-- ══════════════════════════════════════
+       DERSLER İÇERİĞİ
+  ══════════════════════════════════════ -->
+  <div id="derslerContent" style="display:none">
+    <div class="dersler-empty">
+      <div class="dersler-empty__icon" aria-hidden="true">📚</div>
+      <h2 class="dersler-empty__title">Dersler Yakında</h2>
+      <p class="dersler-empty__desc">
+        Yapılandırılmış Almanca ders içerikleri üzerinde çalışıyoruz.<br>
+        A1'den C1'e kapsamlı müfredat çok yakında burada olacak.
+      </p>
+      <div class="dersler-empty__levels" aria-label="Gelecek seviyeler">
+        <span class="dersler-level dersler-level--a1">A1</span>
+        <span class="dersler-level dersler-level--a2">A2</span>
+        <span class="dersler-level dersler-level--b1">B1</span>
+        <span class="dersler-level dersler-level--b2">B2</span>
+        <span class="dersler-level dersler-level--c1">C1</span>
       </div>
-      <div class="card-title">Yeni Metin Ekle</div>
-      <div class="card-desc">Almanca metnini yapıştır, sistem otomatik analiz etsin ve yeni kelimeler çıkarsın.</div>
-      <div class="card-tag">Analiz</div>
-    </button>
+    </div>
+  </div><!-- /derslerContent -->
 
-    <button class="action-card action-card--gecmis" id="gecmisBtn" role="listitem" aria-label="Geçmiş sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">Geçmiş</div>
-      <div class="card-desc">Daha önce eklediğin metinlere geri dön, tekrar oku ve çalışmaya devam et.</div>
-      <div class="card-tag">Arşiv</div>
-    </button>
-
-    <button class="action-card action-card--kelimeler" id="kelimelerBtn" role="listitem" aria-label="Kelimeler sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">Kelimeler</div>
-      <div class="card-desc">Kaydettiğin tüm Almanca kelimeleri görüntüle, filtrele ve tekrar et.</div>
-      <div class="card-tag">Sözlük</div>
-    </button>
-
-    <button class="action-card action-card--ekle" id="kelimeEkleBtn" role="listitem" aria-label="Kelime Ekle sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">Kelime Ekle</div>
-      <div class="card-desc">Yeni Almanca kelimeler ekle. Liste halinde veya tek tek girebilirsin.</div>
-      <div class="card-tag">Ekle</div>
-    </button>
-
-    <button class="action-card action-card--artikel" id="artikelBtn" role="listitem" aria-label="Artikel Bul sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">Artikel Bul</div>
-      <div class="card-desc">Almanca bir kelimenin der / die / das artikelini anında öğren.</div>
-      <div class="card-tag">der / die / das</div>
-    </button>
-
-    <button class="action-card action-card--cumle" id="cumlebulBtn" role="listitem" aria-label="Cümle Bul sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">Cümle Bul</div>
-      <div class="card-desc">Wiktionary ve Tatoeba'dan gerçek kullanım örneklerini anında gör.</div>
-      <div class="card-tag">Bağlam</div>
-    </button>
-
-    <button class="action-card action-card--quiz" id="quizBtn" role="listitem" aria-label="Quiz sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">Quiz</div>
-      <div class="card-desc">Kaydettiğin kelimelerden çoktan seçmeli ve yazarak cevaplama testleri çöz.</div>
-      <div class="card-tag">Test</div>
-    </button>
-
-    <button class="action-card action-card--ceviri" id="ceviriBtn" role="listitem" aria-label="Çeviri sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">Çeviri</div>
-      <div class="card-desc">Almanca kelimeleri çevir, artikel ve örnek cümlelerini gör, sözlüğüne ekle.</div>
-      <div class="card-tag">Wiktionary</div>
-    </button>
-
-    <button class="action-card action-card--sponsor" id="sponsorBtn" role="listitem" aria-label="Sponsorlar sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">Sponsorlar</div>
-      <div class="card-desc">Projeyi destekleyen sponsorlarımıza göz at ve katkılarını gör.</div>
-      <div class="card-tag">Destek</div>
-    </button>
-
-    <button class="action-card action-card--ai hidden" id="aiBtn" role="listitem" aria-label="AI Kontrol sayfasına git">
-      <div class="card-glow" aria-hidden="true"></div>
-      <div class="card-top">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        </div>
-        <div class="card-arrow" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </div>
-      </div>
-      <div class="card-title">AI Kontrol</div>
-      <div class="card-desc">Gemini AI ile cümle düzelt, gramer sor, kelime analizi yap.</div>
-      <div class="card-tag">✦ Admin</div>
-    </button>
-
-  </div>
 </main>
 
+<!-- ────────────────────────────────────
+     SCRIPTS
+──────────────────────────────────── -->
 <script type="module">
   import "../js/core.js";
   window.requireAuth();
@@ -220,28 +250,53 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const newTextBtn    = document.getElementById("newTextBtn");
-  const gecmisBtn     = document.getElementById("gecmisBtn");
-  const kelimelerBtn  = document.getElementById("kelimelerBtn");
-  const kelimeEkleBtn = document.getElementById("kelimeEkleBtn");
-  const artikelBtn    = document.getElementById("artikelBtn");
-  const cumlebulBtn   = document.getElementById("cumlebulBtn");
-  const ceviriBtn     = document.getElementById("ceviriBtn");
-  const sponsorBtn    = document.getElementById("sponsorBtn");
-  const quizBtn       = document.getElementById("quizBtn");
+  /* ── Kart navigasyonu ── */
+  const go = (id, url) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("click", () => window.location.href = url);
+  };
 
-  if (quizBtn)       quizBtn.addEventListener("click",       () => window.location.href = "../quiz/");
-  if (newTextBtn)    newTextBtn.addEventListener("click",    () => window.location.href = "../metin/");
-  if (gecmisBtn)     gecmisBtn.addEventListener("click",     () => window.location.href = "../gecmis/");
-  if (kelimelerBtn)  kelimelerBtn.addEventListener("click",  () => window.location.href = "../kelimeler/");
-  if (kelimeEkleBtn) kelimeEkleBtn.addEventListener("click", () => window.location.href = "../wordsadd/");
-  if (artikelBtn)    artikelBtn.addEventListener("click",    () => window.location.href = "../artikel/");
-  if (cumlebulBtn)   cumlebulBtn.addEventListener("click",   () => window.location.href = "../cumlebul/");
-  if (ceviriBtn)     ceviriBtn.addEventListener("click",     () => window.location.href = "../ceviri/");
-  if (sponsorBtn)    sponsorBtn.addEventListener("click",    () => window.location.href = "../sponsorlar/");
+  go("quizBtn",       "../quiz/");
+  go("newTextBtn",    "../metin/");
+  go("gecmisBtn",     "../gecmis/");
+  go("kelimelerBtn",  "../kelimeler/");
+  go("kelimeEkleBtn", "../wordsadd/");
+  go("artikelBtn",    "../artikel/");
+  go("cumlebulBtn",   "../cumlebul/");
+  go("ceviriBtn",     "../ceviri/");
+  go("sponsorBtn",    "../sponsorlar/");
+
+  /* ── Tab geçişi (URL parametresi veya session) ── */
+  function showTab(tab) {
+    const pratik  = document.getElementById("pratikContent");
+    const dersler = document.getElementById("derslerContent");
+    if (pratik)  pratik.style.display  = tab === "pratik"  ? "block" : "none";
+    if (dersler) dersler.style.display = tab === "dersler" ? "block" : "none";
+
+    /* Navbar butonlarını güncelle (navbar yüklendikten sonra) */
+    requestAnimationFrame(() => {
+      document.getElementById("tabPratikBtn")?.classList.toggle("active",  tab === "pratik");
+      document.getElementById("tabDerslerBtn")?.classList.toggle("active", tab === "dersler");
+    });
+
+    sessionStorage.setItem("activeTab", tab);
+    window.setActiveTab?.(tab, false);
+  }
+
+  const urlTab   = new URLSearchParams(window.location.search).get("tab");
+  const initTab  = urlTab || sessionStorage.getItem("activeTab") || "pratik";
+  showTab(initTab);
+
+  /* Navbar tab butonları — core.js zaten bağlar ama burada da yedek */
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".nav-tab-btn");
+    if (!btn) return;
+    showTab(btn.dataset.tab);
+  });
 });
 </script>
 
+<!-- İstatistikler -->
 <script type="module">
   import { getWords, getMetinler, onAuthChange } from "../js/firebase.js";
 
@@ -287,6 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 </script>
 
+<!-- Admin AI butonu -->
 <script type="module">
   import { onAuthChange } from "../js/firebase.js";
   onAuthChange((user) => {

@@ -24,11 +24,27 @@ function loadNavbar(){
   const navbar = document.createElement("div");
   navbar.className = "navbar";
 
-  /* İskelet HTML — kullanıcı verisi YOK */
+  /* Hangi sayfada olduğumuzu tespit et */
+  const isAnasayfa = window.location.pathname.includes("anasayfa");
+
   navbar.innerHTML = `
     <div class="logo">AlmancaPratik</div>
-    <div style="display:flex; gap:10px; align-items:center;">
-      <button class="home-btn" id="homeBtn">Anamenü</button>
+    <div style="display:flex; gap:8px; align-items:center;">
+
+      <!-- Dersler & Pratik sekmeleri -->
+      <div class="nav-tabs-wrap">
+        <button class="nav-tab-btn" id="tabDerslerBtn" data-tab="dersler">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Dersler
+        </button>
+        <button class="nav-tab-btn" id="tabPratikBtn" data-tab="pratik">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Pratik
+        </button>
+      </div>
+
+      <div class="nav-divider"></div>
+
       <div class="profile-wrapper" id="profileWrapper">
         <img
           class="profile-avatar"
@@ -62,6 +78,67 @@ function loadNavbar(){
 
   const style = document.createElement("style");
   style.textContent = `
+    /* ── Nav tab butonları ── */
+    .nav-tabs-wrap {
+      display: flex;
+      gap: 4px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 3px;
+    }
+
+    .nav-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: transparent;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(240,238,232,0.45);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      min-height: 32px;
+    }
+
+    .nav-tab-btn svg {
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .nav-tab-btn:hover {
+      color: rgba(240,238,232,0.85);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .nav-tab-btn:hover svg {
+      opacity: 0.85;
+    }
+
+    .nav-tab-btn.active {
+      background: rgba(201,168,76,0.13);
+      color: #c9a84c;
+      font-weight: 600;
+    }
+
+    .nav-tab-btn.active svg {
+      opacity: 1;
+      stroke: #c9a84c;
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+
+    /* ── Profil ── */
     .profile-wrapper {
       position: relative;
       display: inline-block;
@@ -168,16 +245,39 @@ function loadNavbar(){
     .profile-dropdown .logout-btn svg {
       flex-shrink: 0;
     }
+
+    /* ── Mobil ── */
+    @media (max-width: 480px) {
+      .nav-tab-btn span,
+      .nav-tab-btn {
+        font-size: 12px;
+        padding: 5px 10px;
+        gap: 4px;
+      }
+      .nav-divider { display: none; }
+    }
   `;
   document.head.appendChild(style);
   document.body.prepend(navbar);
 
-  /* ── Anamenü ── */
-  document.getElementById("homeBtn").addEventListener("click", () => {
-    window.location.href = "../anasayfa/";
+  /* ── Tab tıklama logic ── */
+  document.getElementById("tabDerslerBtn").addEventListener("click", () => {
+    if (isAnasayfa) {
+      setActiveTab("dersler");
+    } else {
+      window.location.href = "../anasayfa/?tab=dersler";
+    }
   });
 
-  /* ── Çıkış ── */
+  document.getElementById("tabPratikBtn").addEventListener("click", () => {
+    if (isAnasayfa) {
+      setActiveTab("pratik");
+    } else {
+      window.location.href = "../anasayfa/?tab=pratik";
+    }
+  });
+
+  /* Çıkış */
   document.getElementById("logoutBtn").addEventListener("click", async () => {
     try {
       await logoutFirebase();
@@ -199,7 +299,6 @@ function loadNavbar(){
     avatar.setAttribute("aria-expanded", String(!isOpen));
   });
 
-  /* Klavye erişilebilirliği: Escape ile kapat */
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       dropdown.classList.remove("open");
@@ -207,7 +306,6 @@ function loadNavbar(){
     }
   });
 
-  /* Dışarı tıklayınca kapat */
   document.addEventListener("click", () => {
     dropdown.classList.remove("open");
     avatar.setAttribute("aria-expanded", "false");
@@ -216,7 +314,6 @@ function loadNavbar(){
   /* ── Kullanıcı bilgilerini doldur ── */
   onAuthChange((user) => {
     if(user){
-      /* textContent ile set et — innerHTML değil */
       document.getElementById("profileEmail").textContent = user.email || "Kullanıcı";
 
       const avatarSrc = user.photoURL
@@ -227,6 +324,29 @@ function loadNavbar(){
       document.getElementById("profileAvatarSmall").src = avatarSrc;
     }
   });
+
+  /* ── Aktif tab'ı işaretle (anasayfadaysak) ── */
+  if (isAnasayfa) {
+    const urlTab    = new URLSearchParams(window.location.search).get("tab");
+    const savedTab  = urlTab || sessionStorage.getItem("activeTab") || "pratik";
+    /* Kısa gecikme: DOM hazır olsun */
+    requestAnimationFrame(() => setActiveTab(savedTab, false));
+  }
+}
+
+/* ── Tab geçiş fonksiyonu (global — anasayfa.js de kullanır) ── */
+function setActiveTab(tab, save = true) {
+  /* Buton stillerini güncelle */
+  document.getElementById("tabPratikBtn")?.classList.toggle("active", tab === "pratik");
+  document.getElementById("tabDerslerBtn")?.classList.toggle("active", tab === "dersler");
+
+  /* İçerik alanlarını göster/gizle */
+  const pratik   = document.getElementById("pratikContent");
+  const dersler  = document.getElementById("derslerContent");
+  if (pratik)  pratik.style.display  = tab === "pratik"  ? "block" : "none";
+  if (dersler) dersler.style.display = tab === "dersler" ? "block" : "none";
+
+  if (save) sessionStorage.setItem("activeTab", tab);
 }
 
 /* ============================
@@ -238,18 +358,10 @@ function getUserId(){
   return user ? user.uid : null;
 }
 
-/* ============================
-   EXPORT
-   NOT: window'a bağlamak yerine
-   ES Module export kullanıyoruz.
-   Ancak mevcut sayfalar window.*
-   ile çağırdığından geçici olarak
-   ikisini de destekliyoruz.
-============================= */
+export { requireAuth, loadNavbar, getUserId, setActiveTab };
 
-export { requireAuth, loadNavbar, getUserId };
-
-// Geriye dönük uyumluluk — ileride kaldırılacak
-window.requireAuth = requireAuth;
-window.loadNavbar  = loadNavbar;
-window.getUserId   = getUserId;
+// Geriye dönük uyumluluk
+window.requireAuth  = requireAuth;
+window.loadNavbar   = loadNavbar;
+window.getUserId    = getUserId;
+window.setActiveTab = setActiveTab;

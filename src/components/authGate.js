@@ -327,8 +327,4 @@ export function isLoggedIn() {
 }
 
 /* ── Login sayfası path'ini bul ── */
-function getLoginHref() {
-  const depth = (window.location.pathname.match(/\//g) || []).length - 1;
-  const prefix = depth <= 1 ? './' : '../'.repeat(depth - 1);
-  return prefix + 'login.html';
-}
+function getLoginHref() { return '/login.html'; }

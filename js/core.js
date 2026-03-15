@@ -131,14 +131,8 @@ function setActiveTab(tab, save=true){
   if(save) sessionStorage.setItem("activeTab", tab);
 }
 
-function getLoginHref(){
-  const depth = (window.location.pathname.match(/\//g)||[]).length - 1;
-  return depth <= 1 ? "./login.html" : "../login.html";
-}
-function getAnasayfaHref(){
-  const depth = (window.location.pathname.match(/\//g)||[]).length - 1;
-  return depth <= 1 ? "./anasayfa/" : "../anasayfa/";
-}
+function getLoginHref(){ return "/login.html"; }
+function getAnasayfaHref(){ return "/anasayfa/"; }
 function getUserId(){
   return auth.currentUser ? auth.currentUser.uid : null;
 }

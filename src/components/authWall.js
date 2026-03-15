@@ -217,7 +217,4 @@ export function initAuthWall({
   });
 }
 
-function getLoginHref() {
-  const depth = (window.location.pathname.match(/\//g) || []).length - 1;
-  return depth <= 1 ? './login.html' : '../login.html';
-}
+function getLoginHref() { return '/login.html'; }

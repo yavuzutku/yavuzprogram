@@ -4,391 +4,298 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-
 <title>AlmancaPratik — Almanca Öğrenme Platformu</title>
 <meta name="description" content="Türkçe arayüzlü ücretsiz Almanca öğrenme platformu. Kelime quizi, der die das artikel bulucu, metin analizi ile A1-C1 arası pratik yap.">
 <meta name="keywords" content="almanca öğren ücretsiz, almanca kelime quizi, der die das quiz türkçe, almanca artikel bulucu, almanca pratik">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://almancapratik.com/">
-
-<meta property="og:type"        content="website">
-<meta property="og:url"         content="https://almancapratik.com/">
-<meta property="og:title"       content="AlmancaPratik — Almanca Öğrenme Platformu">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://almancapratik.com/">
+<meta property="og:title" content="AlmancaPratik — Almanca Öğrenme Platformu">
 <meta property="og:description" content="Türkçe arayüzlü ücretsiz Almanca öğrenme platformu.">
-<meta property="og:locale"      content="tr_TR">
-<meta property="og:site_name"   content="AlmancaPratik">
-
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="AlmancaPratik">
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "EducationalApplication",
-  "name": "AlmancaPratik",
-  "url": "https://almancapratik.com",
-  "description": "Türkçe arayüzlü ücretsiz Almanca öğrenme platformu.",
-  "applicationCategory": "EducationalApplication",
-  "inLanguage": "tr",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" }
-}
+{"@context":"https://schema.org","@type":"EducationalApplication","name":"AlmancaPratik","url":"https://almancapratik.com","applicationCategory":"EducationalApplication","inLanguage":"tr","offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"}}
 </script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
 <style>
-/* ═══════════════════════════
-   TOKENS
-═══════════════════════════ */
+/* ── Tokens ── */
 :root {
-  --bg:        #070709;
-  --surface:   rgba(255,255,255,0.035);
-  --border:    rgba(255,255,255,0.07);
-  --border-h:  rgba(255,255,255,0.14);
-  --text:      #f0eee8;
-  --text-2:    rgba(240,238,232,0.52);
-  --text-3:    rgba(240,238,232,0.28);
-  --gold:      #c9a84c;
-  --gold-l:    #e8c97a;
-  --font-d:    'Syne', sans-serif;
-  --font-b:    'DM Sans', sans-serif;
-  --font-m:    'DM Mono', monospace;
-  --trans:     0.22s cubic-bezier(0.4,0,0.2,1);
+  --bg:      #070709;
+  --surface: rgba(255,255,255,0.035);
+  --border:  rgba(255,255,255,0.07);
+  --border-h:rgba(255,255,255,0.14);
+  --text:    #f0eee8;
+  --text-2:  rgba(240,238,232,0.52);
+  --text-3:  rgba(240,238,232,0.28);
+  --gold:    #c9a84c;
+  --gold-l:  #e8c97a;
+  --font-d:  'Syne', sans-serif;
+  --font-b:  'DM Sans', sans-serif;
+  --font-m:  'DM Mono', monospace;
+  --tr:      0.22s cubic-bezier(0.4,0,0.2,1);
 }
-
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior:smooth; }
 body {
-  font-family: var(--font-b);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
+  font-family:var(--font-b);
+  background:var(--bg); color:var(--text);
+  min-height:100vh; overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
 }
 
-/* ═══════════════════════════
-   ARKA PLAN
-═══════════════════════════ */
-.bg {
-  position: fixed; inset: 0; z-index: 0;
-  pointer-events: none; overflow: hidden;
-}
+/* ── Arka plan ── */
+.bg { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
 .bg-grid {
-  position: absolute; inset: 0;
+  position:absolute; inset:0;
   background-image:
     linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
-  background-size: 52px 52px;
-  mask-image: radial-gradient(ellipse 100% 70% at 50% 0%, black 10%, transparent 100%);
+  background-size:52px 52px;
+  mask-image:radial-gradient(ellipse 100% 70% at 50% 0%, black 10%, transparent 100%);
 }
 .bg-g1 {
-  position: absolute;
-  width: 700px; height: 700px;
-  top: -250px; left: -180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(201,168,76,0.09), transparent 65%);
-  filter: blur(80px);
-  animation: drift 16s ease-in-out infinite alternate;
+  position:absolute; width:700px; height:700px; top:-250px; left:-180px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(201,168,76,0.09), transparent 65%);
+  filter:blur(80px); animation:drift 16s ease-in-out infinite alternate;
 }
 .bg-g2 {
-  position: absolute;
-  width: 500px; height: 500px;
-  bottom: -100px; right: -150px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(96,200,240,0.06), transparent 65%);
-  filter: blur(100px);
-  animation: drift 20s ease-in-out infinite alternate-reverse;
+  position:absolute; width:500px; height:500px; bottom:-100px; right:-150px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(96,200,240,0.06), transparent 65%);
+  filter:blur(100px); animation:drift 20s ease-in-out infinite alternate-reverse;
 }
-@keyframes drift {
-  from { transform: translate(0,0) scale(1); }
-  to   { transform: translate(40px,30px) scale(1.08); }
-}
+@keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(40px,30px) scale(1.08)} }
 
-/* ═══════════════════════════
-   NAV
-═══════════════════════════ */
+/* ── Nav ── */
 .nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  height: 62px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 32px;
-  background: rgba(7,7,9,0.85);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(20px);
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  height:62px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 32px;
+  background:rgba(7,7,9,0.85); border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
 }
-
-.nav-logo {
-  display: flex; align-items: center; gap: 10px;
-  text-decoration: none; user-select: none;
-}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; user-select:none; }
 .nav-logo-mark {
-  width: 32px; height: 32px; border-radius: 9px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 18px rgba(201,168,76,0.3);
-  flex-shrink: 0;
+  width:32px; height:32px; border-radius:9px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-l));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 18px rgba(201,168,76,0.3); flex-shrink:0;
 }
-.nav-logo-mark svg { width: 16px; height: 16px; }
-.nav-logo-name {
-  font-family: var(--font-d);
-  font-size: 15px; font-weight: 800;
-  color: var(--text); letter-spacing: -0.02em;
-}
-
-.nav-right { display: flex; align-items: center; gap: 10px; }
-
-.nav-link {
-  font-size: 13px; color: var(--text-2);
-  text-decoration: none; transition: color var(--trans);
-  padding: 6px 4px;
-}
-.nav-link:hover { color: var(--text); }
-
+.nav-logo-mark svg { width:16px; height:16px; }
+.nav-logo-name { font-family:var(--font-d); font-size:15px; font-weight:800; color:var(--text); letter-spacing:-0.02em; }
+.nav-right { display:flex; align-items:center; gap:10px; }
+.nav-link { font-size:13px; color:var(--text-2); text-decoration:none; transition:color var(--tr); padding:6px 4px; }
+.nav-link:hover { color:var(--text); }
 .nav-cta {
-  display: flex; align-items: center; gap: 7px;
-  padding: 8px 18px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  color: #0a0a0f; font-size: 13px; font-weight: 700;
-  border-radius: 8px; text-decoration: none;
-  box-shadow: 0 4px 18px rgba(201,168,76,0.3);
-  transition: var(--trans);
+  display:flex; align-items:center; gap:7px; padding:8px 18px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-l));
+  color:#0a0a0f; font-size:13px; font-weight:700;
+  border-radius:8px; text-decoration:none;
+  box-shadow:0 4px 18px rgba(201,168,76,0.3); transition:var(--tr);
 }
-.nav-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 28px rgba(201,168,76,0.45);
-}
-.nav-cta:active { transform: scale(0.97); }
+.nav-cta:hover { transform:translateY(-1px); box-shadow:0 8px 28px rgba(201,168,76,0.45); }
+.nav-cta:active { transform:scale(0.97); }
+@media(max-width:480px){ .nav{padding:0 16px;} .nav-link{display:none;} }
 
-@media (max-width: 480px) {
-  .nav { padding: 0 16px; }
-  .nav-link { display: none; }
-}
-
-/* ═══════════════════════════
-   HERO — tam ekran merkez
-═══════════════════════════ */
+/* ── Hero ── */
 .hero {
-  position: relative; z-index: 1;
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 100px 24px 80px;
-  text-align: center;
+  position:relative; z-index:1;
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:100px 24px 80px; text-align:center;
 }
-
-/* Eyebrow */
 .eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 10.5px; font-weight: 600;
-  letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--gold); opacity: 0.8;
-  margin-bottom: 28px;
-  animation: fadeUp 0.5s cubic-bezier(0.4,0,0.2,1) both;
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:10.5px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--gold); opacity:0.8; margin-bottom:28px;
+  animation:fadeUp 0.5s cubic-bezier(0.4,0,0.2,1) both;
 }
 .eyebrow-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--gold); box-shadow: 0 0 8px var(--gold);
-  animation: pulse 2.5s ease-in-out infinite;
+  width:5px; height:5px; border-radius:50%;
+  background:var(--gold); box-shadow:0 0 8px var(--gold);
+  animation:pulse 2.5s ease-in-out infinite;
 }
-@keyframes pulse {
-  0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.65)}
-}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.65)} }
 
-/* Ana başlık */
 .hero-title {
-  font-family: var(--font-d);
-  font-size: clamp(44px, 9vw, 100px);
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.95;
-  color: var(--text);
-  margin-bottom: 24px;
-  animation: fadeUp 0.55s 0.06s cubic-bezier(0.4,0,0.2,1) both;
+  font-family:var(--font-d);
+  font-size:clamp(44px, 9vw, 100px);
+  font-weight:800; letter-spacing:-0.045em; line-height:0.95;
+  color:var(--text); margin-bottom:24px;
+  animation:fadeUp 0.55s 0.06s cubic-bezier(0.4,0,0.2,1) both;
 }
 .hero-title span {
-  background: linear-gradient(135deg, #c9a84c 0%, #f5dc8a 40%, #c9a84c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% 200%;
-  animation: shimmer 5s ease-in-out infinite;
+  background:linear-gradient(135deg, #c9a84c 0%, #f5dc8a 40%, #c9a84c 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; background-size:200% 200%;
+  animation:shimmer 5s ease-in-out infinite;
 }
-@keyframes shimmer {
-  0%,100%{background-position:0% 50%} 50%{background-position:100% 50%}
-}
+@keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
 
-/* Alt yazı */
 .hero-sub {
-  font-size: clamp(14px, 2vw, 17px);
-  line-height: 1.75; color: var(--text-2);
-  max-width: 500px; margin: 0 auto 48px;
-  animation: fadeUp 0.55s 0.12s cubic-bezier(0.4,0,0.2,1) both;
+  font-size:clamp(14px, 2vw, 17px); line-height:1.75; color:var(--text-2);
+  max-width:500px; margin:0 auto 48px;
+  animation:fadeUp 0.55s 0.12s cubic-bezier(0.4,0,0.2,1) both;
 }
-
-/* CTA grubu */
 .hero-cta {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 12px;
-  animation: fadeUp 0.55s 0.18s cubic-bezier(0.4,0,0.2,1) both;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+  animation:fadeUp 0.55s 0.18s cubic-bezier(0.4,0,0.2,1) both;
 }
-
-/* ANA BUTON — büyük, belirgin */
 .btn-main {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 16px 40px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  color: #0a0a0f;
-  font-family: var(--font-d);
-  font-size: 16px; font-weight: 800;
-  border-radius: 14px; text-decoration: none;
-  box-shadow: 0 8px 32px rgba(201,168,76,0.4),
-              0 2px 8px rgba(201,168,76,0.2);
-  transition: var(--trans);
-  letter-spacing: -0.01em;
+  display:inline-flex; align-items:center; gap:10px; padding:16px 40px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-l));
+  color:#0a0a0f; font-family:var(--font-d); font-size:16px; font-weight:800;
+  border-radius:14px; text-decoration:none; letter-spacing:-0.01em;
+  box-shadow:0 8px 32px rgba(201,168,76,0.4), 0 2px 8px rgba(201,168,76,0.2);
+  transition:var(--tr);
 }
-.btn-main:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 48px rgba(201,168,76,0.55),
-              0 4px 12px rgba(201,168,76,0.25);
-}
-.btn-main:active { transform: scale(0.97); }
-.btn-main svg { width: 18px; height: 18px; flex-shrink: 0; }
-
+.btn-main:hover { transform:translateY(-3px); box-shadow:0 16px 48px rgba(201,168,76,0.55); }
+.btn-main:active { transform:scale(0.97); }
+.btn-main svg { width:18px; height:18px; flex-shrink:0; }
 .btn-secondary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 13px 28px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text-2);
-  font-family: var(--font-b);
-  font-size: 14px; font-weight: 500;
-  border-radius: 12px; text-decoration: none;
-  transition: var(--trans);
+  display:inline-flex; align-items:center; gap:8px; padding:13px 28px;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--text-2); font-family:var(--font-b); font-size:14px; font-weight:500;
+  border-radius:12px; text-decoration:none; transition:var(--tr);
 }
-.btn-secondary:hover {
-  border-color: var(--border-h);
-  color: var(--text);
-  background: rgba(255,255,255,0.06);
-}
-.btn-secondary:active { transform: scale(0.97); }
+.btn-secondary:hover { border-color:var(--border-h); color:var(--text); background:rgba(255,255,255,0.06); }
+.btn-secondary:active { transform:scale(0.97); }
+.cta-note { font-size:11.5px; color:var(--text-3); font-family:var(--font-b); margin-top:4px; }
 
-.cta-note {
-  font-size: 11.5px; color: var(--text-3);
-  font-family: var(--font-b);
-  margin-top: 4px;
+/* ── Açıklama bölümü ── */
+.about {
+  position:relative; z-index:1;
+  max-width:860px; margin:0 auto;
+  padding:0 24px 64px;
+  animation:fadeUp 0.6s 0.22s cubic-bezier(0.4,0,0.2,1) both;
+}
+.about-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  border:1px solid var(--border); border-radius:18px; overflow:hidden;
+}
+.about-block {
+  padding:32px 28px;
+  background:var(--bg);
+  border-right:1px solid var(--border);
+}
+.about-block:last-of-type { border-right:none; }
+.about-block--wide {
+  grid-column:1 / -1; padding:32px 28px;
+  background:rgba(255,255,255,0.015);
+  border-top:1px solid var(--border);
+}
+.about-label {
+  display:block; font-family:var(--font-m);
+  font-size:10px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--gold); opacity:0.7; margin-bottom:10px;
+}
+.about-heading {
+  font-family:var(--font-d); font-size:clamp(16px, 2vw, 20px);
+  font-weight:800; letter-spacing:-0.025em; color:var(--text);
+  line-height:1.2; margin-bottom:14px;
+}
+.about-text {
+  font-size:13.5px; line-height:1.85; color:var(--text-2);
+}
+.about-text + .about-text { margin-top:10px; }
+.about-highlight { color:var(--text); font-weight:500; }
+.about-levels { display:flex; gap:8px; flex-wrap:wrap; margin-top:20px; }
+.level-tag {
+  font-family:var(--font-m); font-size:11.5px; font-weight:500;
+  padding:5px 13px; border-radius:6px; text-decoration:none;
+  border:1px solid var(--border); color:var(--text-3); transition:var(--tr);
+}
+.level-tag--a1 { color:#22c55e; border-color:rgba(34,197,94,0.25);   background:rgba(34,197,94,0.05); }
+.level-tag--a2 { color:#86efac; border-color:rgba(134,239,172,0.2);  background:rgba(134,239,172,0.04); }
+.level-tag--b1 { color:#60c8f0; border-color:rgba(96,200,240,0.25);  background:rgba(96,200,240,0.05); }
+.level-tag--b2 { color:#818cf8; border-color:rgba(129,140,248,0.2);  background:rgba(129,140,248,0.04); }
+.level-tag--c1 { color:var(--gold); border-color:rgba(201,168,76,0.25); background:rgba(201,168,76,0.05); }
+.level-tag:hover { opacity:0.8; transform:translateY(-1px); }
+@media(max-width:640px){
+  .about-grid { grid-template-columns:1fr; }
+  .about-block { border-right:none; border-bottom:1px solid var(--border); }
+  .about-block--wide { grid-column:1; }
+  .about-block, .about-block--wide { padding:24px 20px; }
 }
 
-/* ═══════════════════════════
-   ARAÇLAR ŞERIDI
-═══════════════════════════ */
+/* ── Araçlar şeridi ── */
+.tools-label {
+  position:relative; z-index:1;
+  max-width:860px; margin:0 auto; padding:0 24px 14px;
+  font-family:var(--font-m); font-size:10px; font-weight:500;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--text-3);
+  animation:fadeUp 0.6s 0.26s cubic-bezier(0.4,0,0.2,1) both;
+}
 .tools-strip {
-  position: relative; z-index: 1;
-  display: flex; justify-content: center;
-  padding: 0 24px 100px;
-  animation: fadeUp 0.6s 0.28s cubic-bezier(0.4,0,0.2,1) both;
+  position:relative; z-index:1;
+  display:flex; justify-content:center;
+  padding:0 24px 100px;
+  animation:fadeUp 0.6s 0.28s cubic-bezier(0.4,0,0.2,1) both;
 }
-
 .tools-inner {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  overflow: hidden;
-  max-width: 860px; width: 100%;
+  display:grid; grid-template-columns:repeat(4, 1fr);
+  gap:1px; background:var(--border);
+  border:1px solid var(--border); border-radius:18px;
+  overflow:hidden; max-width:860px; width:100%;
 }
-
 .tool-item {
-  display: flex; flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 22px 22px 20px;
-  background: var(--bg);
-  text-decoration: none;
-  transition: background var(--trans);
-  cursor: pointer;
+  display:flex; flex-direction:column; align-items:flex-start;
+  gap:5px; padding:20px 22px 18px;
+  background:var(--bg); text-decoration:none;
+  transition:background var(--tr); position:relative;
 }
-.tool-item:hover { background: rgba(255,255,255,0.03); }
-
-
+.tool-item:hover { background:rgba(255,255,255,0.025); }
+.tool-item::after {
+  content:'→'; position:absolute; right:16px; top:50%;
+  transform:translateY(-50%) translateX(-4px);
+  font-size:12px; color:var(--text-3); opacity:0; transition:var(--tr);
+}
+.tool-item:hover::after { opacity:1; transform:translateY(-50%) translateX(0); }
 .tool-name {
-  font-family: var(--font-d);
-  font-size: 13px; font-weight: 700;
-  color: var(--text); letter-spacing: -0.01em;
+  font-family:var(--font-d); font-size:13px; font-weight:700;
+  color:var(--text); letter-spacing:-0.01em; transition:color var(--tr);
 }
-.tool-desc {
-  font-size: 11.5px; color: var(--text-3);
-  line-height: 1.5;
-}
+.tool-item:hover .tool-name { color:var(--gold); }
+.tool-desc { font-family:var(--font-m); font-size:11px; color:var(--text-3); line-height:1.5; }
+@media(max-width:700px){ .tools-inner{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:400px){ .tools-inner{grid-template-columns:1fr;} .tools-strip{padding-bottom:60px;} }
 
-@media (max-width: 700px) {
-  .tools-inner { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 400px) {
-  .tools-inner { grid-template-columns: 1fr; }
-  .tools-strip { padding-bottom: 60px; }
-}
-
-/* ═══════════════════════════
-   FOOTER
-═══════════════════════════ */
+/* ── Footer ── */
 .footer {
-  position: relative; z-index: 1;
-  border-top: 1px solid var(--border);
-  padding: 24px 32px;
-  display: flex; align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap; gap: 14px;
+  position:relative; z-index:1; border-top:1px solid var(--border);
+  padding:24px 32px; display:flex; align-items:center;
+  justify-content:space-between; flex-wrap:wrap; gap:14px;
 }
-.footer-logo {
-  display: flex; align-items: center; gap: 8px;
-  text-decoration: none;
-}
+.footer-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
 .footer-logo-mark {
-  width: 26px; height: 26px; border-radius: 7px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  display: flex; align-items: center; justify-content: center;
+  width:26px; height:26px; border-radius:7px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-l));
+  display:flex; align-items:center; justify-content:center;
 }
-.footer-logo-mark svg { width: 12px; height: 12px; }
-.footer-logo-name {
-  font-family: var(--font-d); font-size: 13px; font-weight: 800;
-  color: var(--text); letter-spacing: -0.01em;
-}
-.footer-links {
-  display: flex; gap: 20px; flex-wrap: wrap;
-}
-.footer-links a {
-  font-size: 12px; color: var(--text-3);
-  text-decoration: none; transition: color var(--trans);
-}
-.footer-links a:hover { color: var(--gold); }
-.footer-copy {
-  font-size: 11px; color: var(--text-3);
-}
+.footer-logo-mark svg { width:12px; height:12px; }
+.footer-logo-name { font-family:var(--font-d); font-size:13px; font-weight:800; color:var(--text); }
+.footer-links { display:flex; gap:20px; flex-wrap:wrap; }
+.footer-links a { font-size:12px; color:var(--text-3); text-decoration:none; transition:color var(--tr); }
+.footer-links a:hover { color:var(--gold); }
+.footer-copy { font-size:11px; color:var(--text-3); }
+@media(max-width:600px){ .footer{padding:20px 16px; flex-direction:column; align-items:flex-start;} }
 
-@media (max-width: 600px) {
-  .footer { padding: 20px 16px; flex-direction: column; align-items: flex-start; }
-}
-
-/* ═══════════════════════════
-   ANIMASYON
-═══════════════════════════ */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* ── Animasyon ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 </style>
 </head>
 <body>
 
-<!-- Arka plan -->
 <div class="bg" aria-hidden="true">
   <div class="bg-grid"></div>
   <div class="bg-g1"></div>
   <div class="bg-g2"></div>
 </div>
 
-<!-- Nav -->
 <nav class="nav">
   <a class="nav-logo" href="/">
     <div class="nav-logo-mark">
@@ -413,147 +320,125 @@ body {
   </div>
 </nav>
 
-<!-- Hero -->
 <main>
-<section class="hero">
 
-  <div class="eyebrow">
-    <span class="eyebrow-dot"></span>
-    Türkçe · Ücretsiz · A1–C1
-  </div>
-
-  <h1 class="hero-title">
-    Almanca<br><span>pratikle</span><br>öğrenilir.
-  </h1>
-
-  <p class="hero-sub">
-    Metin analizi, kelime quizleri ve artikel bulucu ile
-    Almancanda hızla ilerle. Giriş gerektirmeyen araçlarla
-    hemen başla.
-  </p>
-
-  <div class="hero-cta">
-
-    <!-- Birincil: Anasayfaya Git -->
-    <a class="btn-main" href="/anasayfa/" id="dashboardBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/>
-        <rect x="14" y="14" width="7" height="7" rx="1"/>
-      </svg>
-      Platforma Git
-    </a>
-
-    <!-- İkincil: Giriş Yap -->
-    <a class="btn-secondary" href="/login.html" id="loginBtn">
-      Hesabınla giriş yap →
-    </a>
-
-    <p class="cta-note">Giriş gerektirmeyen araçlar da mevcut</p>
-  </div>
-
-</section>
-
-<!-- Açıklama bölümü -->
-<section class="about">
-  <div class="about-grid">
-
-    <div class="about-block">
-      <span class="about-label">Platform Hakkında</span>
-      <h2 class="about-heading">Neden AlmancaPratik?</h2>
-      <p class="about-text">
-        Almanca öğrenmek sadece kelime ezberlemekten ibaret değil. Bir kelimenin hangi artikelle kullanıldığını, hangi cümle yapısına girdiğini ve günlük konuşmada nasıl göründüğünü bilmek gerekiyor. AlmancaPratik tam da bu ihtiyaçtan doğdu: <span class="about-highlight">Türkçe düşünen bir öğrenci için tasarlanmış, pratik odaklı bir araç seti.</span>
-      </p>
-      <p class="about-text">
-        Her özellik gerçek bir öğrenme problemini çözmek için var. Artikel bulucu, Wiktionary'den anlık veri çekerek der, die ve das sorusuna kesin cevap verir. Cümle örnekleri aracı, kelimelerin bağlam içinde nasıl kullanıldığını gösterir. Metin analizi, okuduğun Almanca bir makaleyi veya hikayeyi interaktif bir sözlüğe dönüştürür.
-      </p>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      Türkçe · Ücretsiz · A1–C1
     </div>
-
-    <div class="about-block">
-      <span class="about-label">Nasıl Çalışır?</span>
-      <h2 class="about-heading">Basit ama etkili bir döngü</h2>
-      <p class="about-text">
-        Bir Almanca metin yapıştır. Okurken bilmediğin kelimeye dokun — anlamı, artikeli ve örnek cümleleri anında önüne gelir. Beğendiğin kelimeyi tek tıkla kişisel sözlüğüne kaydet. Daha sonra o kelimelerden otomatik oluşturulan quizlerle pekiştir.
-      </p>
-      <p class="about-text">
-        <span class="about-highlight">Giriş yapmadan da pek çok araç kullanılabilir.</span> Artikel bulucu, cümle örnekleri ve çeviri aracı hesap gerektirmez. Kişisel sözlük ve quiz için ücretsiz kayıt yeterli.
-      </p>
+    <h1 class="hero-title">
+      Almanca<br><span>pratikle</span><br>öğrenilir.
+    </h1>
+    <p class="hero-sub">
+      Metin analizi, kelime quizleri ve artikel bulucu ile
+      Almancanda hızla ilerle. Giriş gerektirmeyen araçlarla
+      hemen başla.
+    </p>
+    <div class="hero-cta">
+      <a class="btn-main" href="/anasayfa/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Platforma Git
+      </a>
+      <a class="btn-secondary" href="/login.html">Hesabınla giriş yap →</a>
+      <p class="cta-note">Giriş gerektirmeyen araçlar da mevcut</p>
     </div>
+  </section>
 
-    <div class="about-block--wide">
-      <span class="about-label">Seviyeler</span>
-      <h2 class="about-heading">A1'den C1'e, her seviyeye uygun</h2>
-      <p class="about-text">
-        Almancaya yeni başlıyorsan A1 seviyesindeki temel kelimeler ve basit gramer yapılarıyla başlayabilirsin. Orta düzeydeysen B1–B2 arası karmaşık metin analizleri ve ileri kelime çalışmaları seni bekliyor. Hangi seviyede olduğundan emin değilsen <span class="about-highlight">25 soruluk ücretsiz seviye testi</span> sana kesin cevabı verir.
-      </p>
-      <p class="about-text">
-        Platform, Türkçe ana dili konuşanların Almancada en çok zorlandığı konulara özel önem verir: der/die/das artikelleri, yardımcı fiiller, sözcük sırası kuralları ve güçlü fiil çekimleri. Tüm açıklamalar Türkçe olduğu için gramer mantığını kendi dilinde kavrayabilirsin.
-      </p>
-      <div class="about-levels">
-        <a class="level-tag level-tag--a1" href="/seviyeler/seviyetespit/">A1 — Başlangıç</a>
-        <a class="level-tag level-tag--a2" href="/seviyeler/seviyetespit/">A2 — Temel</a>
-        <a class="level-tag level-tag--b1" href="/seviyeler/seviyetespit/">B1 — Orta</a>
-        <a class="level-tag level-tag--b2" href="/seviyeler/seviyetespit/">B2 — Üst Orta</a>
-        <a class="level-tag level-tag--c1" href="/seviyeler/seviyetespit/">C1 — İleri</a>
+  <!-- Açıklama -->
+  <section class="about">
+    <div class="about-grid">
+
+      <div class="about-block">
+        <span class="about-label">Platform Hakkında</span>
+        <h2 class="about-heading">Neden AlmancaPratik?</h2>
+        <p class="about-text">
+          Almanca öğrenmek sadece kelime ezberlemekten ibaret değil. Bir kelimenin hangi artikelle kullanıldığını, hangi cümle yapısına girdiğini ve günlük konuşmada nasıl göründüğünü bilmek gerekiyor. AlmancaPratik tam da bu ihtiyaçtan doğdu: <span class="about-highlight">Türkçe düşünen bir öğrenci için tasarlanmış, pratik odaklı bir araç seti.</span>
+        </p>
+        <p class="about-text">
+          Her özellik gerçek bir öğrenme problemini çözmek için var. Artikel bulucu, Wiktionary'den anlık veri çekerek der, die ve das sorusuna kesin cevap verir. Cümle örnekleri aracı kelimelerin bağlam içinde nasıl kullanıldığını gösterir. Metin analizi ise okuduğun Almanca bir makaleyi veya hikayeyi interaktif bir sözlüğe dönüştürür.
+        </p>
       </div>
+
+      <div class="about-block">
+        <span class="about-label">Nasıl Çalışır?</span>
+        <h2 class="about-heading">Basit ama etkili bir döngü</h2>
+        <p class="about-text">
+          Bir Almanca metin yapıştır. Okurken bilmediğin kelimeye dokun — anlamı, artikeli ve örnek cümleleri anında önüne gelir. Beğendiğin kelimeyi tek tıkla kişisel sözlüğüne kaydet. Daha sonra o kelimelerden otomatik oluşturulan quizlerle pekiştir.
+        </p>
+        <p class="about-text">
+          <span class="about-highlight">Giriş yapmadan da pek çok araç kullanılabilir.</span> Artikel bulucu, cümle örnekleri ve çeviri aracı hesap gerektirmez. Kişisel sözlük ve quiz için ücretsiz kayıt yeterli — Google hesabınla saniyeler içinde.
+        </p>
+      </div>
+
+      <div class="about-block--wide">
+        <span class="about-label">Seviyeler</span>
+        <h2 class="about-heading">A1'den C1'e, her seviyeye uygun</h2>
+        <p class="about-text">
+          Almancaya yeni başlıyorsan A1 seviyesindeki temel kelimeler ve basit gramer yapılarıyla başlayabilirsin. Orta düzeydeysen B1–B2 arası karmaşık metin analizleri ve ileri kelime çalışmaları seni bekliyor. Hangi seviyede olduğundan emin değilsen <span class="about-highlight">25 soruluk ücretsiz seviye testi</span> sana kesin cevabı verir.
+        </p>
+        <p class="about-text">
+          Platform, Türkçe ana dili konuşanların Almancada en çok zorlandığı konulara özel önem verir: der/die/das artikelleri, yardımcı fiiller, sözcük sırası kuralları ve güçlü fiil çekimleri. Tüm açıklamalar Türkçe olduğu için gramer mantığını kendi dilinde kavrayabilirsin.
+        </p>
+        <div class="about-levels">
+          <a class="level-tag level-tag--a1" href="/seviyeler/seviyetespit/">A1 — Başlangıç</a>
+          <a class="level-tag level-tag--a2" href="/seviyeler/seviyetespit/">A2 — Temel</a>
+          <a class="level-tag level-tag--b1" href="/seviyeler/seviyetespit/">B1 — Orta</a>
+          <a class="level-tag level-tag--b2" href="/seviyeler/seviyetespit/">B2 — Üst Orta</a>
+          <a class="level-tag level-tag--c1" href="/seviyeler/seviyetespit/">C1 — İleri</a>
+        </div>
+      </div>
+
     </div>
+  </section>
 
+  <!-- Araçlar -->
+  <p class="tools-label">Tüm Araçlar</p>
+  <div class="tools-strip">
+    <div class="tools-inner">
+      <a class="tool-item" href="/artikel/">
+        <span class="tool-name">Artikel Bul</span>
+        <span class="tool-desc">der / die / das</span>
+      </a>
+      <a class="tool-item" href="/cumlebul/">
+        <span class="tool-name">Cümle Örnekleri</span>
+        <span class="tool-desc">Wiktionary · Tatoeba</span>
+      </a>
+      <a class="tool-item" href="/ceviri/">
+        <span class="tool-name">Çeviri</span>
+        <span class="tool-desc">Almanca → Türkçe</span>
+      </a>
+      <a class="tool-item" href="/quiz/">
+        <span class="tool-name">Kelime Quizi</span>
+        <span class="tool-desc">A1 → C1</span>
+      </a>
+      <a class="tool-item" href="/metin/">
+        <span class="tool-name">Metin Analizi</span>
+        <span class="tool-desc">Almanca metni oku</span>
+      </a>
+      <a class="tool-item" href="/kelimeler/">
+        <span class="tool-name">Kelimelerim</span>
+        <span class="tool-desc">Kişisel sözlük</span>
+      </a>
+      <a class="tool-item" href="/gecmis/">
+        <span class="tool-name">Metin Geçmişi</span>
+        <span class="tool-desc">Kayıtlı metinler</span>
+      </a>
+      <a class="tool-item" href="/seviyeler/seviyetespit/">
+        <span class="tool-name">Seviye Testi</span>
+        <span class="tool-desc">A1 · A2 · B1 · B2 · C1</span>
+      </a>
+    </div>
   </div>
-</section>
 
-<!-- Araçlar başlığı -->
-<p class="tools-label">Tüm Araçlar</p>
-
-<!-- Araçlar şeridi -->
-<div class="tools-strip">
-  <div class="tools-inner">
-
-    <a class="tool-item" href="/artikel/">
-      <span class="tool-name">Artikel Bul</span>
-      <span class="tool-desc">der / die / das</span>
-    </a>
-
-    <a class="tool-item" href="/cumlebul/">
-      <span class="tool-name">Cümle Örnekleri</span>
-      <span class="tool-desc">Wiktionary · Tatoeba</span>
-    </a>
-
-    <a class="tool-item" href="/ceviri/">
-      <span class="tool-name">Çeviri</span>
-      <span class="tool-desc">Almanca → Türkçe</span>
-    </a>
-
-    <a class="tool-item" href="/quiz/">
-      <span class="tool-name">Kelime Quizi</span>
-      <span class="tool-desc">A1 → C1</span>
-    </a>
-
-    <a class="tool-item" href="/metin/">
-      <span class="tool-name">Metin Analizi</span>
-      <span class="tool-desc">Almanca metni oku</span>
-    </a>
-
-    <a class="tool-item" href="/kelimeler/">
-      <span class="tool-name">Kelimelerim</span>
-      <span class="tool-desc">Kişisel sözlük</span>
-    </a>
-
-    <a class="tool-item" href="/gecmis/">
-      <span class="tool-name">Metin Geçmişi</span>
-      <span class="tool-desc">Kayıtlı metinler</span>
-    </a>
-
-    <a class="tool-item" href="/seviyeler/seviyetespit/">
-      <span class="tool-name">Seviye Testi</span>
-      <span class="tool-desc">A1 · A2 · B1 · B2 · C1</span>
-    </a>
-
-  </div>
-</div>
 </main>
 
-<!-- Footer -->
 <footer class="footer">
   <a class="footer-logo" href="/">
     <div class="footer-logo-mark">
@@ -573,15 +458,10 @@ body {
   <span class="footer-copy">© 2026 AlmancaPratik</span>
 </footer>
 
-<!-- Giriş yapmış kullanıcıyı anında anasayfaya yönlendir -->
 <script type="module">
   import { onAuthChange } from "./js/firebase.js";
-
   onAuthChange((user) => {
-    if (user) {
-      // Zaten giriş yapmış — direkt anasayfaya
-      window.location.replace("/anasayfa/");
-    }
+    if (user) window.location.replace("/anasayfa/");
   });
 </script>
 

@@ -19,7 +19,7 @@ import {
   escapeHtml,
 } from "./german.js";
 import { showToast } from "../src/components/toast.js";
-
+import { showAuthGate, isLoggedIn } from '../src/components/authGate.js';
 /* ── State ───────────────────────────────────────────────── */
 let _word       = "";   /* seçili kelime */
 let _wiki       = null; /* Wiktionary verisi */
@@ -145,6 +145,13 @@ function bindToolbar() {
   });
 
   on("addWordBtn", "click", () => {
+    if (!isLoggedIn()) {
+      showAuthGate({
+        title: 'Kelime kaydetmek için giriş yap',
+        desc: 'Seçtiğin kelimeleri kişisel sözlüğüne eklemek için ücretsiz hesabına giriş yap.'
+      });
+      return;
+    }
     if (!_word) { showToast("Önce metinden bir kelime seçin.", false); return; }
     openModal();
   });
@@ -353,14 +360,23 @@ async function openPopup() {
 
 /* ── Popup'tan kaydet ────────────────────────────────────── */
 async function saveFromPopup() {
+  // Auth kontrolü
+  if (!isLoggedIn()) {
+    showAuthGate({
+      title: 'Kelime kaydetmek için giriş yap',
+      desc: 'Beğendiğin kelimeleri kişisel sözlüğüne eklemek ücretsiz — sadece bir Google hesabı yeterli.'
+    });
+    return;
+  }
+ 
   const word = normalizeGermanWord(_word, _wiki);
   if (!word || !_tr || _tr === "—") {
     showToast("Kelime veya çeviri eksik.", false); return;
   }
-
+ 
   const btn = document.getElementById("ppSave");
   if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor…"; }
-
+ 
   try {
     const uid = window.getUserId?.();
     if (!uid) throw new Error("Oturum yok");
@@ -440,23 +456,32 @@ function fillModalWord() {
 }
 
 async function doSaveModal() {
+  // Auth kontrolü
+  if (!isLoggedIn()) {
+    showAuthGate({
+      title: 'Kelime kaydetmek için giriş yap',
+      desc: 'Sözlüğüne kelime eklemek için ücretsiz hesabına giriş yapman yeterli.'
+    });
+    return;
+  }
+ 
   const inp     = document.getElementById("modalMeaningInput");
   const meaning = inp?.value.trim();
   if (!meaning) { inp?.focus(); return; }
-
+ 
   const word = normalizeGermanWord(_word, _wiki || {});
   const tags = getSelectedTags("modalTagChips");
   const btn  = document.getElementById("wordModalSaveBtn");
-
+ 
   if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor…"; }
-
+ 
   try {
     const uid = window.getUserId?.();
     if (!uid) throw new Error("Oturum yok");
     await saveWord(uid, word, meaning, tags);
     getWords(uid).then(l => { _userWords = l; }).catch(() => {});
-    $overlay.style.display = "none";
-    $overlay.classList.remove("active");
+    _overlay.style.display = "none";
+    _overlay.classList.remove("active");
     _modalOpen = false;
     _word      = "";
     showToast(`"${word}" sözlüğe eklendi`);

@@ -114,8 +114,15 @@
 
 <script type="module">
   import "../js/core.js";
-  window.requireAuth();
   window.loadNavbar();
+  import { initAuthWall } from '../src/components/authWall.js';
+  initAuthWall({
+    icon:     '🔤',
+    title:    'Kelime eklemek için giriş yap',
+    desc:     'Wiktionary destekli akıllı kelime ekleme aracını kullanmak için giriş yap.',
+    features: ['Otomatik artikel', 'Çeviri önerisi', 'Etiket sistemi'],
+    backHref: '../anasayfa/'
+  });
 </script>
 <script type="module" src="../js/singleadd.js"></script>
 

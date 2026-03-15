@@ -12,7 +12,7 @@
 import { saveMetin } from "./firebase.js";
 
 import { showToast } from "../src/components/toast.js";
-
+import { showAuthGate, isLoggedIn } from '../src/components/authGate.js';
 
 
 /* ── Metin Parser ────────────────────────────────────────── */
@@ -258,41 +258,34 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ── Okuma moduna geç ── */
   readBtn?.addEventListener("click", async () => {
     const text = editor.innerText.trim();
-
-    if (!text) {
-      showToast("Metin bo\u015f!", "err");
+    if (!text) { showToast("Metin boş!", "err"); return; }
+  
+    if (!isLoggedIn()) {
+      // Giriş yoksa metni kaydetme, sadece okuma moduna aç
+      const blocks = parseText(text);
+      sessionStorage.setItem("savedText",    text);
+      sessionStorage.setItem("parsedBlocks", JSON.stringify(blocks));
+      sessionStorage.setItem("returnPage",   "../metin/");
+      window.location.href = "../okuma/";
       return;
     }
-
-    const userId = window.getUserId?.();
-    if (!userId) {
-      alert("Oturum bulunamad\u0131, l\u00fctfen tekrar giri\u015f yap\u0131n.");
-      window.location.href = "../";
-      return;
-    }
-
-    /* Butonu devre dışı bırak */
-    readBtn.disabled     = true;
-    readBtn.textContent  = "Kaydediliyor\u2026";
-
+  
+    // Giriş yapılmış — Firestore'a kaydet
+    readBtn.disabled    = true;
+    readBtn.textContent = "Kaydediliyor…";
     try {
       const blocks = parseText(text);
-      await saveMetin(userId, text);
+      await saveMetin(window.getUserId(), text);
       sessionStorage.setItem("savedText",    text);
       sessionStorage.setItem("parsedBlocks", JSON.stringify(blocks));
       sessionStorage.setItem("returnPage",   "../metin/");
       window.location.href = "../okuma/";
     } catch (err) {
-      console.error("Kay\u0131t hatas\u0131:", err);
-      showToast("Kay\u0131t s\u0131ras\u0131nda bir hata olu\u015ftu", "err");
+      showToast("Kayıt sırasında bir hata oluştu", "err");
       readBtn.disabled = false;
-      readBtn.innerHTML = `
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
-          <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
-        </svg>
-        Okuma Moduna Ge\u00e7`;
+      readBtn.innerHTML = `<svg>...</svg> Okuma Moduna Geç`;
     }
   });
+  
 
 });

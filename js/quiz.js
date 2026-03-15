@@ -1,5 +1,5 @@
 import { getWords, onAuthChange } from "../js/firebase.js";
-
+import { showAuthBanner, isLoggedIn } from '../src/components/authGate.js';
 // ── STATE ─────────────────────────────────────────────
 let allWords   = [];
 let questions  = [];
@@ -26,16 +26,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Auth + Kelime Yükle ──────────────────────────────
   onAuthChange(async (user) => {
-    if (!user) return;
-
+    if (!user) {
+      // Giriş yoksa — quiz başlatma butonunu kapat, banner göster
+      const startBtn = document.getElementById('startBtn');
+      const wrap = startBtn?.closest('.start-wrap');
+      if (wrap) {
+        const { showAuthBanner } = await import('../src/components/authGate.js');
+        showAuthBanner(wrap, {
+          title: 'Quiz için giriş yap',
+          desc: 'Kendi kelime listen ile quiz çözmek için ücretsiz hesabına giriş yap.',
+          btnLabel: 'Giriş Yap →'
+        });
+      }
+      if (startBtn) startBtn.disabled = true;
+      const info = document.getElementById('wordCountInfo');
+      if (info) info.textContent = 'Quiz için giriş yapman gerekiyor.';
+      return;
+    }
+  
+    // Giriş yapılmış — normal akış
     try {
       const data = await getWords(user.uid);
-      allWords = data
-        .map(d => ({ word: d.word, meaning: d.meaning }))
-        .filter(d => d.word && d.meaning);
-
+      allWords = data.map(d => ({ word: d.word, meaning: d.meaning })).filter(d => d.word && d.meaning);
       const info = document.getElementById('wordCountInfo');
       if (info) info.textContent = `Sözlüğünde ${allWords.length} kelime var.`;
+      const startBtn = document.getElementById('startBtn');
+      if (startBtn) startBtn.disabled = false;
     } catch (e) {
       console.error('Kelimeler yüklenemedi:', e);
     }

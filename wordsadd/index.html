@@ -41,8 +41,15 @@
 
 <script type="module">
   import "../js/core.js";
-  window.requireAuth();
   window.loadNavbar();
+  import { initAuthWall } from '../src/components/authWall.js';
+  initAuthWall({
+    icon:     '➕',
+    title:    'Kelime eklemek için giriş yap',
+    desc:     'Kişisel sözlüğüne yeni kelimeler eklemek için ücretsiz hesabına giriş yap.',
+    features: ['Tek tek ekle', 'Liste halinde ekle', 'Otomatik artikel'],
+    backHref: '../anasayfa/'
+  });
 </script>
 
 <!-- wordsadd.js buraya inline taşındı (ayrı dosyaya gerek yok) -->

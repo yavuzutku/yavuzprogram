@@ -52,8 +52,15 @@
 
 <script type="module">
   import "../js/core.js";
-  window.requireAuth();
   window.loadNavbar();
+  import { initAuthWall } from '../src/components/authWall.js';
+  initAuthWall({
+    icon:     '📖',
+    title:    'Kelimelerini görmek için giriş yap',
+    desc:     'Kaydettiğin tüm Almanca kelimelerin, etiketlerin ve istatistiklerin seni bekliyor.',
+    features: ['Sınırsız kelime', 'Etiket sistemi', 'Arama & filtreleme'],
+    backHref: '../anasayfa/'
+  });
 </script>
 <script type="module" src="../js/kelimeler.js"></script>
 

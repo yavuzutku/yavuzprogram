@@ -6,7 +6,7 @@ import {
   artikelBadgeHtml, capitalize, escapeHtml, escapeRegex,
   isSingleWord, ARTIKEL_COLORS
 } from "./german.js";
-
+import { showAuthGate, isLoggedIn } from '../src/components/authGate.js';
 /* ══════════════════════════════════════════════
    STATE
 ══════════════════════════════════════════════ */
@@ -432,7 +432,13 @@ copyBtn.addEventListener("click", async () => {
 ══════════════════════════════════════════════ */
 saveWordBtn.addEventListener("click", () => {
   if (!lastTranslation) return;
-
+  if (!isLoggedIn()) {
+    showAuthGate({
+      title: 'Sözlüğüne eklemek için giriş yap',
+      desc: 'Çevirdiğin kelimeleri kişisel sözlüğüne kaydetmek için ücretsiz hesabına giriş yap.'
+    });
+    return;
+  }
   const deWordRaw = lastTranslation.sl === "de"
     ? lastTranslation.source
     : lastTranslation.target;

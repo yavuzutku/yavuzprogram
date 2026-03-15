@@ -45,12 +45,17 @@
 
 <!-- ✅ 1. core.js normal script -->
 <script type="module">
-  import "../js/core.js";  
-  window.requireAuth();
+  import "../js/core.js";
   window.loadNavbar();
+  import { initAuthWall } from '../src/components/authWall.js';
+  initAuthWall({
+    icon:     '📂',
+    title:    'Metin geçmişin için giriş yap',
+    desc:     'Daha önce eklediğin metinlere geri dönmek ve okumaya devam etmek için giriş yap.',
+    features: ['Tüm metinlerin', 'Hızlı erişim', 'Arama'],
+    backHref: '../anasayfa/'
+  });
 </script>
-
-<!-- ✅ 2. gecmis.js module -->
 <script type="module" src="../js/gecmis.js"></script>
 
 </body>

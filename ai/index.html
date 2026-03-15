@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Kontrol — AlmancaPratik</title>
-  <meta name="description" content="Gemini destekli Almanca AI asistanı.">
   <link rel="icon" href="../favicon.ico">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/ai.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -20,47 +19,43 @@
   <div class="bg-glow bg-glow--2"></div>
 </div>
 
-<!-- ERİŞİM REDDEDİLDİ -->
+<!-- ── ERİŞİM REDDEDİLDİ ── -->
 <div id="accessDenied" style="
-  display: none;
-  position: fixed; inset: 0; z-index: 999;
+  display: none; position: fixed; inset: 0; z-index: 9999;
   align-items: center; justify-content: center;
-  background: rgba(7,7,9,0.95);
-  flex-direction: column; gap: 16px; text-align: center; padding: 24px;
+  background: rgba(7,7,9,0.97);
+  flex-direction: column; gap: 14px; text-align: center; padding: 24px;
 ">
-  <div style="font-size: 48px;">🔒</div>
-  <div style="font-family:'Syne',sans-serif; font-size: 22px; font-weight: 700; color: #f0eee8;">
-    Erişim Kısıtlı
-  </div>
-  <div style="color: rgba(240,238,232,0.45); font-size: 14px; max-width: 320px; line-height: 1.6;">
-    Bu sayfa yalnızca yetkili hesaba açıktır.
-  </div>
+  <div style="font-size: 44px; opacity: 0.6;">🔒</div>
+  <div style="font-family:'Syne',sans-serif; font-size: 22px; font-weight: 800; color: #f0eee8;">Erişim Kısıtlı</div>
+  <div style="color: rgba(240,238,232,0.4); font-size: 14px; max-width: 280px; line-height: 1.6;">Bu sayfa yalnızca yetkili hesaba açıktır.</div>
   <button onclick="window.location.href='../anasayfa/'" style="
     margin-top: 8px; padding: 10px 24px;
     background: #c9a84c; border: none; border-radius: 10px;
     color: #0a0a0f; font-family: inherit; font-size: 14px;
-    font-weight: 700; cursor: pointer;
-  ">← Anasayfaya Dön</button>
+    font-weight: 700; cursor: pointer;">← Anasayfaya Dön</button>
 </div>
 
-<!-- ANA İÇERİK -->
+<!-- ── ANA İÇERİK ── -->
 <div id="aiContent" style="display: none; flex-direction: column;">
+<div class="ai-page">
 
-  <div class="ai-page">
+  <!-- Top bar -->
+  <div class="top-bar">
+    <button class="back-btn" onclick="window.location.href='../anasayfa/'">← Geri</button>
+    <h1 class="page-title">AI Kontrol</h1>
+    <span class="admin-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Admin
+    </span>
+  </div>
 
-    <!-- Top bar -->
-    <div class="top-bar">
-      <button class="back-btn" onclick="window.location.href='../anasayfa/'">← Geri</button>
-      <h1 class="page-title">AI Kontrol</h1>
-      <span class="admin-badge">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        Admin
-      </span>
-    </div>
+  <!-- Config bar: API Key + Model -->
+  <div class="config-bar">
 
-    <!-- API Key bar -->
-    <div class="api-bar">
-      <span class="api-bar-label">Gemini API Key</span>
+    <!-- API Key -->
+    <div class="config-section">
+      <span class="config-label">API Key</span>
       <input
         type="password"
         id="apiKeyInput"
@@ -73,84 +68,121 @@
       <span class="api-status" id="apiStatus" style="display:none"></span>
     </div>
 
-    <!-- Mode tabs -->
-    <div class="mode-tabs" id="modeTabs"></div>
+    <div class="config-divider"></div>
 
-    <!-- Main AI panel -->
-    <div class="ai-panel">
+    <!-- Model seçici -->
+    <div class="config-section" style="flex: 0; gap: 8px;">
+      <span class="config-label">Model</span>
+      <div class="model-dot" id="modelDot"></div>
+      <select class="model-select" id="modelSelect"></select>
+      <span class="response-meta" id="modelNote" style="white-space:nowrap;"></span>
+    </div>
 
-      <!-- Prompt area -->
-      <div class="prompt-wrap">
-        <div class="mode-hint" id="modeHint">Cümle Düzeltme & Açıklama</div>
-        <textarea
-          id="promptInput"
-          class="prompt-textarea"
-          placeholder="Almanca cümlenizi yazın, hataları düzeltelim…"
-          rows="4"
-          maxlength="2000"
-          autocomplete="off"
-          spellcheck="false"
-        ></textarea>
+  </div>
 
-        <div class="prompt-footer">
-          <span class="char-hint" id="charHint">Ctrl+Enter ile gönder</span>
-          <button class="send-btn" id="sendBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
-            Gönder
-          </button>
-        </div>
+  <!-- Mode tabs -->
+  <div class="mode-tabs" id="modeTabs"></div>
 
-        <!-- Quick prompts -->
-        <div class="quick-prompts" id="quickPrompts"></div>
+  <!-- İki sütun: Input + Response -->
+  <div class="ai-layout">
+
+    <!-- ── SOL: Input ── -->
+    <div class="input-panel">
+      <div class="panel-header">
+        <span class="mode-hint-tag" id="modeHintTag">✏️ Cümle Düzelt</span>
+        <span class="char-hint" id="charHint">Ctrl+Enter ile gönder</span>
       </div>
 
-      <!-- Response area -->
-      <div class="response-wrap">
+      <textarea
+        id="promptInput"
+        class="prompt-textarea"
+        placeholder="Almanca cümlenizi yazın, hataları düzeltelim…"
+        rows="5"
+        maxlength="2000"
+        autocomplete="off"
+        spellcheck="false"
+      ></textarea>
+
+      <div class="input-footer">
+        <button class="clear-btn" id="clearInputBtn">Temizle</button>
+        <button class="send-btn" id="sendBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Gönder
+        </button>
+      </div>
+
+      <!-- Quick prompts -->
+      <div class="quick-prompts-wrap">
+        <div class="quick-label">Hızlı Örnekler</div>
+        <div class="quick-prompts" id="quickPrompts"></div>
+      </div>
+    </div>
+
+    <!-- ── SAĞ: Response ── -->
+    <div class="response-panel">
+
+      <!-- Header -->
+      <div class="response-header">
+        <span class="response-label">
+          <span class="resp-dot" id="respDot"></span>
+          Gemini Yanıtı
+        </span>
+        <div class="response-actions">
+          <button class="action-btn" id="copyRespBtn">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Kopyala
+          </button>
+        </div>
+      </div>
+
+      <!-- SCROLLABLE BODY -->
+      <div class="response-body" id="responseBodyEl">
 
         <!-- Empty state -->
         <div class="response-empty" id="responseEmpty">
           <div class="response-empty-icon">🤖</div>
-          <p>Bir soru veya cümle yazın, Gemini yanıtlasın.</p>
+          <p>Soldan bir soru veya cümle yazın, Gemini yanıtlasın.</p>
         </div>
 
         <!-- Loading -->
         <div class="response-loading" id="responseLoading" style="display:none">
-          <div class="loading-dots">
-            <span></span><span></span><span></span>
-          </div>
+          <div class="loading-dots"><span></span><span></span><span></span></div>
           <span>Gemini düşünüyor…</span>
         </div>
 
-        <!-- Content -->
+        <!-- Yanıt içeriği -->
         <div class="response-content" id="responseContent" style="display:none">
-          <div class="response-header">
-            <span class="response-label">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-              Gemini Yanıtı
-            </span>
-            <button class="copy-resp-btn" id="copyRespBtn">Kopyala</button>
-          </div>
           <div class="response-text" id="responseText"></div>
         </div>
 
-        <!-- Error -->
-        <div class="error-box" id="errorBox" style="display:none"></div>
+        <!-- Hata -->
+        <div class="error-box" id="responseError" style="display:none">
+          <span class="error-icon">⚠️</span>
+          <span class="error-text" id="errorText"></span>
+          <button class="error-retry" id="retryBtn">Tekrar Dene</button>
+        </div>
 
       </div>
-    </div>
 
-    <!-- History -->
-    <div class="history-strip" id="historyStrip" style="display:none">
-      <div class="history-strip-header">
-        <span class="history-strip-title">Son Sorular</span>
-        <button class="clear-hist-btn" id="clearHistBtn">Temizle</button>
+      <!-- Footer: meta bilgi -->
+      <div class="response-footer" id="responseFooter" style="display:none">
+        <span class="response-meta" id="responseMeta"></span>
+        <span class="response-meta">↑ Kaydırılabilir</span>
       </div>
-      <div class="history-list" id="historyItems"></div>
-    </div>
 
+    </div>
   </div>
+
+  <!-- Geçmiş -->
+  <div class="history-strip" id="historyStrip" style="display:none">
+    <div class="history-strip-header">
+      <span class="history-strip-title">Son Sorular</span>
+      <button class="clear-hist-btn" id="clearHistBtn">Temizle</button>
+    </div>
+    <div class="history-list" id="historyItems"></div>
+  </div>
+
+</div>
 </div>
 
 <script type="module">

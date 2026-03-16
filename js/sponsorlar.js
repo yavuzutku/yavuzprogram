@@ -1,18 +1,3 @@
-/*
- * sponsorlar/sponsors.js
- *
- * Bu dosyayı sponsorlar/index.html'deki inline <script type="module"> bloğuyla
- * DEĞİŞTİR. Aşağıdaki tek script bloğunu kullan:
- *
- *   <script type="module" src="../js/sponsors.js"></script>
- *
- * YAPILAN DEĞİŞİKLİKLER:
- *   ✅ Hardcoded şifre (yavuz123) kaldırıldı — GÜVENLİK AÇIĞI KAPATILDI
- *   ✅ Admin kontrolü artık Firebase Auth email'i ile yapılıyor
- *   ✅ Admin için ayrı login formu yok — zaten Google ile giriş yapılmış
- *   ✅ Firestore kurallarıyla çift doğrulama (rule + client check)
- */
-
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, getDocs, addDoc,
@@ -20,7 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* ── Firebase init (mevcut app'i yeniden kullan) ── */
+/* ── Firebase init ── */
 const firebaseConfig = {
   apiKey:            "AIzaSyCGpRMUNNSx4Kla2YrmDOBHlLSt4rOM1wQ",
   authDomain:        "lernen-deutsch-bea69.firebaseapp.com",
@@ -30,7 +15,6 @@ const firebaseConfig = {
   appId:             "1:653560965391:web:545142e9be6d130a54b67a"
 };
 
-// Aynı app iki kez init edilmesin
 const app  = getApps().find(a => a.name === "[DEFAULT]") || initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
@@ -38,17 +22,16 @@ const auth = getAuth(app);
 const SPONSORS_COL = collection(db, "sponsors");
 
 /* ──────────────────────────────────────────────────────────────────
-   ADMIN KONTROLÜ
-   Şifre yok — sadece bu Google hesabıyla giriş yapılmışsa admin
+   ADMIN KONTROLÜ — iki hesap
 ──────────────────────────────────────────────────────────────────── */
-const ADMIN_EMAIL = "yavuzutku144@gmail.com";
+const ADMIN_EMAILS = ["yavuzutku144@gmail.com", "almancapratik80@gmail.com"];
 
 let currentUser = null;
 let isAdmin     = false;
 
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
-  isAdmin     = !!(user && user.email === ADMIN_EMAIL);
+  isAdmin     = !!(user && ADMIN_EMAILS.includes(user.email));
   renderAdminArea();
 });
 
@@ -85,7 +68,6 @@ let editingId = null;
 (async () => {
   sponsors = await loadSponsors();
   renderSponsors();
-  /* renderAdminArea onAuthStateChanged içinde çağrılıyor */
 })();
 
 /* ══════════════════════════════════════════════
@@ -128,26 +110,16 @@ function renderSponsors() {
 
 /* ══════════════════════════════════════════════
    RENDER — ADMIN AREA
-   Admin değilse panel hiç gösterilmez.
-   Giriş yapılmamışsa "admin değilsiniz" notu.
 ══════════════════════════════════════════════ */
 function renderAdminArea() {
   const area = document.getElementById("adminArea");
   if (!area) return;
 
-  /* Henüz auth durumu bilinmiyor */
-  if (currentUser === null && !isAdmin) {
-    area.innerHTML = "";
-    return;
-  }
-
-  /* Giriş yapılmış ama admin değil — panel gösterme */
   if (!isAdmin) {
     area.innerHTML = "";
     return;
   }
 
-  /* Admin paneli */
   area.innerHTML = `
     <div class="admin-section">
       <div class="admin-header">
@@ -328,7 +300,7 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
 }
 
-/* ── Global exports (onclick= için) ── */
+/* ── Global exports ── */
 window.addSponsor    = addSponsor;
 window.deleteSponsor = deleteSponsor;
 window.openEdit      = openEdit;

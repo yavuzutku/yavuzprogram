@@ -354,9 +354,10 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- Admin AI butonu -->
 <script type="module">
   import { onAuthChange } from "../js/firebase.js";
+  const ADMIN_EMAILS = ["yavuzutku144@gmail.com", "almancapratik80@gmail.com"];
   onAuthChange((user) => {
     const btn = document.getElementById("aiBtn");
-    if (btn && user && user.email === "yavuzutku144@gmail.com") {
+    if (btn && user && ADMIN_EMAILS.includes(user.email)) {
       btn.classList.remove("hidden");
       btn.addEventListener("click", () => window.location.href = "../ai/");
     }

@@ -746,7 +746,7 @@ let wordTimer     = null;
 /* ── Auth ── */
 onAuthStateChanged(auth, user => {
   currentUser = user;
-  isAdmin     = !!(user && user.email === ADMIN_EMAIL);
+  isAdmin = !!(user && ADMIN_EMAILS.includes(user.email));
   document.getElementById("btnNewPost").style.display = isAdmin ? "flex" : "none";
 });
 

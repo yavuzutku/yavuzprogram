@@ -4,7 +4,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 /* ══════════════════════════════════════════════
    CONFIG
 ══════════════════════════════════════════════ */
-const ADMIN_EMAIL   = "yavuzutku144@gmail.com";
+const ADMIN_EMAILS  = ["yavuzutku144@gmail.com", "almancapratik80@gmail.com"];
 const HISTORY_KEY   = "ai_history_v2";
 const API_KEY_STORE = "ai_gemini_key";
 const MAX_HISTORY   = 30;
@@ -112,7 +112,7 @@ let wordCount      = 0;
    AUTH GUARD
 ══════════════════════════════════════════════ */
 onAuthStateChanged(auth, (user) => {
-  if (!user || user.email !== ADMIN_EMAIL) {
+  if (!user || !ADMIN_EMAILS.includes(user.email)) {
     document.getElementById("accessDenied").style.display = "flex";
     document.getElementById("aiContent").style.display    = "none";
     return;
@@ -317,7 +317,7 @@ async function sendPrompt(retryText) {
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature:     0.7,
-          maxOutputTokens: 8192,   /* yeterince uzun yanıt */
+          maxOutputTokens: 8192,
           topP:            0.95,
         },
       }),
@@ -327,7 +327,6 @@ async function sendPrompt(retryText) {
       const errData = await res.json().catch(() => ({}));
       const msg = errData?.error?.message || `HTTP ${res.status}`;
 
-      /* 503 için özel mesaj */
       if (res.status === 503) {
         showError(
           `Gemini sunucusu şu an meşgul (503). Birkaç saniye bekleyip tekrar deneyin.`,
@@ -350,12 +349,10 @@ async function sendPrompt(retryText) {
       return;
     }
 
-    /* Başarılı */
     wordCount = answer.trim().split(/\s+/).length;
     showResponse(answer);
     addToHistory(text, answer, currentMode);
 
-    /* Input temizle */
     const ta = document.getElementById("promptInput");
     if (ta) { ta.value = ""; updateCharCount(0); }
 
@@ -403,7 +400,6 @@ function showResponse(text) {
   if (footer) footer.style.display = "flex";
   if (meta)   meta.textContent = `${wordCount} kelime · ${currentModel}`;
 
-  /* Yanıt kutusunu en üste scroll et */
   const body = document.getElementById("responseBodyEl");
   if (body) body.scrollTop = 0;
 }
@@ -424,10 +420,8 @@ function showError(msg, canRetry = true) {
 
 /* ══════════════════════════════════════════════
    MARKDOWN RENDERER
-   Temel Markdown → güvenli HTML
 ══════════════════════════════════════════════ */
 function renderMarkdown(raw) {
-  /* Escape HTML */
   const esc = s => s
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
@@ -439,26 +433,22 @@ function renderMarkdown(raw) {
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
 
-    /* Kod bloğu */
     if (line.trim().startsWith("```")) {
       if (!inCode) { inCode = true; codeBuffer = ""; continue; }
       else { inCode = false; html += `<code class="r-block-code">${esc(codeBuffer.trimEnd())}</code>`; codeBuffer = ""; continue; }
     }
     if (inCode) { codeBuffer += esc(line) + "\n"; continue; }
 
-    /* Başlık ### ## # */
     if (/^#{1,3}\s/.test(line)) {
       html += `<span class="r-h">${applyInline(esc(line.replace(/^#{1,3}\s*/, "")))}</span>`;
       continue;
     }
 
-    /* Liste */
     if (/^[\*\-]\s/.test(line.trim())) {
       html += `<div class="r-li"><span class="r-li-bullet">›</span><span>${applyInline(esc(line.trim().replace(/^[\*\-]\s/, "")))}</span></div>`;
       continue;
     }
 
-    /* Numaralı liste */
     if (/^\d+\.\s/.test(line.trim())) {
       const m = line.trim().match(/^(\d+)\.\s(.*)/);
       if (m) {
@@ -467,19 +457,16 @@ function renderMarkdown(raw) {
       }
     }
 
-    /* Yatay çizgi */
     if (/^---+$/.test(line.trim())) {
       html += `<hr class="r-separator">`;
       continue;
     }
 
-    /* Boş satır */
     if (!line.trim()) {
       html += `<div style="height:6px"></div>`;
       continue;
     }
 
-    /* Normal paragraf */
     html += `<span class="r-p">${applyInline(esc(line))}</span>`;
   }
 
@@ -567,7 +554,7 @@ function clearHistory() {
   if (strip) strip.style.display = "none";
 }
 
-/* ── Retry butonunu bağla (DOM yüklendikten sonra) ── */
+/* ── Retry butonunu bağla ── */
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("retryBtn")?.addEventListener("click", () => {
     if (lastPrompt) sendPrompt(lastPrompt);

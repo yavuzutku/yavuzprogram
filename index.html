@@ -4,22 +4,181 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<title>AlmancaPratik — Almanca Öğrenme Platformu</title>
+
+<!-- ── Temel Meta ── -->
+<title>AlmancaPratik — Ücretsiz Almanca Öğrenme Platformu</title>
 <meta name="description" content="Türkçe arayüzlü ücretsiz Almanca öğrenme platformu. Kelime quizi, der die das artikel bulucu, metin analizi ile A1-C1 arası pratik yap.">
-<meta name="keywords" content="almanca öğren ücretsiz, almanca kelime quizi, der die das quiz türkçe, almanca artikel bulucu, almanca pratik">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://almancapratik.com/">
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+<link rel="alternate" hreflang="tr" href="https://almancapratik.com/">
+
+<!-- ── OpenGraph ── -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://almancapratik.com/">
-<meta property="og:title" content="AlmancaPratik — Almanca Öğrenme Platformu">
-<meta property="og:description" content="Türkçe arayüzlü ücretsiz Almanca öğrenme platformu.">
+<meta property="og:title" content="AlmancaPratik — Ücretsiz Almanca Öğrenme Platformu">
+<meta property="og:description" content="Türkçe arayüzlü ücretsiz Almanca öğrenme platformu. Kelime quizi, artikel bulucu ve metin analizi ile A1-C1 arası pratik yap.">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:site_name" content="AlmancaPratik">
+<meta property="og:image" content="https://almancapratik.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="AlmancaPratik — Türkçe Almanca öğrenme platformu">
+
+<!-- ── Twitter Card ── -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AlmancaPratik — Ücretsiz Almanca Öğrenme Platformu">
+<meta name="twitter:description" content="Türkçe arayüzlü ücretsiz Almanca öğrenme platformu. Kelime quizi, artikel bulucu ve metin analizi.">
+<meta name="twitter:image" content="https://almancapratik.com/og-image.jpg">
+
+<!-- ── Structured Data: Organization ── -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"EducationalApplication","name":"AlmancaPratik","url":"https://almancapratik.com","applicationCategory":"EducationalApplication","inLanguage":"tr","offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"}}
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "AlmancaPratik",
+  "url": "https://almancapratik.com",
+  "logo": "https://almancapratik.com/favicon.ico",
+  "description": "Türkçe konuşanlar için ücretsiz Almanca öğrenme platformu.",
+  "sameAs": []
+}
 </script>
+
+<!-- ── Structured Data: WebSite + SearchAction ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "url": "https://almancapratik.com/",
+  "name": "AlmancaPratik",
+  "description": "Türkçe arayüzlü ücretsiz Almanca öğrenme platformu.",
+  "inLanguage": "tr",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://almancapratik.com/artikel/?word={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<!-- ── Structured Data: EducationalApplication ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalApplication",
+  "name": "AlmancaPratik",
+  "url": "https://almancapratik.com",
+  "applicationCategory": "EducationalApplication",
+  "inLanguage": "tr",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+  "educationalLevel": ["A1", "A2", "B1", "B2", "C1"],
+  "teaches": "Almanca dil becerileri",
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+  }
+}
+</script>
+
+<!-- ── Structured Data: FAQPage ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "AlmancaPratik ücretsiz mi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Evet. Platformdaki araçların büyük kısmı ücretsiz kullanılabilir. Artikel bulucu, cümle örnekleri ve çeviri aracı hesap gerektirmez."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Der die das artikel bulucu nasıl çalışır?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Wiktionary verileri kullanılarak Almanca kelimelerin der, die veya das artikeli otomatik olarak bulunur ve anında gösterilir."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Almanca kelime quizi nasıl çalışır?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kişisel sözlüğünüze kaydettiğiniz kelimelerden otomatik quiz oluşturulur. Çoktan seçmeli ve yazarak cevaplama modları mevcuttur."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hangi Almanca seviyeleri destekleniyor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A1 başlangıçtan C1 ileri seviyeye kadar tüm seviyeler desteklenmektedir. Seviye testinizi ücretsiz yapabilirsiniz."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Almanca metin analizi nasıl yapılır?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Almanca bir metni yapıştırın, metin okuma moduna geçin. Bilmediğiniz kelimelere dokunarak anlamını öğrenin ve tek tıkla sözlüğünüze ekleyin."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- ── Structured Data: ItemList (Araçlar) ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "AlmancaPratik Araçları",
+  "itemListElement": [
+    {
+      "@type": "ListItem", "position": 1,
+      "name": "Der Die Das Artikel Bulucu",
+      "url": "https://almancapratik.com/artikel/"
+    },
+    {
+      "@type": "ListItem", "position": 2,
+      "name": "Almanca Kelime Quizi",
+      "url": "https://almancapratik.com/quiz/"
+    },
+    {
+      "@type": "ListItem", "position": 3,
+      "name": "Almanca Cümle Örnekleri",
+      "url": "https://almancapratik.com/cumlebul/"
+    },
+    {
+      "@type": "ListItem", "position": 4,
+      "name": "Almanca Metin Analizi",
+      "url": "https://almancapratik.com/metin/"
+    },
+    {
+      "@type": "ListItem", "position": 5,
+      "name": "Almanca Türkçe Çeviri",
+      "url": "https://almancapratik.com/ceviri/"
+    },
+    {
+      "@type": "ListItem", "position": 6,
+      "name": "Almanca Seviye Testi",
+      "url": "https://almancapratik.com/seviyeler/seviyetespit/"
+    }
+  ]
+}
+</script>
+
+<!-- ── Fonts: preload + load ── -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
 /* ── Tokens ── */
 :root {
@@ -138,7 +297,7 @@ body {
 
 .hero-sub {
   font-size:clamp(14px, 2vw, 17px); line-height:1.75; color:var(--text-2);
-  max-width:500px; margin:0 auto 48px;
+  max-width:520px; margin:0 auto 48px;
   animation:fadeUp 0.55s 0.12s cubic-bezier(0.4,0,0.2,1) both;
 }
 .hero-cta {
@@ -165,6 +324,20 @@ body {
 .btn-secondary:hover { border-color:var(--border-h); color:var(--text); background:rgba(255,255,255,0.06); }
 .btn-secondary:active { transform:scale(0.97); }
 .cta-note { font-size:11.5px; color:var(--text-3); font-family:var(--font-b); margin-top:4px; }
+
+/* ── SEO metin bloğu ── */
+.seo-intro {
+  position:relative; z-index:1;
+  max-width:860px; margin:0 auto;
+  padding:0 24px 40px;
+  animation:fadeUp 0.6s 0.2s cubic-bezier(0.4,0,0.2,1) both;
+}
+.seo-intro p {
+  font-size:15px; line-height:1.8; color:var(--text-2);
+  text-align:center;
+}
+.seo-intro a { color:var(--gold); text-decoration:none; }
+.seo-intro a:hover { text-decoration:underline; }
 
 /* ── Açıklama bölümü ── */
 .about {
@@ -203,6 +376,8 @@ body {
 }
 .about-text + .about-text { margin-top:10px; }
 .about-highlight { color:var(--text); font-weight:500; }
+.about-text a { color:var(--gold); text-decoration:none; }
+.about-text a:hover { text-decoration:underline; }
 .about-levels { display:flex; gap:8px; flex-wrap:wrap; margin-top:20px; }
 .level-tag {
   font-family:var(--font-m); font-size:11.5px; font-weight:500;
@@ -221,6 +396,30 @@ body {
   .about-block--wide { grid-column:1; }
   .about-block, .about-block--wide { padding:24px 20px; }
 }
+
+/* ── FAQ bölümü ── */
+.faq {
+  position:relative; z-index:1;
+  max-width:860px; margin:0 auto;
+  padding:0 24px 64px;
+  animation:fadeUp 0.6s 0.24s cubic-bezier(0.4,0,0.2,1) both;
+}
+.faq-title {
+  font-family:var(--font-d); font-size:clamp(18px,3vw,26px);
+  font-weight:800; letter-spacing:-0.02em; color:var(--text);
+  margin-bottom:20px; text-align:center;
+}
+.faq-list { display:flex; flex-direction:column; gap:10px; }
+.faq-item {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:18px 22px; transition:border-color var(--tr);
+}
+.faq-item:hover { border-color:var(--border-h); }
+.faq-q {
+  font-family:var(--font-d); font-size:14px; font-weight:700;
+  color:var(--text); margin-bottom:8px;
+}
+.faq-a { font-size:13.5px; line-height:1.7; color:var(--text-2); }
 
 /* ── Araçlar şeridi ── */
 .tools-label {
@@ -297,7 +496,7 @@ body {
 </div>
 
 <nav class="nav">
-  <a class="nav-logo" href="/">
+  <a class="nav-logo" href="/" aria-label="AlmancaPratik ana sayfa">
     <div class="nav-logo-mark">
       <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -328,14 +527,19 @@ body {
       <span class="eyebrow-dot"></span>
       Türkçe · Ücretsiz · A1–C1
     </div>
+
+    <!-- H1: keyword-rich -->
     <h1 class="hero-title">
-      Almanca<br><span>pratikle</span><br>öğrenilir.
+      Almanca öğren,<br><span>pratikle</span> ilerle.
     </h1>
+
     <p class="hero-sub">
-      Metin analizi, kelime quizleri ve artikel bulucu ile
-      Almancanda hızla ilerle. Giriş gerektirmeyen araçlarla
-      hemen başla.
+      <a href="/artikel/" style="color:inherit;text-decoration:none;">Artikel bulucu</a>,
+      <a href="/quiz/" style="color:inherit;text-decoration:none;">kelime quizleri</a> ve
+      <a href="/metin/" style="color:inherit;text-decoration:none;">metin analizi</a> ile
+      Almancanda hızla ilerle. Giriş gerektirmeyen araçlarla hemen başla.
     </p>
+
     <div class="hero-cta">
       <a class="btn-main" href="/anasayfa/">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -351,8 +555,20 @@ body {
     </div>
   </section>
 
+  <!-- SEO keyword paragraph -->
+  <section class="seo-intro" aria-label="Platform hakkında">
+    <p>
+      AlmancaPratik, Türkçe konuşanlar için geliştirilmiş ücretsiz bir Almanca öğrenme platformudur.
+      <a href="/artikel/">Almanca der die das artikel bulucu</a>,
+      <a href="/quiz/">kelime quizleri</a>,
+      <a href="/cumlebul/">cümle örnekleri</a> ve
+      <a href="/metin/">metin analiz aracı</a> ile
+      A1'den C1'e kadar tüm seviyelerde pratik yapabilirsiniz.
+    </p>
+  </section>
+
   <!-- Açıklama -->
-  <section class="about">
+  <section class="about" aria-label="Platform açıklaması">
     <div class="about-grid">
 
       <div class="about-block">
@@ -362,7 +578,7 @@ body {
           Almanca öğrenmek sadece kelime ezberlemekten ibaret değil. Bir kelimenin hangi artikelle kullanıldığını, hangi cümle yapısına girdiğini ve günlük konuşmada nasıl göründüğünü bilmek gerekiyor. AlmancaPratik tam da bu ihtiyaçtan doğdu: <span class="about-highlight">Türkçe düşünen bir öğrenci için tasarlanmış, pratik odaklı bir araç seti.</span>
         </p>
         <p class="about-text">
-          Her özellik gerçek bir öğrenme problemini çözmek için var. Artikel bulucu, Wiktionary'den anlık veri çekerek der, die ve das sorusuna kesin cevap verir. Cümle örnekleri aracı kelimelerin bağlam içinde nasıl kullanıldığını gösterir. Metin analizi ise okuduğun Almanca bir makaleyi veya hikayeyi interaktif bir sözlüğe dönüştürür.
+          <a href="/artikel/">Artikel bulucu</a> Wiktionary'den anlık veri çekerek der, die ve das sorusuna kesin cevap verir. <a href="/cumlebul/">Cümle örnekleri aracı</a> kelimelerin bağlam içinde nasıl kullanıldığını gösterir. <a href="/metin/">Metin analizi</a> ise okuduğun Almanca bir metni interaktif bir sözlüğe dönüştürür.
         </p>
       </div>
 
@@ -370,18 +586,18 @@ body {
         <span class="about-label">Nasıl Çalışır?</span>
         <h2 class="about-heading">Basit ama etkili bir döngü</h2>
         <p class="about-text">
-          Bir Almanca metin yapıştır. Okurken bilmediğin kelimeye dokun — anlamı, artikeli ve örnek cümleleri anında önüne gelir. Beğendiğin kelimeyi tek tıkla kişisel sözlüğüne kaydet. Daha sonra o kelimelerden otomatik oluşturulan quizlerle pekiştir.
+          Bir Almanca metin yapıştır. Okurken bilmediğin kelimeye dokun — anlamı, artikeli ve örnek cümleleri anında önüne gelir. Beğendiğin kelimeyi tek tıkla kişisel sözlüğüne kaydet. Daha sonra o kelimelerden otomatik oluşturulan <a href="/quiz/">quizlerle</a> pekiştir.
         </p>
         <p class="about-text">
-          <span class="about-highlight">Giriş yapmadan da pek çok araç kullanılabilir.</span> Artikel bulucu, cümle örnekleri ve çeviri aracı hesap gerektirmez. Kişisel sözlük ve quiz için ücretsiz kayıt yeterli — Google hesabınla saniyeler içinde.
+          <span class="about-highlight">Giriş yapmadan da pek çok araç kullanılabilir.</span> <a href="/artikel/">Artikel bulucu</a>, <a href="/cumlebul/">cümle örnekleri</a> ve <a href="/ceviri/">çeviri aracı</a> hesap gerektirmez. Kişisel sözlük ve quiz için ücretsiz kayıt yeterli.
         </p>
       </div>
 
       <div class="about-block--wide">
         <span class="about-label">Seviyeler</span>
-        <h2 class="about-heading">A1'den C1'e, her seviyeye uygun</h2>
+        <h2 class="about-heading">A1'den C1'e, her seviyeye uygun Almanca pratik</h2>
         <p class="about-text">
-          Almancaya yeni başlıyorsan A1 seviyesindeki temel kelimeler ve basit gramer yapılarıyla başlayabilirsin. Orta düzeydeysen B1–B2 arası karmaşık metin analizleri ve ileri kelime çalışmaları seni bekliyor. Hangi seviyede olduğundan emin değilsen <span class="about-highlight">25 soruluk ücretsiz seviye testi</span> sana kesin cevabı verir.
+          Almancaya yeni başlıyorsan A1 seviyesindeki temel kelimeler ve basit gramer yapılarıyla başlayabilirsin. Orta düzeydeysen B1–B2 arası karmaşık metin analizleri ve ileri kelime çalışmaları seni bekliyor. Hangi seviyede olduğundan emin değilsen <span class="about-highlight"><a href="/seviyeler/seviyetespit/">25 soruluk ücretsiz Almanca seviye testi</a></span> sana kesin cevabı verir.
         </p>
         <p class="about-text">
           Platform, Türkçe ana dili konuşanların Almancada en çok zorlandığı konulara özel önem verir: der/die/das artikelleri, yardımcı fiiller, sözcük sırası kuralları ve güçlü fiil çekimleri. Tüm açıklamalar Türkçe olduğu için gramer mantığını kendi dilinde kavrayabilirsin.
@@ -401,7 +617,7 @@ body {
   <!-- Araçlar -->
   <p class="tools-label">Tüm Araçlar</p>
   <div class="tools-strip">
-    <div class="tools-inner">
+    <nav class="tools-inner" aria-label="Platform araçları">
       <a class="tool-item" href="/artikel/">
         <span class="tool-name">Artikel Bul</span>
         <span class="tool-desc">der / die / das</span>
@@ -434,8 +650,35 @@ body {
         <span class="tool-name">Seviye Testi</span>
         <span class="tool-desc">A1 · A2 · B1 · B2 · C1</span>
       </a>
-    </div>
+    </nav>
   </div>
+
+  <!-- FAQ -->
+  <section class="faq" aria-label="Sık sorulan sorular">
+    <h2 class="faq-title">Sık Sorulan Sorular</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">AlmancaPratik ücretsiz mi?</div>
+        <p class="faq-a">Evet. Platformdaki araçların büyük kısmı tamamen ücretsiz kullanılabilir. <a href="/artikel/">Artikel bulucu</a>, <a href="/cumlebul/">cümle örnekleri</a> ve <a href="/ceviri/">çeviri aracı</a> hesap gerektirmez.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Der die das artikel bulucu nasıl çalışır?</div>
+        <p class="faq-a">Wiktionary veritabanı kullanılarak girilen Almanca kelimenin der, die veya das artikeli anında bulunur ve gösterilir. Maskulin, feminin ve nötrum ayrımı renkli rozet ile belirtilir.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Almanca kelime quizi nasıl çalışır?</div>
+        <p class="faq-a">Kişisel sözlüğünüze kaydettiğiniz kelimelerden otomatik quiz oluşturulur. Çoktan seçmeli ve yazarak cevaplama modları, Almanca→Türkçe ve Türkçe→Almanca yönlü sorular içerir.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Hangi Almanca seviyeleri destekleniyor?</div>
+        <p class="faq-a">A1 başlangıçtan C1 ileri seviyeye kadar tüm seviyeler desteklenmektedir. <a href="/seviyeler/seviyetespit/">Ücretsiz seviye testinizi</a> yaparak hangi seviyede olduğunuzu öğrenebilirsiniz.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Almanca metin analizi nasıl yapılır?</div>
+        <p class="faq-a">Almanca bir metni <a href="/metin/">metin aracına</a> yapıştırın, okuma moduna geçin. Bilmediğiniz kelimelere tıklayarak anlamını, artikelini ve örnek cümlelerini görün. Tek tıkla kişisel sözlüğünüze ekleyin.</p>
+      </div>
+    </div>
+  </section>
 
 </main>
 
@@ -450,10 +693,11 @@ body {
     </div>
     <span class="footer-logo-name">AlmancaPratik</span>
   </a>
-  <nav class="footer-links">
+  <nav class="footer-links" aria-label="Footer linkleri">
     <a href="privacy.html">Gizlilik</a>
     <a href="kullanim-sartlari.html">Kullanım Koşulları</a>
     <a href="/login.html">Giriş Yap</a>
+    <a href="/blog/">Blog</a>
   </nav>
   <span class="footer-copy">© 2026 AlmancaPratik</span>
 </footer>

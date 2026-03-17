@@ -417,7 +417,17 @@ function loadNavbar(){
     /* Dışa tıklayınca kapat */
     document.addEventListener("click", e => { if(!wrap.contains(e.target)) wrap.classList.remove("open"); });
   });
+  /* ── Pratik buton click yönlendirme ── */
+  const pratikBtn = document.getElementById("pratikPill");
 
+  pratikBtn.addEventListener("click", (e) => {
+    const wrap = pratikBtn.closest(".nav-dropdown-wrap");
+
+    // Eğer dropdown açık değilse direkt yönlendir
+    if (!wrap.classList.contains("open")) {
+      window.location.href = "/anasayfa/";
+    }
+  });
   /* ── Çıkış ── */
   document.getElementById("logoutBtn").addEventListener("click", async () => {
     try { await logoutFirebase(); } catch(e){ console.error(e); }

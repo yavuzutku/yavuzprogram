@@ -116,12 +116,7 @@ function initProgress() {
     fill.style.width = max > 0 ? Math.min(100, (window.scrollY / max) * 100) + "%" : "0%";
   }, { passive: true });
 }
-window.addEventListener("scroll", () => {
-  hideMeaning();
-  hidePopup();
-  window.getSelection()?.removeAllRanges();
-  _word = "";
-}, { passive: true });
+
 /* ═══════════════════════════════════════════════════════════
    TOOLBAR
    ═══════════════════════════════════════════════════════════ */

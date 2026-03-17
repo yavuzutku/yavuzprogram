@@ -11,7 +11,6 @@ function requireAuth(){
 function loadNavbar(){
   const navbar = document.createElement("div");
   navbar.className = "navbar";
-  const isAnasayfa = window.location.pathname.includes("anasayfa");
 
   // Aktif sayfa tespiti
   const path = window.location.pathname;
@@ -21,18 +20,6 @@ function loadNavbar(){
   navbar.innerHTML = `
     <div class="logo">AlmancaPratik</div>
     <div style="display:flex;gap:8px;align-items:center;">
-
-      <!-- Ana sekmeler -->
-      <div class="nav-tabs-wrap">
-        <button class="nav-tab-btn${isDersler ? "" : ""}" id="tabDerslerBtn" data-tab="dersler">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          Dersler
-        </button>
-        <button class="nav-tab-btn" id="tabPratikBtn" data-tab="pratik">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          Pratik
-        </button>
-      </div>
 
       <div class="nav-divider"></div>
 
@@ -82,15 +69,6 @@ function loadNavbar(){
 
   const style = document.createElement("style");
   style.textContent = `
-    /* ── Sekmeler ── */
-    .nav-tabs-wrap{display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:3px;}
-    .nav-tab-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:transparent;border:none;border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:rgba(240,238,232,0.45);transition:all 0.2s;white-space:nowrap;}
-    .nav-tab-btn svg{opacity:0.6;transition:opacity 0.2s;}
-    .nav-tab-btn:hover{color:rgba(240,238,232,0.85);background:rgba(255,255,255,0.06);}
-    .nav-tab-btn:hover svg{opacity:0.85;}
-    .nav-tab-btn.active{background:rgba(201,168,76,0.13);color:#c9a84c;font-weight:600;}
-    .nav-tab-btn.active svg{opacity:1;stroke:#c9a84c;}
-
     /* ── Ayırıcı ── */
     .nav-divider{width:1px;height:24px;background:rgba(255,255,255,0.07);}
 
@@ -134,26 +112,12 @@ function loadNavbar(){
       .nav-dersler-btn span,.nav-seviye-btn span,.nav-blog-btn span{display:none;}
       .nav-dersler-btn,.nav-seviye-btn,.nav-blog-btn{padding:6px 10px;}
     }
-    @media(max-width:640px){
-      .nav-tabs-wrap{display:none;}
-      .nav-divider:first-of-type{display:none;}
-    }
     @media(max-width:480px){
       .nav-seviye-btn{display:none;}
     }
   `;
   document.head.appendChild(style);
   document.body.prepend(navbar);
-
-  /* ── Tab tıklama (anasayfa içi) ── */
-  document.getElementById("tabDerslerBtn").addEventListener("click", () => {
-    if (isAnasayfa) setActiveTab("dersler");
-    else window.location.href = getAnasayfaHref() + "?tab=dersler";
-  });
-  document.getElementById("tabPratikBtn").addEventListener("click", () => {
-    if (isAnasayfa) setActiveTab("pratik");
-    else window.location.href = getAnasayfaHref() + "?tab=pratik";
-  });
 
   /* ── Çıkış ── */
   document.getElementById("logoutBtn").addEventListener("click", async () => {
@@ -184,23 +148,6 @@ function loadNavbar(){
       if(profileWr) profileWr.style.display = "none";
     }
   });
-
-  /* ── Anasayfa tab init ── */
-  if(isAnasayfa){
-    const urlTab  = new URLSearchParams(window.location.search).get("tab");
-    const initTab = urlTab || sessionStorage.getItem("activeTab") || "pratik";
-    requestAnimationFrame(() => setActiveTab(initTab, false));
-  }
-}
-
-function setActiveTab(tab, save=true){
-  document.getElementById("tabPratikBtn")?.classList.toggle("active",  tab==="pratik");
-  document.getElementById("tabDerslerBtn")?.classList.toggle("active", tab==="dersler");
-  const p = document.getElementById("pratikContent");
-  const d = document.getElementById("derslerContent");
-  if(p) p.style.display = tab==="pratik"  ? "block" : "none";
-  if(d) d.style.display = tab==="dersler" ? "block" : "none";
-  if(save) sessionStorage.setItem("activeTab", tab);
 }
 
 function getLoginHref(){ return "/login.html"; }
@@ -209,8 +156,7 @@ function getUserId(){
   return auth.currentUser ? auth.currentUser.uid : null;
 }
 
-export { requireAuth, loadNavbar, getUserId, setActiveTab };
+export { requireAuth, loadNavbar, getUserId };
 window.requireAuth  = requireAuth;
 window.loadNavbar   = loadNavbar;
 window.getUserId    = getUserId;
-window.setActiveTab = setActiveTab;

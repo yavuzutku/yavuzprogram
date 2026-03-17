@@ -598,223 +598,196 @@ body {
 /* ═══════════════════════════════════════════
    SORU VERİTABANI
 ═══════════════════════════════════════════ */
+// seviyeler/seviyetespit/index.html dosyasında
+// const QUESTIONS = [ ... ]; bloğunu aşağıdakiyle değiştir.
+
 const QUESTIONS = [
-  /* ── BÖLÜM 1: Grammatik (1-10) ── */
+
+  /* ══════════════ A1 ══════════════ */
   {
-    section: `Bölüm 1: Grammatik`,
-    q: `Welches Verb passt? "Ich ___ jeden Morgen Kaffee."`,
-    choices: [`trinke`, `trinkt`, `trinken`, `getrunken`],
-    answer: 0,
-    explanation: `"Ich" ile dogru cekim "trinke" (1. tekil sahis Prasens).`
-  },
-  {
-    section: `Bölüm 1: Grammatik`,
-    q: `Setze die richtige Form von "sein" ein: "Wir ___ gestern im Kino."`,
-    choices: [`ist`, `sind`, `seid`, `war`],
-    answer: 1,
-    explanation: `Gecmis zamanda "wir waren" doğrudur. Ancak secenekler arasinda "waren" yok — Prateritum yerine Prasens "sind" soruluyor.`
-  },
-  {
-    section: `Bölüm 1: Grammatik`,
-    q: `Welcher Satz ist korrekt?`,
-    choices: [
-      `Ich habe viele Bücher gelesen.`,
-      `Ich hat viele Bücher gelesen.`,
-      `Ich habe viele Buch gelesen.`,
-      `Ich habe viel Bücher gelesen.`
-    ],
-    answer: 0,
-    explanation: `Dogru Perfekt cumlesi: Ich habe viele Bücher gelesen. "viele" + cogul isim doğrudur.`
-  },
-  {
-    section: `Bölüm 1: Grammatik`,
-    q: `Wähle das richtige Possessivpronomen: "Das ist ___ Auto." (mein)`,
-    choices: [`mein`, `meine`, `meinen`, `meines`],
-    answer: 0,
-    explanation: `"Auto" nötr (das) ve Nominativ durumunda — bu yüzden "mein Auto" doğru.`
-  },
-  {
-    section: `Bölüm 1: Grammatik`,
-    q: `Setze die richtige Präposition ein: "Ich warte ___ den Bus."`,
-    choices: [`auf`, `für`, `in`, `an`],
-    answer: 0,
-    explanation: `"warten auf" sabit bir fiil + edat bağlantısıdır. "Ich warte auf den Bus" = Otobüsü bekliyorum.`
-  },
-  {
-    section: `Bölüm 1: Grammatik`,
-    q: `Wähle die richtige Form des Adjektivs: "Das ist ein ___ Film." (interessant)`,
-    choices: [`interessante`, `interessanter`, `interessiert`, `interessanteres`],
-    answer: 1,
-    explanation: `"ein" belirsiz artikeli + maskulin isim Nominativ → "ein interessanter Film".`
-  },
-  {
-    section: `Bölüm 1: Grammatik`,
+    section: `Bölüm 1: A1 — Başlangıç`,
     q: `Welches Wort passt nicht?`,
-    choices: [`Hund`, `Katze`, `Tisch`, `Maus`],
+    choices: [`der Apfel`, `die Banane`, `das Auto`, `die Orange`],
     answer: 2,
-    explanation: `"Tisch" (masa) bir mobilyadır; diğerleri hayvan ismidir. Tisch gruba uymaz.`
+    explanation: `"das Auto" bir araçtır; diğerleri (Apfel, Banane, Orange) meyve ismidir.`
   },
   {
-    section: `Bölüm 1: Grammatik`,
-    q: `Bilden Sie den korrekten Satz: "gestern / wir / ins / gegangen / Kino / sind"`,
-    choices: [
-      `Gestern wir sind ins Kino gegangen.`,
-      `Wir sind gestern ins Kino gegangen.`,
-      `Ins Kino sind wir gestern gegangen.`,
-      `Wir gestern ins Kino gegangen sind.`
-    ],
-    answer: 1,
-    explanation: `Almancada zaman zarfi basa gelirse özne fiilden sonra gelir. En dogal olan B seçenegidir.`
-  },
-  {
-    section: `Bölüm 1: Grammatik`,
-    q: `Wähle die korrekte Vergangenheitsform: "Letztes Jahr ___ ich nach Berlin."`,
-    choices: [`fahren`, `fuhr`, `gefahren`, `fährt`],
-    answer: 1,
-    explanation: `"letztes Jahr" ile Präteritum kullanılır → "fuhr" (fahren fiilinin Prateritum formu).`
-  },
-  {
-    section: `Bölüm 1: Grammatik`,
-    q: `Welches Wort ist ein Adverb?`,
-    choices: [`schön`, `schönlich`, `schönste`, `schön`],
+    section: `Bölüm 1: A1 — Başlangıç`,
+    q: `Ich ___ gern ins Kino.`,
+    choices: [`gehe`, `gehst`, `geht`, `gehen`],
     answer: 0,
-    explanation: `"schön" hem sıfat hem zarf olarak kullanılabilir. Almancada birçok sıfat değişmeden zarf olarak kullanılır.`
-  },
-
-  /* ── BÖLÜM 2: Wortschatz (11-18) ── */
-  {
-    section: `Bölüm 2: Wortschatz und Phrasen`,
-    q: `Was bedeutet "verabreden"?`,
-    choices: [`to eat`, `to make an appointment`, `to read`, `to sleep`],
-    answer: 1,
-    explanation: `"verabreden" = randevulaşmak, buluşma ayarlamak (to make an appointment).`
+    explanation: `"ich" ile "gehen" fiilinin Präsens çekimi "gehe"dir.`
   },
   {
-    section: `Bölüm 2: Wortschatz und Phrasen`,
-    q: `Welches Wort passt? "Ich habe Hunger. Ich möchte etwas ___.`,
-    choices: [`trinken`, `essen`, `laufen`, `schlafen`],
-    answer: 1,
-    explanation: `Aç olmak → yemek yemek istiyorum → "essen" (yemek yemek).`
-  },
-  {
-    section: `Bölüm 2: Wortschatz und Phrasen`,
-    q: `Wähle das passende Gegenteil: "kalt" → ___`,
-    choices: [`warm`, `heiß`, `kühl`, `frostig`],
-    answer: 0,
-    explanation: `"kalt" (soğuk) kelimesinin zıttı "warm" (sıcak/ılık)tır. "heiß" ise çok sıcak anlamına gelir.`
-  },
-  {
-    section: `Bölüm 2: Wortschatz und Phrasen`,
-    q: `Was passt nicht?`,
-    choices: [`gehen`, `laufen`, `schwimmen`, `Stuhl`],
+    section: `Bölüm 1: A1 — Başlangıç`,
+    q: `Was ist richtig?`,
+    choices: [`Ich bist Hunger.`, `Du hat Hunger.`, `Er habe Hunger.`, `Ich habe Hunger.`],
     answer: 3,
-    explanation: `"Stuhl" (sandalye) bir nesnedir; diğerleri hareket fiilleridir.`
+    explanation: `"haben" fiilinin "ich" ile doğru çekimi "habe"dir: Ich habe Hunger.`
   },
   {
-    section: `Bölüm 2: Wortschatz und Phrasen`,
-    q: `Finde das passende Wort: "Er ist sehr ___, er hilft immer allen."`,
-    choices: [`faul`, `freundlich`, `laut`, `traurig`],
+    section: `Bölüm 1: A1 — Başlangıç`,
+    q: `Wir ___ jeden Tag um 7 Uhr auf.`,
+    choices: [`stehe`, `stehen`, `steht`, `steh`],
     answer: 1,
-    explanation: `Herkese yardım eden biri → "freundlich" (arkadaş canlısı, yardımsever).`
+    explanation: `"wir" ile "aufstehen" fiilinin doğru çekimi "stehen"dir (wir stehen auf).`
   },
   {
-    section: `Bölüm 2: Wortschatz und Phrasen`,
-    q: `Übersetze: "I am looking forward to the holiday."`,
-    choices: [
-      `Ich bin müde auf den Urlaub.`,
-      `Ich freue mich auf den Urlaub.`,
-      `Ich warte auf den Urlaub.`,
-      `Ich hoffe den Urlaub.`
-    ],
-    answer: 1,
-    explanation: `"sich freuen auf" = bir şeyi sabırsızlıkla beklemek. "I am looking forward to" ifadesinin Almanca karşılığıdır.`
-  },
-  {
-    section: `Bölüm 2: Wortschatz und Phrasen`,
-    q: `Ergänze den Satz: "Ich interessiere mich ___ Musik."`,
-    choices: [`an`, `für`, `über`, `auf`],
-    answer: 1,
-    explanation: `"sich interessieren für" sabit bir yapıdır. Müzikle ilgilenmek → "für Musik".`
-  },
-  {
-    section: `Bölüm 2: Wortschatz und Phrasen`,
-    q: `Wähle die richtige Übersetzung: "Der Hund schläft unter dem Tisch."`,
-    choices: [
-      `The dog sleeps on the table.`,
-      `The dog sleeps under the table.`,
-      `The dog sleeps behind the table.`,
-      `The dog sleeps next to the table.`
-    ],
-    answer: 1,
-    explanation: `"unter" = altında (under). Köpek masanın altında uyuyor.`
+    section: `Bölüm 1: A1 — Başlangıç`,
+    q: `Welcher Satz ist falsch?`,
+    choices: [`Das Kind spielt im Garten.`, `Ich mag Eis.`, `Wir trinken Wasser.`, `Er gehen nach Hause.`],
+    answer: 3,
+    explanation: `"Er gehen" yanlıştır; doğrusu "Er geht nach Hause."dir.`
   },
 
-  /* ── BÖLÜM 3: Leseverständnis (19-25) ── */
+  /* ══════════════ A2 ══════════════ */
   {
-    section: `Bölüm 3: Leseverständnis`,
-    reading: `Anna wohnt in Berlin. Sie arbeitet als Lehrerin. Jeden Morgen fährt sie mit dem Fahrrad zur Arbeit. Nach der Arbeit geht sie oft ins Fitnessstudio.`,
-    q: `Wo wohnt Anna?`,
-    choices: [`Hamburg`, `Berlin`, `München`, `Köln`],
+    section: `Bölüm 2: A2 — Temel`,
+    q: `Ich kann heute nicht kommen, ___ ich krank bin.`,
+    choices: [`aber`, `weil`, `und`, `deshalb`],
     answer: 1,
-    explanation: `Metinden: "Anna wohnt in Berlin." → Berlin'de yaşıyor.`
+    explanation: `"weil" (çünkü) bir neden bağlacıdır ve fiili cümle sonuna taşır.`
   },
   {
-    section: `Bölüm 3: Leseverständnis`,
-    reading: `Anna wohnt in Berlin. Sie arbeitet als Lehrerin. Jeden Morgen fährt sie mit dem Fahrrad zur Arbeit. Nach der Arbeit geht sie oft ins Fitnessstudio.`,
-    q: `Was macht Anna beruflich?`,
-    choices: [`Studentin`, `Lehrerin`, `Ärztin`, `Verkäuferin`],
-    answer: 1,
-    explanation: `Metinden: "Sie arbeitet als Lehrerin." → Öğretmen olarak çalışıyor.`
+    section: `Bölüm 2: A2 — Temel`,
+    q: `Welches Wort passt nicht zu den anderen?`,
+    choices: [`oft`, `manchmal`, `gestern`, `schnell`],
+    answer: 3,
+    explanation: `"schnell" (hızlı) bir nitelik zarfıdır. Diğerleri (oft, manchmal, gestern) zaman zarflarıdır.`
   },
   {
-    section: `Bölüm 3: Leseverständnis`,
-    reading: `Anna wohnt in Berlin. Sie arbeitet als Lehrerin. Jeden Morgen fährt sie mit dem Fahrrad zur Arbeit. Nach der Arbeit geht sie oft ins Fitnessstudio.`,
-    q: `Wie kommt Anna zur Arbeit?`,
-    choices: [`Mit dem Auto`, `Mit dem Bus`, `Mit dem Fahrrad`, `Zu Fuß`],
-    answer: 2,
-    explanation: `Metinden: "fährt sie mit dem Fahrrad zur Arbeit" → Bisikletle gidiyor.`
-  },
-  {
-    section: `Bölüm 3: Leseverständnis`,
-    reading: `Anna wohnt in Berlin. Sie arbeitet als Lehrerin. Jeden Morgen fährt sie mit dem Fahrrad zur Arbeit. Nach der Arbeit geht sie oft ins Fitnessstudio.`,
-    q: `Was macht sie nach der Arbeit oft?`,
-    choices: [
-      `Sie geht einkaufen.`,
-      `Sie geht ins Fitnessstudio.`,
-      `Sie geht ins Kino.`,
-      `Sie geht schlafen.`
-    ],
-    answer: 1,
-    explanation: `Metinden: "Nach der Arbeit geht sie oft ins Fitnessstudio." → Spor salonuna gidiyor.`
-  },
-  {
-    section: `Bölüm 3: Leseverständnis`,
-    q: `Wähle die korrekte Satzstruktur: "Er / morgen / ins / gehen / Kino / wird"`,
-    choices: [
-      `Er wird morgen ins Kino gehen.`,
-      `Morgen er wird ins Kino gehen.`,
-      `Er morgen ins Kino gehen wird.`,
-      `Gehen wird er morgen ins Kino.`
-    ],
+    section: `Bölüm 2: A2 — Temel`,
+    q: `Er hat mir ___ geholfen.`,
+    choices: [`immer`, `niemand`, `jeder`, `obwohl`],
     answer: 0,
-    explanation: `Futur I yapısı: özne + werden (çekimli) + ... + Infinitiv. "Er wird morgen ins Kino gehen." doğru.`
+    explanation: `"Er hat mir immer geholfen" = O bana her zaman yardım etti. Diğerleri bu yapıyla kullanılamaz.`
   },
   {
-    section: `Bölüm 3: Leseverständnis`,
-    q: `Setze den passenden Relativsatz ein: "Das ist der Mann, ___ mir geholfen hat."`,
-    choices: [`wer`, `der`, `wen`, `dem`],
-    answer: 1,
-    explanation: `Maskulin isim (der Mann) için Nominativ relativpronomen "der" kullanılır.`
+    section: `Bölüm 2: A2 — Temel`,
+    q: `Wenn es regnet, ___ wir zu Hause bleiben.`,
+    choices: [`wird`, `sollen`, `müssen`, `könnte`],
+    answer: 2,
+    explanation: `"müssen" (zorunda olmak) bu bağlamda en doğal seçimdir.`
   },
   {
-    section: `Bölüm 3: Leseverständnis`,
-    q: `Wähle den passenden Konjunktivsatz: "Wenn ich reich ___, würde ich um die Welt reisen."`,
-    choices: [`bin`, `wäre`, `sein`, `war`],
+    section: `Bölüm 2: A2 — Temel`,
+    q: `Welcher Satz ist korrekt?`,
+    choices: [`Ich freue mich für die Ferien.`, `Ich freue mich zu die Ferien.`, `Ich freue mich über die Ferien.`, `Ich freue mich auf die Ferien.`],
+    answer: 3,
+    explanation: `"sich freuen auf" gelecekte beklenen bir şey için kullanılır: Ich freue mich auf die Ferien (tatili sabırsızlıkla bekliyorum).`
+  },
+
+  /* ══════════════ B1 ══════════════ */
+  {
+    section: `Bölüm 3: B1 — Orta`,
+    q: `Obwohl er müde war, ___ er die ganze Nacht gearbeitet.`,
+    choices: [`haben`, `hatte gehabt`, `hatte`, `hat`],
+    answer: 3,
+    explanation: `Perfekt kullanılır: "hat gearbeitet". "hatte gearbeitet" Plusquamperfekt olur ve burada bağlam için yanlıştır.`
+  },
+  {
+    section: `Bölüm 3: B1 — Orta`,
+    q: `Welcher Satz ist korrekt?`,
+    choices: [`Ich erinnere mich an den Tag, als wir uns getroffen haben.`, `Ich erinnere mich an den Tag, wann wir uns getroffen haben.`, `Ich erinnere mich den Tag, als wir uns getroffen haben.`, `Ich erinnere mich auf den Tag, als wir uns getroffen haben.`],
+    answer: 0,
+    explanation: `"sich erinnern an" sabit yapısı ve geçmiş zamandaki bir ana atıfta "als" (wann değil) kullanılır.`
+  },
+  {
+    section: `Bölüm 3: B1 — Orta`,
+    q: `Er sprach so schnell, dass ich kaum ___ konnte.`,
+    choices: [`gehört`, `zu hören`, `hören`, `gehöre`],
+    answer: 2,
+    explanation: `Modal fiil (konnte) + saf infinitiv: "hören konnte". Modal fiillerle "zu" kullanılmaz.`
+  },
+  {
+    section: `Bölüm 3: B1 — Orta`,
+    q: `Wenn ich mehr Zeit ___, würde ich mehr Bücher lesen.`,
+    choices: [`hätte`, `habe`, `haben`, `gehabt`],
+    answer: 0,
+    explanation: `Konjunktiv II (gerçek dışı koşul): "würde lesen" ile birlikte "hätte" kullanılır.`
+  },
+  {
+    section: `Bölüm 3: B1 — Orta`,
+    q: `Welcher Satz ist falsch?`,
+    choices: [`Ich interessiere mich für Geschichte.`, `Ich interessiere mich für Kunst.`, `Ich interessiere mich auf Geschichte.`, `Ich interessiere mich für Musik.`],
+    answer: 2,
+    explanation: `"sich interessieren für" sabit bir yapıdır. "auf" preposisyonu burada kullanılamaz.`
+  },
+
+  /* ══════════════ B2 ══════════════ */
+  {
+    section: `Bölüm 4: B2 — Üst Orta`,
+    q: `Die Nachrichten, ___ gestern ausgestrahlt wurden, waren sehr spannend.`,
+    choices: [`welche`, `denen`, `die`, `deren`],
+    answer: 2,
+    explanation: `"die Nachrichten" çoğul feminin → Nominativ Relativpronomen "die"dir. "welche" da mümkün ama "die" standart ve doğal olanıdır.`
+  },
+  {
+    section: `Bölüm 4: B2 — Üst Orta`,
+    q: `Welcher Satz ist korrekt?`,
+    choices: [`Trotz des Regens gingen wir spazieren.`, `Trotz der Regen gingen wir spazieren.`, `Trotz dem Regen gingen wir spazieren.`, `Trotz Regen gingen wir spazieren.`],
+    answer: 0,
+    explanation: `"trotz" Genitiv alır: "des Regens" (maskulin/neutrum Genitiv -s eki).`
+  },
+  {
+    section: `Bölüm 4: B2 — Üst Orta`,
+    q: `Er tat so, ___ er alles wüsste.`,
+    choices: [`dass`, `obwohl`, `wie`, `als`],
+    answer: 3,
+    explanation: `"als ob" yapısının kısaltması olan "als" Konjunktiv II ile kullanılır: "als er alles wüsste".`
+  },
+  {
+    section: `Bölüm 4: B2 — Üst Orta`,
+    q: `Es ist notwendig, dass jeder Schüler pünktlich ___.`,
+    choices: [`wird`, `seien`, `sei`, `ist`],
+    answer: 2,
+    explanation: `Resmi/yazı dilinde "es ist notwendig, dass..." yapısında Konjunktiv I kullanılır: "sei".`
+  },
+  {
+    section: `Bölüm 4: B2 — Üst Orta`,
+    q: `Welcher Satz ist falsch?`,
+    choices: [`Ich bin stolz auf meine Leistung.`, `Ich bin stolz auf dich.`, `Ich bin stolz auf meine Familie.`, `Ich bin stolz für meine Leistung.`],
+    answer: 3,
+    explanation: `"stolz sein auf" sabit bir yapıdır. "für" preposisyonu kullanılamaz.`
+  },
+
+  /* ══════════════ C1 ══════════════ */
+  {
+    section: `Bölüm 5: C1 — İleri`,
+    q: `Sie sprach mit ihm, ___ sie eigentlich wütend war, sehr freundlich.`,
+    choices: [`obwohl`, `während`, `weil`, `damit`],
+    answer: 0,
+    explanation: `"obwohl" (rağmen/her ne kadar) zıtlık ifade eder: kızgın olmasına rağmen kibarca konuştu.`
+  },
+  {
+    section: `Bölüm 5: C1 — İleri`,
+    q: `Welcher Satz ist korrekt?`,
+    choices: [`Es sei denn, dass wir rechtzeitig kommen, müssen wir warten.`, `Es sei denn, wir kommen rechtzeitig, müssen wir warten.`, `Es sei denn, wir rechtzeitig kommen, müssen wir warten.`, `Es sei denn, dass wir kommen rechtzeitig, müssen wir warten.`],
     answer: 1,
-    explanation: `Konjunktiv II (varsayim cumlesi) → "sein" fiilinin Konjunktiv II formu "ware"dir.`
+    explanation: `"Es sei denn, + Hauptsatz": "dass" olmadan fiil 2. pozisyonda kalır. "Es sei denn, wir kommen rechtzeitig" doğrudur.`
+  },
+  {
+    section: `Bölüm 5: C1 — İleri`,
+    q: `Welcher Satz ist korrekt?`,
+    choices: [`Je mehr man übt, je besser wird man.`, `Je mehr man übt, desto besser man wird.`, `Je mehr man übt, desto besser wird man.`, `Je mehr man übt, desto besser wird man es.`],
+    answer: 2,
+    explanation: `"Je mehr..., desto besser..." yapısında "desto" sonrasında fiil ikinci pozisyona gelir: "desto besser wird man".`
+  },
+  {
+    section: `Bölüm 5: C1 — İleri`,
+    q: `Nachdem er den Vertrag gelesen ___, unterschrieb er vorsichtig.`,
+    choices: [`sein`, `hat`, `gehabt`, `hatte`],
+    answer: 3,
+    explanation: `"nachdem" Plusquamperfekt gerektirir: "gelesen hatte". Ana cümleden önce tamamlanmış eylem Plusquamperfekt ile ifade edilir.`
+  },
+  {
+    section: `Bölüm 5: C1 — İleri`,
+    q: `Welcher Satz ist korrekt?`,
+    choices: [`Insofern die Ergebnisse korrekt sind, dürfen wir mit der Veröffentlichung beginnen.`, `Insofern die Ergebnisse korrekt sind, wir können mit der Veröffentlichung beginnen.`, `Insofern die Ergebnisse korrekt sind, können wir mit der Veröffentlichung beginnen.`, `Insofern als die Ergebnisse korrekt sind, können wir mit der Veröffentlichung beginnen.`],
+    answer: 2,
+    explanation: `"insofern + Nebensatz" yapısında ana cümlede fiil 2. pozisyona gelir: "können wir". "dürfen" yerine "können" anlam olarak daha uygundur.`
   }
 ];
-
 /* ═══════════════════════════════════════════
    SEVİYE TANIMLARI
 ═══════════════════════════════════════════ */

@@ -1,6 +1,5 @@
 import { auth, logoutFirebase, onAuthChange } from "./firebase.js";
 
-/* requireAuth — sadece tamamen private sayfalar için */
 function requireAuth(){
   const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost";
   onAuthChange((user) => {
@@ -12,42 +11,156 @@ function loadNavbar(){
   const navbar = document.createElement("div");
   navbar.className = "navbar";
 
-  // Aktif sayfa tespiti
   const path = window.location.pathname;
   const isDersler = path.includes("/dersler");
   const isBlog    = path.includes("/blog");
+  const isPratik  = ["/quiz/","/artikel/","/cumlebul/","/ceviri/","/metin/","/okuma/","/kelimeler/","/wordsadd/","/singleadd/","/gecmis/"].some(p => path.includes(p));
 
   navbar.innerHTML = `
     <div class="logo">AlmancaPratik</div>
-    <div style="display:flex;gap:8px;align-items:center;">
+    <div style="display:flex;gap:6px;align-items:center;">
 
-      <div class="nav-divider"></div>
+      <!-- Dersler dropdown -->
+      <div class="nav-dropdown-wrap" id="derslerDropWrap">
+        <a class="nav-pill nav-pill--dersler${isDersler ? " nav-pill--active" : ""}" href="/dersler/" id="derslerPill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Dersler</span>
+          <svg class="nav-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="nav-dropdown" id="derslerDrop">
+          <div class="nav-drop-header">Seviyeye Göre</div>
+          <a class="nav-drop-item" href="/dersler/?cat=A1">
+            <span class="nav-drop-badge nav-drop-badge--a1">A1</span>
+            <div><div class="nav-drop-title">Başlangıç</div><div class="nav-drop-sub">Temel kelimeler ve basit cümleler</div></div>
+          </a>
+          <a class="nav-drop-item" href="/dersler/?cat=A2">
+            <span class="nav-drop-badge nav-drop-badge--a2">A2</span>
+            <div><div class="nav-drop-title">Temel</div><div class="nav-drop-sub">Günlük konuşma ve gramer</div></div>
+          </a>
+          <a class="nav-drop-item" href="/dersler/?cat=B1">
+            <span class="nav-drop-badge nav-drop-badge--b1">B1</span>
+            <div><div class="nav-drop-title">Orta</div><div class="nav-drop-sub">Karmaşık cümleler ve kelimeler</div></div>
+          </a>
+          <a class="nav-drop-item" href="/dersler/?cat=B2">
+            <span class="nav-drop-badge nav-drop-badge--b2">B2</span>
+            <div><div class="nav-drop-title">Üst Orta</div><div class="nav-drop-sub">İleri gramer ve metin analizi</div></div>
+          </a>
+          <a class="nav-drop-item" href="/dersler/?cat=C1">
+            <span class="nav-drop-badge nav-drop-badge--c1">C1</span>
+            <div><div class="nav-drop-title">İleri</div><div class="nav-drop-sub">Akademik ve profesyonel Almanca</div></div>
+          </a>
+          <div class="nav-drop-divider"></div>
+          <a class="nav-drop-item nav-drop-item--all" href="/dersler/">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Tüm Dersleri Gör
+          </a>
+        </div>
+      </div>
 
-      <!-- Dersler sayfasına direkt link -->
-      <a class="nav-dersler-btn${isDersler ? " active" : ""}" href="/dersler/">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        Dersler
-      </a>
+      <!-- Pratik dropdown -->
+      <div class="nav-dropdown-wrap" id="pratikDropWrap">
+        <button class="nav-pill nav-pill--pratik${isPratik ? " nav-pill--active" : ""}" id="pratikPill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>Pratik</span>
+          <svg class="nav-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nav-dropdown nav-dropdown--wide" id="pratikDrop">
+          <div class="nav-drop-cols">
+            <div class="nav-drop-col">
+              <div class="nav-drop-header">Araçlar</div>
+              <a class="nav-drop-item" href="/artikel/">
+                <span class="nav-drop-icon nav-drop-icon--amber">🏷</span>
+                <div><div class="nav-drop-title">Artikel Bul</div><div class="nav-drop-sub">der / die / das</div></div>
+              </a>
+              <a class="nav-drop-item" href="/cumlebul/">
+                <span class="nav-drop-icon nav-drop-icon--blue">💬</span>
+                <div><div class="nav-drop-title">Cümle Örnekleri</div><div class="nav-drop-sub">Wiktionary · Tatoeba</div></div>
+              </a>
+              <a class="nav-drop-item" href="/ceviri/">
+                <span class="nav-drop-icon nav-drop-icon--teal">🔄</span>
+                <div><div class="nav-drop-title">Çeviri</div><div class="nav-drop-sub">Almanca ↔ Türkçe</div></div>
+              </a>
+              <a class="nav-drop-item" href="/metin/">
+                <span class="nav-drop-icon nav-drop-icon--violet">📄</span>
+                <div><div class="nav-drop-title">Metin Analizi</div><div class="nav-drop-sub">Almanca metni oku ve analiz et</div></div>
+              </a>
+            </div>
+            <div class="nav-drop-col">
+              <div class="nav-drop-header">Çalışma</div>
+              <a class="nav-drop-item" href="/quiz/">
+                <span class="nav-drop-icon nav-drop-icon--violet">⭐</span>
+                <div><div class="nav-drop-title">Kelime Quizi</div><div class="nav-drop-sub">Kendi listenden test</div></div>
+              </a>
+              <a class="nav-drop-item" href="/kelimeler/">
+                <span class="nav-drop-icon nav-drop-icon--green">📖</span>
+                <div><div class="nav-drop-title">Kelimelerim</div><div class="nav-drop-sub">Kişisel sözlük</div></div>
+              </a>
+              <a class="nav-drop-item" href="/wordsadd/">
+                <span class="nav-drop-icon nav-drop-icon--rose">➕</span>
+                <div><div class="nav-drop-title">Kelime Ekle</div><div class="nav-drop-sub">Sözlüğüne kelime kaydet</div></div>
+              </a>
+              <a class="nav-drop-item" href="/gecmis/">
+                <span class="nav-drop-icon nav-drop-icon--gray">🕐</span>
+                <div><div class="nav-drop-title">Metin Geçmişi</div><div class="nav-drop-sub">Kayıtlı metinlerin</div></div>
+              </a>
+            </div>
+          </div>
+          <div class="nav-drop-footer">
+            <a href="/seviyeler/seviyetespit/" class="nav-drop-footer-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+              Seviye testini ücretsiz çöz →
+            </a>
+          </div>
+        </div>
+      </div>
 
-      <div class="nav-divider"></div>
+      <!-- Blog dropdown -->
+      <div class="nav-dropdown-wrap" id="blogDropWrap">
+        <a class="nav-pill nav-pill--blog${isBlog ? " nav-pill--active" : ""}" href="/blog/" id="blogPill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Blog</span>
+          <svg class="nav-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="nav-dropdown" id="blogDrop">
+          <div class="nav-drop-header">Kategoriler</div>
+          <a class="nav-drop-item" href="/blog/?tag=Gramer">
+            <span class="nav-drop-icon nav-drop-icon--blue">📐</span>
+            <div><div class="nav-drop-title">Gramer</div><div class="nav-drop-sub">Kural ve açıklamalar</div></div>
+          </a>
+          <a class="nav-drop-item" href="/blog/?tag=Kelime">
+            <span class="nav-drop-icon nav-drop-icon--green">🔤</span>
+            <div><div class="nav-drop-title">Kelime Bilgisi</div><div class="nav-drop-sub">Kelime grupları ve ipuçları</div></div>
+          </a>
+          <a class="nav-drop-item" href="/blog/?tag=İpuçları">
+            <span class="nav-drop-icon nav-drop-icon--amber">💡</span>
+            <div><div class="nav-drop-title">Öğrenme İpuçları</div><div class="nav-drop-sub">Pratik öneriler</div></div>
+          </a>
+          <a class="nav-drop-item" href="/blog/?tag=Kültür">
+            <span class="nav-drop-icon nav-drop-icon--violet">🌍</span>
+            <div><div class="nav-drop-title">Kültür</div><div class="nav-drop-sub">Almanya ve Almanca kültürü</div></div>
+          </a>
+          <div class="nav-drop-divider"></div>
+          <a class="nav-drop-item nav-drop-item--all" href="/blog/">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h10"/></svg>
+            Tüm Yazıları Gör
+          </a>
+        </div>
+      </div>
 
-      <a class="nav-seviye-btn" id="navSeviyeBtn" href="/seviyeler/seviyetespit/">
+      <div class="nav-sep"></div>
+
+      <!-- Seviye testi -->
+      <a class="nav-pill nav-pill--seviye" href="/seviyeler/seviyetespit/">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-        Seviye Testi
+        <span>Seviye Testi</span>
       </a>
 
-      <div class="nav-divider"></div>
+      <div class="nav-sep"></div>
 
-      <a class="nav-blog-btn${isBlog ? " active" : ""}" href="/blog/">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Blog
-      </a>
-
-      <div class="nav-divider"></div>
-
-      <a class="nav-login-btn" id="navLoginBtn" href="${getLoginHref()}" style="display:none">
+      <!-- Auth -->
+      <a class="nav-pill nav-pill--login" id="navLoginBtn" href="${getLoginHref()}" style="display:none">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        Giriş Yap
+        <span>Giriş Yap</span>
       </a>
 
       <div class="profile-wrapper" id="profileWrapper" style="display:none">
@@ -69,51 +182,247 @@ function loadNavbar(){
 
   const style = document.createElement("style");
   style.textContent = `
-    /* ── Ayırıcı ── */
-    .nav-divider{width:1px;height:24px;background:rgba(255,255,255,0.07);}
+    /* ── Seperatör ── */
+    .nav-sep{width:1px;height:20px;background:rgba(255,255,255,0.08);}
 
-    /* ── Dersler butonu ── */
-    .nav-dersler-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(79,214,156,0.08);border:1px solid rgba(79,214,156,0.2);border-radius:8px;color:rgba(79,214,156,0.8);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;text-decoration:none;transition:all 0.2s;white-space:nowrap;}
-    .nav-dersler-btn svg{opacity:0.8;stroke:rgba(79,214,156,0.8);}
-    .nav-dersler-btn:hover,.nav-dersler-btn.active{background:rgba(79,214,156,0.14);border-color:rgba(79,214,156,0.4);color:#4fd69c;transform:translateY(-1px);}
-    .nav-dersler-btn.active{transform:none;}
+    /* ── Pill butonlar ── */
+    .nav-pill{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:6px 12px;border-radius:8px;
+      font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;
+      text-decoration:none;cursor:pointer;
+      border:1px solid rgba(255,255,255,0.09);
+      background:rgba(255,255,255,0.03);
+      color:rgba(240,238,232,0.6);
+      transition:all 0.18s cubic-bezier(0.4,0,0.2,1);
+      white-space:nowrap;
+      position:relative;
+    }
+    .nav-pill:hover{
+      background:rgba(255,255,255,0.07);
+      border-color:rgba(255,255,255,0.18);
+      color:rgba(240,238,232,0.95);
+    }
+    .nav-pill svg:first-child{opacity:0.7;flex-shrink:0;}
+    .nav-pill:hover svg:first-child{opacity:1;}
+    .nav-chevron{opacity:0.45;transition:transform 0.2s;}
 
-    /* ── Seviye testi butonu ── */
-    .nav-seviye-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(96,200,240,0.08);border:1px solid rgba(96,200,240,0.2);border-radius:8px;color:rgba(96,200,240,0.8);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;text-decoration:none;transition:all 0.2s;white-space:nowrap;}
-    .nav-seviye-btn svg{opacity:0.8;stroke:rgba(96,200,240,0.8);}
-    .nav-seviye-btn:hover{background:rgba(96,200,240,0.14);border-color:rgba(96,200,240,0.4);color:#60c8f0;transform:translateY(-1px);}
+    /* Aktif durumlar */
+    .nav-pill--dersler.nav-pill--active,
+    .nav-pill--dersler:hover{
+      background:rgba(79,214,156,0.1);
+      border-color:rgba(79,214,156,0.28);
+      color:#4fd69c;
+    }
+    .nav-pill--dersler.nav-pill--active svg,
+    .nav-pill--dersler:hover svg{stroke:#4fd69c;opacity:1;}
 
-    /* ── Blog butonu ── */
-    .nav-blog-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:transparent;border:1px solid rgba(255,255,255,0.09);border-radius:8px;color:rgba(240,238,232,0.5);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;text-decoration:none;transition:all 0.2s;white-space:nowrap;}
-    .nav-blog-btn svg{opacity:0.6;}
-    .nav-blog-btn:hover,.nav-blog-btn.active{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.16);color:rgba(240,238,232,0.9);}
+    .nav-pill--pratik.nav-pill--active,
+    .nav-pill--pratik:hover{
+      background:rgba(201,168,76,0.1);
+      border-color:rgba(201,168,76,0.28);
+      color:#c9a84c;
+    }
+    .nav-pill--pratik.nav-pill--active svg,
+    .nav-pill--pratik:hover svg{stroke:#c9a84c;opacity:1;}
 
-    /* ── Giriş butonu ── */
-    .nav-login-btn{display:flex;align-items:center;gap:6px;padding:7px 16px;background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#0a0a0f!important;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;box-shadow:0 3px 14px rgba(201,168,76,0.3);transition:all 0.2s;white-space:nowrap;}
-    .nav-login-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.45);}
-    .nav-login-btn:active{transform:scale(0.97);}
+    .nav-pill--blog.nav-pill--active,
+    .nav-pill--blog:hover{
+      background:rgba(255,255,255,0.06);
+      border-color:rgba(255,255,255,0.2);
+      color:rgba(240,238,232,0.95);
+    }
+
+    .nav-pill--seviye{
+      background:rgba(96,200,240,0.06);
+      border-color:rgba(96,200,240,0.18);
+      color:rgba(96,200,240,0.75);
+    }
+    .nav-pill--seviye:hover{
+      background:rgba(96,200,240,0.12);
+      border-color:rgba(96,200,240,0.35);
+      color:#60c8f0;
+    }
+    .nav-pill--seviye svg{stroke:rgba(96,200,240,0.75);}
+    .nav-pill--seviye:hover svg{stroke:#60c8f0;}
+
+    .nav-pill--login{
+      background:linear-gradient(135deg,#c9a84c,#e8c97a);
+      border-color:transparent;
+      color:#0a0a0f !important;
+      box-shadow:0 3px 14px rgba(201,168,76,0.28);
+    }
+    .nav-pill--login:hover{
+      transform:translateY(-1px);
+      box-shadow:0 6px 22px rgba(201,168,76,0.42);
+      background:linear-gradient(135deg,#d9b85c,#f0d480);
+      color:#0a0a0f !important;
+    }
+    .nav-pill--login svg{stroke:#0a0a0f;opacity:0.8;}
+
+    /* ── Dropdown container ── */
+    .nav-dropdown-wrap{position:relative;display:inline-flex;}
+    .nav-dropdown-wrap:hover .nav-chevron{transform:rotate(180deg);}
+    .nav-dropdown-wrap:hover .nav-dropdown{
+      opacity:1;
+      pointer-events:all;
+      transform:translateY(0);
+    }
+
+    /* ── Dropdown panel ── */
+    .nav-dropdown{
+      position:absolute;top:calc(100% + 10px);left:0;
+      min-width:240px;
+      background:#0c0c12;
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:14px;
+      padding:8px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.7),0 4px 16px rgba(0,0,0,0.4);
+      z-index:9999;
+      opacity:0;
+      pointer-events:none;
+      transform:translateY(-6px);
+      transition:opacity 0.18s ease, transform 0.18s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-dropdown--wide{
+      min-width:480px;
+      left:50%;
+      transform:translateX(-50%) translateY(-6px);
+    }
+    .nav-dropdown-wrap:hover .nav-dropdown--wide{
+      transform:translateX(-50%) translateY(0);
+    }
+
+    /* ── Dropdown items ── */
+    .nav-drop-header{
+      font-family:'DM Sans',sans-serif;
+      font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+      color:rgba(240,238,232,0.28);
+      padding:6px 10px 4px;
+    }
+    .nav-drop-item{
+      display:flex;align-items:center;gap:10px;
+      padding:8px 10px;border-radius:9px;
+      text-decoration:none;
+      transition:background 0.15s;
+      cursor:pointer;
+    }
+    .nav-drop-item:hover{background:rgba(255,255,255,0.06);}
+    .nav-drop-item--all{
+      color:rgba(240,238,232,0.5);
+      font-family:'DM Sans',sans-serif;
+      font-size:12.5px;font-weight:600;
+      gap:8px;
+    }
+    .nav-drop-item--all:hover{color:rgba(240,238,232,0.85);}
+    .nav-drop-item--all svg{opacity:0.5;}
+
+    .nav-drop-title{
+      font-family:'DM Sans',sans-serif;
+      font-size:13px;font-weight:600;
+      color:rgba(240,238,232,0.88);
+      line-height:1.2;
+    }
+    .nav-drop-sub{
+      font-family:'DM Sans',sans-serif;
+      font-size:11px;
+      color:rgba(240,238,232,0.35);
+      margin-top:1px;
+    }
+    .nav-drop-divider{height:1px;background:rgba(255,255,255,0.07);margin:4px 0;}
+
+    /* ── Seviye rozetleri ── */
+    .nav-drop-badge{
+      font-family:'Syne',sans-serif;
+      font-size:11px;font-weight:800;letter-spacing:0.02em;
+      padding:3px 8px;border-radius:6px;
+      flex-shrink:0;min-width:32px;text-align:center;
+    }
+    .nav-drop-badge--a1{background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);color:#22c55e;}
+    .nav-drop-badge--a2{background:rgba(134,239,172,0.1);border:1px solid rgba(134,239,172,0.2);color:#86efac;}
+    .nav-drop-badge--b1{background:rgba(96,200,240,0.1);border:1px solid rgba(96,200,240,0.22);color:#60c8f0;}
+    .nav-drop-badge--b2{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);color:#818cf8;}
+    .nav-drop-badge--c1{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.22);color:#c9a84c;}
+
+    /* ── Pratik dropdown ikonlar ── */
+    .nav-drop-icon{
+      width:30px;height:30px;border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:14px;flex-shrink:0;
+    }
+    .nav-drop-icon--amber{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);}
+    .nav-drop-icon--blue{background:rgba(96,200,240,0.1);border:1px solid rgba(96,200,240,0.18);}
+    .nav-drop-icon--teal{background:rgba(79,214,156,0.1);border:1px solid rgba(79,214,156,0.18);}
+    .nav-drop-icon--violet{background:rgba(160,100,255,0.1);border:1px solid rgba(160,100,255,0.18);}
+    .nav-drop-icon--green{background:rgba(79,214,156,0.1);border:1px solid rgba(79,214,156,0.18);}
+    .nav-drop-icon--rose{background:rgba(240,112,104,0.1);border:1px solid rgba(240,112,104,0.18);}
+    .nav-drop-icon--gray{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);}
+
+    /* ── Pratik geniş dropdown ── */
+    .nav-drop-cols{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+    .nav-drop-col{padding:2px;}
+    .nav-drop-footer{
+      border-top:1px solid rgba(255,255,255,0.07);
+      margin-top:4px;padding:8px 10px 4px;
+    }
+    .nav-drop-footer-link{
+      display:inline-flex;align-items:center;gap:6px;
+      font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+      color:rgba(201,168,76,0.7);text-decoration:none;
+      transition:color 0.15s;
+    }
+    .nav-drop-footer-link:hover{color:#c9a84c;}
 
     /* ── Profil ── */
     .profile-wrapper{position:relative;display:inline-block;}
-    .profile-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;cursor:pointer;border:1.5px solid rgba(255,255,255,0.15);transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;display:block;}
-    .profile-avatar:hover{border-color:rgba(201,168,76,0.7);transform:scale(1.06);box-shadow:0 0 0 3px rgba(201,168,76,0.12);}
-    .profile-dropdown{display:none;position:absolute;right:0;top:calc(100% + 12px);background:#0f0f14;border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:6px;min-width:210px;box-shadow:0 16px 40px rgba(0,0,0,0.6);z-index:9999;animation:dropdownIn 0.18s cubic-bezier(0.4,0,0.2,1) both;}
+    .profile-avatar{
+      width:34px;height:34px;border-radius:50%;object-fit:cover;
+      cursor:pointer;border:1.5px solid rgba(255,255,255,0.12);
+      transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;display:block;
+    }
+    .profile-avatar:hover{border-color:rgba(201,168,76,0.6);transform:scale(1.05);box-shadow:0 0 0 3px rgba(201,168,76,0.1);}
+    .profile-dropdown{
+      display:none;position:absolute;right:0;top:calc(100% + 10px);
+      background:#0c0c12;border:1px solid rgba(255,255,255,0.09);
+      border-radius:13px;padding:6px;min-width:210px;
+      box-shadow:0 16px 40px rgba(0,0,0,0.6);z-index:9999;
+      animation:dropdownIn 0.18s cubic-bezier(0.4,0,0.2,1) both;
+    }
     .profile-dropdown.open{display:block;}
     @keyframes dropdownIn{from{opacity:0;transform:translateY(-6px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
     .profile-dropdown__header{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;}
     .profile-dropdown__avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,0.1);flex-shrink:0;}
     .profile-email{display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(240,238,232,0.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;}
     .profile-dropdown__divider{height:1px;background:rgba(255,255,255,0.07);margin:2px 0;}
-    .profile-dropdown .logout-btn{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;background:transparent;color:rgba(240,112,104,0.8);border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-align:left;transition:background 0.15s,color 0.15s;}
+    .profile-dropdown .logout-btn{
+      display:flex;align-items:center;gap:8px;width:100%;
+      padding:9px 12px;background:transparent;
+      color:rgba(240,112,104,0.8);border:none;border-radius:8px;
+      cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+      text-align:left;transition:background 0.15s,color 0.15s;
+    }
     .profile-dropdown .logout-btn:hover{background:rgba(240,112,104,0.1);color:#f07068;}
 
     /* ── Responsive ── */
-    @media(max-width:900px){
-      .nav-dersler-btn span,.nav-seviye-btn span,.nav-blog-btn span{display:none;}
-      .nav-dersler-btn,.nav-seviye-btn,.nav-blog-btn{padding:6px 10px;}
+    @media(max-width:1000px){
+      .nav-drop-badge~div .nav-drop-sub,
+      .nav-drop-icon~div .nav-drop-sub,
+      .nav-drop-footer{display:none;}
+      .nav-dropdown--wide{min-width:360px;}
+      .nav-drop-cols{gap:2px;}
     }
-    @media(max-width:480px){
-      .nav-seviye-btn{display:none;}
+    @media(max-width:820px){
+      .nav-pill span{display:none;}
+      .nav-chevron{display:none;}
+      .nav-pill{padding:7px 10px;}
+      .nav-dropdown{left:50%;transform:translateX(-50%) translateY(-6px);}
+      .nav-dropdown-wrap:hover .nav-dropdown:not(.nav-dropdown--wide){transform:translateX(-50%) translateY(0);}
+      .nav-dropdown--wide{min-width:300px;left:50%;transform:translateX(-50%) translateY(-6px);}
+      .nav-drop-cols{grid-template-columns:1fr;}
+    }
+    @media(max-width:600px){
+      .nav-pill--seviye{display:none;}
+      .nav-sep{display:none;}
     }
   `;
   document.head.appendChild(style);
@@ -130,7 +439,9 @@ function loadNavbar(){
   const dropdown = document.getElementById("profileDropdown");
   avatar.addEventListener("click", e => { e.stopPropagation(); dropdown.classList.toggle("open"); });
   document.addEventListener("keydown", e => { if(e.key==="Escape") dropdown.classList.remove("open"); });
-  document.addEventListener("click", () => dropdown.classList.remove("open"));
+  document.addEventListener("click", e => {
+    if (!dropdown.contains(e.target) && e.target !== avatar) dropdown.classList.remove("open");
+  });
 
   /* ── Auth durumu ── */
   onAuthChange((user) => {

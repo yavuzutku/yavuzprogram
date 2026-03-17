@@ -59,11 +59,11 @@ function loadNavbar(){
 
       <!-- Pratik dropdown -->
       <div class="nav-dropdown-wrap" id="pratikDropWrap">
-        <button class="nav-pill nav-pill--pratik${isPratik ? " nav-pill--active" : ""}" id="pratikPill">
+        <a class="nav-pill nav-pill--pratik${isPratik ? " nav-pill--active" : ""}" href="/anasayfa/" id="pratikPill">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           <span>Pratik</span>
           <svg class="nav-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
+        </a>
         <div class="nav-dropdown nav-dropdown--wide" id="pratikDrop"><div class="nav-dropdown-inner">
           <div class="nav-drop-cols">
             <div class="nav-drop-col">
@@ -417,17 +417,7 @@ function loadNavbar(){
     /* Dışa tıklayınca kapat */
     document.addEventListener("click", e => { if(!wrap.contains(e.target)) wrap.classList.remove("open"); });
   });
-  /* ── Pratik buton click yönlendirme ── */
-  const pratikBtn = document.getElementById("pratikPill");
 
-  pratikBtn.addEventListener("click", (e) => {
-    const wrap = pratikBtn.closest(".nav-dropdown-wrap");
-
-    // Eğer dropdown açık değilse direkt yönlendir
-    if (!wrap.classList.contains("open")) {
-      window.location.href = "/anasayfa/";
-    }
-  });
   /* ── Çıkış ── */
   document.getElementById("logoutBtn").addEventListener("click", async () => {
     try { await logoutFirebase(); } catch(e){ console.error(e); }

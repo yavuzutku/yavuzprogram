@@ -218,10 +218,10 @@
 </script>
 
 <script type="module">
+  // Bir üstteki js klasörüne git dedik (../)
   import { onAuthChange } from "../js/firebase.js";
-  import "./js/blog.js"; 
+  import "../js/blog.js"; 
 
-  // Kullanıcı giriş yapmış mı kontrol et (Opsiyonel)
   onAuthChange((user) => {
     if (user) {
       console.log("Blog sistemi hazır, kullanıcı:", user.email);

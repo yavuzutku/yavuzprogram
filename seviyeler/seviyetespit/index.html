@@ -23,16 +23,12 @@
   "@context": "https://schema.org",
   "@type": "Quiz",
   "name": "Almanca Seviye Testi — A1'den C1'e",
-  "description": "25 soruluk ücretsiz Almanca seviye tespit sınavı. A1, A2, B1, B2 ve C1 seviyelerini kapsayan gramer, kelime ve okuma anlayışı soruları.",
+  "description": "25 soruluk ücretsiz Almanca seviye tespit sınavı.",
   "url": "https://almancapratik.com/seviyeler/seviyetespit/",
   "inLanguage": "tr",
   "educationalLevel": ["A1","A2","B1","B2","C1"],
   "teaches": "Almanca dil seviyesi belirleme",
-  "provider": {
-    "@type": "Organization",
-    "name": "AlmancaPratik",
-    "url": "https://almancapratik.com"
-  },
+  "provider": { "@type": "Organization", "name": "AlmancaPratik", "url": "https://almancapratik.com" },
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" }
 }
 </script>
@@ -51,7 +47,104 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../css/seviyetespit.css">
+
 <style>
+/* ══ Topluluk Yorumları Kalıcı Bölümü ══ */
+.community-section {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.community-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.community-divider::before,
+.community-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+.community-divider__inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.community-divider__dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  animation: pulse 2.5s ease-in-out infinite;
+}
+.community-divider__label {
+  font-family: var(--fm);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(240,238,232,0.4);
+}
+
+.community-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 22px;
+  background: rgba(201,168,76,0.05);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 14px;
+  margin-bottom: 24px;
+}
+.community-info__icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.community-info__body {}
+.community-info__title {
+  font-family: var(--fd);
+  font-size: 14px; font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.community-info__desc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-2);
+}
+.community-info__desc a {
+  color: var(--gold);
+  text-decoration: none;
+}
+.community-info__desc a:hover { text-decoration: underline; }
+
+/* Quiz sırasında yorumlar bölümü kaybolmasın — sadece biraz soluk görünsün */
+body.quiz-active .community-section {
+  opacity: 0.3;
+  pointer-events: none;
+  filter: blur(1px);
+  transition: opacity 0.4s, filter 0.4s;
+}
+body.result-active .community-section {
+  opacity: 1;
+  pointer-events: all;
+  filter: none;
+}
+
+@media (max-width: 480px) {
+  .community-section { padding: 0 16px 60px; }
+  .community-info { flex-direction: column; gap: 10px; }
+}
 </style>
 </head>
 <body>
@@ -85,21 +178,13 @@
       <p class="intro-sub">A1'den C1'e beş seviyeyi kapsayan gramer, kelime ve okuma anlayışı sorularıyla gerçek seviyeni öğren. Yaklaşık 10 dakika sürer.</p>
 
       <div class="intro-stats">
-        <div class="intro-stat-wrap">
-          <div class="intro-stat"><span class="intro-stat-num">25</span><span class="intro-stat-lbl">Soru</span></div>
-        </div>
+        <div class="intro-stat-wrap"><div class="intro-stat"><span class="intro-stat-num">25</span><span class="intro-stat-lbl">Soru</span></div></div>
         <div class="intro-stat-sep"></div>
-        <div class="intro-stat-wrap">
-          <div class="intro-stat"><span class="intro-stat-num">5</span><span class="intro-stat-lbl">Seviye</span></div>
-        </div>
+        <div class="intro-stat-wrap"><div class="intro-stat"><span class="intro-stat-num">5</span><span class="intro-stat-lbl">Seviye</span></div></div>
         <div class="intro-stat-sep"></div>
-        <div class="intro-stat-wrap">
-          <div class="intro-stat"><span class="intro-stat-num">~10</span><span class="intro-stat-lbl">Dakika</span></div>
-        </div>
+        <div class="intro-stat-wrap"><div class="intro-stat"><span class="intro-stat-num">~10</span><span class="intro-stat-lbl">Dakika</span></div></div>
         <div class="intro-stat-sep"></div>
-        <div class="intro-stat-wrap">
-          <div class="intro-stat"><span class="intro-stat-num">0₺</span><span class="intro-stat-lbl">Ücretsiz</span></div>
-        </div>
+        <div class="intro-stat-wrap"><div class="intro-stat"><span class="intro-stat-num">0₺</span><span class="intro-stat-lbl">Ücretsiz</span></div></div>
       </div>
 
       <div class="level-grid" role="list">
@@ -124,8 +209,6 @@
       <div class="seo-divider"><div class="seo-divider-dot"></div></div>
 
       <div class="seo-grid">
-
-        <!-- Seviye tablosu -->
         <div class="seo-card">
           <div class="seo-card-label">Seviye Rehberi</div>
           <h2>Almanca Seviyeleri Neler İfade Eder?</h2>
@@ -142,7 +225,6 @@
           </table>
         </div>
 
-        <!-- Test nasıl çalışır -->
         <div class="seo-card">
           <div class="seo-card-label">Test Hakkında</div>
           <h2>Bu Almanca Seviye Testi Nasıl Çalışır?</h2>
@@ -156,95 +238,59 @@
           </ul>
         </div>
 
-        <!-- Seviyene göre ne yapmalısın -->
         <div class="seo-card seo-card-wide">
           <div class="seo-card-label">Sonrası Ne Olacak?</div>
           <h2>Seviyeni Öğrendikten Sonra Almancana Nasıl Devam Edersin?</h2>
-          <p>Seviye testini tamamladıktan sonra AlmancaPratik'teki araçlarla öğrenmeye hemen devam edebilirsin. Her seviye için farklı bir yol haritası var:</p>
-          <p><strong>A1–A2 seviyesindeysen</strong> önce temel kelime haznesini genişletmen gerekiyor. <a href="/ceviri/">Almanca-Türkçe çeviri aracı</a> ile kelimelerin anlamını öğrenebilir, <a href="/artikel/">der die das artikel bulucu</a> ile isimlerin cinsiyetini pekiştirebilirsin. <a href="/wordsadd/">Kelime ekleme</a> aracıyla öğrendiğin kelimeleri kişisel sözlüğüne kaydedebilirsin.</p>
-          <p><strong>B1–B2 seviyesindeysen</strong> gramer yapılarını pekiştirmek için gerçek metinler okuman önerilir. <a href="/metin/">Metin analizi aracı</a> ile Almanca bir makale veya haber metnini yapıştırabilir, bilmediğin kelimelere tıklayarak anlamını anında görebilirsin. <a href="/quiz/">Kelime quizi</a> ile öğrendiğin kelimeleri test etmeyi de unutma.</p>
-          <p><strong>C1 seviyesine yakınsanız</strong> bağlamlı kullanımı geliştirmek kritik önem taşır. <a href="/cumlebul/">Cümle örnekleri aracı</a> ile herhangi bir kelimenin Wiktionary ve Tatoeba'dan gerçek kullanım örneklerini inceleyebilirsin. Bu sayede kelimeleri salt ezberlemek yerine bağlamında kavramış olursun.</p>
+          <p><strong>A1–A2 seviyesindeysen</strong> önce temel kelime haznesini genişletmen gerekiyor. <a href="/ceviri/">Almanca-Türkçe çeviri aracı</a> ile kelimelerin anlamını öğrenebilir, <a href="/artikel/">der die das artikel bulucu</a> ile isimlerin cinsiyetini pekiştirebilirsin.</p>
+          <p><strong>B1–B2 seviyesindeysen</strong> gramer yapılarını pekiştirmek için gerçek metinler okuman önerilir. <a href="/metin/">Metin analizi aracı</a> ile Almanca bir makale yapıştırabilir, bilmediğin kelimelere tıklayarak anlamını anında görebilirsin.</p>
+          <p><strong>C1 seviyesine yakınsanız</strong> bağlamlı kullanımı geliştirmek kritik önem taşır. <a href="/cumlebul/">Cümle örnekleri aracı</a> ile herhangi bir kelimenin gerçek kullanım örneklerini inceleyebilirsin.</p>
         </div>
 
-        <!-- Almanca seviye soruları: SSS -->
         <div class="seo-card seo-card-wide">
           <div class="seo-card-label">Sık Sorulan Sorular</div>
           <h2>Almanca Seviye Testi Hakkında Merak Edilenler</h2>
           <div class="faq-list">
             <div class="faq-item">
               <div class="faq-q">Bu Almanca seviye testi ne kadar güvenilir?</div>
-              <div class="faq-a">Test, CEFR standartlarını temel alan gramer ve kelime bilgisi sorularından oluşur. Her seviyede 5 soru bulunmakta olup sonuçlar genel yeterlilik düzeyini gösterir. Resmi bir sertifika testi değildir; öğrenme yolculuğunda nerede olduğunu anlamana yardımcı olmak için tasarlanmıştır. Resmi sertifika için Goethe-Institut sınavlarına başvurabilirsin.</div>
+              <div class="faq-a">Test, CEFR standartlarını temel alan gramer ve kelime bilgisi sorularından oluşur. Sonuçlar genel yeterlilik düzeyini gösterir. Resmi sertifika için Goethe-Institut sınavlarına başvurabilirsin.</div>
             </div>
             <div class="faq-item">
               <div class="faq-q">Almanca A1 seviyesi ne kadar sürede öğrenilir?</div>
-              <div class="faq-a">Günlük 30-45 dakika düzenli çalışmayla ortalama 2-3 ayda A1 seviyesine ulaşmak mümkündür. <a href="/dersler/">AlmancaPratik dersleri</a> ile yapılandırılmış bir öğrenme yolunu takip edebilir, <a href="/kelimeler/">kelime listeleri</a> ile düzenli tekrar yapabilirsin.</div>
+              <div class="faq-a">Günlük 30-45 dakika düzenli çalışmayla ortalama 2-3 ayda A1 seviyesine ulaşmak mümkündür. <a href="/dersler/">AlmancaPratik dersleri</a> ile yapılandırılmış bir öğrenme yolunu takip edebilirsin.</div>
             </div>
             <div class="faq-item">
               <div class="faq-q">A2'den B1'e geçmek zor mu?</div>
-              <div class="faq-a">A2'den B1'e geçiş genellikle öğrencilerin "plato" yaşadığı noktadır. Fiil çekimleri (Perfekt, Präteritum), bağımlı cümleler (weil, dass, obwohl) ve Konjunktiv II gibi yapılar zorlayıcı olabilir. Bu aşamada gerçek metinlerle pratik yapmak çok önemlidir; <a href="/metin/">metin analizi aracını</a> düzenli kullanmak büyük fark yaratır.</div>
+              <div class="faq-a">A2'den B1'e geçiş genellikle öğrencilerin "plato" yaşadığı noktadır. Gerçek metinlerle pratik yapmak çok önemlidir; <a href="/metin/">metin analizi aracını</a> düzenli kullanmak büyük fark yaratır.</div>
             </div>
             <div class="faq-item">
               <div class="faq-q">Almanca B2 seviyesi ne işe yarar?</div>
-              <div class="faq-a">B2 seviyesi; Almanya'da çalışma izni başvuruları, birçok Alman üniversitesine giriş ve çeşitli iş pozisyonları için aranan minimum dil yeterliliğidir. B2 ile ana dili Almanca olan kişilerle normal bir hızda ve konuda iletişim kurabilirsin. Testiz puan ve gelişimi takip etmek için <a href="/quiz/">kelime quizlerini</a> düzenli çözebilirsin.</div>
+              <div class="faq-a">B2 seviyesi; Almanya'da çalışma izni başvuruları, birçok Alman üniversitesine giriş ve çeşitli iş pozisyonları için aranan minimum dil yeterliliğidir.</div>
             </div>
             <div class="faq-item">
               <div class="faq-q">Ücretsiz Almanca öğrenme için nereden başlamalıyım?</div>
-              <div class="faq-a">AlmancaPratik'te hesap oluşturmaya bile gerek kalmadan pek çok araçtan faydalanabilirsin. <a href="/artikel/">Artikel bulucu</a>, <a href="/cumlebul/">cümle örnekleri</a> ve <a href="/ceviri/">çeviri aracı</a> kayıt gerektirmez. Kişisel sözlük ve quiz özellikleri için ücretsiz Google hesabınla giriş yapman yeterli.</div>
+              <div class="faq-a">AlmancaPratik'te hesap oluşturmaya bile gerek kalmadan pek çok araçtan faydalanabilirsin. <a href="/artikel/">Artikel bulucu</a>, <a href="/cumlebul/">cümle örnekleri</a> ve <a href="/ceviri/">çeviri aracı</a> kayıt gerektirmez.</div>
             </div>
           </div>
         </div>
 
-        <!-- Platform tanıtım + iç linkler -->
         <div class="seo-card">
           <div class="seo-card-label">Platform Araçları</div>
           <h2>AlmancaPratik ile Hızla İlerle</h2>
           <p>Seviyeni öğrendikten sonra AlmancaPratik'in araçlarıyla pratik yapmaya başla. Tüm araçlar <strong>ücretsiz</strong> ve Türkçe arayüzlüdür.</p>
           <div class="tool-links">
-            <a class="tool-link" href="/artikel/">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              Artikel Bul
-            </a>
-            <a class="tool-link" href="/quiz/">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              Kelime Quizi
-            </a>
-            <a class="tool-link" href="/metin/">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Metin Analizi
-            </a>
-            <a class="tool-link" href="/cumlebul/">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              Cümle Örnekleri
-            </a>
-            <a class="tool-link" href="/ceviri/">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
-              Çeviri
-            </a>
-            <a class="tool-link" href="/dersler/">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-              Dersler
-            </a>
+            <a class="tool-link" href="/artikel/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Artikel Bul</a>
+            <a class="tool-link" href="/quiz/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kelime Quizi</a>
+            <a class="tool-link" href="/metin/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Metin Analizi</a>
+            <a class="tool-link" href="/cumlebul/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Cümle Örnekleri</a>
+            <a class="tool-link" href="/ceviri/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>Çeviri</a>
+            <a class="tool-link" href="/dersler/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Dersler</a>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Almanca öğrenme ipuçları -->
-        <div class="seo-card">
-          <div class="seo-card-label">Öğrenme İpuçları</div>
-          <h2>Almancada Hızlı İlerlemenin 5 Yolu</h2>
-          <ul class="tip-list">
-            <li><span class="tip-dot"></span><strong>Artikel'leri kelimeyle birlikte öğren:</strong> "Hund" değil, "der Hund" olarak ezberle. <a href="/artikel/">Artikel bulucu</a> bunu kolaylaştırır.</li>
-            <li><span class="tip-dot"></span><strong>Günde 10 yeni kelime:</strong> Az ama düzenli çalışmak, yoğun ama seyrek çalışmaktan çok daha etkilidir. <a href="/wordsadd/">Kelime ekle</a> ve günlük tekrar yap.</li>
-            <li><span class="tip-dot"></span><strong>Gerçek metin oku:</strong> Ders kitabı cümleleri yerine gerçek haber ve makale metinleri seni daha hızlı ilerletir. <a href="/metin/">Metin analizi</a> aracını dene.</li>
-            <li><span class="tip-dot"></span><strong>Bağlamlı öğren:</strong> Kelimeleri tek başına değil, cümle içinde gör. <a href="/cumlebul/">Cümle örnekleri</a> tam bunun için var.</li>
-            <li><span class="tip-dot"></span><strong>Düzenli test:</strong> Öğrendiklerini test etmeden geçme. <a href="/quiz/">Kelime quizi</a> ile haftalık sınavlar uygula.</li>
-          </ul>
-        </div>
-
-      </div><!-- /seo-grid -->
-    </div><!-- /seo-section -->
-
-  </div><!-- /intro-page -->
-</div><!-- /screen-intro -->
+  </div>
+</div>
 
 <!-- ══════════════ QUIZ ══════════════ -->
 <div class="screen" id="screen-quiz">
@@ -321,12 +367,81 @@
       <div class="wrongs-title">Yanlış Cevapladığın Sorular</div>
       <div id="wrongs-list"></div>
     </div>
-    <div id="cm-result-mount" style="padding:0 24px 20px;"></div>
+
+    <!-- Sonuç altında yorumlara kaydır butonu -->
+    <div style="text-align:center;margin-top:32px;padding-bottom:12px;">
+      <a href="#community-section" style="
+        display:inline-flex;align-items:center;gap:8px;
+        padding:10px 22px;
+        border:1px solid rgba(201,168,76,0.3);
+        border-radius:999px;
+        color:var(--gold);
+        font-family:var(--fb);font-size:13px;font-weight:600;
+        text-decoration:none;
+        background:rgba(201,168,76,0.07);
+        transition:all 0.2s;
+      " onmouseover="this.style.background='rgba(201,168,76,0.14)'" onmouseout="this.style.background='rgba(201,168,76,0.07)'">
+        💬 Topluluk Yorumlarına Git
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </a>
+    </div>
+
   </div>
 </div>
+
+<!-- ══════════════ KALICI YORUM BÖLÜMÜ ══════════════
+     Bu bölüm her zaman görünür — test çözmek gerekmez.
+     Sayfanın en altına kaydırınca görünür.
+════════════════════════════════════════════════════ -->
+<section class="community-section" id="community-section" aria-label="Topluluk yorumları">
+
+  <div class="community-divider">
+    <div class="community-divider__inner">
+      <span class="community-divider__dot"></span>
+      <span class="community-divider__label">Topluluk</span>
+    </div>
+  </div>
+
+  <div class="community-info">
+    <div class="community-info__icon">💬</div>
+    <div class="community-info__body">
+      <div class="community-info__title">Almanca yolculuğunu paylaş</div>
+      <div class="community-info__desc">
+        Testi çözdükten sonra sonucunu paylaş ya da test çözmeden de yorum yap — Almanca öğrenme deneyimini, ipuçlarını ve sorularını buraya bırak.
+        Yorumlar için <a href="/login.html">ücretsiz giriş</a> yeterli.
+      </div>
+    </div>
+  </div>
+
+  <!-- Yorumlar buraya mount edilir -->
+  <div id="global-comments-mount"></div>
+
+</section>
+
+<!-- ─────── SCRIPTS ─────── -->
 <script src="../../js/seviyetespit.js"></script>
+
+<!-- seviyetespit.js'den score/wrongs'a erişmek için köprü fonksiyonu -->
 <script>
+// Bu fonksiyon module script'ten çağrılarak klasik script kapsamındaki
+// score ve wrongs değişkenlerini güvenle günceller.
+window.svtApplyState = function(s, w) {
+  score  = typeof s === 'number' ? s : 0;
+  wrongs = Array.isArray(w) ? w : [];
+};
+
+// Ekran geçişlerinde body class güncelle (yorumlar bölümü stili için)
+(function patchShow() {
+  var orig = window.show;
+  window.show = function(id) {
+    orig(id);
+    document.body.classList.toggle('quiz-active',   id === 'screen-quiz');
+    document.body.classList.toggle('result-active', id === 'screen-result');
+  };
+})();
 </script>
+
+<!-- Firebase & Yorumlar module script -->
 <script type="module">
   import { auth, db }         from '../../js/firebase.js';
   import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -334,31 +449,20 @@
     from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
   import { initComments } from '../../src/components/comments.js';
 
-  let _cmDone = false;
-  const resultEl = document.getElementById('screen-result');
+  /* ── Yorumları sayfa yüklenince her zaman başlat ── */
+  initComments('global-comments-mount', {
+    context:   'seviyetespit',
+    contextId: '',
+  });
 
-  /* ── Yorumları başlat ── */
-  function _tryInitComments() {
-    if (_cmDone) return;
-    if (!resultEl.classList.contains('active')) return;
-    _cmDone = true;
-    const level = (document.getElementById('result-badge')?.textContent || '').trim();
-    const sc    = parseInt(document.getElementById('result-score-num')?.textContent || '0', 10);
-    initComments('cm-result-mount', {
-      context: 'seviyetespit', contextId: '',
-      contextData: level ? { level, score: sc, total: 25 } : null,
-    });
-  }
-
-  /* ── Test tamamlandı → Firestore'a kaydet ── */
+  /* ── Test tamamlandında Firestore'a kaydet ── */
   document.addEventListener('svt:result', async (e) => {
     const { score, wrongs } = e.detail;
     const level = (document.getElementById('result-badge')?.textContent || '').trim();
 
-    // sessionStorage (login redirect için yedek)
-    sessionStorage.setItem('svt_result', JSON.stringify({ score, wrongs }));
+    // sessionStorage (logout sonrası bile kalsın)
+    sessionStorage.setItem('svt_result', JSON.stringify({ score, wrongs, total: 25 }));
 
-    // Firestore (giriş yaptıysa kalıcı kaydet)
     const user = auth.currentUser;
     if (user) {
       try {
@@ -370,49 +474,52 @@
     }
   });
 
-  /* ── Yeniden teste başlandı → temizle ── */
-  document.addEventListener('svt:start', () => {
-    _cmDone = false;
-  });
-
-  /* ── Sayfa yüklenince: giriş yaptıysa son sonucu getir ── */
+  /* ── Giriş yapılmışsa önceki sonucu getir (sessizce) ── */
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;
-    if (resultEl.classList.contains('active')) return; // zaten sonuç ekranındaysa dokunma
+    // Zaten sonuç ekranındaysa dokunma
+    if (document.getElementById('screen-result')?.classList.contains('active')) return;
+    // sessionStorage'da zaten sonuç varsa dokunma
+    if (sessionStorage.getItem('svt_result')) return;
 
     try {
       const snap = await getDoc(doc(db, 'userProfiles', user.uid));
       if (!snap.exists()) return;
       const saved = snap.data().levelTestResult;
-      if (!saved) return;
+      if (!saved || typeof saved.score !== 'number') return;
 
-      window.score  = saved.score  ?? 0;
-      window.wrongs = saved.wrongs ?? [];
-      showResult(); // global fonksiyon seviyetespit.js'den geliyor
+      // Klasik script scope'undaki değişkenleri güvenle güncelle
+      if (typeof window.svtApplyState === 'function') {
+        window.svtApplyState(saved.score, saved.wrongs || []);
+      }
+      if (typeof showResult === 'function') showResult();
     } catch (err) { console.warn('[svt] Firestore okuma:', err); }
   });
-
-  /* ── screen-result active olunca yorumları başlat ── */
-  new MutationObserver(() => {
-    if (!resultEl.classList.contains('active')) { _cmDone = false; return; }
-    _tryInitComments();
-  }).observe(resultEl, { attributes: true, attributeFilter: ['class'] });
-
-  /* ── Sayfa yüklenince zaten active mi? (sessionStorage restore sonrası) ── */
-  _tryInitComments();
 </script>
+
+<!-- Sayfa yüklenince sessionStorage'dan sonuç varsa geri yükle -->
 <script>
-// Sayfa yüklenince kayıtlı sonuç varsa geri yükle
-(function restoreResult() {
-  const saved = sessionStorage.getItem('svt_result');
-  if (!saved) return;
+(function restoreFromStorage() {
+  var raw = sessionStorage.getItem('svt_result');
+  if (!raw) return;
   try {
-    const data = JSON.parse(saved);
-    score  = data.score  ?? 0;
-    wrongs = data.wrongs ?? [];
-    showResult();
-  } catch { sessionStorage.removeItem('svt_result'); }
+    var data = JSON.parse(raw);
+    if (typeof data.score !== 'number') return;
+    score  = data.score;
+    wrongs = data.wrongs || [];
+    if (typeof showResult === 'function') showResult();
+  } catch(e) {
+    sessionStorage.removeItem('svt_result');
+  }
 })();
 </script>
+
+<!-- SVT başlatıldığında event -->
+<script>
+document.addEventListener('svt:start', function() {
+  sessionStorage.removeItem('svt_result');
+});
+</script>
+
 </body>
 </html>

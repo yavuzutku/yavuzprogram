@@ -355,8 +355,8 @@ async function openPopup() {
       <button class="ok-psave" id="ppSave">+ Sözlüğe Ekle</button>
     </div>`;
 
-  /* İçerik yüklendi → gerçek yüksekliğe göre yeniden konumlandır */
-  positionPopup(btnRect);
+  /* İçerik yüklendi → tarayıcı layout'u bitirince gerçek yüksekliğe göre yeniden konumlandır */
+  requestAnimationFrame(() => positionPopup(btnRect));
 
   renderTagChips("ppTags", wikiData.autoTags || [], extractAllTags(_userWords));
 

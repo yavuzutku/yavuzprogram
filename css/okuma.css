@@ -345,6 +345,8 @@ body.ok-light .ok-toolbar { background: rgba(244,240,232,0.92); }
   z-index: 9000;
   min-width: 260px;
   max-width: 320px;
+  max-height: calc(100vh - 20px);
+  overflow-y: auto;
   background: var(--ok-surface);
   border: 1px solid rgba(201,168,76,0.2);
   border-radius: 16px;

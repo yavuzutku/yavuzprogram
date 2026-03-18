@@ -21,13 +21,10 @@ function show(name) {
   screens[name].classList.remove('hidden');
 }
 
-// ── TÜMÜ DOMContentLoaded İÇİNDE ──────────────────────
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ── Auth + Kelime Yükle ──────────────────────────────
   onAuthChange(async (user) => {
     if (!user) {
-      // Giriş yoksa — quiz başlatma butonunu kapat, banner göster
       const startBtn = document.getElementById('startBtn');
       const wrap = startBtn?.closest('.start-wrap');
       if (wrap) {
@@ -44,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
   
-    // Giriş yapılmış — normal akış
     try {
       const data = await getWords(user.uid);
       allWords = data.map(d => ({ word: d.word, meaning: d.meaning })).filter(d => d.word && d.meaning);
@@ -57,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ── Stepper ──────────────────────────────────────────
   const countVal  = document.getElementById('countVal');
   const countDown = document.getElementById('countDown');
   const countUp   = document.getElementById('countUp');
@@ -69,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (totalCount < 50) { totalCount += 5; countVal.textContent = totalCount; }
   });
 
-  // ── Başlat ───────────────────────────────────────────
   document.getElementById('startBtn').addEventListener('click', () => {
     if (allWords.length < 4) {
       alert('Quiz için en az 4 kelime gerekli. Önce kelime ekle!');
@@ -83,28 +77,24 @@ document.addEventListener("DOMContentLoaded", () => {
     renderQuestion();
   });
 
-  // ── Sonraki Soru ─────────────────────────────────────
   document.getElementById('nextBtn').addEventListener('click', () => {
     current++;
     if (current >= questions.length) showResult();
     else renderQuestion();
   });
 
-  // ── Yazarak Cevaplama ────────────────────────────────
   document.getElementById('checkBtn').addEventListener('click', checkTyping);
   document.getElementById('typeInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') checkTyping();
   });
 
-  // ── Tekrar / Ana Sayfa ───────────────────────────────
   document.getElementById('restartBtn').addEventListener('click', () => show('start'));
   document.getElementById('homeBtn').addEventListener('click', () => {
-    window.location.href = '../anasayfa/';
+    window.location.href = '/';
   });
 
-}); // DOMContentLoaded sonu
+});
 
-// ── SORU ÜRETİCİ ──────────────────────────────────────
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -140,7 +130,6 @@ function buildQuestions() {
   }
 }
 
-// ── SORU RENDER ───────────────────────────────────────
 function renderQuestion() {
   const q = questions[current];
 
@@ -183,7 +172,6 @@ function renderQuestion() {
   }
 }
 
-// ── ÇOKTAN SEÇMELİ ────────────────────────────────────
 function buildChoices(q) {
   const grid = document.getElementById('choicesGrid');
   grid.innerHTML = '';
@@ -208,7 +196,6 @@ function handleChoice(chosen, correct, grid) {
   showFeedback(isCorrect, correct);
 }
 
-// ── YAZARAK CEVAPLAMA ─────────────────────────────────
 function normalize(str) {
   return str.trim().toLowerCase()
     .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
@@ -236,7 +223,6 @@ function checkTyping() {
   showFeedback(isCorrect, q.answer);
 }
 
-// ── FEEDBACK ──────────────────────────────────────────
 function showFeedback(isCorrect, correct) {
   const fb   = document.getElementById('feedback');
   const icon = document.getElementById('feedbackIcon');
@@ -253,7 +239,6 @@ function hideFeedback() {
   document.getElementById('feedback').classList.add('hidden');
 }
 
-// ── SONUÇ ─────────────────────────────────────────────
 function showResult() {
   show('result');
   const total   = questions.length;

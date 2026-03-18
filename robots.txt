@@ -1,8 +1,7 @@
 User-agent: *
 Allow: /
 
-# Giriş gerektiren uygulama sayfalarını indexleme
-Disallow: /anasayfa/
+# Giriş gerektiren uygulama sayfaları
 Disallow: /ai/
 
 # Sitemap

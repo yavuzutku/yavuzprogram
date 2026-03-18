@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Ana sayfa — en yüksek öncelik -->
+  <!-- Ana sayfa (Dashboard) -->
   <url>
     <loc>https://almancapratik.com/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -12,15 +12,15 @@
   <!-- Giriş -->
   <url>
     <loc>https://almancapratik.com/login.html</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
 
-  <!-- Der die das artikel bulucu — yüksek organik potansiyel -->
+  <!-- Der die das artikel bulucu -->
   <url>
     <loc>https://almancapratik.com/artikel/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -28,7 +28,7 @@
   <!-- Almanca cümle örnekleri -->
   <url>
     <loc>https://almancapratik.com/cumlebul/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -36,7 +36,7 @@
   <!-- Almanca-Türkçe çeviri -->
   <url>
     <loc>https://almancapratik.com/ceviri/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -44,7 +44,7 @@
   <!-- Kelime quizi -->
   <url>
     <loc>https://almancapratik.com/quiz/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -52,7 +52,7 @@
   <!-- Metin analizi -->
   <url>
     <loc>https://almancapratik.com/metin/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -60,7 +60,7 @@
   <!-- Kelime listesi -->
   <url>
     <loc>https://almancapratik.com/kelimeler/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -68,7 +68,7 @@
   <!-- Kelime ekleme -->
   <url>
     <loc>https://almancapratik.com/wordsadd/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -76,15 +76,15 @@
   <!-- Tek kelime ekleme -->
   <url>
     <loc>https://almancapratik.com/singleadd/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- Geçmiş -->
+  <!-- Metin geçmişi -->
   <url>
     <loc>https://almancapratik.com/gecmis/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -92,30 +92,53 @@
   <!-- Okuma modu -->
   <url>
     <loc>https://almancapratik.com/okuma/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+
+  <!-- Dersler -->
+  <url>
+    <loc>https://almancapratik.com/dersler/</loc>
+    <lastmod>2026-03-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://almancapratik.com/blog/</loc>
+    <lastmod>2026-03-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Seviye testi -->
+  <url>
+    <loc>https://almancapratik.com/seviyeler/seviyetespit/</loc>
+    <lastmod>2026-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
 
   <!-- Sponsorlar -->
   <url>
     <loc>https://almancapratik.com/sponsorlar/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
 
-  <!-- Yasal sayfalar -->
+  <!-- Yasal -->
   <url>
     <loc>https://almancapratik.com/privacy.html</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-
   <url>
     <loc>https://almancapratik.com/kullanim-sartlari.html</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-03-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

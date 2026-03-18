@@ -118,7 +118,12 @@
         <button class="tb-btn" data-cmd="bold" title="Kalın"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg></button>
         <button class="tb-btn" data-cmd="italic" title="İtalik"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
         <button class="tb-btn" data-cmd="underline" title="Altı çizili"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></button>
-        <button class="tb-btn" data-cmd="highlight" title="Vurgula" style="font-size:14px;font-weight:700;color:#ffd250;">H</button>
+        <div class="tb-highlight-wrap" id="tbHighlightWrap">
+          <button class="tb-highlight-btn" id="tbHighlightBtn" title="Vurgula (renk seç)">H</button>
+          <div class="tb-color-palette" id="tbColorPalette">
+            <!-- Swatchlar JS tarafından buildHighlightPalette() ile eklenir -->
+          </div>
+        </div>        
         <div class="tb-sep"></div>
         <button class="tb-btn" data-cmd="h2" title="H2">H2</button>
         <button class="tb-btn" data-cmd="h3" title="H3">H3</button>
@@ -163,13 +168,40 @@
       <!-- Kapak görseli -->
       <div class="sidebar-card">
         <div class="sidebar-card-title">Kapak Görseli</div>
+      
+        <!-- Sekme seçimi: Dosya / URL -->
+        <div class="cover-tabs">
+          <button class="cover-tab active" id="coverTabFile">📁 Dosyadan</button>
+          <button class="cover-tab"        id="coverTabUrl" >🔗 URL ile</button>
+        </div>
+      
+        <!-- Dosya yükleme (varsayılan görünür) -->
         <div class="cover-upload-area" id="coverUploadArea">
           <span class="cover-upload-icon">🖼</span>
           <span class="cover-upload-text">Görsel seç veya sürükle</span>
-          <span style="font-size:10px;color:var(--text-muted);margin-top:2px;">Max 8MB · Otomatik sıkıştırılır</span>
+          <span style="font-size:10px;color:var(--text-muted);margin-top:2px;">
+            Max 8MB · En-boy oranı korunur
+          </span>
           <img id="coverPreview" src="" alt="" style="display:none">
           <button class="cover-remove-btn" id="coverRemoveBtn" style="display:none" title="Kaldır">✕</button>
         </div>
+      
+        <!-- URL girişi (gizli; sekme ile açılır) -->
+        <div class="cover-url-area" id="coverUrlArea">
+          <div class="cover-url-input-wrap">
+            <input
+              type="url"
+              id="coverUrlInput"
+              class="cover-url-input"
+              placeholder="https://example.com/gorsel.jpg"
+              autocomplete="off"
+            />
+            <button class="cover-url-apply" id="coverUrlApply">Uygula</button>
+          </div>
+          <img id="coverUrlPreview" class="cover-url-preview" src="" alt="Önizleme">
+          <button class="cover-url-clear" id="coverUrlClear">✕ Görseli Kaldır</button>
+        </div>
+      
         <input type="file" id="coverInput" class="cover-upload-input" accept="image/*">
       </div>
 

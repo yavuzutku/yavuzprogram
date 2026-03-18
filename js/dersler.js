@@ -1,4 +1,3 @@
-
 import { onAdminChange } from "../src/admin.js";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -23,12 +22,28 @@ const LESSONS_COL = collection(db, "lessons");
 let isAdmin          = false;
 let currentUser      = null;
 let editingId        = null;
-let coverDataUrl     = null;
+let coverDataUrl     = null;  /* base64 data URL veya https:// URL */
+let coverMode        = "file"; /* "file" | "url" */
 let deleteTargetId   = null;
 let wordTimer        = null;
 let activeCatFilter  = "all";
 let allLessons       = [];
 let _currentLessonId = null;
+
+/* ── Highlight renk paleti ── */
+const HIGHLIGHT_COLORS = [
+  { hex: "#ffd250", label: "Sarı",   alpha: "rgba(255,210,80,0.38)"  },
+  { hex: "#4ade80", label: "Yeşil",  alpha: "rgba(74,222,128,0.32)"  },
+  { hex: "#60c8f0", label: "Mavi",   alpha: "rgba(96,200,240,0.35)"  },
+  { hex: "#818cf8", label: "Mor",    alpha: "rgba(129,140,248,0.38)" },
+  { hex: "#f472b6", label: "Pembe",  alpha: "rgba(244,114,182,0.38)" },
+  { hex: "#fb923c", label: "Turuncu",alpha: "rgba(251,146,60,0.38)"  },
+  { hex: "#f87171", label: "Kırmızı",alpha: "rgba(248,113,113,0.35)" },
+  { hex: "#2dd4bf", label: "Teal",   alpha: "rgba(45,212,191,0.32)"  },
+  { hex: "#a78bfa", label: "Lavanta",alpha: "rgba(167,139,250,0.38)" },
+  { hex: "#e2e8f0", label: "Beyaz",  alpha: "rgba(226,232,240,0.22)" },
+];
+let currentHlColor = HIGHLIGHT_COLORS[0]; /* varsayılan: sarı */
 
 /* ── Admin dinle ── */
 onAdminChange((adminStatus, user) => {
@@ -272,12 +287,13 @@ document.getElementById("btnDeleteCurrentLesson").addEventListener("click", () =
 function openEditor(lesson = null) {
   editingId    = lesson?.id      || null;
   coverDataUrl = lesson?.coverUrl || null;
+  coverMode    = "file";
 
   document.getElementById("editorTitle").value       = lesson?.title   || "";
   document.getElementById("editorContent").innerHTML = lesson?.content || "";
   document.getElementById("fieldExcerpt").value      = lesson?.excerpt || "";
 
-  // Kategori
+  /* Kategori */
   const catSel  = document.getElementById("fieldCategory");
   const stdCats = ["A1","A2","B1","B2","C1",""];
   if (lesson?.category && !stdCats.includes(lesson.category)) {
@@ -290,14 +306,21 @@ function openEditor(lesson = null) {
     document.getElementById("customCatWrap").style.display = "none";
   }
 
-  // Kapak
+  /* Kapak: dosya moduna sıfırla */
+  setCoverTab("file");
   const preview   = document.getElementById("coverPreview");
   const removeBtn = document.getElementById("coverRemoveBtn");
   if (lesson?.coverUrl) {
     preview.src = lesson.coverUrl; preview.style.display = "block"; removeBtn.style.display = "flex";
   } else { preview.src = ""; preview.style.display = "none"; removeBtn.style.display = "none"; }
 
-  // Status
+  /* URL alanını temizle */
+  document.getElementById("coverUrlInput").value = "";
+  document.getElementById("coverUrlPreview").classList.remove("visible");
+  document.getElementById("coverUrlPreview").src = "";
+  document.getElementById("coverUrlClear").classList.remove("visible");
+
+  /* Status */
   const pub = lesson?.published || false;
   document.getElementById("lessonStatusRow").className     = `status-row ${pub ? "status-published" : "status-draft"}`;
   document.getElementById("lessonStatusText").textContent  = pub ? "Yayında" : "Taslak";
@@ -307,10 +330,167 @@ function openEditor(lesson = null) {
   showView("viewEditor", editingId ? { edit: editingId } : {});
 }
 
+/* ── Kapak sekme değiştirme ─────────────────── */
+function setCoverTab(mode) {
+  coverMode = mode;
+  document.getElementById("coverTabFile").classList.toggle("active", mode === "file");
+  document.getElementById("coverTabUrl").classList.toggle("active",  mode === "url");
+  document.getElementById("coverUploadArea").classList.toggle("hidden", mode === "url");
+  document.getElementById("coverUrlArea").classList.toggle("active", mode === "url");
+}
+
+document.getElementById("coverTabFile").addEventListener("click", () => setCoverTab("file"));
+document.getElementById("coverTabUrl").addEventListener("click",  () => setCoverTab("url"));
+
+/* ── URL ile kapak ─────────────────────────── */
+function applyUrlCover(url) {
+  if (!url) return;
+  coverDataUrl = url;
+  const prev = document.getElementById("coverUrlPreview");
+  const clr  = document.getElementById("coverUrlClear");
+  prev.src = url;
+  prev.classList.add("visible");
+  clr.classList.add("visible");
+  toast("Kapak URL'i uygulandı", "ok");
+}
+
+document.getElementById("coverUrlApply").addEventListener("click", () => {
+  const url = document.getElementById("coverUrlInput").value.trim();
+  if (!url) return;
+  applyUrlCover(url);
+});
+document.getElementById("coverUrlInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const url = e.target.value.trim();
+    if (url) applyUrlCover(url);
+  }
+});
+document.getElementById("coverUrlClear").addEventListener("click", () => {
+  coverDataUrl = null;
+  document.getElementById("coverUrlInput").value = "";
+  document.getElementById("coverUrlPreview").classList.remove("visible");
+  document.getElementById("coverUrlPreview").src = "";
+  document.getElementById("coverUrlClear").classList.remove("visible");
+});
+
 /* Özel kategori toggle */
 document.getElementById("fieldCategory").addEventListener("change", function() {
   document.getElementById("customCatWrap").style.display = this.value === "__custom__" ? "block" : "none";
 });
+
+/* ══════════════════════════════════════════════
+   HIGHLIGHT RENK PALETİ
+══════════════════════════════════════════════ */
+function buildHighlightPalette() {
+  const wrap    = document.getElementById("tbHighlightWrap");
+  const btn     = document.getElementById("tbHighlightBtn");
+  const palette = document.getElementById("tbColorPalette");
+
+  /* Swatches oluştur */
+  HIGHLIGHT_COLORS.forEach((c, i) => {
+    const sw = document.createElement("button");
+    sw.className             = "tb-color-swatch" + (i === 0 ? " active" : "");
+    sw.style.background      = c.hex;
+    sw.title                 = c.label;
+    sw.dataset.color         = c.alpha;
+    sw.dataset.hex           = c.hex;
+    sw.addEventListener("mousedown", e => {
+      e.preventDefault();
+      /* Aktif swatch işaretle */
+      palette.querySelectorAll(".tb-color-swatch").forEach(s => s.classList.remove("active"));
+      sw.classList.add("active");
+      /* Rengi güncelle */
+      currentHlColor = c;
+      btn.style.setProperty("--hl-current", c.hex);
+      /* Vurguyu uygula */
+      applyHighlight(c.alpha);
+      closePalette();
+    });
+    palette.appendChild(sw);
+  });
+
+  /* Sil butonu (vurguyu kaldır) */
+  const clrSw = document.createElement("button");
+  clrSw.className = "tb-color-swatch tb-color-swatch--clear";
+  clrSw.title = "Vurguyu Kaldır";
+  clrSw.innerHTML = "✕";
+  clrSw.addEventListener("mousedown", e => {
+    e.preventDefault();
+    removeHighlight();
+    closePalette();
+  });
+  palette.appendChild(clrSw);
+
+  /* Palette aç/kapat */
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    const isOpen = palette.classList.contains("open");
+    if (isOpen) { closePalette(); return; }
+
+    /* Seçim varsa direkt uygula, yoksa paleti aç */
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed) {
+      applyHighlight(currentHlColor.alpha);
+    } else {
+      palette.classList.add("open");
+    }
+  });
+
+  document.addEventListener("click", e => {
+    if (!wrap.contains(e.target)) closePalette();
+  });
+}
+
+function closePalette() {
+  document.getElementById("tbColorPalette").classList.remove("open");
+}
+
+function applyHighlight(bgColor) {
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount || sel.isCollapsed) return;
+
+  const range = sel.getRangeAt(0);
+
+  /* Zaten mark içindeyse güncelle */
+  const ancestor = range.commonAncestorContainer;
+  const existingMark = (ancestor.nodeType === 3 ? ancestor.parentElement : ancestor).closest("mark");
+  if (existingMark) {
+    existingMark.style.background = bgColor;
+    sel.removeAllRanges();
+    return;
+  }
+
+  /* Yeni mark ekle */
+  try {
+    const m = document.createElement("mark");
+    m.style.background = bgColor;
+    range.surroundContents(m);
+  } catch {
+    const d = document.createElement("div");
+    d.appendChild(range.extractContents());
+    d.querySelectorAll("mark").forEach(m => m.replaceWith(...m.childNodes));
+    const m = document.createElement("mark");
+    m.style.background = bgColor;
+    m.innerHTML = d.innerHTML;
+    range.insertNode(m);
+  }
+  sel.removeAllRanges();
+  document.getElementById("editorContent").focus();
+}
+
+function removeHighlight() {
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  const ancestor = range.commonAncestorContainer;
+  const markEl = (ancestor.nodeType === 3 ? ancestor.parentElement : ancestor).closest("mark");
+  if (markEl) {
+    const p = markEl.parentNode;
+    while (markEl.firstChild) p.insertBefore(markEl.firstChild, markEl);
+    p.removeChild(markEl);
+  }
+  sel.removeAllRanges();
+}
 
 /* ── Toolbar ── */
 function getSelectionBlock() {
@@ -322,7 +502,7 @@ function getSelectionBlock() {
   return block ? block.tagName : "";
 }
 
-document.querySelectorAll(".tb-btn").forEach(btn => {
+document.querySelectorAll(".tb-btn[data-cmd]").forEach(btn => {
   btn.addEventListener("mousedown", e => {
     e.preventDefault();
     const cmd = btn.dataset.cmd;
@@ -331,30 +511,7 @@ document.querySelectorAll(".tb-btn").forEach(btn => {
     else if (cmd === "h3")        { const b = getSelectionBlock(); document.execCommand("formatBlock", false, b === "H3" ? "p" : "h3"); }
     else if (cmd === "blockquote"){ const b = getSelectionBlock(); document.execCommand("formatBlock", false, b === "BLOCKQUOTE" ? "p" : "blockquote"); }
     else if (cmd === "createLink"){ const u = prompt("Link URL:"); if (u) document.execCommand("createLink", false, u); }
-    else if (cmd === "highlight") {
-      const sel = window.getSelection();
-      if (sel && sel.rangeCount && !sel.isCollapsed) {
-        const range  = sel.getRangeAt(0);
-        const markEl = range.commonAncestorContainer.nodeType === 1
-          ? range.commonAncestorContainer.closest("mark")
-          : range.commonAncestorContainer.parentElement?.closest("mark");
-        if (markEl) {
-          const p = markEl.parentNode;
-          while (markEl.firstChild) p.insertBefore(markEl.firstChild, markEl);
-          p.removeChild(markEl);
-        } else {
-          try { const m = document.createElement("mark"); range.surroundContents(m); }
-          catch {
-            const d = document.createElement("div");
-            d.appendChild(range.extractContents());
-            d.querySelectorAll("mark").forEach(m => m.replaceWith(...m.childNodes));
-            const m = document.createElement("mark"); m.innerHTML = d.innerHTML; range.insertNode(m);
-          }
-        }
-        sel.removeAllRanges();
-      }
-    }
-    else if (cmd === "insertHR") { document.execCommand("insertHTML", false, "<hr>"); }
+    else if (cmd === "insertHR")  { document.execCommand("insertHTML", false, "<hr>"); }
     else if (cmd === "insertTable") {
       const rows = parseInt(prompt("Satır sayısı:","3")) || 3;
       const cols = parseInt(prompt("Sütun sayısı:","3")) || 3;
@@ -399,7 +556,9 @@ document.getElementById("editorContent").addEventListener("input", () => {
   clearTimeout(wordTimer); wordTimer = setTimeout(updateWordCount, 300);
 });
 
-/* ── Kapak yükleme ── */
+/* ══════════════════════════════════════════════
+   KAPAK DOSYA YÜKLEMESİ (letterbox canvas)
+══════════════════════════════════════════════ */
 const coverArea  = document.getElementById("coverUploadArea");
 const coverInput = document.getElementById("coverInput");
 
@@ -413,23 +572,47 @@ coverArea.addEventListener("drop", e => {
   const f = e.dataTransfer.files[0];
   if (f && f.type.startsWith("image/")) { coverInput.files = e.dataTransfer.files; coverInput.dispatchEvent(new Event("change")); }
 });
+
 coverInput.addEventListener("change", e => {
   const file = e.target.files[0]; if (!file) return;
   if (file.size > 8 * 1024 * 1024) { toast("Görsel 8MB'dan küçük olmalı", "err"); return; }
-  const img = new Image(), objectUrl = URL.createObjectURL(file);
+
+  const objectUrl = URL.createObjectURL(file);
+  const img       = new Image();
+
   img.onload = () => {
     URL.revokeObjectURL(objectUrl);
-    const MAX = 1200; let w = img.width, h = img.height;
-    if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-    const canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h;
-    canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-    coverDataUrl = canvas.toDataURL("image/jpeg", 0.80);
-    document.getElementById("coverPreview").src = coverDataUrl;
+
+    /* ── Letterbox: orijinal oran korunur, 16:9 kanvasa sığdırılır ── */
+    const TARGET_W = 1200;
+    const TARGET_H = 675; /* 16:9 */
+
+    const scale  = Math.min(TARGET_W / img.width, TARGET_H / img.height);
+    const drawW  = Math.round(img.width  * scale);
+    const drawH  = Math.round(img.height * scale);
+    const offsetX = Math.round((TARGET_W - drawW) / 2);
+    const offsetY = Math.round((TARGET_H - drawH) / 2);
+
+    const canvas = document.createElement("canvas");
+    canvas.width  = TARGET_W;
+    canvas.height = TARGET_H;
+    const ctx = canvas.getContext("2d");
+
+    /* Arka plan: site temasıyla uyumlu koyu renk */
+    ctx.fillStyle = "#0d0e14";
+    ctx.fillRect(0, 0, TARGET_W, TARGET_H);
+
+    ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+
+    coverDataUrl = canvas.toDataURL("image/jpeg", 0.82);
+    document.getElementById("coverPreview").src          = coverDataUrl;
     document.getElementById("coverPreview").style.display = "block";
     document.getElementById("coverRemoveBtn").style.display = "flex";
   };
+
   img.src = objectUrl;
 });
+
 document.getElementById("coverRemoveBtn").addEventListener("click", e => {
   e.stopPropagation(); coverDataUrl = null;
   document.getElementById("coverPreview").src = "";
@@ -438,7 +621,9 @@ document.getElementById("coverRemoveBtn").addEventListener("click", e => {
   coverInput.value = "";
 });
 
-/* ── Kaydet / Yayınla ── */
+/* ══════════════════════════════════════════════
+   KAYDET / YAYINLA
+══════════════════════════════════════════════ */
 async function saveLesson(publish) {
   if (!isAdmin) return;
   const title   = document.getElementById("editorTitle").value.trim();
@@ -592,14 +777,15 @@ window.confirmDeleteLesson = confirmDeleteLesson;
 /* ══════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════ */
-// dersler.js — sadece en alttaki init() fonksiyonunu bununla değiştir:
-
 (async function init() {
+  /* Highlight paletini kur */
+  buildHighlightPalette();
+
   const p    = new URLSearchParams(window.location.search);
   const slug = p.get("ders");
   const id   = p.get("id");
   const edit = p.get("edit");
-  const cat  = p.get("cat");   // ← YENİ: navbar kategori linki
+  const cat  = p.get("cat");
 
   await loadLessons();
 
@@ -609,6 +795,6 @@ window.confirmDeleteLesson = confirmDeleteLesson;
   else if (id)         await loadLessonById(id);
   else {
     showViewOnly("viewList");
-    if (cat) setCatFilter(cat);  // ← YENİ: ?cat=A1 → filtreyi uygula
+    if (cat) setCatFilter(cat);
   }
 })();

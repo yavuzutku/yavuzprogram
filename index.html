@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="favicon.ico">
-
 <title>AlmancaPratik — Ücretsiz Almanca Öğrenme Platformu</title>
 <meta name="description" content="Türkçe arayüzlü ücretsiz Almanca öğrenme platformu. Der die das artikel bulucu, kelime quizi, metin analizi ve çeviri aracıyla A1–C1 arası pratik yap.">
 <meta name="robots" content="index, follow">
@@ -20,148 +19,236 @@
 {"@context":"https://schema.org","@type":"WebSite","url":"https://almancapratik.com/","name":"AlmancaPratik","description":"Türkçe arayüzlü ücretsiz Almanca öğrenme platformu.","inLanguage":"tr","potentialAction":{"@type":"SearchAction","target":"https://almancapratik.com/artikel/?word={search_term_string}","query-input":"required name=search_term_string"}}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"AlmancaPratik ücretsiz mi?","acceptedAnswer":{"@type":"Answer","text":"Evet. Artikel bulucu, cümle örnekleri, çeviri aracı ve seviye testi hesap gerektirmez."}},{"@type":"Question","name":"Der die das artikel bulucu nasıl çalışır?","acceptedAnswer":{"@type":"Answer","text":"Wiktionary verileri kullanılarak girilen Almanca kelimenin der, die veya das artikeli anında bulunur."}},{"@type":"Question","name":"Hangi Almanca seviyeleri destekleniyor?","acceptedAnswer":{"@type":"Answer","text":"A1 başlangıçtan C1 ileri seviyeye kadar tüm seviyeler desteklenmektedir."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"AlmancaPratik ücretsiz mi?","acceptedAnswer":{"@type":"Answer","text":"Evet. Artikel bulucu, cümle örnekleri, çeviri ve seviye testi hesap gerektirmez."}},{"@type":"Question","name":"Der die das artikel bulucu nasıl çalışır?","acceptedAnswer":{"@type":"Answer","text":"Wiktionary verileri kullanılarak girilen Almanca kelimenin der, die veya das artikeli anında bulunur."}},{"@type":"Question","name":"Hangi Almanca seviyeleri destekleniyor?","acceptedAnswer":{"@type":"Answer","text":"A1'den C1'e kadar tüm CEFR seviyeleri desteklenmektedir."}}]}
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/global.css">
 
 <style>
-:root{
-  --bg:#070709;--surface:rgba(255,255,255,0.035);
-  --border:rgba(255,255,255,0.07);--border-h:rgba(255,255,255,0.14);
-  --text:#f0eee8;--text-2:rgba(240,238,232,0.52);--text-3:rgba(240,238,232,0.28);
-  --gold:#c9a84c;--gold-l:#e8c97a;
-  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
-  --tr:0.22s cubic-bezier(0.4,0,0.2,1);
+/* ─── Design tokens ─────────────────────────────── */
+:root {
+  --bg:       #070709;
+  --bg-card:  rgba(255,255,255,0.03);
+  --bg-card-h:rgba(255,255,255,0.055);
+  --border:   rgba(255,255,255,0.07);
+  --border-h: rgba(255,255,255,0.14);
+  --text:     #f0eee8;
+  --t2:       rgba(240,238,232,0.52);
+  --t3:       rgba(240,238,232,0.28);
+  --gold:     #c9a84c;
+  --gold-l:   #e8c97a;
+  --tr:       0.2s cubic-bezier(0.4,0,0.2,1);
+  --fd: 'Syne', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+  --fm: 'DM Mono', monospace;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { font-family:var(--fb); background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
 
-.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 100% 70% at 50% 0%,black 10%,transparent 100%);}
-.bg-g1{position:absolute;width:700px;height:700px;top:-250px;left:-180px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.09),transparent 65%);filter:blur(80px);animation:drift 16s ease-in-out infinite alternate;}
-.bg-g2{position:absolute;width:500px;height:500px;bottom:-100px;right:-150px;border-radius:50%;background:radial-gradient(circle,rgba(96,200,240,0.05),transparent 65%);filter:blur(100px);animation:drift 20s ease-in-out infinite alternate-reverse;}
-@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.08)}}
+/* ─── Background ────────────────────────────────── */
+.bg { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.bg-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px); background-size:52px 52px; mask-image:radial-gradient(ellipse 100% 70% at 50% 0%,black 5%,transparent 100%); }
+.bg-orb { position:absolute; border-radius:50%; filter:blur(100px); }
+.bg-orb-1 { width:640px; height:640px; top:-280px; left:-200px; background:radial-gradient(circle,rgba(201,168,76,0.1),transparent 65%); animation:drift 18s ease-in-out infinite alternate; }
+.bg-orb-2 { width:480px; height:480px; bottom:-80px; right:-160px; background:radial-gradient(circle,rgba(96,200,240,0.06),transparent 65%); animation:drift 22s ease-in-out infinite alternate-reverse; }
+@keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(40px,28px) scale(1.07)} }
 
-.page{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:80px 32px 100px;}
-@media(max-width:640px){.page{padding:72px 18px 80px;}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+/* ─── Layout ────────────────────────────────────── */
+.page { position:relative; z-index:1; max-width:1060px; margin:0 auto; padding:80px 32px 120px; }
+@media(max-width:600px){ .page{ padding:72px 18px 80px; } }
 
-/* HERO */
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding:72px 0 88px;border-bottom:1px solid var(--border);animation:fadeUp 0.55s cubic-bezier(0.4,0,0.2,1) both;}
-@media(max-width:760px){.hero{grid-template-columns:1fr;gap:40px;padding:56px 0 68px;}}
+/* ─── Hero ──────────────────────────────────────── */
+.hero {
+  padding:88px 0 100px;
+  border-bottom:1px solid var(--border);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:72px;
+  align-items:center;
+}
+@media(max-width:780px){ .hero{ grid-template-columns:1fr; gap:48px; padding:64px 0 80px; } }
 
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);opacity:0.75;margin-bottom:22px;}
-.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:pulse 2.5s ease-in-out infinite;flex-shrink:0;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.35;transform:scale(0.65)}}
+.hero-kicker {
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--fm); font-size:10px; font-weight:500; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:24px;
+}
+.kicker-dot { width:5px; height:5px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold); animation:pulse 2.8s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.6)} }
 
-.hero-title{font-family:var(--fd);font-size:clamp(38px,5.5vw,66px);font-weight:800;letter-spacing:-0.04em;line-height:0.95;color:var(--text);margin-bottom:20px;}
-.hero-title-accent{background:linear-gradient(135deg,#c9a84c 0%,#f5dc8a 40%,#c9a84c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:shimmer 5s ease-in-out infinite;display:block;}
-@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-title {
+  font-family:var(--fd);
+  font-size:clamp(42px,5.8vw,70px);
+  font-weight:800;
+  letter-spacing:-0.045em;
+  line-height:0.94;
+  color:var(--text);
+  margin-bottom:22px;
+}
+.title-em {
+  display:block;
+  background:linear-gradient(135deg,#c9a84c 0%,#f5dc8a 42%,#c9a84c 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; background-size:200% 200%;
+  animation:shimmer 5s ease-in-out infinite;
+}
+@keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
 
-.hero-sub{font-size:15px;line-height:1.8;color:var(--text-2);margin-bottom:34px;max-width:440px;}
-.hero-sub a{color:var(--gold);text-decoration:none;}
-.hero-sub a:hover{text-decoration:underline;}
+.hero-sub {
+  font-size:15px; line-height:1.82; color:var(--t2);
+  margin-bottom:38px; max-width:440px;
+}
+.hero-sub a { color:var(--gold); text-decoration:none; }
+.hero-sub a:hover { text-decoration:underline; }
 
-.hero-actions{display:flex;flex-wrap:wrap;gap:10px;}
-.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#0a0a0f;font-family:var(--fd);font-size:14px;font-weight:800;border-radius:10px;text-decoration:none;letter-spacing:-0.01em;box-shadow:0 6px 24px rgba(201,168,76,0.35);transition:var(--tr);}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(201,168,76,0.5);}
-.btn-primary svg{width:15px;height:15px;flex-shrink:0;}
-.btn-secondary{display:inline-flex;align-items:center;gap:7px;padding:13px 20px;background:var(--surface);border:1px solid var(--border);color:var(--text-2);font-family:var(--fb);font-size:14px;font-weight:500;border-radius:10px;text-decoration:none;transition:var(--tr);}
-.btn-secondary:hover{border-color:var(--border-h);color:var(--text);background:rgba(255,255,255,0.06);}
+.hero-cta { display:flex; gap:10px; flex-wrap:wrap; }
 
-/* Hero right — araç listesi */
-.hero-right{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
-.tool-row{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);transition:background var(--tr);text-decoration:none;}
-.tool-row:last-child{border-bottom:none;}
-.tool-row:hover{background:rgba(255,255,255,0.04);}
-.tool-row-name{font-size:13px;color:var(--text-2);transition:color var(--tr);}
-.tool-row:hover .tool-row-name{color:var(--text);}
-.tool-badge{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.07em;padding:3px 9px;border-radius:5px;white-space:nowrap;}
-.tb-gold{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:var(--gold);}
-.tb-blue{background:rgba(96,200,240,0.1);border:1px solid rgba(96,200,240,0.2);color:#60c8f0;}
-.tb-green{background:rgba(79,214,156,0.1);border:1px solid rgba(79,214,156,0.2);color:#4fd69c;}
-.tb-violet{background:rgba(160,100,255,0.1);border:1px solid rgba(160,100,255,0.2);color:#a064ff;}
-.tb-rose{background:rgba(240,112,104,0.1);border:1px solid rgba(240,112,104,0.2);color:#f07068;}
+.btn-cta {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 26px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  color:#0a0a0f; font-family:var(--fd); font-size:14px; font-weight:800;
+  border-radius:10px; text-decoration:none; letter-spacing:-0.01em;
+  box-shadow:0 6px 28px rgba(201,168,76,0.38); transition:var(--tr);
+}
+.btn-cta:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(201,168,76,0.54); }
+.btn-cta:active { transform:scale(0.97); }
+.btn-cta svg { width:15px; height:15px; flex-shrink:0; }
 
-/* SECTION */
-.section{padding:68px 0;border-bottom:1px solid var(--border);animation:fadeUp 0.55s 0.08s cubic-bezier(0.4,0,0.2,1) both;}
-.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;gap:16px;flex-wrap:wrap;}
-.section-tag{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;}
-.section-title{font-family:var(--fd);font-size:clamp(20px,3vw,28px);font-weight:800;letter-spacing:-0.025em;color:var(--text);}
-.section-cta{font-size:13px;color:var(--gold);text-decoration:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:gap var(--tr);}
-.section-cta:hover{gap:9px;}
+.btn-ghost {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:13px 20px;
+  background:var(--bg-card); border:1px solid var(--border);
+  color:var(--t2); font-family:var(--fb); font-size:14px; font-weight:500;
+  border-radius:10px; text-decoration:none; transition:var(--tr);
+}
+.btn-ghost:hover { border-color:var(--border-h); color:var(--text); background:var(--bg-card-h); }
 
-/* TOOLS GRID */
-.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-@media(max-width:680px){.tools-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:420px){.tools-grid{grid-template-columns:1fr;}}
+/* Hero right — stat table */
+.stat-table {
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:16px; overflow:hidden;
+}
+.stat-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 22px; border-bottom:1px solid var(--border);
+  text-decoration:none; transition:background var(--tr);
+}
+.stat-row:last-child { border-bottom:none; }
+.stat-row:hover { background:rgba(255,255,255,0.04); }
+.stat-row:hover .stat-label { color:var(--text); }
+.stat-label { font-size:13px; color:var(--t2); transition:color var(--tr); }
+.pill {
+  font-family:var(--fm); font-size:10px; font-weight:500; letter-spacing:0.07em;
+  padding:3px 9px; border-radius:5px; white-space:nowrap;
+}
+.pill-gold   { background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.22); color:var(--gold); }
+.pill-blue   { background:rgba(96,200,240,0.1);  border:1px solid rgba(96,200,240,0.2);  color:#60c8f0; }
+.pill-violet { background:rgba(160,100,255,0.1); border:1px solid rgba(160,100,255,0.2); color:#a064ff; }
+.pill-green  { background:rgba(79,214,156,0.1);  border:1px solid rgba(79,214,156,0.2);  color:#4fd69c; }
+.pill-rose   { background:rgba(240,112,104,0.1); border:1px solid rgba(240,112,104,0.2); color:#f07068; }
 
-.tool-card{background:var(--bg);padding:22px 20px;text-decoration:none;display:flex;flex-direction:column;gap:7px;transition:background var(--tr);position:relative;overflow:hidden;}
-.tool-card::after{content:'→';position:absolute;right:16px;bottom:18px;font-size:12px;color:var(--text-3);opacity:0;transition:opacity var(--tr),transform var(--tr);transform:translateX(-4px);}
-.tool-card:hover{background:rgba(255,255,255,0.022);}
-.tool-card:hover::after{opacity:1;transform:translateX(0);}
-.tool-card:hover .tool-name{color:var(--gold);}
-.tool-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text-2);margin-bottom:3px;transition:var(--tr);flex-shrink:0;}
-.tool-card:hover .tool-icon{border-color:rgba(201,168,76,0.25);color:var(--gold);}
-.tool-name{font-family:var(--fd);font-size:13.5px;font-weight:700;color:var(--text);letter-spacing:-0.01em;transition:color var(--tr);}
-.tool-meta{font-family:var(--fm);font-size:10.5px;color:var(--text-3);line-height:1.4;}
-.free-badge{margin-top:3px;font-family:var(--fm);font-size:10px;color:rgba(79,214,156,0.65);}
+/* ─── Section ───────────────────────────────────── */
+.section { padding:72px 0; border-bottom:1px solid var(--border); }
+.sec-head { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:36px; gap:16px; flex-wrap:wrap; }
+.sec-eyebrow { font-family:var(--fm); font-size:10px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:var(--t3); margin-bottom:7px; }
+.sec-title { font-family:var(--fd); font-size:clamp(20px,3vw,30px); font-weight:800; letter-spacing:-0.03em; color:var(--text); }
+.sec-link { font-size:13px; color:var(--gold); text-decoration:none; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; transition:gap var(--tr); font-weight:500; }
+.sec-link:hover { gap:9px; }
+.sec-link svg { width:13px; height:13px; }
 
-/* LEVELS */
-.levels-row{display:flex;gap:8px;flex-wrap:wrap;}
-.level-block{flex:1;min-width:130px;padding:18px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;gap:5px;text-decoration:none;transition:var(--tr);}
-.level-block:hover{border-color:var(--border-h);background:rgba(255,255,255,0.055);transform:translateY(-2px);}
-.level-code{font-family:var(--fd);font-size:17px;font-weight:800;}
-.level-name{font-size:11.5px;color:var(--text-3);}
-.lv-a1 .level-code{color:#22c55e;} .lv-a1:hover{border-color:rgba(34,197,94,0.3);}
-.lv-a2 .level-code{color:#86efac;} .lv-a2:hover{border-color:rgba(134,239,172,0.25);}
-.lv-b1 .level-code{color:#60c8f0;} .lv-b1:hover{border-color:rgba(96,200,240,0.3);}
-.lv-b2 .level-code{color:#818cf8;} .lv-b2:hover{border-color:rgba(129,140,248,0.25);}
-.lv-c1 .level-code{color:var(--gold);} .lv-c1:hover{border-color:rgba(201,168,76,0.3);}
-@media(max-width:480px){.level-block{min-width:calc(50% - 4px);}}
+/* ─── Tools grid ────────────────────────────────── */
+.tools-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--border); border-radius:14px; overflow:hidden;
+  gap:1px; background:var(--border);
+}
+@media(max-width:680px){ .tools-grid{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:400px){ .tools-grid{ grid-template-columns:1fr; } }
 
-/* CONTENT */
-.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:620px){.content-grid{grid-template-columns:1fr;}}
-.content-card{padding:24px 22px;background:var(--surface);border:1px solid var(--border);border-radius:13px;transition:border-color var(--tr);}
-.content-card:hover{border-color:var(--border-h);}
-.content-card--wide{grid-column:1/-1;}
-.cc-tag{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);opacity:0.7;margin-bottom:9px;}
-.content-card h2{font-family:var(--fd);font-size:clamp(14px,2vw,17px);font-weight:800;letter-spacing:-0.02em;color:var(--text);margin-bottom:11px;line-height:1.3;}
-.content-card p{font-size:13.5px;line-height:1.8;color:var(--text-2);margin-bottom:9px;}
-.content-card p:last-child{margin-bottom:0;}
-.content-card a{color:var(--gold);text-decoration:none;}
-.content-card a:hover{text-decoration:underline;}
-.content-card strong{color:var(--text);font-weight:600;}
+.tool-card {
+  background:var(--bg);
+  padding:24px 22px;
+  text-decoration:none; display:flex; flex-direction:column; gap:8px;
+  transition:background var(--tr); position:relative; overflow:hidden;
+}
+.tool-card:hover { background:rgba(255,255,255,0.024); }
+.tool-card:hover .tc-name { color:var(--gold); }
+.tool-card:hover .tc-icon { border-color:rgba(201,168,76,0.28); color:var(--gold); }
 
-/* FAQ */
-.faq-list{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
-.faq-item{padding:15px 17px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:9px;transition:border-color var(--tr);}
-.faq-item:hover{border-color:var(--border-h);}
-.faq-q{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;}
-.faq-a{font-size:13px;line-height:1.7;color:var(--text-2);}
-.faq-a a{color:var(--gold);text-decoration:none;}
-.faq-a a:hover{text-decoration:underline;}
+.tc-icon {
+  width:34px; height:34px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--border); background:rgba(255,255,255,0.03);
+  color:var(--t2); margin-bottom:2px; transition:var(--tr); flex-shrink:0;
+}
+.tc-icon svg { width:15px; height:15px; }
+.tc-name { font-family:var(--fd); font-size:13.5px; font-weight:700; color:var(--text); letter-spacing:-0.01em; transition:color var(--tr); }
+.tc-meta { font-family:var(--fm); font-size:10.5px; color:var(--t3); line-height:1.45; }
+.tc-free { margin-top:2px; font-family:var(--fm); font-size:10px; color:rgba(79,214,156,0.65); }
+.tc-arrow { position:absolute; right:16px; top:50%; transform:translateY(-50%) translateX(3px); font-size:13px; color:var(--t3); opacity:0; transition:var(--tr); }
+.tool-card:hover .tc-arrow { opacity:1; transform:translateY(-50%) translateX(0); }
 
-/* FOOTER */
-.page-footer{padding-top:44px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-.footer-copy{font-size:12px;color:var(--text-3);}
-.footer-links{display:flex;gap:18px;flex-wrap:wrap;}
-.footer-links a{font-size:12px;color:var(--text-3);text-decoration:none;transition:color var(--tr);}
-.footer-links a:hover{color:var(--gold);}
+/* ─── Levels ────────────────────────────────────── */
+.levels { display:flex; gap:10px; flex-wrap:wrap; }
+.lv {
+  flex:1; min-width:120px; padding:20px 18px;
+  background:var(--bg-card); border:1px solid var(--border); border-radius:12px;
+  display:flex; flex-direction:column; gap:5px;
+  text-decoration:none; transition:var(--tr);
+}
+.lv:hover { background:var(--bg-card-h); transform:translateY(-2px); }
+.lv-code { font-family:var(--fd); font-size:18px; font-weight:800; }
+.lv-name { font-size:11.5px; color:var(--t3); }
+.lv-a1 .lv-code{color:#22c55e;} .lv-a1:hover{border-color:rgba(34,197,94,0.28);}
+.lv-a2 .lv-code{color:#86efac;} .lv-a2:hover{border-color:rgba(134,239,172,0.22);}
+.lv-b1 .lv-code{color:#60c8f0;} .lv-b1:hover{border-color:rgba(96,200,240,0.28);}
+.lv-b2 .lv-code{color:#818cf8;} .lv-b2:hover{border-color:rgba(129,140,248,0.22);}
+.lv-c1 .lv-code{color:var(--gold);} .lv-c1:hover{border-color:rgba(201,168,76,0.28);}
+@media(max-width:480px){ .lv{ min-width:calc(50% - 5px); } }
+
+/* ─── Content cards ─────────────────────────────── */
+.content-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:640px){ .content-grid{ grid-template-columns:1fr; } }
+.cc { padding:26px 24px; background:var(--bg-card); border:1px solid var(--border); border-radius:13px; transition:border-color var(--tr); }
+.cc:hover { border-color:var(--border-h); }
+.cc-wide { grid-column:1/-1; }
+.cc-kicker { font-family:var(--fm); font-size:10px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); opacity:0.7; margin-bottom:10px; }
+.cc h2 { font-family:var(--fd); font-size:clamp(14px,2vw,17px); font-weight:800; letter-spacing:-0.02em; color:var(--text); margin-bottom:12px; line-height:1.3; }
+.cc p { font-size:13.5px; line-height:1.8; color:var(--t2); margin-bottom:9px; }
+.cc p:last-child { margin-bottom:0; }
+.cc a { color:var(--gold); text-decoration:none; }
+.cc a:hover { text-decoration:underline; }
+.cc strong { color:var(--text); font-weight:600; }
+
+/* ─── FAQ ───────────────────────────────────────── */
+.faq { display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+.faq-item { padding:15px 17px; background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:9px; transition:border-color var(--tr); }
+.faq-item:hover { border-color:var(--border-h); }
+.faq-q { font-family:var(--fd); font-size:13px; font-weight:700; color:var(--text); margin-bottom:5px; }
+.faq-a { font-size:13px; line-height:1.75; color:var(--t2); }
+.faq-a a { color:var(--gold); text-decoration:none; }
+.faq-a a:hover { text-decoration:underline; }
+
+/* ─── Footer ────────────────────────────────────── */
+.footer { padding-top:48px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:18px; }
+.footer-copy { font-size:12px; color:var(--t3); }
+.footer-links { display:flex; gap:20px; flex-wrap:wrap; }
+.footer-links a { font-size:12px; color:var(--t3); text-decoration:none; transition:color var(--tr); }
+.footer-links a:hover { color:var(--gold); }
 </style>
 </head>
 <body>
 
-<div class="bg" aria-hidden="true">
+<div class="bg">
   <div class="bg-grid"></div>
-  <div class="bg-g1"></div>
-  <div class="bg-g2"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
 </div>
 
 <!-- Navbar -->
@@ -172,160 +259,145 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
 
 <div class="page">
 
-  <!-- HERO -->
+  <!-- ── HERO ──────────────────────────────────── -->
   <section class="hero">
-    <div class="hero-left">
-      <div class="hero-eyebrow">
-        <span class="eyebrow-dot"></span>
-        Türkçe · Ücretsiz · A1–C1
-      </div>
+    <div>
+      <div class="hero-kicker"><span class="kicker-dot"></span>Türkçe · Ücretsiz · A1–C1</div>
       <h1 class="hero-title">
         Almancayı<br>
-        <span class="hero-title-accent">pratikle öğren.</span>
+        <span class="title-em">pratikle öğren.</span>
       </h1>
       <p class="hero-sub">
         <a href="/artikel/">Artikel bulucu</a>,
         <a href="/quiz/">kelime quizleri</a>,
         <a href="/metin/">metin analizi</a> ve
-        <a href="/ceviri/">çeviri aracıyla</a>
-        Almancanda hızla ilerle. Pek çok araç giriş gerektirmez.
+        <a href="/ceviri/">çeviri</a> ile Almancanda hızla ilerle.
+        Araçların büyük kısmı giriş gerektirmez.
       </p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="/pratik/">
+      <div class="hero-cta">
+        <a class="btn-cta" href="/pratik/">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          Tüm Araçlara Git
+          Tüm Araçlar
         </a>
-        <a class="btn-secondary" href="/seviyeler/seviyetespit/">Seviyemi Öğren →</a>
+        <a class="btn-ghost" href="/seviyeler/seviyetespit/">Seviyemi Öğren →</a>
       </div>
     </div>
 
-    <nav class="hero-right" aria-label="Platform araçları">
-      <a class="tool-row" href="/artikel/">
-        <span class="tool-row-name">Der Die Das Artikel Bulucu</span>
-        <span class="tool-badge tb-gold">Ücretsiz</span>
-      </a>
-      <a class="tool-row" href="/quiz/">
-        <span class="tool-row-name">Almanca Kelime Quizi</span>
-        <span class="tool-badge tb-violet">A1 → C1</span>
-      </a>
-      <a class="tool-row" href="/metin/">
-        <span class="tool-row-name">Metin Analizi &amp; Okuma</span>
-        <span class="tool-badge tb-blue">İnteraktif</span>
-      </a>
-      <a class="tool-row" href="/ceviri/">
-        <span class="tool-row-name">Almanca-Türkçe Çeviri</span>
-        <span class="tool-badge tb-gold">Ücretsiz</span>
-      </a>
-      <a class="tool-row" href="/cumlebul/">
-        <span class="tool-row-name">Cümle Örnekleri</span>
-        <span class="tool-badge tb-green">Wiktionary</span>
-      </a>
-      <a class="tool-row" href="/seviyeler/seviyetespit/">
-        <span class="tool-row-name">Seviye Testi</span>
-        <span class="tool-badge tb-rose">25 Soru</span>
-      </a>
+    <nav class="stat-table" aria-label="Platform araçları">
+      <a class="stat-row" href="/artikel/"><span class="stat-label">Der Die Das Artikel Bulucu</span><span class="pill pill-gold">Ücretsiz</span></a>
+      <a class="stat-row" href="/quiz/"><span class="stat-label">Almanca Kelime Quizi</span><span class="pill pill-violet">A1 → C1</span></a>
+      <a class="stat-row" href="/metin/"><span class="stat-label">Metin Analizi &amp; Okuma</span><span class="pill pill-blue">İnteraktif</span></a>
+      <a class="stat-row" href="/ceviri/"><span class="stat-label">Almanca-Türkçe Çeviri</span><span class="pill pill-gold">Ücretsiz</span></a>
+      <a class="stat-row" href="/cumlebul/"><span class="stat-label">Cümle Örnekleri</span><span class="pill pill-green">Wiktionary</span></a>
+      <a class="stat-row" href="/seviyeler/seviyetespit/"><span class="stat-label">Seviye Testi</span><span class="pill pill-rose">25 Soru</span></a>
     </nav>
   </section>
 
-  <!-- ARAÇLAR -->
-  <section class="section" aria-label="Araçlar">
-    <div class="section-head">
+  <!-- ── ARAÇLAR ────────────────────────────────── -->
+  <section class="section">
+    <div class="sec-head">
       <div>
-        <div class="section-tag">Araçlar</div>
-        <div class="section-title">Tüm araçlara tek yerden eriş</div>
+        <div class="sec-eyebrow">Araçlar</div>
+        <div class="sec-title">Tüm araçlara tek yerden eriş</div>
       </div>
-      <a class="section-cta" href="/pratik/">
+      <a class="sec-link" href="/pratik/">
         Panele Git
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
     </div>
     <nav class="tools-grid" aria-label="Araç listesi">
       <a class="tool-card" href="/artikel/">
-        <div class="tool-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <div class="tool-name">Artikel Bul</div>
-        <div class="tool-meta">der / die / das — Wiktionary</div>
-        <span class="free-badge">✓ Giriş gerektirmez</span>
+        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="tc-name">Artikel Bul</div>
+        <div class="tc-meta">der / die / das — Wiktionary</div>
+        <span class="tc-free">✓ Giriş gerektirmez</span>
+        <span class="tc-arrow">→</span>
       </a>
       <a class="tool-card" href="/cumlebul/">
-        <div class="tool-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <div class="tool-name">Cümle Örnekleri</div>
-        <div class="tool-meta">Wiktionary · Tatoeba</div>
-        <span class="free-badge">✓ Giriş gerektirmez</span>
+        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="tc-name">Cümle Örnekleri</div>
+        <div class="tc-meta">Wiktionary · Tatoeba</div>
+        <span class="tc-free">✓ Giriş gerektirmez</span>
+        <span class="tc-arrow">→</span>
       </a>
       <a class="tool-card" href="/ceviri/">
-        <div class="tool-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg></div>
-        <div class="tool-name">Çeviri</div>
-        <div class="tool-meta">Almanca ↔ Türkçe</div>
-        <span class="free-badge">✓ Giriş gerektirmez</span>
+        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg></div>
+        <div class="tc-name">Çeviri</div>
+        <div class="tc-meta">Almanca ↔ Türkçe</div>
+        <span class="tc-free">✓ Giriş gerektirmez</span>
+        <span class="tc-arrow">→</span>
       </a>
       <a class="tool-card" href="/metin/">
-        <div class="tool-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div>
-        <div class="tool-name">Metin Analizi</div>
-        <div class="tool-meta">Almanca metni oku, kelimeleri kaydet</div>
+        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div>
+        <div class="tc-name">Metin Analizi</div>
+        <div class="tc-meta">Oku, tıkla, sözlüğüne kaydet</div>
+        <span class="tc-arrow">→</span>
       </a>
       <a class="tool-card" href="/quiz/">
-        <div class="tool-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <div class="tool-name">Kelime Quizi</div>
-        <div class="tool-meta">Kendi listenden test — A1 → C1</div>
+        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="tc-name">Kelime Quizi</div>
+        <div class="tc-meta">Kendi listenden test — A1 → C1</div>
+        <span class="tc-arrow">→</span>
       </a>
       <a class="tool-card" href="/seviyeler/seviyetespit/">
-        <div class="tool-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></div>
-        <div class="tool-name">Seviye Testi</div>
-        <div class="tool-meta">25 soru — A1 · A2 · B1 · B2 · C1</div>
-        <span class="free-badge">✓ Giriş gerektirmez</span>
+        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></div>
+        <div class="tc-name">Seviye Testi</div>
+        <div class="tc-meta">25 soru — A1 · A2 · B1 · B2 · C1</div>
+        <span class="tc-free">✓ Giriş gerektirmez</span>
+        <span class="tc-arrow">→</span>
       </a>
     </nav>
   </section>
 
-  <!-- SEVİYELER -->
-  <section class="section" aria-label="Almanca CEFR seviyeleri">
-    <div class="section-head">
+  <!-- ── SEVİYELER ──────────────────────────────── -->
+  <section class="section">
+    <div class="sec-head">
       <div>
-        <div class="section-tag">CEFR Seviyeleri</div>
-        <div class="section-title">Hangi seviyedesin?</div>
+        <div class="sec-eyebrow">CEFR Seviyeleri</div>
+        <div class="sec-title">Hangi seviyedesin?</div>
       </div>
-      <a class="section-cta" href="/seviyeler/seviyetespit/">
+      <a class="sec-link" href="/seviyeler/seviyetespit/">
         Ücretsiz test çöz
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
     </div>
-    <div class="levels-row">
-      <a class="level-block lv-a1" href="/seviyeler/seviyetespit/"><span class="level-code">A1</span><span class="level-name">Başlangıç</span></a>
-      <a class="level-block lv-a2" href="/seviyeler/seviyetespit/"><span class="level-code">A2</span><span class="level-name">Temel</span></a>
-      <a class="level-block lv-b1" href="/seviyeler/seviyetespit/"><span class="level-code">B1</span><span class="level-name">Orta</span></a>
-      <a class="level-block lv-b2" href="/seviyeler/seviyetespit/"><span class="level-code">B2</span><span class="level-name">Üst Orta</span></a>
-      <a class="level-block lv-c1" href="/seviyeler/seviyetespit/"><span class="level-code">C1</span><span class="level-name">İleri</span></a>
+    <div class="levels">
+      <a class="lv lv-a1" href="/seviyeler/seviyetespit/"><span class="lv-code">A1</span><span class="lv-name">Başlangıç</span></a>
+      <a class="lv lv-a2" href="/seviyeler/seviyetespit/"><span class="lv-code">A2</span><span class="lv-name">Temel</span></a>
+      <a class="lv lv-b1" href="/seviyeler/seviyetespit/"><span class="lv-code">B1</span><span class="lv-name">Orta</span></a>
+      <a class="lv lv-b2" href="/seviyeler/seviyetespit/"><span class="lv-code">B2</span><span class="lv-name">Üst Orta</span></a>
+      <a class="lv lv-c1" href="/seviyeler/seviyetespit/"><span class="lv-code">C1</span><span class="lv-name">İleri</span></a>
     </div>
   </section>
 
-  <!-- İÇERİK / SEO -->
-  <section class="section" aria-label="Platform hakkında">
-    <div class="section-head">
+  <!-- ── HAKKINDA & FAQ ─────────────────────────── -->
+  <section class="section">
+    <div class="sec-head">
       <div>
-        <div class="section-tag">Platform</div>
-        <div class="section-title">Neden AlmancaPratik?</div>
+        <div class="sec-eyebrow">Platform</div>
+        <div class="sec-title">Neden AlmancaPratik?</div>
       </div>
     </div>
     <div class="content-grid">
-      <div class="content-card">
-        <div class="cc-tag">Yaklaşım</div>
+      <div class="cc">
+        <div class="cc-kicker">Yaklaşım</div>
         <h2>Türkçe düşünen öğrenciler için</h2>
         <p>Almanca öğrenmek yalnızca kelime ezberlemek değil. Bir kelimenin hangi artikelle kullanıldığını, hangi cümle yapısına girdiğini bilmek gerekiyor.</p>
         <p><a href="/artikel/">Artikel bulucu</a> Wiktionary'den anlık veri çekerek der, die ve das sorusuna kesin cevap verir. <a href="/cumlebul/">Cümle örnekleri aracı</a> kelimelerin bağlam içinde nasıl kullanıldığını gösterir.</p>
       </div>
-      <div class="content-card">
-        <div class="cc-tag">Nasıl Çalışır</div>
+      <div class="cc">
+        <div class="cc-kicker">Nasıl Çalışır</div>
         <h2>Oku → Öğren → Pekiştir</h2>
-        <p>Bir Almanca metni <a href="/metin/">metin aracına</a> yapıştır. Bilmediğin kelimeye tıkla — anlamı, artikeli ve örnek cümleleri anında gelir. Tek tıkla kişisel sözlüğüne kaydet.</p>
+        <p>Bir Almanca metni <a href="/metin/">metin aracına</a> yapıştır. Bilmediğin kelimeye tıkla — anlamı, artikeli ve örnek cümleleri anında gelir. Tek tıkla sözlüğüne kaydet.</p>
         <p>Daha sonra o kelimelerden otomatik oluşturulan <a href="/quiz/">quizlerle</a> pekiştir. <strong>Giriş yapmadan da</strong> pek çok araç kullanılabilir.</p>
       </div>
-      <div class="content-card content-card--wide">
-        <div class="cc-tag">Sık Sorulan Sorular</div>
+      <div class="cc cc-wide">
+        <div class="cc-kicker">Sık Sorulan Sorular</div>
         <h2>Merak Edilenler</h2>
-        <div class="faq-list">
+        <div class="faq">
           <div class="faq-item">
             <div class="faq-q">AlmancaPratik ücretsiz mi?</div>
-            <p class="faq-a"><a href="/artikel/">Artikel bulucu</a>, <a href="/cumlebul/">cümle örnekleri</a>, <a href="/ceviri/">çeviri aracı</a> ve <a href="/seviyeler/seviyetespit/">seviye testi</a> hesap gerektirmez. Kişisel sözlük ve quiz için ücretsiz kayıt yeterli.</p>
+            <p class="faq-a"><a href="/artikel/">Artikel bulucu</a>, <a href="/cumlebul/">cümle örnekleri</a>, <a href="/ceviri/">çeviri</a> ve <a href="/seviyeler/seviyetespit/">seviye testi</a> hesap gerektirmez. Kişisel sözlük ve quiz için ücretsiz kayıt yeterli.</p>
           </div>
           <div class="faq-item">
             <div class="faq-q">Der die das artikel bulucu nasıl çalışır?</div>
@@ -341,15 +413,15 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
           </div>
           <div class="faq-item">
             <div class="faq-q">A2'den B1'e geçmek zor mu?</div>
-            <p class="faq-a">A2'den B1'e geçiş genellikle öğrencilerin plato yaşadığı noktadır. Gerçek metinler okumak çok önemlidir. <a href="/metin/">Metin analizi aracını</a> düzenli kullanmak büyük fark yaratır.</p>
+            <p class="faq-a">A2'den B1'e geçiş plato yaşanan noktadır. Gerçek metinler okumak kritiktir. <a href="/metin/">Metin analizi aracını</a> düzenli kullanmak bu süreci belirgin şekilde hızlandırır.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="page-footer">
+  <!-- ── FOOTER ─────────────────────────────────── -->
+  <footer class="footer">
     <span class="footer-copy">© 2026 AlmancaPratik</span>
     <nav class="footer-links">
       <a href="/pratik/">Araçlar</a>
@@ -363,14 +435,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
   </footer>
 
 </div>
-
-<!-- Giriş yapmış kullanıcıları /pratik/'e yönlendir -->
-<script type="module">
-  import { onAuthChange } from "./js/firebase.js";
-  onAuthChange((user) => {
-    if (user) window.location.replace("/pratik/");
-  });
-</script>
 
 </body>
 </html>

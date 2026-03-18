@@ -1,83 +1,231 @@
 /* ═══════════════════════════════════════════════════════════
-   metin.js  —  AlmancaPratik Metin Editörü
+   metin.js  —  AlmancaPratik Metin Editörü  v2
    ═══════════════════════════════════════════════════════════
-   Özellikler:
-   1. parseText()        — yapı analizi (başlık/diyalog/paragraf/bölüm)
-   2. Canlı istatistik   — kelime, karakter, cümle, okuma süresi
-   3. Metin araçları     — temizle, tire düzelt, tırnak düzelt
-   4. Otomatik kayıt     — 2 sn debounce → sessionStorage
-   5. Önizleme modu      — kitap görünümü modal'da
+   parseText() tamamen yeniden yazıldı:
+   - Başlık  : çok daha katı kural seti
+   - Diyalog : sadece gerçek Almanca diyalog işareti
+   - Alıntı  : >  ve girinti tabanlı
+   - Bölüm   : geniş ayraç seti
+   - Para    : kalan her şey (yanlış pozitif minimum)
    ═══════════════════════════════════════════════════════════ */
 
 import { saveMetin } from "./firebase.js";
-
 import { showToast } from "../src/components/toast.js";
 import { showAuthGate, isLoggedIn } from '../src/components/authGate.js';
 
+/* ─────────────────────────────────────────────────────────
+   YARDIMCI: tek bir regex test fonksiyonu
+   ───────────────────────────────────────────────────────── */
+const test = (re, s) => re.test(s);
 
-/* ── Metin Parser ────────────────────────────────────────── */
-function parseText(raw) {
-  const lines = raw.split("\n");
+/* ═══════════════════════════════════════════════════════════
+   parseText  —  Almanca metin yapı çözümleyici
+   ═══════════════════════════════════════════════════════════
+
+   Blok tipleri:
+     title   — bölüm / kısım başlığı
+     dialog  — diyalog satırı (Almanca açılış tırnağı veya diyalog çizgisi)
+     quote   — alıntı / epigraf
+     section — görsel bölüm ayracı (*** gibi)
+     para    — standart paragraf (birden fazla satır birleşebilir)
+   ═══════════════════════════════════════════════════════════ */
+export function parseText(raw) {
+  if (!raw || !raw.trim()) return [];
+
+  const lines  = raw.split("\n");
   const blocks = [];
-  let buf = [];
+  let   buf    = [];     /* para buffer */
 
+  /* Birikmiş paragraf satırlarını bloğa at */
   const flush = () => {
-    if (buf.length) { blocks.push({ type: "para", lines: [...buf] }); buf = []; }
+    if (buf.length) {
+      blocks.push({ type: "para", lines: [...buf] });
+      buf = [];
+    }
   };
 
-  /* Bölüm ayracı: * * *, ---, ### */
-  const isSectionBreak = l => /^\s*(\*\s*\*\s*\*|---+|###)\s*$/.test(l.trim());
+  /* ── 1. BÖLÜM AYRAÇLARI ─────────────────────────────── */
+  /* * * *, ***, ---, ___, ===, ~~~, . . ., · · ·          */
+  const isSectionBreak = t =>
+    test(/^(\*\s*){3,}\s*$/, t) ||          /* * * * */
+    test(/^-{3,}\s*$/, t)       ||          /* --- */
+    test(/^_{3,}\s*$/, t)       ||          /* ___ */
+    test(/^={3,}\s*$/, t)       ||          /* === */
+    test(/^~{3,}\s*$/, t)       ||          /* ~~~ */
+    test(/^(#\s*){3,}\s*$/, t)  ||          /* # # # */
+    test(/^(\.+\s*){3,}\s*$/, t)||          /* . . . */
+    test(/^(\xB7\s*){3,}\s*$/, t);          /* · · · */
 
-  /* Almanca diyalog: „ " \u201E \u201C – — ile başlayan satır */
-  const isDialogue = l => {
-    const t = l.trim();
-    return /^[\u201E\u201C\u2013\u2014]/.test(t) || /^[-\u2013\u2014]\s/.test(t);
+  /* ── 2. BAŞLIK ──────────────────────────────────────── */
+  /*
+     Kural kümesi — YALNIZCA aşağıdakilerden biri sağlanırsa başlık:
+
+     a) Markdown # / ## / ###
+     b) Bölüm/kısım anahtar kelimeleri + rakam/romen
+     c) Sadece romen rakamı olan kısa satır
+     d) Sadece rakam+nokta/parantez (1. / 2) gibi)
+     e) TAMAMEN büyük harf + ≥ 3 harf + noktalama YOK
+     f) İlk satır: kısa, noktalama yok, diyalog işareti yok
+     g) Çift boş satırla çevrilmiş + kısa + HİÇBİR noktalama yok
+        (virgül dahil — en katı kural)
+  */
+  const isTitle = (t, idx, arr) => {
+    if (!t || t.length > 90) return false;
+
+    /* a) Markdown heading */
+    if (test(/^#{1,3}\s+\S/, t)) return true;
+
+    /* b) Almanca/İngilizce bölüm anahtar kelimeleri */
+    if (test(/^(Kapitel|Kap\.|Teil|Abschnitt|Buch|Band|Prolog|Epilog|Einleitung|Nachwort|Chapter|Part|Section|Introduction|Conclusion)\s+[\dIVXivx]/i, t)) return true;
+
+    /* c) Yalnızca romen rakamı (I, II, III … XLVIII) + opsiyonel nokta */
+    if (test(/^[IVXLCDM]+\.?\s*$/i, t) && t.replace(/\s/g,"").length <= 8) return true;
+
+    /* d) Yalnızca numara: "1." "2)" "42." */
+    if (test(/^\d{1,3}[.)]\s*$/, t)) return true;
+
+    /* e) TAM BÜYÜK HARF başlık (min 3 harf, noktalama yok) */
+    if (
+      t === t.toUpperCase() &&
+      test(/[A-ZÜÖÄ]{3,}/, t) &&
+      !test(/[.!?,;:\u201E\u201C\u2018\u201A\u2013\u2014]/, t)
+    ) return true;
+
+    /* f) Metnin ilk satırı: kısa, yalnızca tek satır, noktalama yok,
+          diyalog başlamıyor */
+    if (
+      idx === 0 &&
+      t.length <= 65 &&
+      !test(/[.!?,;:\u201E\u201C\u2013\u2014]/, t) &&
+      !test(/^[-\u2013\u2014]/, t)
+    ) return true;
+
+    /* g) Çift boş satır arasında izole kısa satır — EN KATI:
+          nokta, ünlem, soru, virgül, noktalı virgül, iki nokta,
+          Almanca tırnak, tire-em/en HİÇBİRİ olamaz */
+    const prev2 = (arr[idx - 2] || "").trim();
+    const prev1 = (arr[idx - 1] || "").trim();
+    const next1 = (arr[idx + 1] || "").trim();
+    const next2 = (arr[idx + 2] || "").trim();
+    const isolatedByDouble = prev1 === "" && prev2 === "" && next1 === "" && next2 === "";
+    const isolatedBySingle = idx > 0 && prev1 === "" && next1 === "";
+
+    if (
+      (isolatedByDouble || isolatedBySingle) &&
+      t.length <= 60 &&
+      !test(/[.!?,;:\u201E\u201C\u2018\u201A\u2013\u2014\u2015]/, t) &&
+      !test(/^[-\u2013\u2014]/, t)
+    ) return true;
+
+    return false;
   };
 
-  /* Markdown alıntı */
-  const isQuote = l => /^>\s/.test(l.trim());
+  /* ── 3. DİYALOG ─────────────────────────────────────── */
+  /*
+     Sadece gerçek Almanca diyalog işaretleri:
 
-  /* Başlık tespiti */
-  const isTitle = (l, i, arr) => {
-    const t = l.trim();
-    if (!t) return false;
-    if (/^#{1,3}\s/.test(t)) return true;
-    if (i === 0 && t.length < 70 && !/[.!?,;]$/.test(t)) return true;
-    const prev = (arr[i - 1] || "").trim();
-    const next = (arr[i + 1] || "").trim();
-    return prev === "" && next === "" && t.length < 70 && !/[.!?,;\u201E]/.test(t);
+     • „Text..." veya "Text..."   — Almanca/genel açılış tırnağı
+     • ‚Text...' veya 'Text...'   — tek tırnak diyalog
+     • – Text / — Text            — diyalog çizgisi + BOŞLUK + harf/rakam
+       (SADECE boşluk varsa; – bağlama çizgisi ise boşluk olmaz)
+
+     Önemli: "–Text" (boşluksuz) diyalog değil → para'ya düşer.
+  */
+  const isDialog = t => {
+    /* Almanca/çift açılış tırnağı */
+    if (test(/^[\u201E\u201C\u201A\u2018]/, t)) return true;
+    /* Standart çift/tek tırnak açılışı */
+    if (test(/^["']/, t)) return true;
+    /* Diyalog çizgisi: em-dash veya en-dash + boşluk + harf/rakam */
+    if (test(/^[\u2013\u2014]\s[A-Za-zÄÖÜäöüß\d]/, t)) return true;
+    /* Kısa çizgi (ASCII) diyalog: satır başı "- " + büyük harf
+       (küçük harfle başlarsa liste veya bağlaç olabilir, ama bölümün
+       bağlamına göre belirlenmesi güç — büyük harf zorunlu yapıyoruz) */
+    if (test(/^-\s[A-ZÜÖÄ]/, t)) return true;
+    return false;
   };
 
+  /* ── 4. ALINTI ──────────────────────────────────────── */
+  /*
+     • Markdown > alıntısı
+     • 4+ boşluk veya tab ile girintili satır (epigraf / alıntı bloğu)
+  */
+  const isQuote = (raw_line) => {
+    if (test(/^>\s/, raw_line.trimStart())) return true;
+    /* gerçek başlangıç girintisi: ≥ 4 boşluk veya tab */
+    if (test(/^(\t|    )/, raw_line)) return true;
+    return false;
+  };
+
+  /* ── ANA DÖNGÜ ───────────────────────────────────────── */
   for (let i = 0; i < lines.length; i++) {
-    const l = lines[i];
-    const t = l.trim();
+    const rawLine = lines[i];
+    const t       = rawLine.trim();
 
-    if (isSectionBreak(t))       { flush(); blocks.push({ type: "section" }); continue; }
-    if (!t)                       { flush(); continue; }
-    if (isTitle(t, i, lines))    { flush(); blocks.push({ type: "title",  text: t.replace(/^#{1,3}\s*/, "") }); continue; }
-    if (isDialogue(t))           { flush(); blocks.push({ type: "dialog", text: t }); continue; }
-    if (isQuote(t))              { flush(); blocks.push({ type: "quote",  text: t.replace(/^>\s*/, "") }); continue; }
+    /* Boş satır → para buffer'ı boşalt */
+    if (!t) {
+      flush();
+      continue;
+    }
+
+    if (isSectionBreak(t)) {
+      flush();
+      blocks.push({ type: "section" });
+      continue;
+    }
+
+    if (isTitle(t, i, lines)) {
+      flush();
+      blocks.push({ type: "title", text: t.replace(/^#{1,3}\s*/, "") });
+      continue;
+    }
+
+    if (isDialog(t)) {
+      flush();
+      blocks.push({ type: "dialog", text: t });
+      continue;
+    }
+
+    if (isQuote(rawLine)) {
+      flush();
+      blocks.push({ type: "quote", text: t.replace(/^>\s*/, "") });
+      continue;
+    }
+
+    /* Geri kalan: paragraf satırı */
     buf.push(t);
   }
+
+  /* Son buffer'ı boşalt */
   flush();
+
   return blocks;
 }
 
-/* ── Blokları HTML'e çevir (önizleme) ───────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   Blokları HTML'e çevir (önizleme)
+   ═══════════════════════════════════════════════════════════ */
 function blocksToHtml(blocks) {
-  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  let html = "";
-  for (const b of blocks) {
-    if      (b.type === "title")   html += `<div class="pv-title">${esc(b.text)}</div>`;
-    else if (b.type === "dialog")  html += `<div class="pv-dialog">${esc(b.text)}</div>`;
-    else if (b.type === "quote")   html += `<div class="pv-quote">${esc(b.text)}</div>`;
-    else if (b.type === "section") html += `<div class="pv-section">\u2726 &nbsp; \u2726 &nbsp; \u2726</div>`;
-    else if (b.type === "para")    html += `<div class="pv-para">${b.lines.map(esc).join("<br>")}</div>`;
-  }
-  return html || `<span style="color:var(--muted);font-style:italic">Metin boş.</span>`;
+  const esc = s => String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  return blocks.map(b => {
+    switch (b.type) {
+      case "title":   return `<div class="pv-title">${esc(b.text)}</div>`;
+      case "dialog":  return `<div class="pv-dialog">${esc(b.text)}</div>`;
+      case "quote":   return `<div class="pv-quote">${esc(b.text)}</div>`;
+      case "section": return `<div class="pv-section">\u2726 &nbsp; \u2726 &nbsp; \u2726</div>`;
+      case "para":    return `<div class="pv-para">${b.lines.map(esc).join("<br>")}</div>`;
+      default:        return "";
+    }
+  }).join("") || `<span style="color:var(--muted);font-style:italic">Metin boş.</span>`;
 }
 
-/* ── Canlı istatistik ────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   Canlı istatistik
+   ═══════════════════════════════════════════════════════════ */
 function updateStats(text) {
   const words     = text.trim() ? text.trim().split(/\s+/).length : 0;
   const chars     = text.length;
@@ -110,7 +258,9 @@ function setAutoSaveState(state) {
   label.textContent = labels[state] || "";
 }
 
-/* ── Metin araçları ──────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   Metin araçları
+   ═══════════════════════════════════════════════════════════ */
 
 /* Gereksiz boşluk ve fazladan boş satırları temizle */
 function cleanText(raw) {
@@ -124,9 +274,9 @@ function cleanText(raw) {
 /* Tire karakterlerini Almanca standardına getir */
 function fixDashes(raw) {
   return raw
-    .replace(/\s*--\s*/g, " \u2014 ")    /* -- → em-dash — */
-    .replace(/ - /g,       " \u2013 ")   /* yalnız tire → en-dash – */
-    .replace(/^- /gm,      "\u2014 ");   /* satır başı - → — */
+    .replace(/\s*--\s*/g, " \u2014 ")   /* -- → em-dash — */
+    .replace(/ - /g,       " \u2013 ")  /* yalnız tire → en-dash – */
+    .replace(/^- /gm,      "\u2014 ");  /* satır başı - → — */
 }
 
 /* Tırnakları Almanca formatına dönüştür */
@@ -162,12 +312,12 @@ document.addEventListener("DOMContentLoaded", () => {
   updateStructure(parseText(initial));
   if (initial.trim()) setAutoSaveState("saved");
 
-  /* ── Akıllı yapıştırma — satır yapısını koru ── */
+  /* ── Akıllı yapıştırma: satır yapısını koru ── */
   editor.addEventListener("paste", e => {
     e.preventDefault();
     let text = (e.clipboardData || window.clipboardData).getData("text");
     text = text
-      .replace(/[ \t]+/g, " ")    /* çoklu boşluk → tek */
+      .replace(/[ \t]+/g, " ")
       .replace(/\r\n/g, "\n")
       .replace(/\r/g, "\n")
       .trim();
@@ -175,20 +325,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ── Canlı analiz (debounce) ── */
-  let analysisTimer  = null;
-  let autoSaveTimer  = null;
+  let analysisTimer = null;
+  let autoSaveTimer = null;
 
   editor.addEventListener("input", () => {
     const text = editor.innerText;
 
-    /* Anlık sayaç */
     updateStats(text);
 
-    /* Yapı analizi — 300ms sonra */
     clearTimeout(analysisTimer);
     analysisTimer = setTimeout(() => updateStructure(parseText(text)), 300);
 
-    /* Autosave — 2 sn sonra */
     setAutoSaveState("unsaved");
     clearTimeout(autoSaveTimer);
     autoSaveTimer = setTimeout(() => {
@@ -215,7 +362,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editor.innerText = fixed;
     updateStats(fixed);
     updateStructure(parseText(fixed));
-    showToast("Tireler d\u00fczeldi (\u2013 ve \u2014)", "ok");
+    showToast("Tireler düzeldi (\u2013 ve \u2014)", "ok");
   });
 
   document.getElementById("btnFixQuotes")?.addEventListener("click", () => {
@@ -223,12 +370,12 @@ document.addEventListener("DOMContentLoaded", () => {
     editor.innerText = fixed;
     updateStats(fixed);
     updateStructure(parseText(fixed));
-    showToast("T\u0131rnaklar Almanca format\u0131na d\u00f6n\u00fc\u015ft\u00fcr\u00fcld\u00fc", "ok");
+    showToast("Tırnaklar Almanca formatına dönüştürüldü", "ok");
   });
 
   document.getElementById("btnClear")?.addEventListener("click", () => {
     if (!editor.innerText.trim()) return;
-    if (confirm("Edit\u00f6rdeki metni silmek istedi\u011finize emin misiniz?")) {
+    if (confirm("Editördeki metni silmek istediğinize emin misiniz?")) {
       editor.innerText = "";
       updateStats("");
       updateStructure([]);
@@ -252,16 +399,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const closeModal = () => modal.classList.remove("open");
   modalClose?.addEventListener("click", closeModal);
-  backdrop?.addEventListener("click", closeModal);
+  backdrop?.addEventListener("click",  closeModal);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
   /* ── Okuma moduna geç ── */
   readBtn?.addEventListener("click", async () => {
     const text = editor.innerText.trim();
     if (!text) { showToast("Metin boş!", "err"); return; }
-  
+
     if (!isLoggedIn()) {
-      // Giriş yoksa metni kaydetme, sadece okuma moduna aç
       const blocks = parseText(text);
       sessionStorage.setItem("savedText",    text);
       sessionStorage.setItem("parsedBlocks", JSON.stringify(blocks));
@@ -269,8 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "../okuma/";
       return;
     }
-  
-    // Giriş yapılmış — Firestore'a kaydet
+
     readBtn.disabled    = true;
     readBtn.textContent = "Kaydediliyor…";
     try {
@@ -282,10 +427,9 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "../okuma/";
     } catch (err) {
       showToast("Kayıt sırasında bir hata oluştu", "err");
-      readBtn.disabled = false;
-      readBtn.innerHTML = `<svg>...</svg> Okuma Moduna Geç`;
+      readBtn.disabled    = false;
+      readBtn.innerHTML   = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg> Okuma Moduna Geç`;
     }
   });
-  
 
 });

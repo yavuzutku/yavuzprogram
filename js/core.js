@@ -60,11 +60,11 @@ function loadNavbar(){
 
       <!-- Pratik dropdown -->
       <div class="nav-dropdown-wrap" id="pratikDropWrap">
-        <a class="nav-pill nav-pill--pratik${isPratik ? " nav-pill--active" : ""}" href="/" id="pratikPill">
+        <button class="nav-pill nav-pill--pratik${isPratik ? " nav-pill--active" : ""}" id="pratikPill" type="button">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           <span>Pratik</span>
           <svg class="nav-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </a>
+        </button>
         <div class="nav-dropdown nav-dropdown--wide" id="pratikDrop"><div class="nav-dropdown-inner">
           <div class="nav-drop-cols">
             <div class="nav-drop-col">

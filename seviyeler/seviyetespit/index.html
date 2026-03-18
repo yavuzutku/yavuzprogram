@@ -328,37 +328,78 @@
 <script>
 </script>
 <script type="module">
+  import { auth, db }         from '../../js/firebase.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { doc, getDoc, setDoc, serverTimestamp }
+    from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
   import { initComments } from '../../src/components/comments.js';
 
   let _cmDone = false;
   const resultEl = document.getElementById('screen-result');
 
+  /* ── Yorumları başlat ── */
   function _tryInitComments() {
     if (_cmDone) return;
     if (!resultEl.classList.contains('active')) return;
     _cmDone = true;
-
     const level = (document.getElementById('result-badge')?.textContent || '').trim();
-    const score = parseInt(document.getElementById('result-score-num')?.textContent || '0', 10);
-
+    const sc    = parseInt(document.getElementById('result-score-num')?.textContent || '0', 10);
     initComments('cm-result-mount', {
-      context:     'seviyetespit',
-      contextId:   '',
-      contextData: level ? { level, score, total: 25 } : null,
+      context: 'seviyetespit', contextId: '',
+      contextData: level ? { level, score: sc, total: 25 } : null,
     });
   }
 
-  // 1) Sayfa yüklenince zaten active mi? (login'den döndükten sonra)
-  _tryInitComments();
+  /* ── Test tamamlandı → Firestore'a kaydet ── */
+  document.addEventListener('svt:result', async (e) => {
+    const { score, wrongs } = e.detail;
+    const level = (document.getElementById('result-badge')?.textContent || '').trim();
 
-  // 2) Sonraki geçişler için observer
-  new MutationObserver(() => {
-    if (!resultEl.classList.contains('active')) {
-      _cmDone = false; // yeniden test için sıfırla
-      return;
+    // sessionStorage (login redirect için yedek)
+    sessionStorage.setItem('svt_result', JSON.stringify({ score, wrongs }));
+
+    // Firestore (giriş yaptıysa kalıcı kaydet)
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        await setDoc(doc(db, 'userProfiles', user.uid),
+          { levelTestResult: { score, wrongs, level, savedAt: serverTimestamp() } },
+          { merge: true }
+        );
+      } catch (err) { console.warn('[svt] Firestore kayıt:', err); }
     }
+  });
+
+  /* ── Yeniden teste başlandı → temizle ── */
+  document.addEventListener('svt:start', () => {
+    _cmDone = false;
+  });
+
+  /* ── Sayfa yüklenince: giriş yaptıysa son sonucu getir ── */
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    if (resultEl.classList.contains('active')) return; // zaten sonuç ekranındaysa dokunma
+
+    try {
+      const snap = await getDoc(doc(db, 'userProfiles', user.uid));
+      if (!snap.exists()) return;
+      const saved = snap.data().levelTestResult;
+      if (!saved) return;
+
+      window.score  = saved.score  ?? 0;
+      window.wrongs = saved.wrongs ?? [];
+      showResult(); // global fonksiyon seviyetespit.js'den geliyor
+    } catch (err) { console.warn('[svt] Firestore okuma:', err); }
+  });
+
+  /* ── screen-result active olunca yorumları başlat ── */
+  new MutationObserver(() => {
+    if (!resultEl.classList.contains('active')) { _cmDone = false; return; }
     _tryInitComments();
   }).observe(resultEl, { attributes: true, attributeFilter: ['class'] });
+
+  /* ── Sayfa yüklenince zaten active mi? (sessionStorage restore sonrası) ── */
+  _tryInitComments();
 </script>
 <script>
 // Sayfa yüklenince kayıtlı sonuç varsa geri yükle

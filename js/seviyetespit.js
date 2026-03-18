@@ -51,7 +51,12 @@ function show(id){
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function highlightBlank(t){return escHtml(t).replace(/___/g,'<em>___</em>');}
 
-function startQuiz(){current=0;score=0;answered=false;wrongs=[];show('screen-quiz');renderQuestion();  sessionStorage.removeItem('svt_result'); // ← YENİ
+function startQuiz(){
+  current=0;score=0;answered=false;wrongs=[];
+  show('screen-quiz');renderQuestion();  
+  sessionStorage.removeItem('svt_result'); // ← YENİ
+  document.dispatchEvent(new CustomEvent('svt:start'));
+  sessionStorage.removeItem('svt_result');
 }
 function restartQuiz(){startQuiz();}
 
@@ -115,6 +120,7 @@ function nextQuestion(){
 
 function showResult(){
     // ── YENİ: sonucu sessionStorage'a kaydet ──
+    document.dispatchEvent(new CustomEvent('svt:result', { detail: { score, wrongs } }));
     sessionStorage.setItem('svt_result', JSON.stringify({
         score, wrongs,
         total: QUESTIONS.length

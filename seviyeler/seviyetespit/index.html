@@ -321,11 +321,47 @@
       <div class="wrongs-title">Yanlış Cevapladığın Sorular</div>
       <div id="wrongs-list"></div>
     </div>
+    <div id="cm-result-mount" style="padding:0 24px 20px;"></div>
   </div>
 </div>
 <script src="../../js/seviyetespit.js"></script>
 <script>
 </script>
-
+<script type="module">
+  /**
+   * Seviye Testi — Yorum Sistemi Entegrasyonu
+   * result-badge: lv.code (ör. "B1")
+   * result-score-num: doğru sayısı (ör. 18)
+   * 
+   * MutationObserver → screen-result "active" class alınca initComments çağrılır.
+   * Kullanıcı testi yeniden çözüp tekrar sonuç ekranına gelirse
+   * _cmDone = false sıfırlanır ve yeni skor ile yeniden başlar.
+   */
+  import { initComments } from '../../src/components/comments.js';
+ 
+  let _cmDone = false;
+  const resultEl = document.getElementById('screen-result');
+ 
+  new MutationObserver(() => {
+    /* Sonuç ekranından çıkıldıysa sıfırla (yeniden test için) */
+    if (!resultEl.classList.contains('active')) {
+      _cmDone = false;
+      return;
+    }
+    /* Zaten başlatıldıysa tekrar çalıştırma */
+    if (_cmDone) return;
+    _cmDone = true;
+ 
+    /* DOM'dan sonuç verisini oku */
+    const level = (document.getElementById('result-badge')?.textContent || '').trim();
+    const score = parseInt(document.getElementById('result-score-num')?.textContent || '0', 10);
+ 
+    initComments('cm-result-mount', {
+      context:     'seviyetespit',
+      contextId:   '',
+      contextData: level ? { level, score, total: 25 } : null,
+    });
+  }).observe(resultEl, { attributes: true, attributeFilter: ['class'] });
+</script>
 </body>
 </html>

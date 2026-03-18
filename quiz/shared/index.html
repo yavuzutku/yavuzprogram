@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Paylaşılabilir Quiz Oluştur — AlmancaPratik</title>
-  <link rel="icon" href="../favicon.ico">
+  <link rel="icon" href="../../favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../../css/global.css">
   <style>
     :root {
       --bg:#070709;--surface:rgba(255,255,255,0.035);--surface2:rgba(255,255,255,0.06);
@@ -146,14 +146,14 @@
   <div style="font-size:44px;opacity:0.6;">🔒</div>
   <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#f0eee8;">Erişim Kısıtlı</div>
   <div style="color:rgba(240,238,232,0.4);font-size:14px;max-width:280px;line-height:1.6;">Bu sayfa yalnızca yetkili hesaba açıktır.</div>
-  <button onclick="window.location.href='../anasayfa/'" style="margin-top:8px;padding:10px 24px;background:#c9a84c;border:none;border-radius:10px;color:#0a0a0f;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;">← Anasayfaya Dön</button>
+  <button onclick="window.location.href='../../anasayfa/'" style="margin-top:8px;padding:10px 24px;background:#c9a84c;border:none;border-radius:10px;color:#0a0a0f;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;">← Anasayfaya Dön</button>
 </div>
 
 <div id="mainContent" style="display:none;">
 <div class="page">
 
   <div class="top-bar">
-    <button class="back-btn" onclick="window.location.href='../quiz/'">← Quiz</button>
+    <button class="back-btn" onclick="window.location.href='../../quiz/'">← Quiz</button>
     <h1 class="page-title">Paylaşılabilir Quiz</h1>
     <span class="admin-badge">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -263,12 +263,12 @@
 </div>
 
 <script type="module">
-  import "../js/core.js";
+  import "../../js/core.js";
   window.loadNavbar();
 </script>
 
 <script type="module">
-import { requireAdmin } from "../src/admin.js";
+import { requireAdmin } from "../../src/admin.js";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, addDoc, getDocs, deleteDoc,

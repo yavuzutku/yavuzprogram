@@ -27,7 +27,11 @@ onAuthChange((user) => {
     avatarEl.alt = (user.displayName || "Kullanıcı") + " profil fotoğrafı";
     avatarEl.style.display = user.photoURL ? "block" : "none";
   }
-  setTimeout(() => { window.location.href = "anasayfa/"; }, 700);
+  setTimeout(() => {
+    const params   = new URLSearchParams(window.location.search);
+    const returnTo = params.get('returnTo');
+    window.location.href = returnTo ? decodeURIComponent(returnTo) : "anasayfa/";
+  }, 700);
 });
 
 document.addEventListener("DOMContentLoaded", () => {

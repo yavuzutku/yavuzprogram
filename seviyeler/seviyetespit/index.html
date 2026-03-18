@@ -363,5 +363,18 @@
     });
   }).observe(resultEl, { attributes: true, attributeFilter: ['class'] });
 </script>
+<script>
+// Sayfa yüklenince kayıtlı sonuç varsa geri yükle
+(function restoreResult() {
+  const saved = sessionStorage.getItem('svt_result');
+  if (!saved) return;
+  try {
+    const data = JSON.parse(saved);
+    score  = data.score  ?? 0;
+    wrongs = data.wrongs ?? [];
+    showResult();
+  } catch { sessionStorage.removeItem('svt_result'); }
+})();
+</script>
 </body>
 </html>

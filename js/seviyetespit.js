@@ -51,7 +51,8 @@ function show(id){
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function highlightBlank(t){return escHtml(t).replace(/___/g,'<em>___</em>');}
 
-function startQuiz(){current=0;score=0;answered=false;wrongs=[];show('screen-quiz');renderQuestion();}
+function startQuiz(){current=0;score=0;answered=false;wrongs=[];show('screen-quiz');renderQuestion();  sessionStorage.removeItem('svt_result'); // ← YENİ
+}
 function restartQuiz(){startQuiz();}
 
 function renderQuestion(){
@@ -113,6 +114,11 @@ function nextQuestion(){
 }
 
 function showResult(){
+    // ── YENİ: sonucu sessionStorage'a kaydet ──
+    sessionStorage.setItem('svt_result', JSON.stringify({
+        score, wrongs,
+        total: QUESTIONS.length
+    }));
   show('screen-result');
   const pct=Math.round((score/QUESTIONS.length)*100);
   const lv=LEVELS.find(l=>score>=l.min&&score<=l.max)||LEVELS[0];

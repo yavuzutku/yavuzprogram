@@ -236,7 +236,8 @@ export function showAuthGate({
   const backdrop = document.createElement('div');
   backdrop.className = 'ag-backdrop';
 
-  const loginHref = getLoginHref();
+  const returnTo  = encodeURIComponent(window.location.pathname + window.location.search);
+  const loginHref = `/login.html?returnTo=${returnTo}`;
 
   backdrop.innerHTML = `
     <div class="ag-card" role="dialog" aria-modal="true" aria-label="${title}">

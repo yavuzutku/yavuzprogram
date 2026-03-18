@@ -215,7 +215,9 @@ function bindSelection() {
 
   document.addEventListener("mousedown", e => {
     if (_modalOpen) return;
-    const inside = [$body, $meaning, $popup, $overlay].some(el => el && el.contains(e.target));
+    /* addWordBtn de listeye dahil: butona tıklayınca _word silinmesin */
+    const $addBtn = document.getElementById("addWordBtn");
+    const inside  = [$body, $meaning, $popup, $overlay, $addBtn].some(el => el && el.contains(e.target));
     if (!inside) {
       hideMeaning();
       hidePopup();
@@ -432,6 +434,24 @@ function bindModal() {
 
   $overlay.addEventListener("click", e => { if (e.target === $overlay) close(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && _modalOpen) close(); });
+
+  /* 's' kısayolu: kelime seçiliyken modal aç (input/textarea odaklıysa çalışmaz) */
+  document.addEventListener("keydown", e => {
+    if (e.key !== "s" && e.key !== "S") return;
+    if (_modalOpen) return;
+    const tag = document.activeElement?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable) return;
+    if (!_word) return;
+    if (!isLoggedIn()) {
+      showAuthGate({
+        title: 'Kelime kaydetmek için giriş yap',
+        desc: 'Seçtiğin kelimeleri kişisel sözlüğüne eklemek için ücretsiz hesabına giriş yap.'
+      });
+      return;
+    }
+    hidePopup();
+    openModal();
+  });
 
   on("applyBaseFormBtn", "click", async () => {
     const base = _wiki?.baseForm;

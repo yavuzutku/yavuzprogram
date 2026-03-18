@@ -3,525 +3,269 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Almanca Seviye Testi — AlmancaPratik</title>
-<meta name="description" content="Almanca seviyeni 25 soruluk çoktan seçmeli testle ölç. A1'den C1'e ücretsiz Almanca seviye tespit sınavı.">
-<link rel="canonical" href="https://almancapratik.com/seviye-testi/">
-<link rel="icon" href="../favicon.ico">
+<link rel="icon" href="../../favicon.ico" type="image/x-icon">
+
+<title>Almanca Seviye Testi — A1'den C1'e Ücretsiz Seviye Tespit Sınavı | AlmancaPratik</title>
+<meta name="description" content="25 soruluk ücretsiz Almanca seviye testi ile A1, A2, B1, B2 veya C1 seviyende olduğunu öğren. Gramer, kelime ve okuma anlayışını test et. Türkçe açıklamalı, anında sonuç.">
+<meta name="keywords" content="almanca seviye testi, almanca seviye belirleme, almanca a1 b1 b2 c1 testi, almanca sınav ücretsiz, almanca seviye tespit, almanca kaçıncı seviyeyim">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://almancapratik.com/seviyeler/seviyetespit/">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://almancapratik.com/seviyeler/seviyetespit/">
+<meta property="og:title" content="Almanca Seviye Testi — A1'den C1'e Ücretsiz Seviye Tespit Sınavı">
+<meta property="og:description" content="25 soruluk ücretsiz Almanca seviye tespit sınavı. Gramer, kelime ve okuma anlayışını test et, seviyeni anında öğren.">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="AlmancaPratik">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Quiz",
+  "name": "Almanca Seviye Testi — A1'den C1'e",
+  "description": "25 soruluk ücretsiz Almanca seviye tespit sınavı. A1, A2, B1, B2 ve C1 seviyelerini kapsayan gramer, kelime ve okuma anlayışı soruları.",
+  "url": "https://almancapratik.com/seviyeler/seviyetespit/",
+  "inLanguage": "tr",
+  "educationalLevel": ["A1","A2","B1","B2","C1"],
+  "teaches": "Almanca dil seviyesi belirleme",
+  "provider": {
+    "@type": "Organization",
+    "name": "AlmancaPratik",
+    "url": "https://almancapratik.com"
+  },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Ana Sayfa", "item": "https://almancapratik.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Almanca Seviye Testi", "item": "https://almancapratik.com/seviyeler/seviyetespit/" }
+  ]
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="../../css/seviyetespit.css">
 <style>
-/* ═══════════════════════════════════════
-   TOKENS
-═══════════════════════════════════════ */
-:root {
-  --font-display: 'Syne', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
-  --font-mono:    'DM Mono', monospace;
-  --bg:           #070709;
-  --surface:      #0f0f14;
-  --surface-2:    #16161e;
-  --border:       rgba(255,255,255,0.07);
-  --border-hover: rgba(255,255,255,0.15);
-  --text:         #f0eee8;
-  --text-2:       rgba(240,238,232,0.55);
-  --text-3:       rgba(240,238,232,0.32);
-  --gold:         #c9a84c;
-  --gold-l:       #e8c97a;
-  --gold-dim:     rgba(201,168,76,0.12);
-  --green:        #22c55e;
-  --green-dim:    rgba(34,197,94,0.12);
-  --red:          #ef4444;
-  --red-dim:      rgba(239,68,68,0.10);
-  --blue:         #60c8f0;
-  --violet:       #a064ff;
-  --radius:       14px;
-  --trans:        0.2s cubic-bezier(0.4,0,0.2,1);
-}
-
-/* ═══════════════════════════════════════
-   RESET
-═══════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-
-/* ═══════════════════════════════════════
-   ARKA PLAN
-═══════════════════════════════════════ */
-.bg-wrap {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-}
-.bg-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 100% 80% at 50% 0%, black 20%, transparent 100%);
-}
-.bg-orb {
-  position: absolute; border-radius: 50%;
-  filter: blur(120px); pointer-events: none;
-  animation: drift 14s ease-in-out infinite alternate;
-}
-.bg-orb-1 { width:600px; height:600px; top:-200px; left:-100px; background:radial-gradient(circle,#c9a84c,transparent 70%); opacity:0.07; }
-.bg-orb-2 { width:400px; height:400px; top:30%; right:-150px; background:radial-gradient(circle,#a064ff,transparent 70%); opacity:0.06; animation-delay:-7s; }
-@keyframes drift { from{transform:translate(0,0)} to{transform:translate(24px,18px)} }
-@media (max-width:768px) { .bg-orb { display: none; } }
-
-/* ═══════════════════════════════════════
-   NAV
-═══════════════════════════════════════ */
-.nav {
-  position: sticky; top: 0; z-index: 50;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 24px;
-  background: rgba(7,7,9,0.88);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(20px);
-}
-.nav-logo {
-  display: flex; align-items: center; gap: 9px; text-decoration: none;
-}
-.nav-logo-icon {
-  width: 32px; height: 32px; border-radius: 9px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 16px rgba(201,168,76,0.25);
-}
-.nav-logo-icon svg { width: 16px; height: 16px; }
-.nav-logo-name { font-family: var(--font-display); font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
-.nav-back {
-  display: flex; align-items: center; gap: 6px;
-  padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px;
-  color: var(--text-2); font-size: 13px; text-decoration: none; transition: var(--trans);
-}
-.nav-back:hover { color: var(--text); border-color: var(--border-hover); }
-@media (min-width: 768px) { .nav { padding: 16px 48px; } }
-
-/* ═══════════════════════════════════════
-   WRAPPER
-═══════════════════════════════════════ */
-.page {
-  position: relative; z-index: 1;
-  max-width: 760px; margin: 0 auto;
-  padding: 48px 20px 80px;
-}
-@media (min-width: 768px) { .page { padding: 64px 32px 100px; } }
-
-/* ═══════════════════════════════════════
-   EKRANLAR
-═══════════════════════════════════════ */
-.screen { display: none; }
-.screen.active { display: block; animation: fadeUp 0.4s cubic-bezier(0.4,0,0.2,1) both; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-
-/* ═══════════════════════════════════════
-   INTRO EKRANI
-═══════════════════════════════════════ */
-.intro-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--gold); padding: 5px 14px 5px 10px;
-  border: 1px solid rgba(201,168,76,0.25); border-radius: 999px;
-  background: rgba(201,168,76,0.06); margin-bottom: 24px;
-}
-.intro-dot {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
-  box-shadow: 0 0 8px var(--gold); animation: pulse 2.5s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.75)} }
-
-.intro-title {
-  font-family: var(--font-display);
-  font-size: clamp(32px, 7vw, 56px);
-  font-weight: 800; letter-spacing: -0.04em; line-height: 1.05;
-  margin-bottom: 16px;
-}
-.intro-title span {
-  background: linear-gradient(135deg, #c9a84c 0%, #f0d080 50%, #c9a84c 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.intro-sub {
-  font-size: 16px; line-height: 1.7; color: var(--text-2);
-  max-width: 520px; margin-bottom: 36px;
-}
-
-.intro-stats {
-  display: flex; gap: 0;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); margin-bottom: 36px;
-  overflow: hidden;
-}
-.intro-stat {
-  flex: 1; padding: 18px 16px; text-align: center;
-  border-right: 1px solid var(--border);
-}
-.intro-stat:last-child { border-right: none; }
-.intro-stat-num {
-  font-family: var(--font-display); font-size: 22px; font-weight: 800;
-  color: var(--gold); line-height: 1;
-}
-.intro-stat-label {
-  font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--text-3); margin-top: 4px;
-}
-
-.levels-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-  margin-bottom: 40px;
-}
-@media (max-width: 480px) { .levels-grid { grid-template-columns: repeat(2, 1fr); } }
-.level-chip {
-  padding: 12px 10px; text-align: center;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px;
-}
-.level-chip-code {
-  font-family: var(--font-display); font-size: 18px; font-weight: 800;
-  color: var(--text); display: block;
-}
-.level-chip-desc { font-size: 11px; color: var(--text-3); margin-top: 3px; }
-.level-chip.a1 .level-chip-code { color: #22c55e; }
-.level-chip.a2 .level-chip-code { color: #86efac; }
-.level-chip.b1 .level-chip-code { color: #60c8f0; }
-.level-chip.b2 .level-chip-code { color: #818cf8; }
-.level-chip.c1 .level-chip-code { color: #c9a84c; }
-
-.btn-start {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 15px 36px; font-size: 16px; font-weight: 700;
-  font-family: var(--font-display); letter-spacing: -0.01em;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  color: #0a0a0f; border: none; border-radius: 12px; cursor: pointer;
-  box-shadow: 0 6px 28px rgba(201,168,76,0.35); transition: var(--trans);
-}
-.btn-start:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(201,168,76,0.45); }
-.btn-start:active { transform: scale(0.97); }
-
-/* ═══════════════════════════════════════
-   QUIZ EKRANI
-═══════════════════════════════════════ */
-.quiz-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 28px; gap: 16px;
-}
-.progress-wrap { flex: 1; }
-.progress-label {
-  display: flex; justify-content: space-between;
-  font-size: 12px; color: var(--text-3); margin-bottom: 8px;
-  font-family: var(--font-mono);
-}
-.progress-bar {
-  height: 4px; background: var(--surface-2); border-radius: 999px; overflow: hidden;
-}
-.progress-fill {
-  height: 100%; border-radius: 999px;
-  background: linear-gradient(90deg, var(--gold), var(--gold-l));
-  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
-}
-.score-pill {
-  padding: 6px 14px; border-radius: 999px; white-space: nowrap;
-  background: var(--green-dim); border: 1px solid rgba(34,197,94,0.2);
-  font-family: var(--font-display); font-size: 13px; font-weight: 700;
-  color: var(--green); flex-shrink: 0;
-}
-
-/* Bölüm başlığı */
-.section-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--text-3); padding: 4px 12px;
-  border: 1px solid var(--border); border-radius: 999px;
-  margin-bottom: 20px;
-}
-
-/* Soru kartı */
-.question-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 20px; padding: 32px 28px; margin-bottom: 16px;
-  transition: border-color var(--trans);
-}
-.question-card:focus-within { border-color: rgba(201,168,76,0.25); }
-@media (max-width: 480px) { .question-card { padding: 22px 18px; } }
-
-.question-num {
-  font-family: var(--font-mono); font-size: 11px; color: var(--gold);
-  font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px;
-  opacity: 0.7;
-}
-.question-text {
-  font-size: 17px; font-weight: 500; line-height: 1.6; color: var(--text);
-  margin-bottom: 22px;
-}
-.question-text em {
-  font-style: normal; font-weight: 700;
-  background: rgba(201,168,76,0.12); color: var(--gold);
-  padding: 0 4px; border-radius: 4px;
-}
-
-/* Okuma metni */
-.reading-box {
-  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-  border-left: 3px solid var(--gold); border-radius: 0 10px 10px 0;
-  padding: 14px 16px; margin-bottom: 20px;
-  font-size: 14px; line-height: 1.8; color: var(--text-2);
-  font-style: italic;
-}
-
-/* Şıklar */
-.choices { display: flex; flex-direction: column; gap: 9px; }
-.choice {
-  display: flex; align-items: center; gap: 14px;
-  padding: 13px 16px; cursor: pointer;
-  background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: 10px; transition: var(--trans); text-align: left;
-  font-family: var(--font-body); font-size: 14px; color: var(--text-2);
-  width: 100%;
-}
-.choice:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.05); color: var(--text); }
-.choice.selected { border-color: rgba(201,168,76,0.4); background: var(--gold-dim); color: var(--gold); }
-.choice.correct  { border-color: rgba(34,197,94,0.5);  background: var(--green-dim); color: var(--green); }
-.choice.wrong    { border-color: rgba(239,68,68,0.4);   background: var(--red-dim);   color: var(--red); }
-.choice:disabled { cursor: default; }
-.choice-key {
-  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
-  width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
-  color: var(--text-3); transition: var(--trans);
-}
-.choice.selected .choice-key { background: rgba(201,168,76,0.2); border-color: rgba(201,168,76,0.4); color: var(--gold); }
-.choice.correct  .choice-key { background: var(--green-dim); border-color: rgba(34,197,94,0.4); color: var(--green); }
-.choice.wrong    .choice-key { background: var(--red-dim);   border-color: rgba(239,68,68,0.4);  color: var(--red); }
-
-/* Feedback */
-.feedback-bar {
-  display: none; align-items: center; gap: 10px;
-  padding: 12px 16px; border-radius: 10px; margin-bottom: 20px;
-  font-size: 13px; line-height: 1.5;
-}
-.feedback-bar.show { display: flex; }
-.feedback-bar.ok { background: var(--green-dim); border: 1px solid rgba(34,197,94,0.25); color: var(--green); }
-.feedback-bar.ko { background: var(--red-dim);   border: 1px solid rgba(239,68,68,0.25); color: var(--red); }
-.feedback-icon { font-size: 18px; flex-shrink: 0; }
-.feedback-text strong { display: block; font-weight: 600; margin-bottom: 2px; }
-
-/* Nav butonlar */
-.quiz-nav {
-  display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 4px;
-}
-.btn-next {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 28px; font-size: 14px; font-weight: 700;
-  font-family: var(--font-display); letter-spacing: -0.01em;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  color: #0a0a0f; border: none; border-radius: 10px; cursor: pointer;
-  box-shadow: 0 4px 20px rgba(201,168,76,0.3); transition: var(--trans);
-  display: none;
-}
-.btn-next.show { display: flex; }
-.btn-next:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(201,168,76,0.4); }
-.btn-next:active { transform: scale(0.97); }
-
-/* ═══════════════════════════════════════
-   SONUÇ EKRANI
-═══════════════════════════════════════ */
-.result-hero { text-align: center; margin-bottom: 40px; }
-.result-emoji { font-size: 56px; margin-bottom: 12px; animation: bounce 0.6s ease both 0.2s; }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-
-.result-level-badge {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 10px 28px; border-radius: 999px; margin-bottom: 20px;
-  font-family: var(--font-display); font-size: 15px; font-weight: 700;
-}
-.result-title {
-  font-family: var(--font-display); font-size: clamp(28px,6vw,44px);
-  font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px;
-}
-.result-sub { font-size: 15px; color: var(--text-2); line-height: 1.6; max-width: 480px; margin: 0 auto 32px; }
-
-.result-score-ring {
-  width: 120px; height: 120px; border-radius: 50%;
-  border: 4px solid var(--border); display: flex; flex-direction: column;
-  align-items: center; justify-content: center; margin: 0 auto 32px;
-  position: relative;
-}
-.result-score-ring svg { position: absolute; top: -4px; left: -4px; transform: rotate(-90deg); }
-.result-score-num {
-  font-family: var(--font-display); font-size: 32px; font-weight: 800; line-height: 1;
-}
-.result-score-total { font-size: 12px; color: var(--text-3); font-family: var(--font-mono); }
-
-/* Breakdown */
-.result-breakdown {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 32px;
-}
-@media (max-width: 480px) { .result-breakdown { grid-template-columns: 1fr 1fr; } }
-.breakdown-item {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px 12px; text-align: center;
-}
-.breakdown-num {
-  font-family: var(--font-display); font-size: 26px; font-weight: 800; line-height: 1;
-}
-.breakdown-num.green { color: var(--green); }
-.breakdown-num.red   { color: var(--red); }
-.breakdown-num.gold  { color: var(--gold); }
-.breakdown-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
-
-/* Seviye açıklaması */
-.level-desc-card {
-  border-radius: var(--radius); padding: 24px 28px; margin-bottom: 28px;
-  border: 1px solid var(--border);
-}
-.level-desc-title {
-  font-family: var(--font-display); font-size: 14px; font-weight: 700;
-  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; opacity: 0.7;
-}
-.level-desc-text { font-size: 14.5px; line-height: 1.75; color: var(--text-2); }
-
-/* Sonuç butonlar */
-.result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-restart {
-  flex: 1; min-width: 140px; padding: 13px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  color: #0a0a0f; font-family: var(--font-display); font-size: 14px; font-weight: 700;
-  border: none; border-radius: 10px; cursor: pointer; transition: var(--trans);
-}
-.btn-restart:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201,168,76,0.35); }
-.btn-home-link {
-  flex: 1; min-width: 140px; padding: 13px; text-align: center;
-  background: var(--surface); color: var(--text-2);
-  font-family: var(--font-display); font-size: 14px; font-weight: 600;
-  border: 1px solid var(--border); border-radius: 10px; text-decoration: none; transition: var(--trans);
-  display: flex; align-items: center; justify-content: center;
-}
-.btn-home-link:hover { border-color: var(--border-hover); color: var(--text); }
-
-/* Yanlış sorular listesi */
-.wrongs-section { margin-top: 32px; }
-.wrongs-title {
-  font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--text-3); margin-bottom: 14px;
-}
-.wrong-item {
-  background: var(--surface); border: 1px solid rgba(239,68,68,0.15);
-  border-radius: 10px; padding: 14px 16px; margin-bottom: 8px;
-}
-.wrong-q { font-size: 13px; color: var(--text-2); margin-bottom: 6px; line-height: 1.5; }
-.wrong-answers { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; font-family: var(--font-mono); }
-.wrong-your { color: var(--red); }
-.wrong-correct { color: var(--green); }
 </style>
 </head>
 <body>
 
-<div class="bg-wrap" aria-hidden="true">
+<div class="bg" aria-hidden="true">
   <div class="bg-grid"></div>
-  <div class="bg-orb bg-orb-1"></div>
-  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-g1"></div>
+  <div class="bg-g2"></div>
 </div>
 
-<!-- NAV -->
 <nav class="nav">
   <a class="nav-logo" href="/" aria-label="AlmancaPratik ana sayfa">
-    <div class="nav-logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-        <path d="M2 17l10 5 10-5"/>
-        <path d="M2 12l10 5 10-5"/>
-      </svg>
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
     </div>
     <span class="nav-logo-name">AlmancaPratik</span>
   </a>
-  <a class="nav-back" href="/">
+  <a class="nav-back" href="/anasayfa/">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-    Ana Sayfa
+    <span>Ana Sayfa</span>
   </a>
 </nav>
 
-<main class="page">
+<!-- ══════════════ INTRO ══════════════ -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-page">
 
-  <!-- ══════════════════════════
-       INTRO EKRANI
-  ══════════════════════════ -->
-  <div class="screen active" id="screen-intro">
-    <div class="intro-badge"><span class="intro-dot"></span>Almanca Seviye Tespiti</div>
-    <h1 class="intro-title">Almanca seviyeni<br><span>keşfet</span></h1>
-    <p class="intro-sub">
-      25 çoktan seçmeli soruyla Almanca seviyeni ölç.
-      Gramer, kelime bilgisi ve okuma anlayışını test eder — yaklaşık 10 dakika sürer.
-    </p>
+    <div class="intro-hero">
+      <div class="intro-eyebrow"><span class="eyebrow-dot"></span>Ücretsiz · Türkçe Açıklamalı · 25 Soru</div>
+      <h1 class="intro-title">Almanca seviyeni<br><span class="intro-title-accent">keşfet.</span></h1>
+      <p class="intro-sub">A1'den C1'e beş seviyeyi kapsayan gramer, kelime ve okuma anlayışı sorularıyla gerçek seviyeni öğren. Yaklaşık 10 dakika sürer.</p>
 
-    <div class="intro-stats">
-      <div class="intro-stat">
-        <div class="intro-stat-num">25</div>
-        <div class="intro-stat-label">Soru</div>
+      <div class="intro-stats">
+        <div class="intro-stat-wrap">
+          <div class="intro-stat"><span class="intro-stat-num">25</span><span class="intro-stat-lbl">Soru</span></div>
+        </div>
+        <div class="intro-stat-sep"></div>
+        <div class="intro-stat-wrap">
+          <div class="intro-stat"><span class="intro-stat-num">5</span><span class="intro-stat-lbl">Seviye</span></div>
+        </div>
+        <div class="intro-stat-sep"></div>
+        <div class="intro-stat-wrap">
+          <div class="intro-stat"><span class="intro-stat-num">~10</span><span class="intro-stat-lbl">Dakika</span></div>
+        </div>
+        <div class="intro-stat-sep"></div>
+        <div class="intro-stat-wrap">
+          <div class="intro-stat"><span class="intro-stat-num">0₺</span><span class="intro-stat-lbl">Ücretsiz</span></div>
+        </div>
       </div>
-      <div class="intro-stat">
-        <div class="intro-stat-num">3</div>
-        <div class="intro-stat-label">Bölüm</div>
+
+      <div class="level-grid" role="list">
+        <div class="level-card lc-a1" role="listitem"><span class="level-badge">A1</span><span class="level-name">Başlangıç</span></div>
+        <div class="level-card lc-a2" role="listitem"><span class="level-badge">A2</span><span class="level-name">Temel</span></div>
+        <div class="level-card lc-b1" role="listitem"><span class="level-badge">B1</span><span class="level-name">Orta</span></div>
+        <div class="level-card lc-b2" role="listitem"><span class="level-badge">B2</span><span class="level-name">Üst Orta</span></div>
+        <div class="level-card lc-c1" role="listitem"><span class="level-badge">C1</span><span class="level-name">İleri</span></div>
       </div>
-      <div class="intro-stat">
-        <div class="intro-stat-num">~10</div>
-        <div class="intro-stat-label">Dakika</div>
-      </div>
-      <div class="intro-stat">
-        <div class="intro-stat-num">5</div>
-        <div class="intro-stat-label">Seviye</div>
+
+      <div class="btn-start-wrap">
+        <button class="btn-start" onclick="startQuiz()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Teste Başla
+        </button>
+        <span class="btn-start-note">Kayıt gerektirmez · Sonuçlar anında gösterilir</span>
       </div>
     </div>
 
-    <div class="levels-grid">
-      <div class="level-chip a1"><span class="level-chip-code">A1</span><span class="level-chip-desc">Başlangıç</span></div>
-      <div class="level-chip a2"><span class="level-chip-code">A2</span><span class="level-chip-desc">Temel</span></div>
-      <div class="level-chip b1"><span class="level-chip-code">B1</span><span class="level-chip-desc">Orta</span></div>
-      <div class="level-chip b2"><span class="level-chip-code">B2</span><span class="level-chip-desc">Üst Orta</span></div>
-      <div class="level-chip c1"><span class="level-chip-code">C1</span><span class="level-chip-desc">İleri</span></div>
-    </div>
+    <!-- SEO İÇERİK -->
+    <div class="seo-section">
+      <div class="seo-divider"><div class="seo-divider-dot"></div></div>
 
-    <button class="btn-start" onclick="startQuiz()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Teste Başla
-    </button>
-  </div>
+      <div class="seo-grid">
 
-  <!-- ══════════════════════════
-       QUIZ EKRANI
-  ══════════════════════════ -->
-  <div class="screen" id="screen-quiz">
+        <!-- Seviye tablosu -->
+        <div class="seo-card">
+          <div class="seo-card-label">Seviye Rehberi</div>
+          <h2>Almanca Seviyeleri Neler İfade Eder?</h2>
+          <p>Almanca öğreniminde uluslararası standart olan <strong>CEFR (Ortak Avrupa Dil Çerçevesi)</strong>, dil yeterliliğini altı farklı seviyeye ayırır. Bu test A1'den C1'e beş seviyeyi kapsar.</p>
+          <table class="level-table">
+            <thead><tr><th>Seviye</th><th>İsim</th><th>Yeterlilik</th></tr></thead>
+            <tbody>
+              <tr><td class="lt-a1">A1</td><td>Başlangıç</td><td>Temel ifadeler ve tanışma</td></tr>
+              <tr><td class="lt-a2">A2</td><td>Temel</td><td>Günlük basit iletişim</td></tr>
+              <tr><td class="lt-b1">B1</td><td>Orta</td><td>Seyahat ve günlük konular</td></tr>
+              <tr><td class="lt-b2">B2</td><td>Üst Orta</td><td>Karmaşık konular ve tartışma</td></tr>
+              <tr><td class="lt-c1">C1</td><td>İleri</td><td>Akademik ve profesyonel dil</td></tr>
+            </tbody>
+          </table>
+        </div>
 
+        <!-- Test nasıl çalışır -->
+        <div class="seo-card">
+          <div class="seo-card-label">Test Hakkında</div>
+          <h2>Bu Almanca Seviye Testi Nasıl Çalışır?</h2>
+          <p>Test, <strong>toplam 25 çoktan seçmeli soru</strong>dan oluşur ve 5 bölüme ayrılmıştır. Her bölüm bir seviyeyi temsil eder. Sorular A1'den başlayıp C1'e kadar giderek zorlaşır.</p>
+          <ul class="tip-list">
+            <li><span class="tip-dot"></span><strong>A1–A2:</strong> Temel gramer, fiil çekimleri, günlük kelimeler</li>
+            <li><span class="tip-dot"></span><strong>B1:</strong> Konjunktiv II, bağlaçlar, bağımlı cümleler</li>
+            <li><span class="tip-dot"></span><strong>B2:</strong> Genitif, ileri gramer yapıları, Konjunktiv I</li>
+            <li><span class="tip-dot"></span><strong>C1:</strong> Plusquamperfekt, karmaşık bağlaçlar, akademik yapılar</li>
+            <li><span class="tip-dot"></span>Her yanlış cevap için <strong>doğru cevap ve açıklama</strong> Türkçe gösterilir</li>
+          </ul>
+        </div>
+
+        <!-- Seviyene göre ne yapmalısın -->
+        <div class="seo-card seo-card-wide">
+          <div class="seo-card-label">Sonrası Ne Olacak?</div>
+          <h2>Seviyeni Öğrendikten Sonra Almancana Nasıl Devam Edersin?</h2>
+          <p>Seviye testini tamamladıktan sonra AlmancaPratik'teki araçlarla öğrenmeye hemen devam edebilirsin. Her seviye için farklı bir yol haritası var:</p>
+          <p><strong>A1–A2 seviyesindeysen</strong> önce temel kelime haznesini genişletmen gerekiyor. <a href="/ceviri/">Almanca-Türkçe çeviri aracı</a> ile kelimelerin anlamını öğrenebilir, <a href="/artikel/">der die das artikel bulucu</a> ile isimlerin cinsiyetini pekiştirebilirsin. <a href="/wordsadd/">Kelime ekleme</a> aracıyla öğrendiğin kelimeleri kişisel sözlüğüne kaydedebilirsin.</p>
+          <p><strong>B1–B2 seviyesindeysen</strong> gramer yapılarını pekiştirmek için gerçek metinler okuman önerilir. <a href="/metin/">Metin analizi aracı</a> ile Almanca bir makale veya haber metnini yapıştırabilir, bilmediğin kelimelere tıklayarak anlamını anında görebilirsin. <a href="/quiz/">Kelime quizi</a> ile öğrendiğin kelimeleri test etmeyi de unutma.</p>
+          <p><strong>C1 seviyesine yakınsanız</strong> bağlamlı kullanımı geliştirmek kritik önem taşır. <a href="/cumlebul/">Cümle örnekleri aracı</a> ile herhangi bir kelimenin Wiktionary ve Tatoeba'dan gerçek kullanım örneklerini inceleyebilirsin. Bu sayede kelimeleri salt ezberlemek yerine bağlamında kavramış olursun.</p>
+        </div>
+
+        <!-- Almanca seviye soruları: SSS -->
+        <div class="seo-card seo-card-wide">
+          <div class="seo-card-label">Sık Sorulan Sorular</div>
+          <h2>Almanca Seviye Testi Hakkında Merak Edilenler</h2>
+          <div class="faq-list">
+            <div class="faq-item">
+              <div class="faq-q">Bu Almanca seviye testi ne kadar güvenilir?</div>
+              <div class="faq-a">Test, CEFR standartlarını temel alan gramer ve kelime bilgisi sorularından oluşur. Her seviyede 5 soru bulunmakta olup sonuçlar genel yeterlilik düzeyini gösterir. Resmi bir sertifika testi değildir; öğrenme yolculuğunda nerede olduğunu anlamana yardımcı olmak için tasarlanmıştır. Resmi sertifika için Goethe-Institut sınavlarına başvurabilirsin.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Almanca A1 seviyesi ne kadar sürede öğrenilir?</div>
+              <div class="faq-a">Günlük 30-45 dakika düzenli çalışmayla ortalama 2-3 ayda A1 seviyesine ulaşmak mümkündür. <a href="/dersler/">AlmancaPratik dersleri</a> ile yapılandırılmış bir öğrenme yolunu takip edebilir, <a href="/kelimeler/">kelime listeleri</a> ile düzenli tekrar yapabilirsin.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">A2'den B1'e geçmek zor mu?</div>
+              <div class="faq-a">A2'den B1'e geçiş genellikle öğrencilerin "plato" yaşadığı noktadır. Fiil çekimleri (Perfekt, Präteritum), bağımlı cümleler (weil, dass, obwohl) ve Konjunktiv II gibi yapılar zorlayıcı olabilir. Bu aşamada gerçek metinlerle pratik yapmak çok önemlidir; <a href="/metin/">metin analizi aracını</a> düzenli kullanmak büyük fark yaratır.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Almanca B2 seviyesi ne işe yarar?</div>
+              <div class="faq-a">B2 seviyesi; Almanya'da çalışma izni başvuruları, birçok Alman üniversitesine giriş ve çeşitli iş pozisyonları için aranan minimum dil yeterliliğidir. B2 ile ana dili Almanca olan kişilerle normal bir hızda ve konuda iletişim kurabilirsin. Testiz puan ve gelişimi takip etmek için <a href="/quiz/">kelime quizlerini</a> düzenli çözebilirsin.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Ücretsiz Almanca öğrenme için nereden başlamalıyım?</div>
+              <div class="faq-a">AlmancaPratik'te hesap oluşturmaya bile gerek kalmadan pek çok araçtan faydalanabilirsin. <a href="/artikel/">Artikel bulucu</a>, <a href="/cumlebul/">cümle örnekleri</a> ve <a href="/ceviri/">çeviri aracı</a> kayıt gerektirmez. Kişisel sözlük ve quiz özellikleri için ücretsiz Google hesabınla giriş yapman yeterli.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Platform tanıtım + iç linkler -->
+        <div class="seo-card">
+          <div class="seo-card-label">Platform Araçları</div>
+          <h2>AlmancaPratik ile Hızla İlerle</h2>
+          <p>Seviyeni öğrendikten sonra AlmancaPratik'in araçlarıyla pratik yapmaya başla. Tüm araçlar <strong>ücretsiz</strong> ve Türkçe arayüzlüdür.</p>
+          <div class="tool-links">
+            <a class="tool-link" href="/artikel/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Artikel Bul
+            </a>
+            <a class="tool-link" href="/quiz/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Kelime Quizi
+            </a>
+            <a class="tool-link" href="/metin/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Metin Analizi
+            </a>
+            <a class="tool-link" href="/cumlebul/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Cümle Örnekleri
+            </a>
+            <a class="tool-link" href="/ceviri/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+              Çeviri
+            </a>
+            <a class="tool-link" href="/dersler/">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              Dersler
+            </a>
+          </div>
+        </div>
+
+        <!-- Almanca öğrenme ipuçları -->
+        <div class="seo-card">
+          <div class="seo-card-label">Öğrenme İpuçları</div>
+          <h2>Almancada Hızlı İlerlemenin 5 Yolu</h2>
+          <ul class="tip-list">
+            <li><span class="tip-dot"></span><strong>Artikel'leri kelimeyle birlikte öğren:</strong> "Hund" değil, "der Hund" olarak ezberle. <a href="/artikel/">Artikel bulucu</a> bunu kolaylaştırır.</li>
+            <li><span class="tip-dot"></span><strong>Günde 10 yeni kelime:</strong> Az ama düzenli çalışmak, yoğun ama seyrek çalışmaktan çok daha etkilidir. <a href="/wordsadd/">Kelime ekle</a> ve günlük tekrar yap.</li>
+            <li><span class="tip-dot"></span><strong>Gerçek metin oku:</strong> Ders kitabı cümleleri yerine gerçek haber ve makale metinleri seni daha hızlı ilerletir. <a href="/metin/">Metin analizi</a> aracını dene.</li>
+            <li><span class="tip-dot"></span><strong>Bağlamlı öğren:</strong> Kelimeleri tek başına değil, cümle içinde gör. <a href="/cumlebul/">Cümle örnekleri</a> tam bunun için var.</li>
+            <li><span class="tip-dot"></span><strong>Düzenli test:</strong> Öğrendiklerini test etmeden geçme. <a href="/quiz/">Kelime quizi</a> ile haftalık sınavlar uygula.</li>
+          </ul>
+        </div>
+
+      </div><!-- /seo-grid -->
+    </div><!-- /seo-section -->
+
+  </div><!-- /intro-page -->
+</div><!-- /screen-intro -->
+
+<!-- ══════════════ QUIZ ══════════════ -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-page">
     <div class="quiz-header">
       <div class="progress-wrap">
         <div class="progress-label">
           <span id="q-label">Soru 1 / 25</span>
-          <span id="q-section-label">Bölüm 1: Gramer</span>
+          <span id="q-section-label"></span>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progress-fill" style="width:4%"></div>
-        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:4%"></div></div>
       </div>
       <div class="score-pill" id="score-pill">✓ 0</div>
     </div>
 
     <div id="section-tag-wrap"></div>
 
-    <div class="question-card" id="question-card">
+    <div class="question-card">
       <div id="reading-box-wrap"></div>
-      <div class="question-num" id="q-num">01</div>
-      <div class="question-text" id="q-text"></div>
+      <div class="q-num" id="q-num">01</div>
+      <div class="q-text" id="q-text"></div>
       <div class="choices" id="choices"></div>
     </div>
 
@@ -537,53 +281,40 @@ body {
       </button>
     </div>
   </div>
+</div>
 
-  <!-- ══════════════════════════
-       SONUÇ EKRANI
-  ══════════════════════════ -->
-  <div class="screen" id="screen-result">
+<!-- ══════════════ RESULT ══════════════ -->
+<div class="screen" id="screen-result">
+  <div class="result-page">
     <div class="result-hero">
-      <div class="result-emoji" id="result-emoji">🎉</div>
-      <div class="result-level-badge" id="result-badge">A2</div>
-      <h1 class="result-title" id="result-title">Temel Seviye</h1>
+      <span class="result-emoji" id="result-emoji">🎉</span>
+      <div class="result-level-badge" id="result-badge"></div>
+      <h2 class="result-title" id="result-title"></h2>
       <p class="result-sub" id="result-sub"></p>
-
-      <div class="result-score-ring" id="score-ring-wrap">
+      <div class="score-ring-wrap">
         <svg width="128" height="128" id="score-ring-svg">
           <circle cx="64" cy="64" r="56" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
-          <circle cx="64" cy="64" r="56" fill="none" stroke-width="6"
-            stroke-dasharray="351.86" stroke-dashoffset="351.86"
-            stroke-linecap="round" id="score-ring-circle"
-            style="transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1) 0.3s;"/>
+          <circle cx="64" cy="64" r="56" fill="none" stroke-width="6" stroke-dasharray="351.86" stroke-dashoffset="351.86" stroke-linecap="round" id="score-ring-circle" style="transition:stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1) 0.3s;"/>
         </svg>
-        <div class="result-score-num" id="result-score-num">0</div>
-        <div class="result-score-total">/ 25</div>
+        <div class="score-num" id="result-score-num">0</div>
+        <div class="score-total">/ 25</div>
       </div>
     </div>
 
     <div class="result-breakdown">
-      <div class="breakdown-item">
-        <div class="breakdown-num green" id="res-correct">0</div>
-        <div class="breakdown-label">Doğru</div>
-      </div>
-      <div class="breakdown-item">
-        <div class="breakdown-num red" id="res-wrong">0</div>
-        <div class="breakdown-label">Yanlış</div>
-      </div>
-      <div class="breakdown-item">
-        <div class="breakdown-num gold" id="res-pct">0%</div>
-        <div class="breakdown-label">Başarı</div>
-      </div>
+      <div class="bd-item"><div class="bd-num gn" id="res-correct">0</div><div class="bd-lbl">Doğru</div></div>
+      <div class="bd-item"><div class="bd-num rd" id="res-wrong">0</div><div class="bd-lbl">Yanlış</div></div>
+      <div class="bd-item"><div class="bd-num gd" id="res-pct">0%</div><div class="bd-lbl">Başarı</div></div>
     </div>
 
     <div class="level-desc-card" id="level-desc-card">
-      <div class="level-desc-title" id="level-desc-title">Seviye Açıklaması</div>
+      <div class="level-desc-title" id="level-desc-title"></div>
       <p class="level-desc-text" id="level-desc-text"></p>
     </div>
 
     <div class="result-actions">
       <button class="btn-restart" onclick="restartQuiz()">↺ Tekrar Çöz</button>
-      <a class="btn-home-link" href="/">Ana Sayfaya Dön</a>
+      <a class="btn-home-link" href="/anasayfa/">Ana Sayfaya Dön</a>
     </div>
 
     <div class="wrongs-section" id="wrongs-section" style="display:none">
@@ -591,471 +322,9 @@ body {
       <div id="wrongs-list"></div>
     </div>
   </div>
-
-</main>
-
+</div>
+<script src="../../js/seviyetespit.js"></script>
 <script>
-/* ═══════════════════════════════════════════
-   SORU VERİTABANI
-═══════════════════════════════════════════ */
-// seviyeler/seviyetespit/index.html dosyasında
-// const QUESTIONS = [ ... ]; bloğunu aşağıdakiyle değiştir.
-
-const QUESTIONS = [
-
-  /* ══════════════ A1 ══════════════ */
-  {
-    section: `Bölüm 1: A1 — Başlangıç`,
-    q: `Welches Wort passt nicht?`,
-    choices: [`der Apfel`, `die Banane`, `das Auto`, `die Orange`],
-    answer: 2,
-    explanation: `"das Auto" bir araçtır; diğerleri (Apfel, Banane, Orange) meyve ismidir.`
-  },
-  {
-    section: `Bölüm 1: A1 — Başlangıç`,
-    q: `Ich ___ gern ins Kino.`,
-    choices: [`gehe`, `gehst`, `geht`, `gehen`],
-    answer: 0,
-    explanation: `"ich" ile "gehen" fiilinin Präsens çekimi "gehe"dir.`
-  },
-  {
-    section: `Bölüm 1: A1 — Başlangıç`,
-    q: `Was ist richtig?`,
-    choices: [`Ich bist Hunger.`, `Du hat Hunger.`, `Er habe Hunger.`, `Ich habe Hunger.`],
-    answer: 3,
-    explanation: `"haben" fiilinin "ich" ile doğru çekimi "habe"dir: Ich habe Hunger.`
-  },
-  {
-    section: `Bölüm 1: A1 — Başlangıç`,
-    q: `Wir ___ jeden Tag um 7 Uhr auf.`,
-    choices: [`stehe`, `stehen`, `steht`, `steh`],
-    answer: 1,
-    explanation: `"wir" ile "aufstehen" fiilinin doğru çekimi "stehen"dir (wir stehen auf).`
-  },
-  {
-    section: `Bölüm 1: A1 — Başlangıç`,
-    q: `Welcher Satz ist falsch?`,
-    choices: [`Das Kind spielt im Garten.`, `Ich mag Eis.`, `Wir trinken Wasser.`, `Er gehen nach Hause.`],
-    answer: 3,
-    explanation: `"Er gehen" yanlıştır; doğrusu "Er geht nach Hause."dir.`
-  },
-
-  /* ══════════════ A2 ══════════════ */
-  {
-    section: `Bölüm 2: A2 — Temel`,
-    q: `Ich kann heute nicht kommen, ___ ich krank bin.`,
-    choices: [`aber`, `weil`, `und`, `deshalb`],
-    answer: 1,
-    explanation: `"weil" (çünkü) bir neden bağlacıdır ve fiili cümle sonuna taşır.`
-  },
-  {
-    section: `Bölüm 2: A2 — Temel`,
-    q: `Welches Wort passt nicht zu den anderen?`,
-    choices: [`oft`, `manchmal`, `gestern`, `schnell`],
-    answer: 3,
-    explanation: `"schnell" (hızlı) bir nitelik zarfıdır. Diğerleri (oft, manchmal, gestern) zaman zarflarıdır.`
-  },
-  {
-    section: `Bölüm 2: A2 — Temel`,
-    q: `Er hat mir ___ geholfen.`,
-    choices: [`immer`, `niemand`, `jeder`, `obwohl`],
-    answer: 0,
-    explanation: `"Er hat mir immer geholfen" = O bana her zaman yardım etti. Diğerleri bu yapıyla kullanılamaz.`
-  },
-  {
-    section: `Bölüm 2: A2 — Temel`,
-    q: `Wenn es regnet, ___ wir zu Hause bleiben.`,
-    choices: [`wird`, `sollen`, `müssen`, `könnte`],
-    answer: 2,
-    explanation: `"müssen" (zorunda olmak) bu bağlamda en doğal seçimdir.`
-  },
-  {
-    section: `Bölüm 2: A2 — Temel`,
-    q: `Welcher Satz ist korrekt?`,
-    choices: [`Ich freue mich für die Ferien.`, `Ich freue mich zu die Ferien.`, `Ich freue mich über die Ferien.`, `Ich freue mich auf die Ferien.`],
-    answer: 3,
-    explanation: `"sich freuen auf" gelecekte beklenen bir şey için kullanılır: Ich freue mich auf die Ferien (tatili sabırsızlıkla bekliyorum).`
-  },
-
-  /* ══════════════ B1 ══════════════ */
-  {
-    section: `Bölüm 3: B1 — Orta`,
-    q: `Obwohl er müde war, ___ er die ganze Nacht gearbeitet.`,
-    choices: [`haben`, `hatte gehabt`, `hatte`, `hat`],
-    answer: 3,
-    explanation: `Perfekt kullanılır: "hat gearbeitet". "hatte gearbeitet" Plusquamperfekt olur ve burada bağlam için yanlıştır.`
-  },
-  {
-    section: `Bölüm 3: B1 — Orta`,
-    q: `Welcher Satz ist korrekt?`,
-    choices: [`Ich erinnere mich an den Tag, als wir uns getroffen haben.`, `Ich erinnere mich an den Tag, wann wir uns getroffen haben.`, `Ich erinnere mich den Tag, als wir uns getroffen haben.`, `Ich erinnere mich auf den Tag, als wir uns getroffen haben.`],
-    answer: 0,
-    explanation: `"sich erinnern an" sabit yapısı ve geçmiş zamandaki bir ana atıfta "als" (wann değil) kullanılır.`
-  },
-  {
-    section: `Bölüm 3: B1 — Orta`,
-    q: `Er sprach so schnell, dass ich kaum ___ konnte.`,
-    choices: [`gehört`, `zu hören`, `hören`, `gehöre`],
-    answer: 2,
-    explanation: `Modal fiil (konnte) + saf infinitiv: "hören konnte". Modal fiillerle "zu" kullanılmaz.`
-  },
-  {
-    section: `Bölüm 3: B1 — Orta`,
-    q: `Wenn ich mehr Zeit ___, würde ich mehr Bücher lesen.`,
-    choices: [`hätte`, `habe`, `haben`, `gehabt`],
-    answer: 0,
-    explanation: `Konjunktiv II (gerçek dışı koşul): "würde lesen" ile birlikte "hätte" kullanılır.`
-  },
-  {
-    section: `Bölüm 3: B1 — Orta`,
-    q: `Welcher Satz ist falsch?`,
-    choices: [`Ich interessiere mich für Geschichte.`, `Ich interessiere mich für Kunst.`, `Ich interessiere mich auf Geschichte.`, `Ich interessiere mich für Musik.`],
-    answer: 2,
-    explanation: `"sich interessieren für" sabit bir yapıdır. "auf" preposisyonu burada kullanılamaz.`
-  },
-
-  /* ══════════════ B2 ══════════════ */
-  {
-    section: `Bölüm 4: B2 — Üst Orta`,
-    q: `Die Nachrichten, ___ gestern ausgestrahlt wurden, waren sehr spannend.`,
-    choices: [`welche`, `denen`, `die`, `deren`],
-    answer: 2,
-    explanation: `"die Nachrichten" çoğul feminin → Nominativ Relativpronomen "die"dir. "welche" da mümkün ama "die" standart ve doğal olanıdır.`
-  },
-  {
-    section: `Bölüm 4: B2 — Üst Orta`,
-    q: `Welcher Satz ist korrekt?`,
-    choices: [`Trotz des Regens gingen wir spazieren.`, `Trotz der Regen gingen wir spazieren.`, `Trotz dem Regen gingen wir spazieren.`, `Trotz Regen gingen wir spazieren.`],
-    answer: 0,
-    explanation: `"trotz" Genitiv alır: "des Regens" (maskulin/neutrum Genitiv -s eki).`
-  },
-  {
-    section: `Bölüm 4: B2 — Üst Orta`,
-    q: `Er tat so, ___ er alles wüsste.`,
-    choices: [`dass`, `obwohl`, `wie`, `als`],
-    answer: 3,
-    explanation: `"als ob" yapısının kısaltması olan "als" Konjunktiv II ile kullanılır: "als er alles wüsste".`
-  },
-  {
-    section: `Bölüm 4: B2 — Üst Orta`,
-    q: `Es ist notwendig, dass jeder Schüler pünktlich ___.`,
-    choices: [`wird`, `seien`, `sei`, `ist`],
-    answer: 2,
-    explanation: `Resmi/yazı dilinde "es ist notwendig, dass..." yapısında Konjunktiv I kullanılır: "sei".`
-  },
-  {
-    section: `Bölüm 4: B2 — Üst Orta`,
-    q: `Welcher Satz ist falsch?`,
-    choices: [`Ich bin stolz auf meine Leistung.`, `Ich bin stolz auf dich.`, `Ich bin stolz auf meine Familie.`, `Ich bin stolz für meine Leistung.`],
-    answer: 3,
-    explanation: `"stolz sein auf" sabit bir yapıdır. "für" preposisyonu kullanılamaz.`
-  },
-
-  /* ══════════════ C1 ══════════════ */
-  {
-    section: `Bölüm 5: C1 — İleri`,
-    q: `Sie sprach mit ihm, ___ sie eigentlich wütend war, sehr freundlich.`,
-    choices: [`obwohl`, `während`, `weil`, `damit`],
-    answer: 0,
-    explanation: `"obwohl" (rağmen/her ne kadar) zıtlık ifade eder: kızgın olmasına rağmen kibarca konuştu.`
-  },
-  {
-    section: `Bölüm 5: C1 — İleri`,
-    q: `Welcher Satz ist korrekt?`,
-    choices: [`Es sei denn, dass wir rechtzeitig kommen, müssen wir warten.`, `Es sei denn, wir kommen rechtzeitig, müssen wir warten.`, `Es sei denn, wir rechtzeitig kommen, müssen wir warten.`, `Es sei denn, dass wir kommen rechtzeitig, müssen wir warten.`],
-    answer: 1,
-    explanation: `"Es sei denn, + Hauptsatz": "dass" olmadan fiil 2. pozisyonda kalır. "Es sei denn, wir kommen rechtzeitig" doğrudur.`
-  },
-  {
-    section: `Bölüm 5: C1 — İleri`,
-    q: `Welcher Satz ist korrekt?`,
-    choices: [`Je mehr man übt, je besser wird man.`, `Je mehr man übt, desto besser man wird.`, `Je mehr man übt, desto besser wird man.`, `Je mehr man übt, desto besser wird man es.`],
-    answer: 2,
-    explanation: `"Je mehr..., desto besser..." yapısında "desto" sonrasında fiil ikinci pozisyona gelir: "desto besser wird man".`
-  },
-  {
-    section: `Bölüm 5: C1 — İleri`,
-    q: `Nachdem er den Vertrag gelesen ___, unterschrieb er vorsichtig.`,
-    choices: [`sein`, `hat`, `gehabt`, `hatte`],
-    answer: 3,
-    explanation: `"nachdem" Plusquamperfekt gerektirir: "gelesen hatte". Ana cümleden önce tamamlanmış eylem Plusquamperfekt ile ifade edilir.`
-  },
-  {
-    section: `Bölüm 5: C1 — İleri`,
-    q: `Welcher Satz ist korrekt?`,
-    choices: [`Insofern die Ergebnisse korrekt sind, dürfen wir mit der Veröffentlichung beginnen.`, `Insofern die Ergebnisse korrekt sind, wir können mit der Veröffentlichung beginnen.`, `Insofern die Ergebnisse korrekt sind, können wir mit der Veröffentlichung beginnen.`, `Insofern als die Ergebnisse korrekt sind, können wir mit der Veröffentlichung beginnen.`],
-    answer: 2,
-    explanation: `"insofern + Nebensatz" yapısında ana cümlede fiil 2. pozisyona gelir: "können wir". "dürfen" yerine "können" anlam olarak daha uygundur.`
-  }
-];
-/* ═══════════════════════════════════════════
-   SEVİYE TANIMLARI
-═══════════════════════════════════════════ */
-const LEVELS = [
-  {
-    min: 0, max: 7,
-    code: "A1", name: "Başlangıç Seviyesi",
-    emoji: "🌱",
-    color: "#22c55e", bgColor: "rgba(34,197,94,0.1)", borderColor: "rgba(34,197,94,0.25)",
-    desc: "Almancayla yeni tanışıyorsun. Temel kelimeler ve basit cümleler kurabilirsin. Düzenli pratikle kısa sürede ilerleme kaydedebilirsin. AlmancaPratik'teki A1 kelime listesiyle başlamak harika bir adım olur!"
-  },
-  {
-    min: 8, max: 12,
-    code: "A2", name: "Temel Seviye",
-    emoji: "📗",
-    color: "#86efac", bgColor: "rgba(134,239,172,0.08)", borderColor: "rgba(134,239,172,0.2)",
-    desc: "Günlük hayatta basit iletişimi sürdürebilirsin. Temel gramer kurallarını biliyorsun ama geliştirilmesi gereken alanlar var. Artikel bulucu ve kelime quizleriyle A2→B1 geçişini hızlandırabilirsin."
-  },
-  {
-    min: 13, max: 17,
-    code: "B1", name: "Orta Seviye",
-    emoji: "📘",
-    color: "#60c8f0", bgColor: "rgba(96,200,240,0.08)", borderColor: "rgba(96,200,240,0.2)",
-    desc: "Günlük hayatın büyük bölümünde Almancayı kullanabilirsin. Gramer temellerine hakimsin, kelime haznen gelişiyor. Metin analizi özelliğiyle gerçek Almanca metinler okuyarak B1→B2 geçişini yapabilirsin."
-  },
-  {
-    min: 18, max: 22,
-    code: "B2", name: "Üst Orta Seviye",
-    emoji: "📙",
-    color: "#818cf8", bgColor: "rgba(129,140,248,0.08)", borderColor: "rgba(129,140,248,0.2)",
-    desc: "Karmaşık konularda Almanca anlayabilir ve ifade edebilirsin. Ana dili Almanca konuşanlarla normal bir hızda iletişim kurabilirsin. Hedefin C1 ise karmaşık metin analizine ve ileri gramer çalışmasına odaklan."
-  },
-  {
-    min: 23, max: 25,
-    code: "C1", name: "İleri Seviye",
-    emoji: "🏆",
-    color: "#c9a84c", bgColor: "rgba(201,168,76,0.1)", borderColor: "rgba(201,168,76,0.25)",
-    desc: "Almancayı akıcı ve etkili biçimde kullanabiliyorsun. Karmaşık akademik ve profesyonel metinleri anlayabilirsin. Tebrikler! Bu platform sana ileri kelime çalışması ve nüanslı ifadeler için ek pratik sunabilir."
-  }
-];
-
-/* ═══════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════ */
-let current = 0;
-let score   = 0;
-let answered = false;
-let wrongs   = [];
-
-/* ═══════════════════════════════════════════
-   YARDIMCI FONKSİYONLAR
-═══════════════════════════════════════════ */
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById(id);
-  el.classList.add('active');
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function escHtml(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/„/g,'„').replace(/"/g,'"');
-}
-
-function highlightBlank(text) {
-  return escHtml(text).replace(/___/g, '<em>___</em>');
-}
-
-/* ═══════════════════════════════════════════
-   QUIZ BAŞLAT
-═══════════════════════════════════════════ */
-function startQuiz() {
-  current = 0; score = 0; answered = false; wrongs = [];
-  show('screen-quiz');
-  renderQuestion();
-}
-
-function restartQuiz() {
-  startQuiz();
-}
-
-/* ═══════════════════════════════════════════
-   SORU RENDER
-═══════════════════════════════════════════ */
-function renderQuestion() {
-  const q = QUESTIONS[current];
-  answered = false;
-
-  /* Progress */
-  const pct = Math.round(((current + 1) / QUESTIONS.length) * 100);
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('q-label').textContent = `Soru ${current + 1} / ${QUESTIONS.length}`;
-  document.getElementById('q-section-label').textContent = q.section;
-  document.getElementById('score-pill').textContent = `✓ ${score}`;
-
-  /* Bölüm etiketi */
-  const sectionWrap = document.getElementById('section-tag-wrap');
-  const isNewSection = current === 0 || q.section !== QUESTIONS[current - 1].section;
-  if (isNewSection) {
-    sectionWrap.innerHTML = `<div class="section-tag">📌 ${escHtml(q.section)}</div>`;
-    sectionWrap.style.display = 'block';
-  } else {
-    sectionWrap.style.display = 'none';
-  }
-
-  /* Okuma metni */
-  const readingWrap = document.getElementById('reading-box-wrap');
-  if (q.reading) {
-    readingWrap.innerHTML = `<div class="reading-box">${escHtml(q.reading)}</div>`;
-  } else {
-    readingWrap.innerHTML = '';
-  }
-
-  /* Soru numarası ve metni */
-  document.getElementById('q-num').textContent = String(current + 1).padStart(2, '0');
-  document.getElementById('q-text').innerHTML = highlightBlank(q.q);
-
-  /* Şıklar */
-  const keys = ['a', 'b', 'c', 'd'];
-  const choicesEl = document.getElementById('choices');
-  choicesEl.innerHTML = '';
-  q.choices.forEach((choice, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'choice';
-    btn.innerHTML = `<span class="choice-key">${keys[i]}</span> ${escHtml(choice)}`;
-    btn.addEventListener('click', () => selectAnswer(i));
-    choicesEl.appendChild(btn);
-  });
-
-  /* Feedback gizle */
-  const fb = document.getElementById('feedback-bar');
-  fb.className = 'feedback-bar';
-  document.getElementById('btn-next').classList.remove('show');
-
-  /* Scroll */
-  window.scrollTo({ top: 60, behavior: 'smooth' });
-}
-
-/* ═══════════════════════════════════════════
-   CEVAP SEÇ
-═══════════════════════════════════════════ */
-function selectAnswer(idx) {
-  if (answered) return;
-  answered = true;
-
-  const q = QUESTIONS[current];
-  const btns = document.querySelectorAll('.choice');
-
-  /* Tüm butonları devre dışı bırak */
-  btns.forEach(b => b.disabled = true);
-
-  const isCorrect = idx === q.answer;
-
-  /* Seçilen butonu renklendir */
-  btns[idx].classList.add(isCorrect ? 'correct' : 'wrong');
-
-  /* Yanlışsa doğru cevabı da göster */
-  if (!isCorrect) {
-    btns[q.answer].classList.add('correct');
-    wrongs.push({ q, selected: idx });
-  } else {
-    score++;
-  }
-
-  /* Puan güncelle */
-  document.getElementById('score-pill').textContent = `✓ ${score}`;
-
-  /* Feedback */
-  const fb     = document.getElementById('feedback-bar');
-  const fbIcon = document.getElementById('feedback-icon');
-  const fbText = document.getElementById('feedback-text');
-
-  if (isCorrect) {
-    fb.className = 'feedback-bar ok show';
-    fbIcon.textContent = '✅';
-    fbText.innerHTML = `<strong>Doğru!</strong> ${escHtml(q.explanation)}`;
-  } else {
-    fb.className = 'feedback-bar ko show';
-    fbIcon.textContent = '❌';
-    const keys = ['a', 'b', 'c', 'd'];
-    fbText.innerHTML = `<strong>Yanlış. Doğru cevap: (${keys[q.answer]}) ${escHtml(q.choices[q.answer])}</strong> ${escHtml(q.explanation)}`;
-  }
-
-  /* Sonraki butonu göster */
-  document.getElementById('btn-next').classList.add('show');
-}
-
-/* ═══════════════════════════════════════════
-   SONRAKİ SORU
-═══════════════════════════════════════════ */
-function nextQuestion() {
-  current++;
-  if (current >= QUESTIONS.length) {
-    showResult();
-  } else {
-    renderQuestion();
-  }
-}
-
-/* ═══════════════════════════════════════════
-   SONUÇ GÖSTER
-═══════════════════════════════════════════ */
-function showResult() {
-  show('screen-result');
-
-  const pct = Math.round((score / QUESTIONS.length) * 100);
-  const level = LEVELS.find(l => score >= l.min && score <= l.max) || LEVELS[0];
-
-  /* Emoji + başlık */
-  document.getElementById('result-emoji').textContent = level.emoji;
-  document.getElementById('result-title').textContent = level.name;
-  document.getElementById('result-sub').textContent = '';
-
-  /* Seviye rozeti */
-  const badge = document.getElementById('result-badge');
-  badge.textContent = level.code;
-  badge.style.background = level.bgColor;
-  badge.style.border = `1px solid ${level.borderColor}`;
-  badge.style.color = level.color;
-  badge.style.fontSize = '18px';
-  badge.style.fontFamily = 'var(--font-display)';
-  badge.style.fontWeight = '800';
-
-  /* Skor halka */
-  document.getElementById('result-score-num').textContent = score;
-  document.getElementById('result-score-num').style.color = level.color;
-  const circle = document.getElementById('score-ring-circle');
-  const circumference = 2 * Math.PI * 56; // r=56
-  const offset = circumference * (1 - pct / 100);
-  circle.style.stroke = level.color;
-  setTimeout(() => {
-    circle.style.strokeDashoffset = offset;
-  }, 100);
-
-  /* Breakdown */
-  document.getElementById('res-correct').textContent = score;
-  document.getElementById('res-wrong').textContent   = QUESTIONS.length - score;
-  document.getElementById('res-pct').textContent     = pct + '%';
-
-  /* Seviye açıklaması */
-  const descCard = document.getElementById('level-desc-card');
-  descCard.style.background = level.bgColor;
-  descCard.style.borderColor = level.borderColor;
-  document.getElementById('level-desc-title').style.color = level.color;
-  document.getElementById('level-desc-title').textContent = `${level.code} — ${level.name}`;
-  document.getElementById('level-desc-text').textContent = level.desc;
-
-  /* Yanlış sorular */
-  const wrongsSection = document.getElementById('wrongs-section');
-  const wrongsList    = document.getElementById('wrongs-list');
-  if (wrongs.length > 0) {
-    wrongsSection.style.display = 'block';
-    wrongsList.innerHTML = wrongs.map(({ q, selected }) => {
-      const keys = ['a','b','c','d'];
-      return `
-        <div class="wrong-item">
-          <div class="wrong-q">${escHtml(q.q)}</div>
-          <div class="wrong-answers">
-            <span class="wrong-your">✗ Senin cevabın: (${keys[selected]}) ${escHtml(q.choices[selected])}</span>
-            <span class="wrong-correct">✓ Doğru cevap: (${keys[q.answer]}) ${escHtml(q.choices[q.answer])}</span>
-          </div>
-        </div>`;
-    }).join('');
-  } else {
-    wrongsSection.style.display = 'none';
-  }
-}
 </script>
 
 </body>

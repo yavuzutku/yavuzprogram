@@ -1,6 +1,6 @@
 import { auth, getWords, saveWord } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { renderTagChips, getSelectedTags, extractAllTags } from "./tag.js";
+import { renderTagChips, getSelectedTags, extractAllTags, getAutoLevel } from "./tag.js";
 import {
   fetchWikiData, fetchTranslate, normalizeGermanWord,
   artikelBadgeHtml, capitalize, escapeHtml, ARTIKEL_COLORS
@@ -200,7 +200,9 @@ function goToMeaningStep() {
   hideStatus();
 
   // Etiket chip'leri — otomatik seçilenler wikiData'dan
-  const autoSelected = wikiData?.autoTags || [];
+  const autoSelected = [...(wikiData?.autoTags || [])];
+  const _lvl = getAutoLevel(word);
+  if (_lvl && !autoSelected.includes(_lvl)) autoSelected.push(_lvl);
   renderTagChips("tagChips", autoSelected, extractAllTags(allExistingWords));
 
   // Çeviri önerisi + alternatifler

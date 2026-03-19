@@ -1,6 +1,6 @@
 import { auth, saveWord, getWords } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { renderTagChips, getSelectedTags, extractAllTags } from "./tag.js";
+import { renderTagChips, getSelectedTags, extractAllTags, getAutoLevel } from "./tag.js";
 import {
   fetchWikiData, fetchTranslate, normalizeGermanWord,
   artikelBadgeHtml, capitalize, escapeHtml, escapeRegex,
@@ -465,12 +465,14 @@ saveWordBtn.addEventListener("click", () => {
     }
   modalMeaning.value = trWord;
 
-  renderTagChips("modalTagChips", autoTags, extractAllTags(allWords));
-
-  hideModalStatus();
-  saveModal.style.display = "flex";
-  modalWord.focus();
-});
+  const _cevLvl = getAutoLevel(deWordRaw);
+  const _cevTags = [...autoTags];
+  if (_cevLvl && !_cevTags.includes(_cevLvl)) _cevTags.push(_cevLvl);
+  renderTagChips("modalTagChips", _cevTags, extractAllTags(allWords));
+    hideModalStatus();
+    saveModal.style.display = "flex";
+    modalWord.focus();
+  });
 
 modalClose.addEventListener("click",    closeModal);
 modalCancelBtn.addEventListener("click", closeModal);

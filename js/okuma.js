@@ -12,7 +12,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 import { saveWord, getWords } from "./firebase.js";
-import { renderTagChips, getSelectedTags, extractAllTags } from "./tag.js";
+import { renderTagChips, getSelectedTags, extractAllTags, getAutoLevel } from "./tag.js";
 import {
   fetchWikiData,
   fetchTranslate,
@@ -384,8 +384,11 @@ async function openPopup() {
   /* İçerik yüklendi → tarayıcı layout'u bitirince gerçek yüksekliğe göre yeniden konumlandır */
   requestAnimationFrame(() => positionPopup(btnRect));
 
-  renderTagChips("ppTags", wikiData.autoTags || [], extractAllTags(_userWords));
-
+  // SONRA:
+  const _ppLvl  = getAutoLevel(_word);
+  const _ppTags = [...(wikiData.autoTags || [])];
+  if (_ppLvl && !_ppTags.includes(_ppLvl)) _ppTags.push(_ppLvl);
+  renderTagChips("ppTags", _ppTags, extractAllTags(_userWords));
   $popup.querySelectorAll(".ok-palt").forEach(chip => {
     chip.addEventListener("click", () => {
       _tr = chip.dataset.a;
@@ -540,9 +543,11 @@ async function openModal() {
     baseWrap.style.display = base ? "flex" : "none";
   }
 
-  renderTagChips("modalTagChips", _wiki?.autoTags || [], extractAllTags(_userWords));
-  setTimeout(() => inp?.focus(), 60);
-}
+  const _okLvl  = getAutoLevel(_word);
+  const _okTags = [...(_wiki?.autoTags || [])];
+  if (_okLvl && !_okTags.includes(_okLvl)) _okTags.push(_okLvl);
+  renderTagChips("modalTagChips", _okTags, extractAllTags(_userWords));  setTimeout(() => inp?.focus(), 60);
+  }
 
 /* force=true → kullanıcının düzenlemesini ezip güncelle (ilk açılışta) */
 function fillModalWord(force = false) {

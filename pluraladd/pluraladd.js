@@ -530,65 +530,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       updateBar();
     });
-    function openPreviewModal(parsed) {
-        const modal = document.getElementById('previewModal');
-        const body  = document.getElementById('previewBody');
-        if (!modal || !body) return;
-
-        body.innerHTML = '';
-
-        // Her satırı render et
-        parsed.forEach(e => {
-            const isDup = isDuplicate(e.de);
-            const noTr  = !e.tr;
-
-            const row = document.createElement('div');
-            row.className = 'pv-row';
-
-            let statusClass, statusLabel;
-            if (isDup)       { statusClass = 'pv-status--dup';  statusLabel = 'Mevcut'; }
-            else if (noTr)   { statusClass = 'pv-status--miss'; statusLabel = 'Çevirisiz'; }
-            else             { statusClass = 'pv-status--new';  statusLabel = 'Yeni'; }
-
-            row.innerHTML = `
-            <span class="pv-de">${escHtml(e.de)}</span>
-            <span class="pv-sep">→</span>
-            <span class="pv-tr${noTr ? ' pv-tr--empty' : ''}">${noTr ? 'çeviri yok' : escHtml(e.tr)}</span>
-            <span class="pv-status ${statusClass}">${statusLabel}</span>
-            `;
-            body.appendChild(row);
-        });
-
-        // Özet
-        const total = parsed.length;
-        const dups  = parsed.filter(e => isDuplicate(e.de)).length;
-        const miss  = parsed.filter(e => !e.tr).length;
-        const yeni  = total - dups;
-
-        const sum = document.createElement('div');
-        sum.className = 'pv-summary';
-        sum.innerHTML = `
-            <span class="pv-sum-chip" style="background:rgba(79,214,156,.1);color:#4fd69c;border:1px solid rgba(79,214,156,.2)">${yeni} yeni</span>
-            ${dups ? `<span class="pv-sum-chip" style="background:rgba(96,200,240,.1);color:#60c8f0;border:1px solid rgba(96,200,240,.2)">${dups} mevcut</span>` : ''}
-            ${miss ? `<span class="pv-sum-chip" style="background:rgba(255,210,80,.1);color:#ffd250;border:1px solid rgba(255,210,80,.2)">${miss} çevirisiz</span>` : ''}
-        `;
-        body.appendChild(sum);
-
-        modal.classList.add('open');
-
-        // Onayla → Faza 2
-        document.getElementById('previewConfirm').onclick = () => {
-            closePreviewModal();
-            entries = parsed;
-            reCheckDuplicates();
-            renderTable();
-            showPhase(2);
-        };
-        }
-
-        function closePreviewModal() {
-        document.getElementById('previewModal')?.classList.remove('open');
-        }
   });
 
   /* ── Faza 2: İnceleme ── */
@@ -635,4 +576,60 @@ function showToast(msg, type = '') {
   toast.className   = `wa-toast wa-toast--show${type ? ' wa-toast--' + type : ''}`;
   clearTimeout(toast._t);
   toast._t = setTimeout(() => toast.classList.remove('wa-toast--show'), 2800);
+}
+function closePreviewModal() {
+  document.getElementById('previewModal')?.classList.remove('open');
+}
+
+function openPreviewModal(parsed) {
+  const modal = document.getElementById('previewModal');
+  const body  = document.getElementById('previewBody');
+  if (!modal || !body) return;
+
+  body.innerHTML = '';
+
+  parsed.forEach(e => {
+    const isDup = isDuplicate(e.de);
+    const noTr  = !e.tr;
+
+    const row = document.createElement('div');
+    row.className = 'pv-row';
+
+    let statusClass, statusLabel;
+    if (isDup)       { statusClass = 'pv-status--dup';  statusLabel = 'Mevcut'; }
+    else if (noTr)   { statusClass = 'pv-status--miss'; statusLabel = 'Çevirisiz'; }
+    else             { statusClass = 'pv-status--new';  statusLabel = 'Yeni'; }
+
+    row.innerHTML = `
+      <span class="pv-de">${escHtml(e.de)}</span>
+      <span class="pv-sep">→</span>
+      <span class="pv-tr${noTr ? ' pv-tr--empty' : ''}">${noTr ? 'çeviri yok' : escHtml(e.tr)}</span>
+      <span class="pv-status ${statusClass}">${statusLabel}</span>
+    `;
+    body.appendChild(row);
+  });
+
+  const total = parsed.length;
+  const dups  = parsed.filter(e => isDuplicate(e.de)).length;
+  const miss  = parsed.filter(e => !e.tr).length;
+  const yeni  = total - dups;
+
+  const sum = document.createElement('div');
+  sum.className = 'pv-summary';
+  sum.innerHTML = `
+    <span class="pv-sum-chip" style="background:rgba(79,214,156,.1);color:#4fd69c;border:1px solid rgba(79,214,156,.2)">${yeni} yeni</span>
+    ${dups ? `<span class="pv-sum-chip" style="background:rgba(96,200,240,.1);color:#60c8f0;border:1px solid rgba(96,200,240,.2)">${dups} mevcut</span>` : ''}
+    ${miss ? `<span class="pv-sum-chip" style="background:rgba(255,210,80,.1);color:#ffd250;border:1px solid rgba(255,210,80,.2)">${miss} çevirisiz</span>` : ''}
+  `;
+  body.appendChild(sum);
+
+  modal.classList.add('open');
+
+  document.getElementById('previewConfirm').onclick = () => {
+    closePreviewModal();
+    entries = parsed;
+    reCheckDuplicates();
+    renderTable();
+    showPhase(2);
+  };
 }

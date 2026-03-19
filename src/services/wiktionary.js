@@ -54,7 +54,14 @@ export async function fetchWikiData(word) {
 
   const empty = { artikel:"", wordType:"", plural:"", genitive:"", baseForm:"", autoTags:[] };
 
-  const variants = [ word.trim(), word.trim().toLowerCase(), safeCapitalize(word) ];
+  const stripped = word.trim().replace(/^(der|die|das)[/\w]*\s+/i, '');
+  const variants = [
+    word.trim(),
+    word.trim().toLowerCase(),
+    safeCapitalize(word),
+    stripped,
+    safeCapitalize(stripped),
+  ];
   const seen = new Set();
 
   for (const variant of variants) {

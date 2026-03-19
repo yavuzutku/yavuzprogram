@@ -32,7 +32,7 @@ function _injectStyle() {
 function _norm(w) {
   if (!w) return '';
   return w.trim().toLowerCase()
-    .replace(/^(der|die|das)[/\w]*\s+/i, '')  // der, die, das, der/die, die/das vs.
+    .replace(/^(der|die|das)\s+/i, '')  // artikel sil
     .split(',')[0].trim()               // "ein, eine" → "ein"
     .split(' ')[0].trim();              // "zu Hause" → "zu"
 }

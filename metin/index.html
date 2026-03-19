@@ -11,18 +11,9 @@
 </head>
 <body>
 
-<!-- Arka plan -->
 <div class="bg-pattern" aria-hidden="true"></div>
 
-<!--
-  NAVBAR: core.js → window.loadNavbar() tarafından body'nin başına eklenir.
-  global.css: .navbar { position:sticky; top:0; height:62px }
-
-  .metin-toolbar aşağıda:  position:sticky; top:62px  (tablet→56px, mobil→52px)
-  Okuma sayfasındaki .reader-header ile aynı mantık — navbar altında yapışık.
--->
-
-<!-- Sub-toolbar: autosave göstergesi + geri butonu -->
+<!-- Sub-toolbar -->
 <div class="metin-toolbar" id="metinToolbar">
   <button class="toolbar-back-btn" onclick="history.back()" title="Geri dön">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -40,7 +31,7 @@
 <!-- Ana layout -->
 <main class="main-layout">
 
-  <!-- Sol panel: istatistikler + araçlar -->
+  <!-- Sol panel -->
   <aside class="sidebar">
 
     <div class="sidebar-card">
@@ -78,6 +69,20 @@
         Editörü Temizle
       </button>
     </div>
+
+    <!-- ✦ YENİ: Geçmiş Metinler kartı ─────────────────────── -->
+    <div class="sidebar-card sidebar-card--history">
+      <div class="sidebar-history-header">
+        <h3 class="sidebar-title" style="margin:0">Geçmiş Metinler</h3>
+        <a href="../gecmis/" class="sidebar-history-all" title="Tüm geçmişi gör">
+          Tümü →
+        </a>
+      </div>
+      <div id="sidebarHistory" class="sidebar-history">
+        <div class="sidebar-history-empty">Yükleniyor…</div>
+      </div>
+    </div>
+    <!-- ────────────────────────────────────────────────────── -->
 
   </aside>
 
@@ -129,12 +134,10 @@
   </div>
 </div>
 
-<!-- 1. global navbar + auth -->
 <script type="module">
   import "../js/core.js";
   window.loadNavbar();
 </script>
-<!-- 2. editör mantığı -->
 <script type="module" src="../js/metin.js"></script>
 
 </body>

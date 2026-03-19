@@ -1,24 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
-   metin.css  —  AlmancaPratik Metin Editörü
-   ═══════════════════════════════════════════════════════════
-
-   ÖNEMLİ:  global.css zaten şunları sağlıyor:
-     - body { margin:0; font-family:'DM Sans'; background:#0a0a0f; color:#fff; }
-     - .navbar { position:sticky; top:0; height:62px; ... }
-   Bu dosyada body/html tekrar tanımlamıyoruz → çakışma yok.
-
-   NAVBAR YÜKSEKLİKLERİ (global.css'den):
-     Masaüstü  : 62px
-     Tablet ≤768: 56px
-     Mobil  ≤480: 52px
-
-   .metin-toolbar: navbar'ın hemen altına yapışır (top: 62px).
-   .main-layout:   toolbar'ın altından başlar — margin-top ile değil,
-                   padding-top ile (sticky scroll sırasında kaymaması için).
+   metin.css  —  AlmancaPratik Metin Editörü  v3
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-  /* Renk sistemi */
   --mt-bg:       #0e0f14;
   --mt-bg2:      #13151c;
   --mt-bg3:      #1a1d27;
@@ -35,19 +19,15 @@
   --radius:      10px;
   --font-head:   'Fraunces', Georgia, serif;
   --font-body:   'DM Sans', system-ui, sans-serif;
-
-  /* Navbar yüksekliği — toolbar offset için */
   --navbar-h:    62px;
   --toolbar-h:   44px;
 }
 
-/* global.css'in body arka planını override et (daha zengin) */
 body {
   background: var(--mt-bg);
   overflow-x: hidden;
 }
 
-/* ── Arka plan gradyanı ──────────────────────── */
 .bg-pattern {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background-image:
@@ -57,12 +37,10 @@ body {
 
 /* ═══════════════════════════════════════════════
    METIN TOOLBAR
-   Okuma sayfasındaki .reader-header ile aynı mantık:
-   position:sticky; top: navbar yüksekliği
    ═══════════════════════════════════════════════ */
 .metin-toolbar {
   position: sticky;
-  top: var(--navbar-h);   /* navbar'ın tam altına yapışır */
+  top: var(--navbar-h);
   z-index: 200;
   height: var(--toolbar-h);
   display: flex;
@@ -91,25 +69,18 @@ body {
 .toolbar-back-btn:hover { background: var(--mt-bg3); border-color: var(--mt-border2); color: var(--text); }
 
 .toolbar-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text2);
-  letter-spacing: .02em;
-  flex: 1;
-  text-align: center;
+  font-size: 13px; font-weight: 500; color: var(--text2);
+  letter-spacing: .02em; flex: 1; text-align: center;
 }
 
 .toolbar-save {
   display: flex; align-items: center; gap: 6px;
-  font-size: 12px; color: var(--muted);
-  white-space: nowrap;
+  font-size: 12px; color: var(--muted); white-space: nowrap;
 }
 
-/* Autosave dot */
 .save-dot {
   width: 6px; height: 6px; border-radius: 50%;
-  background: var(--muted); transition: background .4s;
-  flex-shrink: 0;
+  background: var(--muted); transition: background .4s; flex-shrink: 0;
 }
 .save-dot.saved   { background: var(--success); }
 .save-dot.unsaved { background: var(--gold); }
@@ -117,11 +88,7 @@ body {
 
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-/* Tablet navbar yüksekliği düzeltmesi */
-@media (max-width: 768px) {
-  :root { --navbar-h: 56px; }
-}
-/* Mobil navbar yüksekliği düzeltmesi */
+@media (max-width: 768px) { :root { --navbar-h: 56px; } }
 @media (max-width: 480px) {
   :root { --navbar-h: 52px; }
   .toolbar-title { display: none; }
@@ -129,7 +96,6 @@ body {
 
 /* ═══════════════════════════════════════════════
    ANA LAYOUT
-   Toolbar yüksekliğini hesaba katarak başlar.
    ═══════════════════════════════════════════════ */
 .main-layout {
   position: relative; z-index: 1;
@@ -149,6 +115,10 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+  }
+  /* Geçmiş kartı tablet'te tam genişlik */
+  .sidebar-card--history {
+    grid-column: 1 / -1;
   }
 }
 
@@ -193,13 +163,119 @@ body {
   border: 0.5px solid var(--mt-border);
   border-radius: 7px;
   color: var(--text2); font-size: 12px; font-family: var(--font-body);
-  cursor: pointer; transition: all .18s;
-  text-align: left;
+  cursor: pointer; transition: all .18s; text-align: left;
 }
 .tool-btn:last-child { margin-bottom: 0; }
 .tool-btn:hover { background: var(--mt-bg3); border-color: var(--mt-border2); color: var(--text); }
 .tool-btn.danger:hover { border-color: rgba(201,76,76,.4); color: var(--danger); }
 .tool-btn svg { flex-shrink: 0; opacity: .65; }
+
+/* ═══════════════════════════════════════════════
+   GEÇMİŞ SIDEBAR KARTI
+   ═══════════════════════════════════════════════ */
+.sidebar-card--history {
+  padding: 14px 16px;
+}
+
+/* Başlık satırı: "Geçmiş Metinler" + "Tümü →" */
+.sidebar-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.sidebar-history-all {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--gold);
+  opacity: 0.7;
+  text-decoration: none;
+  transition: opacity .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sidebar-history-all:hover { opacity: 1; }
+
+/* Liste wrapper */
+.sidebar-history {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mt-border2) transparent;
+}
+.sidebar-history::-webkit-scrollbar { width: 3px; }
+.sidebar-history::-webkit-scrollbar-thumb { background: var(--mt-border2); border-radius: 2px; }
+
+/* Boş / yükleniyor durumu */
+.sidebar-history-empty {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  padding: 18px 0;
+  font-style: italic;
+}
+.sidebar-history-error { color: var(--danger); opacity: 0.75; }
+
+/* Tek geçmiş öğesi */
+.sidebar-history-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  padding: 9px 10px;
+  background: transparent;
+  border: 0.5px solid var(--mt-border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  transition: all .18s;
+  animation: shiSlide .25s ease both;
+}
+
+@keyframes shiSlide {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sidebar-history-item:hover {
+  background: var(--mt-bg3);
+  border-color: rgba(201,168,76,.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(201,168,76,.06);
+}
+
+/* Tarih satırı */
+.shi-date {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.75;
+}
+
+/* Önizleme metni */
+.shi-preview {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Kelime sayısı */
+.shi-wc {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 1px;
+}
 
 /* ═══════════════════════════════════════════════
    EDİTÖR BÖLÜMÜ
@@ -211,7 +287,6 @@ body {
   border-radius: 14px;
   overflow: hidden;
   transition: border-color .3s, box-shadow .3s;
-  /* min-height: ekran - navbar - toolbar - padding */
   min-height: calc(100vh - var(--navbar-h) - var(--toolbar-h) - 120px);
 }
 .editor-section:focus-within {
@@ -219,7 +294,6 @@ body {
   box-shadow: 0 0 0 3px rgba(201,168,76,.06);
 }
 
-/* Editör üst bar */
 .editor-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 11px 18px;
@@ -244,7 +318,6 @@ body {
 
 .char-progress-wrap { font-size: 12px; color: var(--text2); }
 
-/* Metin alanı */
 .editor-wrap { flex: 1; }
 
 #textArea {
@@ -258,7 +331,6 @@ body {
   background: transparent;
   font-family: var(--font-body);
   caret-color: var(--gold);
-  /* white-space: pre-wrap ile satır yapısını koru */
   white-space: pre-wrap;
   word-break: break-word;
   box-sizing: border-box;
@@ -270,7 +342,6 @@ body {
   font-style: italic;
 }
 
-/* Editör alt bar */
 .editor-footer {
   display: flex; justify-content: center; align-items: center;
   padding: 18px;
@@ -279,7 +350,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Okuma moduna geç butonu */
 .read-btn {
   display: flex; align-items: center; gap: 10px;
   padding: 13px 34px;
@@ -294,8 +364,7 @@ body {
 .read-btn:hover  { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(201,168,76,.38); }
 .read-btn:active { transform: translateY(0); }
 .read-btn:disabled {
-  opacity: .6; cursor: not-allowed; transform: none;
-  box-shadow: none;
+  opacity: .6; cursor: not-allowed; transform: none; box-shadow: none;
 }
 
 /* ═══════════════════════════════════════════════
@@ -353,7 +422,6 @@ body {
   scrollbar-color: var(--mt-border2) transparent;
 }
 
-/* Önizleme içindeki blok stilleri */
 .pv-title {
   font-family: var(--font-head); font-size: 1.4em; font-weight: 400;
   color: var(--gold-l); margin: .9em 0 .35em;

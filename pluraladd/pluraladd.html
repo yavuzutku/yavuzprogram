@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelime Listesi Ekle — AlmancaPratik</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="./pluraladd.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ── FAZA 1: Yapıştır & Analiz ────────────────────────── -->
+<div class="phase phase--active" id="phase1">
+  <div class="wa-container">
+
+    <div class="wa-topbar">
+      <button class="wa-back-btn" onclick="history.back()">← Geri</button>
+      <div class="wa-topbar-right">
+        <button class="wa-alt-btn" id="goSingleAdd">Tekli Ekle</button>
+      </div>
+    </div>
+
+    <div class="wa-hero">
+      <div class="wa-hero-icon">📋</div>
+      <div>
+        <h1 class="wa-hero-title">Kelime Listesi Ekle</h1>
+        <p class="wa-hero-sub">Listenizi yapıştırın — sistem formatı otomatik tanır.</p>
+      </div>
+    </div>
+
+    <!-- Format rehberi -->
+    <div class="wa-formats">
+      <div class="wa-formats-title">Desteklenen Formatlar</div>
+      <div class="wa-formats-grid">
+        <div class="wa-fmt-card">
+          <div class="wa-fmt-label">Eşittir</div>
+          <code>Haus = ev<br>gehen = gitmek</code>
+        </div>
+        <div class="wa-fmt-card">
+          <div class="wa-fmt-label">Tire / Ok</div>
+          <code>Hund - köpek<br>lernen → öğrenmek</code>
+        </div>
+        <div class="wa-fmt-card">
+          <div class="wa-fmt-label">Virgül</div>
+          <code>Katze, kedi<br>schön, güzel</code>
+        </div>
+        <div class="wa-fmt-card">
+          <div class="wa-fmt-label">İki Blok</div>
+          <code>Haus<br>Hund<br>---<br>ev<br>köpek</code>
+        </div>
+        <div class="wa-fmt-card">
+          <div class="wa-fmt-label">Sadece Almanca</div>
+          <code>Haus<br>gehen<br>schön</code>
+          <div class="wa-fmt-note">Çeviri otomatik çekilir</div>
+        </div>
+        <div class="wa-fmt-card">
+          <div class="wa-fmt-label">Artikel Dahil</div>
+          <code>der Hund = köpek<br>die Katze - kedi</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Textarea -->
+    <div class="wa-input-wrap">
+      <div class="wa-input-header">
+        <span class="wa-input-label">Listenizi Buraya Yapıştırın</span>
+        <span class="wa-input-meta">
+          <span id="inputLineCount">0 satır</span>
+          <span class="wa-input-sep">·</span>
+          <span id="inputCharCount">0</span> karakter
+        </span>
+      </div>
+      <textarea
+        id="inputArea"
+        class="wa-textarea"
+        placeholder="Haus = ev&#10;der Hund - köpek&#10;gehen, gitmek&#10;schön&#10;&#10;Veya iki blok:&#10;Haus&#10;Hund&#10;---&#10;ev&#10;köpek"
+        spellcheck="false"
+        autocomplete="off"
+      ></textarea>
+    </div>
+
+    <div class="wa-parse-footer">
+      <button class="wa-parse-btn" id="btnParse">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+        Listeyi Analiz Et
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── FAZA 2: İnceleme & Kaydet ────────────────────────── -->
+<div class="phase" id="phase2">
+  <div class="wa-container wa-container--wide">
+
+    <div class="wa-topbar">
+      <button class="wa-back-btn" id="btnBackToInput">← Geri</button>
+      <div class="wa-topbar-right">
+        <button class="wa-sel-btn" id="btnSelectAll">Tümünü Seç</button>
+        <button class="wa-sel-btn" id="btnSelectNew">Sadece Yeniler</button>
+        <button class="wa-sel-btn" id="btnSelectNone">Seçimi Kaldır</button>
+      </div>
+    </div>
+
+    <!-- Üst bilgi bar -->
+    <div class="wa-infobar">
+      <div class="wa-info-chip wa-info-chip--total">
+        <span class="wa-info-num" id="barTotal">0</span>
+        <span class="wa-info-lbl">Toplam</span>
+      </div>
+      <div class="wa-info-chip wa-info-chip--sel">
+        <span class="wa-info-num" id="barSel">0</span>
+        <span class="wa-info-lbl">Seçili</span>
+      </div>
+      <div class="wa-info-chip wa-info-chip--miss">
+        <span class="wa-info-num" id="barMissing">0</span>
+        <span class="wa-info-lbl">Çevirisiz</span>
+      </div>
+      <div class="wa-info-chip wa-info-chip--dup">
+        <span class="wa-info-num" id="barDup">0</span>
+        <span class="wa-info-lbl">Mevcut</span>
+      </div>
+      <div class="wa-info-chip wa-info-chip--saved">
+        <span class="wa-info-num" id="barSaved">0</span>
+        <span class="wa-info-lbl">Kaydedildi</span>
+      </div>
+
+      <div class="wa-infobar-actions">
+        <button class="wa-translate-btn" id="btnAutoTranslate">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>
+          Eksikleri Otomatik Çevir
+        </button>
+      </div>
+    </div>
+
+    <!-- Çeviri progress bar -->
+    <div class="wa-translate-progress" id="translateProgress" style="display:none">
+      <div class="wa-tprog-track">
+        <div class="wa-tprog-bar" id="translateBar"></div>
+      </div>
+      <span class="wa-tprog-text" id="translateText">0 / 0</span>
+    </div>
+
+    <!-- Özet banner -->
+    <div class="wa-summary" id="saveSummary" style="display:none"></div>
+
+    <!-- Tablo -->
+    <div class="wa-table-wrap">
+      <table class="wa-table">
+        <thead>
+          <tr>
+            <th class="th-check"></th>
+            <th class="th-de">Almanca</th>
+            <th class="th-arrow"></th>
+            <th class="th-tr">Türkçe</th>
+            <th class="th-status">Durum</th>
+            <th class="th-del"></th>
+          </tr>
+        </thead>
+        <tbody id="entryTbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Alt aksiyonlar -->
+    <div class="wa-table-footer">
+      <button class="wa-save-btn" id="btnSave">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Seçilileri Kaydet (0)
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  import "../js/core.js";
+  window.loadNavbar();
+  import { initAuthWall } from '../src/components/authWall.js';
+  initAuthWall({
+    icon:     '📋',
+    title:    'Kelime listesi eklemek için giriş yap',
+    desc:     'Toplu kelime ekleme aracını kullanmak için giriş yap.',
+    features: ['Çoklu format desteği', 'Otomatik çeviri', 'Tekrar koruması'],
+    backHref: '../anasayfa/'
+  });
+</script>
+<script type="module" src="./pluraladd.js"></script>
+
+</body>
+</html>

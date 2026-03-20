@@ -19,7 +19,7 @@
 (function () {
   // ── Config ────────────────────────────────────────────────────────────
   // Same domain: ''   |   Different domain: 'https://api.almancapratik.com'
-  const SHARE_SERVER = 'http://localhost:3001';
+  const SHARE_SERVER = 'result-share-production.up.railway.app';
 
   // ── Styles injected once ──────────────────────────────────────────────
   const CSS = `

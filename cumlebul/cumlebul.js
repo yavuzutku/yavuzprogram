@@ -20,7 +20,7 @@ function parseExamples(wikitext) {
   let inBeispiele = false;
 
   for (const line of lines) {
-    if (line.includes('Beispiele}}') || line.includes('Beispiele:')) {
+    if (line.includes('Beispiele')) {
       inBeispiele = true;
       continue;
     }
@@ -29,7 +29,7 @@ function parseExamples(wikitext) {
       continue;
     }
     if (inBeispiele && line.trim()) {
-      const match = line.match(/^::?\[\d+\]\s*(.+)/);
+      const match = line.match(/^:+\s*(?:\[\d+\]\s*)?(.+)/);
       if (match) {
         let text = match[1];
         text = text

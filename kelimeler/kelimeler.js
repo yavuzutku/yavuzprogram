@@ -56,7 +56,7 @@ async function fetchFromWiktionary(word) {
   const sents  = [];
   let inB      = false;
   for (const line of wt.split("\n")) {
-    if (line.includes("Beispiele}}") || line.includes("Beispiele:")) { inB = true; continue; }
+    if (line.includes('Beispiele')) {inB = true; continue; }
     if (inB && line.match(/^\s*:?\{\{(Herkunft|Synonyme|Übersetzungen|Wortbildungen|Bedeutungen|Redewendungen)/)) { inB = false; continue; }
     if (inB && line.trim()) {
       const m = line.match(/^::?\[\d+\]\s*(.+)/);

@@ -686,7 +686,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML = sents.map((s, i) => {
       const highlighted = esc(s.original).replace(
-        new RegExp(`(${esc(word)}|${esc(word.toLowerCase())})`, "gi"),
+        new RegExp(`(${esc(bareWord)}|${esc(bareWord.toLowerCase())})`, "gi"),
         `<strong>$1</strong>`
       );
       return `<div class="example-item">

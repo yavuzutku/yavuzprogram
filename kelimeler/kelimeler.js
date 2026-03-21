@@ -67,7 +67,7 @@ async function fetchFromWiktionary(word) {
 }
 
 async function fetchFromTatoeba(word) {
-  const data = await (await fetch(`https://api.tatoeba.org/v1/sentences?q=${encodeURIComponent(word)}&lang=deu&min_length=6`)).json();
+  const data = await (await fetch(`https://api.tatoeba.org/v1/sentences?q=${encodeURIComponent(word)}&lang=deu`)).json();
   // fetchFromTatoeba fonksiyonunda, filter satırını değiştir:
   return (data.data||[])
     .filter(s => wordCount(s.text) > 4 && wordCount(s.text) < 30)  // makul aralık

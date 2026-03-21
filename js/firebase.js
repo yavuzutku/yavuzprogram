@@ -92,7 +92,6 @@ export async function resetPassword(email) {
 export async function saveMetin(userId, text) {
   if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
   if (!text || text.trim().length === 0) throw new Error("Metin boş olamaz.");
-
   try {
     await addDoc(
       collection(db, "users", userId, "texts"),
@@ -111,7 +110,6 @@ export async function saveMetin(userId, text) {
 
 export async function getMetinler(userId) {
   if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
-
   try {
     const q = query(
       collection(db, "users", userId, "texts"),
@@ -132,7 +130,6 @@ export async function getMetinler(userId) {
 
 export async function deleteMetin(userId, id) {
   if (!userId || !id) throw new Error("Geçersiz parametre.");
-
   try {
     await deleteDoc(doc(db, "users", userId, "texts", id));
   } catch (err) {
@@ -143,24 +140,120 @@ export async function deleteMetin(userId, id) {
 
 
 /* ============================
-   KELİME KAYDET
-   meanings dizisi destekler — geriye dönük uyumluluk için
-   meaning alanı da her zaman kaydedilir.
+   YARDIMCI: KELİMEYİ BUL
+   Büyük/küçük harf ve artikel farkını
+   (der/die/das/ein/eine) görmezden gelir.
+============================= */
+
+function normalizeForMatch(word) {
+  return String(word ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/^(der|die|das|ein|eine)\s+/i, "");
+}
+
+export function findExistingWord(wordList, germanWord) {
+  const needle = normalizeForMatch(germanWord);
+  return wordList.find(w => normalizeForMatch(w.word) === needle) || null;
+}
+
+
+/* ============================
+   AKILLI KAYDET  ← ANA FONKSİYON
+   ─────────────────────────────
+   Aynı Almanca kelime sözlükte zaten
+   varsa yeni anlam mevcut kelimeye eklenir.
+   Yoksa yeni belge oluşturulur.
+
+   Dönüş değeri:
+   {
+     merged:  boolean,  // true → ek anlam olarak eklendi
+     already: boolean,  // true → hem kelime hem anlam zaten vardı
+     word:    string,   // kaydedilen kelime adı
+     meaning: string,   // kaydedilen anlam
+   }
+============================= */
+
+export async function saveWordOrAddMeaning(userId, word, meaning, tags = []) {
+  if (!userId)  throw new Error("Kullanıcı kimliği bulunamadı.");
+  if (!word)    throw new Error("Kelime boş olamaz.");
+  if (!meaning) throw new Error("Anlam boş olamaz.");
+
+  const wordTrimmed    = word.trim();
+  const meaningTrimmed = meaning.trim();
+
+  const existing = await getWords(userId);
+  const match    = findExistingWord(existing, wordTrimmed);
+
+  /* ── Kelime zaten var ── */
+  if (match) {
+    const currentMeanings = Array.isArray(match.meanings) && match.meanings.length
+      ? match.meanings
+      : [match.meaning];
+
+    /* Anlam da zaten ekli mi? (büyük/küçük harf farkı yok) */
+    const alreadyHas = currentMeanings.some(
+      m => m.trim().toLowerCase() === meaningTrimmed.toLowerCase()
+    );
+    if (alreadyHas) {
+      return { merged: false, already: true, word: match.word, meaning: meaningTrimmed };
+    }
+
+    /* Yeni anlamı diziye ekle */
+    const updatedMeanings = [...currentMeanings, meaningTrimmed];
+
+    /* Etiketleri birleştir */
+    const existingTags = Array.isArray(match.tags) ? match.tags : [];
+    const mergedTags   = [...new Set([...existingTags, ...tags])];
+
+    try {
+      await updateDoc(doc(db, "users", userId, "words", match.id), {
+        meanings: updatedMeanings,
+        meaning:  updatedMeanings[0],  /* ana anlam değişmez */
+        tags:     mergedTags,
+      });
+    } catch (err) {
+      console.error("[saveWordOrAddMeaning] updateDoc hatası:", err);
+      throw new Error("Anlam eklenemedi. Lütfen tekrar dene.");
+    }
+
+    return { merged: true, already: false, word: match.word, meaning: meaningTrimmed };
+  }
+
+  /* ── Kelime yok → yeni belge ── */
+  try {
+    await addDoc(
+      collection(db, "users", userId, "words"),
+      {
+        word:     wordTrimmed,
+        meaning:  meaningTrimmed,
+        meanings: [meaningTrimmed],
+        tags:     Array.isArray(tags) ? tags : [],
+        date:     new Date().toISOString(),
+        created:  Date.now(),
+      }
+    );
+  } catch (err) {
+    console.error("[saveWordOrAddMeaning] addDoc hatası:", err);
+    throw new Error("Kelime kaydedilemedi. Lütfen tekrar dene.");
+  }
+
+  return { merged: false, already: false, word: wordTrimmed, meaning: meaningTrimmed };
+}
+
+
+/* ============================
+   KELİME KAYDET (eski API)
+   Geriye dönük uyumluluk.
+   Yeni kodlarda saveWordOrAddMeaning kullan.
 ============================= */
 
 export async function saveWord(userId, word, meaning, tags = [], meanings = []) {
   if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
   if (!word || !meaning) throw new Error("Kelime ve anlam boş olamaz.");
 
-  /* meanings dizisini normalleştir:
-     - Boş geçildiyse tek elemanlı liste oluştur
-     - meaning her zaman ilk eleman olarak garantilenir */
-  const normalizedMeanings = meanings.length > 0
-    ? meanings
-    : [meaning.trim()];
-
-  /* İlk anlam ile meaning alanını senkron tut */
-  const primaryMeaning = normalizedMeanings[0];
+  const normalizedMeanings = meanings.length > 0 ? meanings : [meaning.trim()];
+  const primaryMeaning     = normalizedMeanings[0];
 
   try {
     await addDoc(
@@ -171,7 +264,7 @@ export async function saveWord(userId, word, meaning, tags = [], meanings = []) 
         meanings: normalizedMeanings,
         tags:     Array.isArray(tags) ? tags : [],
         date:     new Date().toISOString(),
-        created:  Date.now()
+        created:  Date.now(),
       }
     );
   } catch (err) {
@@ -187,7 +280,6 @@ export async function saveWord(userId, word, meaning, tags = [], meanings = []) 
 
 export async function getWords(userId) {
   if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
-
   try {
     const q = query(
       collection(db, "users", userId, "words"),
@@ -196,7 +288,6 @@ export async function getWords(userId) {
     const snapshot = await getDocs(q);
     return snapshot.docs.map(d => {
       const data = d.data();
-      /* Geriye dönük uyumluluk: eski kayıtlarda meanings yoksa meaning'den üret */
       if (!Array.isArray(data.meanings) || data.meanings.length === 0) {
         data.meanings = data.meaning ? [data.meaning] : [];
       }
@@ -215,7 +306,6 @@ export async function getWords(userId) {
 
 export async function deleteWord(userId, wordId) {
   if (!userId || !wordId) throw new Error("Geçersiz parametre.");
-
   try {
     await deleteDoc(doc(db, "users", userId, "words", wordId));
   } catch (err) {
@@ -227,24 +317,17 @@ export async function deleteWord(userId, wordId) {
 
 /* ============================
    KELİME GÜNCELLE
-   meanings dizisi destekler — meaning alanını otomatik senkronlar.
 ============================= */
 
 export async function updateWord(userId, wordId, data) {
   if (!userId || !wordId) throw new Error("Geçersiz parametre.");
-
   const payload = { ...data };
-
-  /* meanings güncellendiyse meaning alanını da ilk eleman ile senkronize et */
   if (Array.isArray(payload.meanings) && payload.meanings.length > 0) {
     payload.meaning = payload.meanings[0];
   }
-
-  /* meaning güncellendiyse ve meanings yoksa meanings dizisini de güncelle */
   if (payload.meaning && !payload.meanings) {
     payload.meanings = [payload.meaning];
   }
-
   try {
     await updateDoc(doc(db, "users", userId, "words", wordId), payload);
   } catch (err) {

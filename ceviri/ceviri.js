@@ -1,4 +1,4 @@
-import { auth, saveWord, getWords } from "../js/firebase.js";
+import { auth, saveWordOrAddMeaning, getWords } from "../js/firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { renderTagChips, getSelectedTags, extractAllTags, getAutoLevel } from "../js/tag.js";
 import {
@@ -498,48 +498,46 @@ async function saveToVocabulary() {
   const word    = modalWord.value.trim();
   const meaning = modalMeaning.value.trim();
   const tags    = getSelectedTags("modalTagChips");
-
+ 
   if (!word)    { showModalStatus("Kelime boş olamaz.", "error"); modalWord.focus();    return; }
   if (!meaning) { showModalStatus("Anlam boş olamaz.", "error");  modalMeaning.focus(); return; }
   if (!currentUser) { showModalStatus("Oturum bulunamadı. Lütfen tekrar giriş yap.", "error"); return; }
-
+ 
   modalSaveBtn.disabled    = true;
-  modalSaveBtn.textContent = "Kontrol ediliyor…";
-
+  modalSaveBtn.textContent = "Kaydediliyor…";
+ 
   try {
-    // Aynı kelime+anlam var mı?
-    const existing = await getWords(currentUser.uid);
-    const duplicate = existing.find(w =>
-      w.word.toLowerCase().trim()    === word.toLowerCase().trim() &&
-      w.meaning.toLowerCase().trim() === meaning.toLowerCase().trim()
-    );
-
-    if (duplicate) {
-      showModalStatus("⚠️ Bu kelime ve anlam zaten sözlüğünde kayıtlı.", "error");
+    const result = await saveWordOrAddMeaning(currentUser.uid, word, meaning, tags);
+ 
+    /* Lokal listeyi güncelle */
+    allWords = await getWords(currentUser.uid).catch(() => allWords);
+ 
+    if (result.already) {
+      showModalStatus(`⚠️ "${result.word}" için bu anlam zaten kayıtlı.`, "error");
       modalSaveBtn.disabled = false;
       modalSaveBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Kaydet`;
       return;
     }
-
-    await saveWord(currentUser.uid, word, meaning, tags);
-
-    // Lokal listeyi güncelle
-    allWords = await getWords(currentUser.uid).catch(() => allWords);
-
-    showModalStatus(`✅ "${word}" sözlüğüne eklendi!`, "success");
-
-    // Butonu güncelle
+ 
+    /* Başarılı mesaj */
+    const msg = result.merged
+      ? `✅ "${result.word}" kelimesine "${result.meaning}" eklendi!`
+      : `✅ "${result.word}" sözlüğüne eklendi!`;
+    showModalStatus(msg, "success");
+ 
+    /* Butonu güncelle */
     saveWordBtn.classList.add("saved");
     saveWordBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Eklendi`;
-
+ 
     setTimeout(closeModal, 1600);
-
+ 
   } catch (err) {
     showModalStatus("Hata: " + err.message, "error");
     modalSaveBtn.disabled = false;
     modalSaveBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Kaydet`;
   }
 }
+ 
 
 /* ══════════════════════════════════════════════
    YARDIMCI FONKSİYONLAR

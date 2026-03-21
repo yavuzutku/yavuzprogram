@@ -44,6 +44,7 @@ function cleanWikitext(text) {
     .replace(/<[^>]+>/g,"").replace(/&nbsp;/g," ")
     .replace(/[„""‟«»'']/g,"")
     .replace(/\s*[A-ZÄÖÜ][^.!?]*\d{4}\s*\.?\s*$/,"")
+    .replace(/\[\d+\]/g, '')
     .replace(/\s{2,}/g," ").trim();
 }
 
@@ -53,12 +54,14 @@ async function fetchFromWiktionary(word) {
   const params = new URLSearchParams({ action:"parse", page:cap, prop:"wikitext", format:"json", origin:"*" });
   const data   = await (await fetch("https://de.wiktionary.org/w/api.php?"+params)).json();
   const wt     = data?.parse?.wikitext?.["*"] || "";
+  const wtCleaned = wt
+    .replace(/<ref[^>]*>[\s\S]*?<\/ref>/gi, '')
+    .replace(/<ref[^>]*\/>/gi, '');
   const sents  = [];
   let inB      = false;
-  for (const line of wt.split("\n")) {
-    if (line.includes('Beispiele')) {inB = true; continue; }
-    if (inB && line.match(/^\s*:?\{\{(Herkunft|Synonyme|Übersetzungen|Wortbildungen|Bedeutungen|Redewendungen)/)) { inB = false; continue; }
-    if (inB && line.trim()) {
+  for (const line of wtCleaned.split("\n")) {
+    if (/^\{\{Beispiele/.test(line.trim()) || /^={2,}\s*Beispiele\s*={2,}/.test(line.trim())) { inB = true; continue; }
+    if (inB && (/^\{\{(Herkunft|Synonyme|Übersetzungen|Wortbildungen|Bedeutungen|Redewendungen|Charakteristische|Oberbegriffe|Unterbegriffe|Gegenwörter|Sprichwörter|Referenzen|Abgeleitete)/.test(line.trim()) || /^={2,}/.test(line.trim()))) { inB = false; continue; }    if (inB && line.trim()) {
       const m = line.match(/^:+\s*(?:\[\d+\]\s*)?(.+)/);
       if (m) { const t = cleanWikitext(m[1]); if (t.length>10 && wordCount(t)>5) sents.push(t); }
     }
@@ -67,13 +70,15 @@ async function fetchFromWiktionary(word) {
 }
 
 async function fetchFromTatoeba(word) {
-  const data = await (await fetch(`https://api.tatoeba.org/v1/sentences?q=${encodeURIComponent(word)}&lang=deu`)).json();
-  // fetchFromTatoeba fonksiyonunda, filter satırını değiştir:
-  return (data.data||[])
-    .filter(s => wordCount(s.text) > 4 && wordCount(s.text) < 30)  // makul aralık
-    .sort((a,b) => wordCount(a.text) - wordCount(b.text))
-    .slice(0,3)   // 2 → 3
-    .map(s=>({original:s.text}));}
+  const params = new URLSearchParams({ from: 'deu', query: word, orphans: 'no', unapproved: 'no', sort: 'relevance' });
+  const data = await (await fetch(`https://tatoeba.org/eng/api_v0/search?${params}`)).json();
+  const raw = data?.results ?? data?.data ?? [];
+  return raw
+    .map(s => s.text ?? s)
+    .filter(t => typeof t === 'string' && t.trim().length > 0 && wordCount(t) > 4 && wordCount(t) < 30)
+    .slice(0, 3)
+    .map(t => ({ original: t }));
+}
 
 async function fetchExampleSentences(word) {
   if (exampleCache.has(word)) return exampleCache.get(word);

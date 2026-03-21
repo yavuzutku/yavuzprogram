@@ -59,7 +59,7 @@ async function fetchFromWiktionary(word) {
     if (line.includes('Beispiele')) {inB = true; continue; }
     if (inB && line.match(/^\s*:?\{\{(Herkunft|Synonyme|Übersetzungen|Wortbildungen|Bedeutungen|Redewendungen)/)) { inB = false; continue; }
     if (inB && line.trim()) {
-      const m = line.match(/^::?\[\d+\]\s*(.+)/);
+      const m = line.match(/^:+\s*(?:\[\d+\]\s*)?(.+)/);
       if (m) { const t = cleanWikitext(m[1]); if (t.length>10 && wordCount(t)>5) sents.push(t); }
     }
   }
@@ -79,8 +79,8 @@ async function fetchExampleSentences(word) {
   if (exampleCache.has(word)) return exampleCache.get(word);
   let sents = [];
   try { sents = await fetchFromWiktionary(word); } catch(_) {}
-  if (sents.length < 2) {
-    try { const t = await fetchFromTatoeba(word); sents = [...sents, ...t.slice(0,2-sents.length)]; } catch(_) {}
+  if (sents.length < 3) {
+    try { const t = await fetchFromTatoeba(word); sents = [...sents, ...t.slice(0,3-sents.length)]; } catch(_) {}
   }
   if (!sents.length) sents = [{ original: "Bu kelime için örnek cümle bulunamadı." }];
   exampleCache.set(word, sents);
@@ -679,10 +679,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!container) return;
 
     /* Vurgulama regex */
-    const regex = new RegExp(
-      `(${word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}|${word.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,"\\$&")})`,
-      "g"
-    );
+    
 
     container.innerHTML = sents.map((s, i) => {
       const highlighted = esc(s.original).replace(

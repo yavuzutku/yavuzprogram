@@ -50,23 +50,67 @@ function cleanWikitext(text) {
 
 /* ─── Örnek cümleler ───────────────────────────────────── */
 async function fetchFromWiktionary(word) {
-  const cap  = word.charAt(0).toUpperCase() + word.slice(1);
-  const params = new URLSearchParams({ action:"parse", page:cap, prop:"wikitext", format:"json", origin:"*" });
-  const data   = await (await fetch("https://de.wiktionary.org/w/api.php?"+params)).json();
-  const wt     = data?.parse?.wikitext?.["*"] || "";
-  const wtCleaned = wt
+  const capitalized = word.charAt(0).toUpperCase() + word.slice(1);
+  const attempts = word === capitalized ? [word] : [word, capitalized];
+
+  let wikitext = null;
+  for (const title of attempts) {
+    const params = new URLSearchParams({ action:"parse", page:title, prop:"wikitext", format:"json", origin:"*" });
+    const data = await (await fetch("https://de.wiktionary.org/w/api.php?"+params)).json();
+    if (!data.error) { wikitext = data?.parse?.wikitext?.["*"] || null; }
+    if (wikitext) break;
+  }
+  if (!wikitext) return [];
+
+  wikitext = wikitext
     .replace(/<ref[^>]*>[\s\S]*?<\/ref>/gi, '')
     .replace(/<ref[^>]*\/>/gi, '');
-  const sents  = [];
-  let inB      = false;
-  for (const line of wtCleaned.split("\n")) {
-    if (/^\{\{Beispiele/.test(line.trim()) || /^={2,}\s*Beispiele\s*={2,}/.test(line.trim())) { inB = true; continue; }
-    if (inB && (/^\{\{(Herkunft|Synonyme|Übersetzungen|Wortbildungen|Bedeutungen|Redewendungen|Charakteristische|Oberbegriffe|Unterbegriffe|Gegenwörter|Sprichwörter|Referenzen|Abgeleitete)/.test(line.trim()) || /^={2,}/.test(line.trim()))) { inB = false; continue; }    if (inB && line.trim()) {
-      const m = line.match(/^:+\s*(?:\[\d+\]\s*)?(.+)/);
-      if (m) { const t = cleanWikitext(m[1]); if (t.length>10 && wordCount(t)>5) sents.push(t); }
+
+  const lines = wikitext.split('\n');
+  const sents = [];
+  let inB = false;
+
+  const SECTION_END = /^\{\{(Herkunft|Synonyme|Übersetzungen|Wortbildungen|Bedeutungen|Redewendungen|Charakteristische|Oberbegriffe|Unterbegriffe|Gegenwörter|Sprichwörter|Referenzen|Abgeleitete|Verkleinerungsformen|Steigerungsformen|Leerzeile|Quellen)/;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (/^\{\{Beispiele/.test(trimmed) || /^={2,}\s*Beispiele\s*={2,}/.test(trimmed)) {
+      inB = true; continue;
+    }
+
+    if (inB) {
+      if (SECTION_END.test(trimmed) || /^={2,}/.test(trimmed)) {
+        inB = false; continue;
+      }
+      if (trimmed) {
+        const m = line.match(/^:+\s*(?:\[\d+\]\s*)?(.+)/);
+        if (m) {
+          let text = m[1];
+          text = text
+            .replace(/\{\{[^{}]*\}\}/g, '')
+            .replace(/\{\{[^{}]*\}\}/g, '')
+            .replace(/\}\}/g, '')
+            .replace(/\{\{/g, '')
+            .replace(/'{2,3}/g, '')
+            .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1')
+            .replace(/<[^>]+>/g, '')
+            .replace(/\[\d+\]/g, '')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/[„""\u201C\u201D\u201E\u00AB\u00BB'']/g, '')
+            .replace(/\s*[A-ZÄÖÜ][^.!?]*\d{4}\s*\.?\s*$/, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+          if (text.length > 10) sents.push(text);
+        }
+      }
     }
   }
-  return sents.sort((a,b)=>wordCount(a)-wordCount(b)).slice(0,2).map(s=>({original:s}));
+
+  return sents
+    .sort((a, b) => wordCount(a) - wordCount(b))
+    .slice(0, 3)
+    .map(s => ({ original: s }));
 }
 
 async function fetchFromTatoeba(word) {

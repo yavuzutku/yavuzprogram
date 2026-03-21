@@ -365,7 +365,7 @@ body {
   flex-wrap: wrap;
   align-items: center;
   gap: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .meaning-pill {
@@ -390,6 +390,8 @@ body {
   background: rgba(201,168,76,0.1);
   border: 1px solid rgba(201,168,76,0.22);
   color: #d4a84b;
+  font-size: 14px;        /* YENİ */
+  font-weight: 500;       /* YENİ */
 }
 .meaning-pill.primary:hover {
   background: rgba(201,168,76,0.18);
@@ -466,7 +468,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  padding-top: 10px;                                    /* YENİ */
+  border-top: 1px solid rgba(255,255,255,0.04);         /* YENİ */
+  gap: 10px;
   flex-wrap: wrap;
 }
 

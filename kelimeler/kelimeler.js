@@ -68,8 +68,12 @@ async function fetchFromWiktionary(word) {
 
 async function fetchFromTatoeba(word) {
   const data = await (await fetch(`https://api.tatoeba.org/v1/sentences?q=${encodeURIComponent(word)}&lang=deu&min_length=6`)).json();
-  return (data.data||[]).filter(s=>wordCount(s.text)>5).sort((a,b)=>wordCount(a.text)-wordCount(b.text)).slice(0,2).map(s=>({original:s.text}));
-}
+  // fetchFromTatoeba fonksiyonunda, filter satırını değiştir:
+  return (data.data||[])
+    .filter(s => wordCount(s.text) > 4 && wordCount(s.text) < 30)  // makul aralık
+    .sort((a,b) => wordCount(a.text) - wordCount(b.text))
+    .slice(0,3)   // 2 → 3
+    .map(s=>({original:s.text}));}
 
 async function fetchExampleSentences(word) {
   if (exampleCache.has(word)) return exampleCache.get(word);
@@ -281,7 +285,14 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ── Sağ: aksiyon butonları ── */
     const actions = document.createElement("div");
     actions.className = "card-actions";
-
+    /* Düzenle butonu — tüm alanları düzenlemek için modal açar */
+    const editBtn = document.createElement("button");
+    editBtn.className = "card-btn";
+    editBtn.title = "Kelimeyi düzenle";
+    editBtn.setAttribute("aria-label", `${item.word} kelimesini düzenle`);
+    editBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+    editBtn.addEventListener("click", () => userId && openEditModal(userId, item, "word"));
+    actions.appendChild(editBtn);
     /* Örnek buton */
     const exBtn = document.createElement("button");
     exBtn.className = "card-btn example";
@@ -545,11 +556,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     overlay.innerHTML = `
       <div class="edit-modal-box" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+
         <div class="edit-modal-header">
-          <h2 class="edit-modal-title" id="editModalTitle">Etiket Düzenle</h2>
+          <h2 class="edit-modal-title" id="editModalTitle">
+            ${mode === "word" ? "Kelimeyi Düzenle" : "Etiket Düzenle"}
+          </h2>
           <button id="editModalClose" class="edit-modal-close" aria-label="Kapat">×</button>
         </div>
         <div class="edit-modal-word-preview" id="_previewWord"></div>
+        ${mode === "word" ? `
+        <label class="edit-label">Almanca Kelime</label>
+        <input id="editWordInput" class="edit-input" style="margin-bottom:14px" spellcheck="false"/>
+        <label class="edit-label">Ana Anlam</label>
+        <input id="editMeaningInput" class="edit-input" style="margin-bottom:14px" spellcheck="false"/>
+      ` : ""}
         <label class="edit-label" style="margin-top:4px">Etiketler</label>
         <div id="editTagChips" class="edit-tag-chips"></div>
         <div class="edit-modal-actions">
@@ -562,7 +582,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* Önizleme */
     overlay.querySelector("#_previewWord").innerHTML = `${esc(item.word)}<span class="preview-meaning">— ${esc(primaryMeaning(item))}</span>`;
-
+    if (mode === "word") {
+      overlay.querySelector("#editWordInput").value    = item.word;
+      overlay.querySelector("#editMeaningInput").value = primaryMeaning(item);
+    }
     renderTagChips("editTagChips", item.tags || [], extractAllTags(allWords));
 
     const close = () => { overlay.remove(); };
@@ -574,8 +597,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     overlay.querySelector("#editSaveBtn").addEventListener("click", async () => {
-      const newTags = getSelectedTags("editTagChips");
       const btn     = overlay.querySelector("#editSaveBtn");
+      if (mode === "word") {
+        const newWord    = overlay.querySelector("#editWordInput")?.value.trim();
+        const newMeaning = overlay.querySelector("#editMeaningInput")?.value.trim();
+        if (!newWord || !newMeaning) return;
+        const updatedMeanings = getMeanings(item).slice();
+        updatedMeanings[0]    = newMeaning;
+        const newTags         = getSelectedTags("editTagChips");
+        btn.disabled    = true; btn.textContent = "Kaydediliyor…";
+        try {
+          await updateWord(userId, item.id, { word: newWord, meanings: updatedMeanings, meaning: newMeaning, tags: newTags });
+          item.word = newWord; item.meanings = updatedMeanings; item.meaning = newMeaning; item.tags = newTags;
+          close(); buildFilterSidebar(); renderFiltered();
+        } catch(err) { btn.disabled = false; btn.textContent = "Kaydet"; alert(err.message); }
+        return; // tags moduna düşmesin
+      }
+      const newTags = getSelectedTags("editTagChips");
+      
       btn.disabled    = true;
       btn.textContent = "Kaydediliyor…";
       try {
@@ -645,12 +684,15 @@ document.addEventListener("DOMContentLoaded", () => {
       "g"
     );
 
-    container.innerHTML = sents.map(s => {
+    container.innerHTML = sents.map((s, i) => {
       const highlighted = esc(s.original).replace(
-        new RegExp(`(${esc(word)}|${esc(word.toLowerCase())})`, "g"),
+        new RegExp(`(${esc(word)}|${esc(word.toLowerCase())})`, "gi"),
         `<strong>$1</strong>`
       );
-      return `<div class="example-item"><div class="example-de">${highlighted}</div></div>`;
+      return `<div class="example-item">
+        <div class="example-de">${highlighted}</div>
+        <div class="example-meta">${i + 1}. örnek</div>
+      </div>`;
     }).join("");
   }
 

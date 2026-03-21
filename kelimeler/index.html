@@ -3,9 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kelimelerim — AlmancaPratik</title>
-  <meta name="description" content="Kaydettiğin Almanca kelimeleri listele, filtrele, düzenle ve tekrar et. Kendi kelime bankanı oluştur.">
+
+  <title>Kelime Bankam — Almanca Sözlüğüm | AlmancaPratik</title>
+  <meta name="description" content="Kaydettiğin Almanca kelimeleri listele, filtrele, etiketle ve düzenle. Kendi kişisel Almanca kelime bankanı oluştur, anlamlarını ve etiketlerini yönet.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#0a0a0f">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Kelime Bankam — AlmancaPratik">
+  <meta property="og:description" content="Kişisel Almanca kelime bankan. Kaydettiğin tüm kelimeleri, anlamları ve etiketleri tek ekranda yönet.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AlmancaPratik — Kelime Bankam",
+    "description": "Kişisel Almanca kelime yönetim aracı. Kelimeleri kaydet, anlamlarını düzenle, etiketle ve filtrele.",
+    "applicationCategory": "EducationalApplication",
+    "inLanguage": ["tr", "de"],
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" }
+  }
+  </script>
+
   <link rel="icon" href="../favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="./kelimeler.css">
 </head>
@@ -13,51 +39,89 @@
 
 <div class="page-wrapper">
 
-  <div class="top-bar">
-    <button class="back-btn" onclick="window.location.href='../pratik/'">← Geri</button>
-    <h1 class="page-title">📖 Kelimelerim</h1>
-    <div class="word-count-badge" id="wordCountBadge">0 kelime</div>
+  <!-- ÜST BAR -->
+  <header class="page-header">
+    <button class="back-btn" onclick="window.location.href='../pratik/'" aria-label="Pratik sayfasına dön">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Geri
+    </button>
+
+    <div class="page-header-center">
+      <h1 class="page-title">Kelime Bankam</h1>
+    </div>
+
+    <div class="page-header-right">
+      <span class="word-count-badge" id="wordCountBadge" aria-live="polite">—</span>
+      <a href="../wordsadd/" class="add-word-btn" aria-label="Yeni kelime ekle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Kelime Ekle
+      </a>
+    </div>
+  </header>
+
+  <!-- SEO + INTRO METNİ -->
+  <section class="page-intro" aria-label="Sayfa açıklaması">
+    <p class="page-intro-text">
+      Okuma ve çeviri sırasında kaydettiğin Almanca kelimeler burada seni bekliyor. 
+      Anlamları düzenle, etiketle ve filtrele — kendi sözlüğünü kendin yönet.
+    </p>
+  </section>
+
+  <!-- ARAMA -->
+  <div class="search-bar" role="search">
+    <label for="searchInput" class="sr-only">Kelime ara</label>
+    <div class="search-input-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" id="searchInput" placeholder="Kelime veya anlam ara…" autocomplete="off" spellcheck="false"/>
+      <button class="search-clear" id="searchClear" aria-label="Aramayı temizle" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
   </div>
 
-  <div class="search-bar">
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Kelime ara..."
-      autocomplete="off"
-    />
-  </div>
-
+  <!-- ANA LAYOUT -->
   <div class="content-layout">
 
-    <aside class="filter-sidebar">
+    <!-- SIDEBAR -->
+    <aside class="filter-sidebar" aria-label="Etiket filtreleri">
       <div class="filter-sidebar-title">Etiketler</div>
-      <div class="filter-tag-list" id="filterTagList"></div>
+      <nav class="filter-tag-list" id="filterTagList" aria-label="Etiket listesi"></nav>
     </aside>
 
-    <div class="word-list-area">
-      <div class="word-list" id="wordList">
+    <!-- KELİME LİSTESİ -->
+    <main class="word-list-area">
+      <div class="word-list" id="wordList" role="list" aria-label="Kelime listesi">
         <div class="empty-state" id="emptyState">
-          <div class="empty-icon">📭</div>
+          <div class="empty-illustration">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="12" width="48" height="40" rx="6" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <line x1="20" y1="26" x2="44" y2="26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="20" y1="34" x2="36" y2="34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
           <div class="empty-title">Henüz kelime eklenmedi</div>
-          <div class="empty-desc">Okuma sırasında bir kelime seçip 📌 Kelime Ekle butonuna basarak buraya kaydedebilirsin.</div>
+          <div class="empty-desc">Okuma modunda bir kelime seçip kaydet butonuna bas — ya da aşağıdan manuel ekle.</div>
+          <a href="../wordsadd/" class="empty-cta">İlk kelimeni ekle</a>
         </div>
       </div>
-    </div>
+    </main>
 
   </div>
 
 </div>
 
+<!-- Erişilebilirlik için gizli başlık -->
+<h2 class="sr-only" id="word-list-heading">Kayıtlı Kelimeler</h2>
+
 <script type="module">
   import "../js/core.js";
-  window.loadNavbar();
+  window.loadNavbar?.();
   import { initAuthWall } from '../src/components/authWall.js';
   initAuthWall({
-    icon:     '📖',
+    icon:     'K',
     title:    'Kelimelerini görmek için giriş yap',
-    desc:     'Kaydettiğin tüm Almanca kelimelerin, etiketlerin ve istatistiklerin seni bekliyor.',
-    features: ['Sınırsız kelime', 'Etiket sistemi', 'Arama & filtreleme'],
+    desc:     'Kaydettiğin tüm Almanca kelimeler, anlamları ve etiketleriyle seni bekliyor.',
+    features: ['Sınırsız kelime', 'Etiket sistemi', 'Arama ve filtreleme'],
     backHref: '../pratik/'
   });
 </script>

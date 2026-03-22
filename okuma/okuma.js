@@ -37,7 +37,8 @@ const THEMES      = ["", "ok-sepia", "ok-light"];
 const THEME_ICONS = ["☀", "📜", "🌙"];
 
 /* ── DOM ────────────────────────────────────────────────── */
-let $body, $meaning, $popup, $overlay;
+let $body, $meaning, $popup, $overlay, $readBtn;
+
 
 /* ═══════════════════════════════════════════════════════════
    BAŞLANGIÇ
@@ -47,6 +48,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   $meaning = document.getElementById("floatingMeaningBtn");
   $popup   = document.getElementById("meaningPopup");
   $overlay = document.getElementById("wordModalOverlay");
+  $readBtn = document.getElementById("floatingReadBtn");
+
 
   const raw    = sessionStorage.getItem("savedText") || "";
   const blocks = tryParse(sessionStorage.getItem("parsedBlocks"));
@@ -260,6 +263,20 @@ function bindTTS() {
 
   /* Sayfa kapatılınca veya navigasyonda okumayı durdur */
   window.addEventListener("beforeunload", ttsStop);
+  $readBtn?.addEventListener("click", () => {
+    const selected = window.getSelection()?.toString().trim();
+    if (!selected) return;
+ 
+    // Ses kapalı mı? Uyarı ver.
+    checkMuted().then(muted => {
+      if (muted) {
+        showToast("⚠ Sesin açık olduğundan emin ol!", false);
+      }
+    });
+ 
+    speak(selected);
+    hideMeaning();
+  });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) ttsStop();
   });
@@ -273,10 +290,13 @@ function bindSelection() {
   $body.addEventListener("touchend", onBodyMouseUp);
   $meaning.addEventListener("click", openPopup);
 
+  // bindSelection() içindeki mousedown'ı bul ve şöyle değiştir:
+
   document.addEventListener("mousedown", e => {
     if (_modalOpen) return;
     const $addBtn = document.getElementById("addWordBtn");
-    const inside  = [$body, $meaning, $popup, $overlay, $addBtn].some(el => el?.contains(e.target));
+    const inside  = [$body, $meaning, $popup, $overlay, $addBtn, $readBtn]  // ← $readBtn eklendi
+      .some(el => el?.contains(e.target));
     if (!inside) {
       hideMeaning(); hidePopup();
       window.getSelection()?.removeAllRanges();
@@ -290,27 +310,50 @@ function onBodyMouseUp() {
   if (!sel || sel.rangeCount === 0) { hideMeaning(); return; }
   const raw = sel.toString().trim().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
   if (!raw) { hideMeaning(); return; }
-
+ 
   if (raw !== _word) { _tr = ""; _wiki = null; }
   _word = raw;
-
+ 
   if (_prefetchWord !== raw) {
     _prefetchWord    = raw;
     _prefetchPromise = Promise.all([fetchTranslate(raw), fetchWikiData(raw)]).catch(() => null);
   }
-
+ 
   const rect = sel.getRangeAt(0).getBoundingClientRect();
   if (!rect.width) { hideMeaning(); return; }
-
+ 
   hidePopup();
+ 
+  /* Anlam butonu */
   $meaning.style.top  = (rect.bottom + 10) + "px";
   $meaning.style.left = rect.left + "px";
   $meaning.style.display = "inline-flex";
   $meaning.classList.remove("pop");
-  requestAnimationFrame(() => $meaning.classList.add("pop"));
+ 
+  /* ── "Oku" butonu — anlam butonunun hemen yanına ── */
+  if ($readBtn && ttsSupported) {
+    // Anlam butonunun sağına konumlandır (tahmini genişlik: 90px)
+    $readBtn.style.top  = (rect.bottom + 10) + "px";
+    $readBtn.style.left = (rect.left + 96) + "px";
+    $readBtn.style.display = "inline-flex";
+    $readBtn.classList.remove("pop");
+  }
+ 
+  requestAnimationFrame(() => {
+    $meaning.classList.add("pop");
+    $readBtn?.classList.add("pop");
+  });
 }
+ 
 
-function hideMeaning() { $meaning.style.display = "none"; $meaning.classList.remove("pop"); }
+function hideMeaning() {
+  $meaning.style.display = "none";
+  $meaning.classList.remove("pop");
+  if ($readBtn) {
+    $readBtn.style.display = "none";
+    $readBtn.classList.remove("pop");
+  }
+}
 function hidePopup()   { $popup.style.display = "none"; $popup.classList.remove("slide"); }
 
 function positionPopup(anchorRect) {
@@ -568,3 +611,22 @@ function on(id, ev, fn)   { document.getElementById(id)?.addEventListener(ev, fn
 function setText(id, t)   { const el = document.getElementById(id); if (el) el.textContent = t; }
 function ss(k, v) { sessionStorage.setItem(k, v); }
 function sg(k)    { return sessionStorage.getItem(k); }
+
+async function checkMuted() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Kısa sessiz ses çalıp gain değerini oku
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+    // ctx.state "suspended" ise kullanıcı etkileşimi olmadan başlamadı
+    if (ctx.state === "suspended") {
+      await ctx.resume().catch(() => {});
+    }
+    await ctx.close();
+    // AudioContext açılabiliyorsa ses muhtemelen açık
+    return false;
+  } catch {
+    // Hata → ses kapalı olabilir
+    return true;
+  }
+}

@@ -127,10 +127,14 @@ function updateStats(text) {
 
 function updateStructure(blocks) {
   const count = type => blocks.filter(b => b.type === type).length;
-  document.getElementById("structTitles").textContent   = count("title");
-  document.getElementById("structDialogs").textContent  = count("dialog");
-  document.getElementById("structParas").textContent    = count("para");
-  document.getElementById("structSections").textContent = count("section");
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+  set("structTitles",   count("title"));
+  set("structDialogs",  count("dialog"));
+  set("structParas",    count("para"));
+  set("structSections", count("section"));
 }
 
 function setAutoSaveState(state) {

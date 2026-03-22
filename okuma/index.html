@@ -48,6 +48,62 @@
   <div class="ok-progress-fill" id="okProgressFill"></div>
 </div>
 
+<!-- ══ SESLİ OKUMA ÇUBUĞU ══════════════════════════════════ -->
+<div class="tts-bar" id="ttsBar">
+
+  <!-- Sol: oynat / duraklat / durdur -->
+  <div class="tts-controls">
+    <button class="tts-btn tts-play" id="ttsPlayBtn" title="Tüm metni oku">
+      <!-- Play ikonu — JS değiştirir -->
+      <svg class="tts-icon-play" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <polygon points="5,3 19,12 5,21"/>
+      </svg>
+      <svg class="tts-icon-pause" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+        <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+      </svg>
+      <span class="tts-play-label">Oku</span>
+    </button>
+
+    <button class="tts-btn tts-stop" id="ttsStopBtn" title="Durdur ve sıfırla" disabled>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="4" y="4" width="16" height="16" rx="2"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Orta: seçimden oku + hız -->
+  <div class="tts-middle">
+    <button class="tts-sel-btn" id="ttsSelBtn" title="Seçili metni oku">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M9 12h6M9 16h6M9 8h4"/>
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+      </svg>
+      Seçimi Oku
+    </button>
+
+    <!-- Hız seçici -->
+    <div class="tts-rate-wrap">
+      <span class="tts-rate-label">Hız</span>
+      <div class="tts-rate-btns">
+        <button class="tts-rate-btn" data-rate="0.7">0.7×</button>
+        <button class="tts-rate-btn active" data-rate="1.0">1×</button>
+        <button class="tts-rate-btn" data-rate="1.25">1.25×</button>
+        <button class="tts-rate-btn" data-rate="1.5">1.5×</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sağ: ses göstergesi + dil etiketi -->
+  <div class="tts-right">
+    <div class="tts-wave" id="ttsWave" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <span class="tts-lang-badge">DE</span>
+  </div>
+
+</div>
+<!-- ══════════════════════════════════════════════════════════ -->
+
 <main class="ok-main">
   <article class="ok-card">
     <div id="readerBody" class="ok-body"></div>
@@ -66,50 +122,30 @@
 <!-- Kelime kaydetme modalı -->
 <div class="ok-modal-overlay" id="wordModalOverlay" style="display:none" role="dialog" aria-modal="true">
   <div class="ok-modal">
-
     <div class="ok-modal-head">
       <span class="ok-modal-label">Kelimeyi Kaydet</span>
       <button class="ok-modal-x" id="wordModalClose" aria-label="Kapat">&#x2715;</button>
     </div>
-
-    <!-- Düzenlenebilir kelime satırı: artikel rozeti + input -->
     <div class="ok-modal-word-row">
       <span id="modalArticleBadge" class="ok-modal-badge"></span>
       <div id="okumLemmaMount"></div>
-      <input
-        type="text"
-        id="modalWordInput"
-        class="ok-modal-word-input"
-        autocomplete="off"
-        spellcheck="false"
-        lang="de"
-        placeholder="Kelime…"
-      />
+      <input type="text" id="modalWordInput" class="ok-modal-word-input"
+        autocomplete="off" spellcheck="false" lang="de" placeholder="Kelime…"/>
     </div>
-
     <div class="ok-base-row" id="modalBaseFormWrap" style="display:none">
       <span>Temel form: <strong id="modalBaseFormText" class="ok-mono"></strong></span>
       <button class="ok-base-apply" id="applyBaseFormBtn">kullan &#x2192;</button>
     </div>
-
-    <input
-      type="text"
-      id="modalMeaningInput"
-      class="ok-modal-input"
-      placeholder="Türkçe anlamını gir…"
-      autocomplete="off"
-    />
-
+    <input type="text" id="modalMeaningInput" class="ok-modal-input"
+      placeholder="Türkçe anlamını gir…" autocomplete="off"/>
     <div class="ok-modal-tags">
       <div class="ok-tag-label">Etiket <span class="ok-tag-opt">(opsiyonel)</span></div>
       <div class="ok-tag-chips" id="modalTagChips"></div>
     </div>
-
     <div class="ok-modal-actions">
       <button class="ok-modal-cancel" id="wordModalCancelBtn">İptal</button>
       <button class="ok-modal-save"   id="wordModalSaveBtn">Kaydet</button>
     </div>
-
   </div>
 </div>
 

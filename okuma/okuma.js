@@ -1,15 +1,25 @@
+/* ═══════════════════════════════════════════════════════════
+   okuma.js  —  AlmancaPratik Okuma Modu  v4
+   TTS entegrasyonu eklendi.
+   ═══════════════════════════════════════════════════════════ */
+
 import { saveWordOrAddMeaning, getWords } from "../js/firebase.js";
 import { renderTagChips, getSelectedTags, extractAllTags, getAutoLevel } from "../js/tag.js";
 import {
-  fetchWikiData,
-  fetchTranslate,
-  normalizeGermanWord,
-  artikelBadgeHtml,
-  escapeHtml,
+  fetchWikiData, fetchTranslate,
+  normalizeGermanWord, artikelBadgeHtml, escapeHtml,
 } from "../js/german.js";
-import { showToast } from "../src/components/toast.js";
+import { showToast }        from "../src/components/toast.js";
 import { showLemmaHintOnce } from '../src/components/lemmaHint.js';
 import { showAuthGate, isLoggedIn } from '../src/components/authGate.js';
+import { blocksToHtml }     from "../metin/parseText.js";
+
+/* ── TTS ────────────────────────────────────────────────── */
+import {
+  ttsSupported, speak, stop as ttsStop,
+  togglePause, setRate, onStateChange as ttsOnStateChange,
+  isPlaying, isPaused,
+} from "../metin/tts.js";
 
 /* ── State ─────────────────────────────────────────────── */
 let _word            = "";
@@ -23,7 +33,7 @@ let _modalOpen       = false;
 let _prefetchWord    = "";
 let _prefetchPromise = null;
 
-const THEMES     = ["", "ok-sepia", "ok-light"];
+const THEMES      = ["", "ok-sepia", "ok-light"];
 const THEME_ICONS = ["☀", "📜", "🌙"];
 
 /* ── DOM ────────────────────────────────────────────────── */
@@ -62,6 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   restorePrefs();
   initProgress();
   bindToolbar();
+  bindTTS();         // ← TTS bağlantısı
   bindSelection();
   bindModal();
 });
@@ -73,7 +84,6 @@ function tryParse(json) {
   if (!json) return null;
   try { return JSON.parse(json); } catch { return null; }
 }
-import { blocksToHtml } from "../metin/parseText.js";
 
 function updateMeta(text) {
   const words = text.trim().split(/\s+/).filter(Boolean).length;
@@ -99,6 +109,7 @@ function initProgress() {
    ═══════════════════════════════════════════════════════════ */
 function bindToolbar() {
   on("backBtn", "click", () => {
+    ttsStop(); // Sayfa değişince okumayı durdur
     sessionStorage.removeItem("parsedBlocks");
     const ret = sessionStorage.getItem("returnPage");
     let href;
@@ -136,16 +147,12 @@ function bindToolbar() {
   });
 
   on("focusBtn", "click", () => {
-    const on = document.body.classList.toggle("ok-focus");
-    setText("focusBtn", on ? "⊞" : "⊡");
+    const active = document.body.classList.toggle("ok-focus");
+    setText("focusBtn", active ? "⊞" : "⊡");
   });
 }
 
-function setFont(size) {
-  _fontSize = size;
-  $body.style.fontSize = size + "px";
-  ss("ok_font", size);
-}
+function setFont(size) { _fontSize = size; $body.style.fontSize = size + "px"; ss("ok_font", size); }
 
 function setTheme(idx) {
   document.body.classList.remove(...THEMES.filter(Boolean));
@@ -157,15 +164,105 @@ function restorePrefs() {
   const ti = parseInt(sg("ok_theme") || "0", 10);
   _themeIdx = isNaN(ti) ? 0 : ti % THEMES.length;
   setTheme(_themeIdx);
-
   if (sg("ok_serif") === "0") {
     _serifMode = false;
     $body.style.fontFamily = "var(--ok-sans)";
     setText("fontToggleBtn", "Ss");
   }
-
   const fs = parseInt(sg("ok_font") || "0", 10);
   if (fs >= 13 && fs <= 32) setFont(fs);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SESLİ OKUMA (TTS)
+   ═══════════════════════════════════════════════════════════ */
+function bindTTS() {
+  const playBtn = document.getElementById("ttsPlayBtn");
+  const stopBtn = document.getElementById("ttsStopBtn");
+  const selBtn  = document.getElementById("ttsSelBtn");
+  const wave    = document.getElementById("ttsWave");
+
+  /* Tarayıcı desteği yok */
+  if (!ttsSupported) {
+    const bar = document.getElementById("ttsBar");
+    if (bar) bar.innerHTML = `<span class="tts-unsupported">⚠ Bu tarayıcı sesli okumayı desteklemiyor.</span>`;
+    return;
+  }
+
+  /* ── Durum değişimi → UI güncelle ── */
+  ttsOnStateChange(({ playing, paused }) => {
+    if (!playBtn) return;
+
+    const iconPlay  = playBtn.querySelector(".tts-icon-play");
+    const iconPause = playBtn.querySelector(".tts-icon-pause");
+    const label     = playBtn.querySelector(".tts-play-label");
+
+    if (playing && !paused) {
+      // Oynatılıyor
+      playBtn.classList.add("playing");
+      if (iconPlay)  iconPlay.style.display  = "none";
+      if (iconPause) iconPause.style.display = "";
+      if (label)     label.textContent       = "Duraklat";
+      if (stopBtn)   stopBtn.disabled        = false;
+      if (wave)      { wave.classList.add("active"); wave.classList.remove("paused"); }
+    } else if (paused) {
+      // Duraklatıldı
+      playBtn.classList.add("playing");
+      if (iconPlay)  iconPlay.style.display  = "";
+      if (iconPause) iconPause.style.display = "none";
+      if (label)     label.textContent       = "Devam Et";
+      if (stopBtn)   stopBtn.disabled        = false;
+      if (wave)      { wave.classList.add("active"); wave.classList.add("paused"); }
+    } else {
+      // Durdu / bitti
+      playBtn.classList.remove("playing");
+      if (iconPlay)  iconPlay.style.display  = "";
+      if (iconPause) iconPause.style.display = "none";
+      if (label)     label.textContent       = "Oku";
+      if (stopBtn)   stopBtn.disabled        = true;
+      if (wave)      { wave.classList.remove("active"); wave.classList.remove("paused"); }
+    }
+  });
+
+  /* ── Oynat / Duraklat ── */
+  playBtn?.addEventListener("click", () => {
+    if (isPlaying()) {
+      togglePause();
+    } else {
+      // Tüm metni oku — $body'den düz metin al
+      const text = $body?.innerText?.trim() || sessionStorage.getItem("savedText") || "";
+      if (!text) { showToast("Okunacak metin yok.", false); return; }
+      speak(text);
+    }
+  });
+
+  /* ── Durdur / Sıfırla ── */
+  stopBtn?.addEventListener("click", () => ttsStop());
+
+  /* ── Seçili metni oku ── */
+  selBtn?.addEventListener("click", () => {
+    const selected = window.getSelection()?.toString().trim();
+    if (!selected) {
+      showToast("Önce metinden bir bölüm seçin.", false);
+      return;
+    }
+    speak(selected);
+  });
+
+  /* ── Hız butonları ── */
+  document.querySelectorAll(".tts-rate-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tts-rate-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      setRate(parseFloat(btn.dataset.rate));
+    });
+  });
+
+  /* Sayfa kapatılınca veya navigasyonda okumayı durdur */
+  window.addEventListener("beforeunload", ttsStop);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) ttsStop();
+  });
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -179,7 +276,7 @@ function bindSelection() {
   document.addEventListener("mousedown", e => {
     if (_modalOpen) return;
     const $addBtn = document.getElementById("addWordBtn");
-    const inside  = [$body, $meaning, $popup, $overlay, $addBtn].some(el => el && el.contains(e.target));
+    const inside  = [$body, $meaning, $popup, $overlay, $addBtn].some(el => el?.contains(e.target));
     if (!inside) {
       hideMeaning(); hidePopup();
       window.getSelection()?.removeAllRanges();
@@ -221,7 +318,7 @@ function positionPopup(anchorRect) {
   const pw = $popup.offsetWidth || 300, ph = $popup.offsetHeight || 120, GAP = 8;
   let top  = anchorRect.bottom + GAP;
   if (top + ph > vh - 10) top = anchorRect.top - ph - GAP;
-  top = Math.max(6, top);
+  top  = Math.max(6, top);
   let left = anchorRect.left;
   if (left + pw > vw - 10) left = vw - pw - 10;
   left = Math.max(6, left);
@@ -246,7 +343,6 @@ async function openPopup() {
   requestAnimationFrame(() => $popup.classList.add("slide"));
 
   let mainTr = "—", alts = [], wikiData = {};
-
   try {
     let result = null;
     if (_prefetchWord === _word && _prefetchPromise) result = await _prefetchPromise;
@@ -311,7 +407,7 @@ async function openPopup() {
   });
 
   document.getElementById("ppClose")?.addEventListener("click", hidePopup);
-  document.getElementById("ppSave")?.addEventListener("click", saveFromPopup);
+  document.getElementById("ppSave")?.addEventListener("click",  saveFromPopup);
 }
 
 /* ── Popup'tan kaydet ─── */
@@ -320,29 +416,19 @@ async function saveFromPopup() {
     showAuthGate({ title: 'Kelime kaydetmek için giriş yap', desc: 'Beğendiğin kelimeleri kişisel sözlüğüne eklemek ücretsiz.' });
     return;
   }
-
   const word = normalizeGermanWord(_word, _wiki);
   if (!word || !_tr || _tr === "—") { showToast("Kelime veya çeviri eksik.", false); return; }
-
   const btn = document.getElementById("ppSave");
   if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor…"; }
-
   try {
     const uid = window.getUserId?.();
     if (!uid) throw new Error("Oturum yok");
-
     const result = await saveWordOrAddMeaning(uid, word, _tr, getSelectedTags("ppTags"));
     getWords(uid).then(l => { _userWords = l; }).catch(() => {});
-    hidePopup();
-    _word = "";
-
-    if (result.already) {
-      showToast(`"${result.word}" için bu anlam zaten kayıtlı.`, false);
-    } else if (result.merged) {
-      showToast(`"${result.word}" kelimesine "${result.meaning}" eklendi`);
-    } else {
-      showToast(`"${result.word}" sözlüğe eklendi`);
-    }
+    hidePopup(); _word = "";
+    if (result.already)      showToast(`"${result.word}" için bu anlam zaten kayıtlı.`, false);
+    else if (result.merged)  showToast(`"${result.word}" kelimesine "${result.meaning}" eklendi`);
+    else                     showToast(`"${result.word}" sözlüğe eklendi`);
   } catch (err) {
     showToast("Kayıt başarısız: " + err.message, false);
     if (btn) { btn.disabled = false; btn.textContent = "+ Sözlüğe Ekle"; }
@@ -358,7 +444,6 @@ function bindModal() {
     $overlay.classList.remove("active");
     _modalOpen = false;
   };
-
   on("wordModalClose",     "click", close);
   on("wordModalCancelBtn", "click", close);
   $overlay.addEventListener("click", e => { if (e.target === $overlay) close(); });
@@ -397,14 +482,14 @@ async function openModal() {
   _modalOpen = true;
 
   fillModalWord(true);
-  const okumaMountEl = document.getElementById('okumLemmaMount');
+  const okumaMountEl = document.getElementById("okumLemmaMount");
   if (okumaMountEl && _word) {
     showLemmaHintOnce({
       word: _word, mountEl: okumaMountEl,
       onApply: (lemma) => {
-        const inp = document.getElementById('modalWordInput');
+        const inp = document.getElementById("modalWordInput");
         if (inp) inp.value = lemma;
-        okumaMountEl.innerHTML = '';
+        okumaMountEl.innerHTML = "";
       }
     });
   }
@@ -415,11 +500,7 @@ async function openModal() {
   if (_prefetchWord === _word && _prefetchPromise) {
     try {
       const result = await _prefetchPromise;
-      if (result) {
-        const [{ main: mainTr }, wikiRes] = result;
-        _tr   = mainTr;
-        _wiki = wikiRes;
-      }
+      if (result) { const [{ main: mainTr }, wikiRes] = result; _tr = mainTr; _wiki = wikiRes; }
     } catch { /* sessizce */ }
   }
 
@@ -429,9 +510,9 @@ async function openModal() {
   const baseWrap = document.getElementById("modalBaseFormWrap");
   const baseText = document.getElementById("modalBaseFormText");
   if (baseWrap && baseText) {
-    const base           = _wiki?.baseForm;
-    baseText.textContent      = base || "";
-    baseWrap.style.display    = base ? "flex" : "none";
+    const base = _wiki?.baseForm;
+    baseText.textContent   = base || "";
+    baseWrap.style.display = base ? "flex" : "none";
   }
 
   const _okLvl  = getAutoLevel(_word);
@@ -447,12 +528,9 @@ function fillModalWord(force = false) {
   if (!input) return;
   const wordNorm = normalizeGermanWord(_word, _wiki || {});
   if (force || input.value === "" || input.value === (input.dataset.lastFill || "")) {
-    input.value            = wordNorm;
-    input.dataset.lastFill = wordNorm;
+    input.value = wordNorm; input.dataset.lastFill = wordNorm;
   }
-  if (badge) {
-    badge.innerHTML = _wiki?.artikel ? artikelBadgeHtml(_wiki.artikel, { size: 13 }) : "";
-  }
+  if (badge) badge.innerHTML = _wiki?.artikel ? artikelBadgeHtml(_wiki.artikel, { size: 13 }) : "";
 }
 
 async function doSaveModal() {
@@ -460,37 +538,23 @@ async function doSaveModal() {
     showAuthGate({ title: 'Kelime kaydetmek için giriş yap', desc: 'Sözlüğüne kelime eklemek için ücretsiz hesabına giriş yapman yeterli.' });
     return;
   }
-
   const inp     = document.getElementById("modalMeaningInput");
   const meaning = inp?.value.trim();
   if (!meaning) { inp?.focus(); return; }
-
-  const wordInput = document.getElementById("modalWordInput");
-  const word      = wordInput?.value.trim() || normalizeGermanWord(_word, _wiki || {});
-  const tags      = getSelectedTags("modalTagChips");
-  const btn       = document.getElementById("wordModalSaveBtn");
-
+  const word = document.getElementById("modalWordInput")?.value.trim() || normalizeGermanWord(_word, _wiki || {});
+  const tags = getSelectedTags("modalTagChips");
+  const btn  = document.getElementById("wordModalSaveBtn");
   if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor…"; }
-
   try {
     const uid = window.getUserId?.();
     if (!uid) throw new Error("Oturum yok");
-
     const result = await saveWordOrAddMeaning(uid, word, meaning, tags);
     getWords(uid).then(l => { _userWords = l; }).catch(() => {});
-
-    $overlay.style.display = "none";
-    $overlay.classList.remove("active");
-    _modalOpen = false;
-    _word      = "";
-
-    if (result.already) {
-      showToast(`"${result.word}" için bu anlam zaten kayıtlı.`, false);
-    } else if (result.merged) {
-      showToast(`"${result.word}" kelimesine "${result.meaning}" eklendi`);
-    } else {
-      showToast(`"${result.word}" sözlüğe eklendi`);
-    }
+    $overlay.style.display = "none"; $overlay.classList.remove("active");
+    _modalOpen = false; _word = "";
+    if (result.already)      showToast(`"${result.word}" için bu anlam zaten kayıtlı.`, false);
+    else if (result.merged)  showToast(`"${result.word}" kelimesine "${result.meaning}" eklendi`);
+    else                     showToast(`"${result.word}" sözlüğe eklendi`);
   } catch (err) {
     showToast("Kayıt başarısız: " + err.message, false);
     if (btn) { btn.disabled = false; btn.textContent = "Kaydet"; }
@@ -500,7 +564,7 @@ async function doSaveModal() {
 /* ═══════════════════════════════════════════════════════════
    MİNİ YARDIMCILAR
    ═══════════════════════════════════════════════════════════ */
-function on(id, ev, fn) { document.getElementById(id)?.addEventListener(ev, fn); }
-function setText(id, t) { const el = document.getElementById(id); if (el) el.textContent = t; }
+function on(id, ev, fn)   { document.getElementById(id)?.addEventListener(ev, fn); }
+function setText(id, t)   { const el = document.getElementById(id); if (el) el.textContent = t; }
 function ss(k, v) { sessionStorage.setItem(k, v); }
 function sg(k)    { return sessionStorage.getItem(k); }

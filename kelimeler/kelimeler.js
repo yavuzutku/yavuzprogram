@@ -2,42 +2,66 @@ import { getWords, deleteWord, updateWord, onAuthChange } from "../js/firebase.j
 import { showLemmaHintOnce } from '../src/components/lemmaHint.js';
 import { renderTagChips, getSelectedTags, extractAllTags, getAutoLevel } from "../js/tag.js";
 import { fetchWikiData } from "../src/services/wiktionary.js";
-
+import { saveListe } from "../js/listeler-firebase.js";
+import { openListeModal } from "../src/components/listeModal.js";
 
 /* ═══════════════════════════════════════════════════════════
    STATE
    ═══════════════════════════════════════════════════════════ */
 let allWords        = [];
 let activeTagFilter = null;
+let sortMode        = "newest";   // newest | oldest | az | za | level
+let viewMode        = "list";     // list | grid
+let selectMode      = false;
+let selectedIds     = new Set();
+let currentUserId   = null;
 const exampleCache  = new Map();
 
-/* ─── HTML escape ──────────────────────────────────────── */
+/* ─── HTML escape ───────────────────────────────────────── */
 function esc(str) {
   return String(str ?? "")
     .replace(/&/g,"&amp;").replace(/</g,"&lt;")
     .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
-/* ─── Çoklu anlam yardımcıları ─────────────────────────── */
+/* ─── Çoklu anlam yardımcıları ──────────────────────────── */
 function getMeanings(item) {
   if (Array.isArray(item.meanings) && item.meanings.length > 0) return item.meanings;
   if (item.meaning) return [item.meaning];
   return [""];
 }
-
 function primaryMeaning(item)  { return getMeanings(item)[0] || ""; }
 function extraMeanings(item)   { return getMeanings(item).slice(1); }
 
-/* ─── Artikel tespiti ──────────────────────────────────── */
+/* ─── Artikel tespiti ───────────────────────────────────── */
 function extractArtikel(word) {
   const m = String(word).match(/^(der|die|das)\s/i);
   return m ? m[1].toLowerCase() : null;
 }
 
-/* ─── Kelime sayısı ────────────────────────────────────── */
+/* ─── Kelime sayısı ─────────────────────────────────────── */
 function wordCount(t) { return t.trim().split(/\s+/).length; }
 
-/* ─── Wikitext temizleyici ─────────────────────────────── */
+/* ─── Sıralama ──────────────────────────────────────────── */
+const LEVEL_ORDER = { A1:1, A2:2, B1:3, B2:4, C1:5, C2:6 };
+function applySort(list) {
+  const arr = [...list];
+  switch (sortMode) {
+    case "oldest": return arr.sort((a,b) => (a.created||0) - (b.created||0));
+    case "az":     return arr.sort((a,b) => a.word.localeCompare(b.word, "de"));
+    case "za":     return arr.sort((a,b) => b.word.localeCompare(a.word, "de"));
+    case "level": {
+      return arr.sort((a,b) => {
+        const al = (Array.isArray(a.tags) ? a.tags : []).find(t => LEVEL_ORDER[t]);
+        const bl = (Array.isArray(b.tags) ? b.tags : []).find(t => LEVEL_ORDER[t]);
+        return (LEVEL_ORDER[al]||99) - (LEVEL_ORDER[bl]||99);
+      });
+    }
+    default: return arr.sort((a,b) => (b.created||0) - (a.created||0));
+  }
+}
+
+/* ─── Wikitext temizleyici ──────────────────────────────── */
 function cleanWikitext(text) {
   return text
     .replace(/\{\{[^{}]*\}\}/g,"").replace(/\}\}/g,"").replace(/\{\{/g,"")
@@ -50,11 +74,10 @@ function cleanWikitext(text) {
     .replace(/\s{2,}/g," ").trim();
 }
 
-/* ─── Örnek cümleler ───────────────────────────────────── */
+/* ─── Örnek cümleler ────────────────────────────────────── */
 async function fetchFromWiktionary(word) {
   const capitalized = word.charAt(0).toUpperCase() + word.slice(1);
   const attempts = word === capitalized ? [word] : [word, capitalized];
-
   let wikitext = null;
   for (const title of attempts) {
     const params = new URLSearchParams({ action:"parse", page:title, prop:"wikitext", format:"json", origin:"*" });
@@ -71,59 +94,40 @@ async function fetchFromWiktionary(word) {
   const lines = wikitext.split('\n');
   const sents = [];
   let inB = false;
-
   const SECTION_END = /^\{\{(Herkunft|Synonyme|Übersetzungen|Wortbildungen|Bedeutungen|Redewendungen|Charakteristische|Oberbegriffe|Unterbegriffe|Gegenwörter|Sprichwörter|Referenzen|Abgeleitete|Verkleinerungsformen|Steigerungsformen|Leerzeile|Quellen)/;
 
   for (const line of lines) {
     const trimmed = line.trim();
-
-    if (/^\{\{Beispiele/.test(trimmed) || /^={2,}\s*Beispiele\s*={2,}/.test(trimmed)) {
-      inB = true; continue;
-    }
-
+    if (/^\{\{Beispiele/.test(trimmed) || /^={2,}\s*Beispiele\s*={2,}/.test(trimmed)) { inB = true; continue; }
     if (inB) {
-      if (SECTION_END.test(trimmed) || /^={2,}/.test(trimmed)) {
-        inB = false; continue;
-      }
+      if (SECTION_END.test(trimmed) || /^={2,}/.test(trimmed)) { inB = false; continue; }
       if (trimmed) {
         const m = line.match(/^:+\s*(?:\[\d+\]\s*)?(.+)/);
         if (m) {
-          let text = m[1];
-          text = text
-            .replace(/\{\{[^{}]*\}\}/g, '')
-            .replace(/\{\{[^{}]*\}\}/g, '')
-            .replace(/\}\}/g, '')
-            .replace(/\{\{/g, '')
-            .replace(/'{2,3}/g, '')
-            .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1')
-            .replace(/<[^>]+>/g, '')
-            .replace(/\[\d+\]/g, '')
-            .replace(/&nbsp;/g, ' ')
-            .replace(/[„""\u201C\u201D\u201E\u00AB\u00BB'']/g, '')
-            .replace(/\s*[A-ZÄÖÜ][^.!?]*\d{4}\s*\.?\s*$/, '')
-            .replace(/\s{2,}/g, ' ')
-            .trim();
+          let text = m[1]
+            .replace(/\{\{[^{}]*\}\}/g,'').replace(/\{\{[^{}]*\}\}/g,'')
+            .replace(/\}\}/g,'').replace(/\{\{/g,'').replace(/'{2,3}/g,'')
+            .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g,'$1')
+            .replace(/<[^>]+>/g,'').replace(/\[\d+\]/g,'').replace(/&nbsp;/g,' ')
+            .replace(/[„""\u201C\u201D\u201E\u00AB\u00BB'']/g,'')
+            .replace(/\s*[A-ZÄÖÜ][^.!?]*\d{4}\s*\.?\s*$/,'')
+            .replace(/\s{2,}/g,' ').trim();
           if (text.length > 10) sents.push(text);
         }
       }
     }
   }
-
-  return sents
-    .sort((a, b) => wordCount(a) - wordCount(b))
-    .slice(0, 3)
-    .map(s => ({ original: s }));
+  return sents.sort((a,b) => wordCount(a) - wordCount(b)).slice(0,3).map(s => ({ original: s }));
 }
 
 async function fetchFromTatoeba(word) {
-  const params = new URLSearchParams({ from: 'deu', query: word, orphans: 'no', unapproved: 'no', sort: 'relevance' });
+  const params = new URLSearchParams({ from:'deu', query:word, orphans:'no', unapproved:'no', sort:'relevance' });
   const data = await (await fetch(`https://tatoeba.org/eng/api_v0/search?${params}`)).json();
   const raw = data?.results ?? data?.data ?? [];
   return raw
     .map(s => s.text ?? s)
     .filter(t => typeof t === 'string' && t.trim().length > 0 && wordCount(t) > 4 && wordCount(t) < 30)
-    .slice(0, 3)
-    .map(t => ({ original: t }));
+    .slice(0,3).map(t => ({ original: t }));
 }
 
 async function fetchExampleSentences(word) {
@@ -139,6 +143,204 @@ async function fetchExampleSentences(word) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   TOOLBAR & BULK BAR INJECTION
+   ═══════════════════════════════════════════════════════════ */
+function injectToolbar() {
+  const existing = document.getElementById("wordToolbar");
+  if (existing) return;
+
+  const contentLayout = document.querySelector(".content-layout");
+  if (!contentLayout) return;
+
+  /* Sort + View + Actions toolbar */
+  const toolbar = document.createElement("div");
+  toolbar.id = "wordToolbar";
+  toolbar.className = "word-toolbar";
+  toolbar.innerHTML = `
+    <div class="toolbar-left">
+      <div class="sort-group" role="group" aria-label="Sıralama">
+        <button class="sort-btn active" data-sort="newest" title="En yeni önce">En Yeni</button>
+        <button class="sort-btn" data-sort="oldest" title="En eski önce">En Eski</button>
+        <button class="sort-btn" data-sort="az" title="A'dan Z'ye">A → Z</button>
+        <button class="sort-btn" data-sort="za" title="Z'den A'ya">Z → A</button>
+        <button class="sort-btn" data-sort="level" title="Seviyeye göre">Seviye</button>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <button class="view-toggle-btn" id="viewToggle" title="Grid / Liste görünümü" aria-label="Görünüm değiştir">
+        <svg id="viewIconList" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <svg id="viewIconGrid" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </button>
+      <button class="select-mode-btn" id="selectModeBtn" title="Kelime seç">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Seç
+      </button>
+      <button class="create-list-btn" id="createListBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Liste Oluştur
+      </button>
+    </div>
+  `;
+  contentLayout.parentNode.insertBefore(toolbar, contentLayout);
+
+  /* Stats bar */
+  const stats = document.createElement("div");
+  stats.id = "statsBar";
+  stats.className = "stats-bar";
+  contentLayout.parentNode.insertBefore(stats, contentLayout);
+
+  /* Sort buttons */
+  toolbar.querySelectorAll(".sort-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      sortMode = btn.dataset.sort;
+      toolbar.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderFiltered();
+    });
+  });
+
+  /* View toggle */
+  const viewToggle = toolbar.querySelector("#viewToggle");
+  viewToggle.addEventListener("click", () => {
+    viewMode = viewMode === "list" ? "grid" : "list";
+    updateViewToggleIcon();
+    const wl = document.getElementById("wordList");
+    if (wl) wl.className = viewMode === "grid" ? "word-list word-list--grid" : "word-list";
+    renderFiltered();
+  });
+  updateViewToggleIcon();
+
+  /* Select mode */
+  toolbar.querySelector("#selectModeBtn").addEventListener("click", toggleSelectMode);
+
+  /* Create list (without pre-selection) */
+  toolbar.querySelector("#createListBtn").addEventListener("click", () => {
+    if (!currentUserId) return;
+    openListeModal({
+      allWords,
+      preSelectedIds: [],
+      userId: currentUserId,
+      onSave: async ({ name, description, wordIds }) => {
+        await saveListe(currentUserId, name, wordIds, description);
+        showToast(`"${name}" listesi oluşturuldu!`, "success");
+      }
+    });
+  });
+}
+
+function updateViewToggleIcon() {
+  const listIcon = document.getElementById("viewIconList");
+  const gridIcon = document.getElementById("viewIconGrid");
+  if (!listIcon || !gridIcon) return;
+  if (viewMode === "grid") {
+    listIcon.style.display = "block";
+    gridIcon.style.display = "none";
+  } else {
+    listIcon.style.display = "none";
+    gridIcon.style.display = "block";
+  }
+}
+
+/* ── Bulk action bar ────────────────────────────────────── */
+function injectBulkBar() {
+  if (document.getElementById("bulkBar")) return;
+  const bar = document.createElement("div");
+  bar.id = "bulkBar";
+  bar.className = "bulk-bar";
+  bar.style.display = "none";
+  bar.innerHTML = `
+    <div class="bulk-left">
+      <span class="bulk-count"><span id="bulkCount">0</span> kelime seçildi</span>
+      <button class="bulk-select-all-btn" id="bulkSelAll">Tümünü Seç</button>
+    </div>
+    <div class="bulk-right">
+      <button class="bulk-list-btn" id="bulkListBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Listele
+      </button>
+      <button class="bulk-cancel-btn" id="bulkCancel">İptal</button>
+    </div>
+  `;
+  document.querySelector(".page-wrapper")?.appendChild(bar);
+
+  bar.querySelector("#bulkSelAll").addEventListener("click", () => {
+    const filtered = getFilteredList();
+    const allSelected = filtered.every(w => selectedIds.has(w.id));
+    filtered.forEach(w => allSelected ? selectedIds.delete(w.id) : selectedIds.add(w.id));
+    renderFiltered();
+    updateBulkBar();
+  });
+
+  bar.querySelector("#bulkListBtn").addEventListener("click", () => {
+    if (!currentUserId || !selectedIds.size) return;
+    openListeModal({
+      allWords,
+      preSelectedIds: [...selectedIds],
+      userId: currentUserId,
+      onSave: async ({ name, description, wordIds }) => {
+        await saveListe(currentUserId, name, wordIds, description);
+        showToast(`"${name}" listesi oluşturuldu!`, "success");
+        exitSelectMode();
+      }
+    });
+  });
+
+  bar.querySelector("#bulkCancel").addEventListener("click", exitSelectMode);
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById("bulkBar");
+  const countEl = document.getElementById("bulkCount");
+  if (!bar || !countEl) return;
+  countEl.textContent = selectedIds.size;
+
+  const filtered = getFilteredList();
+  const allSelected = filtered.length > 0 && filtered.every(w => selectedIds.has(w.id));
+  const selAllBtn = bar.querySelector("#bulkSelAll");
+  if (selAllBtn) selAllBtn.textContent = allSelected ? "Seçimi Kaldır" : "Tümünü Seç";
+
+  if (selectMode) bar.style.display = "flex";
+}
+
+function toggleSelectMode() {
+  selectMode = !selectMode;
+  if (!selectMode) { selectedIds.clear(); }
+  const btn = document.getElementById("selectModeBtn");
+  if (btn) {
+    btn.classList.toggle("active", selectMode);
+    btn.querySelector("span") && (btn.querySelector("span").textContent = selectMode ? "Vazgeç" : "Seç");
+  }
+  const bar = document.getElementById("bulkBar");
+  if (bar) bar.style.display = selectMode ? "flex" : "none";
+  renderFiltered();
+}
+
+function exitSelectMode() {
+  selectMode = false;
+  selectedIds.clear();
+  const btn = document.getElementById("selectModeBtn");
+  if (btn) btn.classList.remove("active");
+  const bar = document.getElementById("bulkBar");
+  if (bar) bar.style.display = "none";
+  renderFiltered();
+}
+
+/* ── Stats bar ──────────────────────────────────────────── */
+function updateStats(filtered) {
+  const bar = document.getElementById("statsBar");
+  if (!bar) return;
+  if (!allWords.length) { bar.style.display = "none"; return; }
+  bar.style.display = "flex";
+
+  const total = allWords.length;
+  const shown = filtered.length;
+
+  bar.innerHTML = shown < total
+    ? `<span class="stats-shown">${shown} kelime gösteriliyor</span><span class="stats-sep">·</span><span class="stats-total">${total} toplam</span>`
+    : `<span class="stats-total">${total} kelime</span>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
    INIT
    ═══════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
@@ -150,7 +352,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchClear    = document.getElementById("searchClear");
   const filterTagList  = document.getElementById("filterTagList");
 
-  /* ─── Arama temizle butonu ─────────────────────────── */
+  /* Toolbar + bulk bar */
+  injectToolbar();
+  injectBulkBar();
+
+  /* ─── Arama temizle butonu ────────────────────────── */
   searchInput?.addEventListener("input", () => {
     searchClear.style.display = searchInput.value ? "flex" : "none";
     renderFiltered();
@@ -162,9 +368,13 @@ document.addEventListener("DOMContentLoaded", () => {
     searchInput.focus();
   });
 
-  /* ─── Auth ─────────────────────────────────────────── */
+  /* ─── Auth ──────────────────────────────────────── */
   onAuthChange(async (user) => {
-    if (user) await loadWords(user.uid);
+    if (user) {
+      currentUserId = user.uid;
+      window.getUserId = () => user.uid;
+      await loadWords(user.uid);
+    }
   });
 
   async function loadWords(userId) {
@@ -187,7 +397,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const currentTags = Array.isArray(w.tags) ? w.tags : [];
       const hasLevel = currentTags.some(t => levelTags.has(t));
       const hasType  = currentTags.some(t => typeTags.has(t));
-
       let newTags = [...currentTags];
       let changed = false;
 
@@ -195,7 +404,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const auto = getAutoLevel(w.word);
         if (auto) { newTags.push(auto); changed = true; }
       }
-
       if (!hasType) {
         try {
           const wiki = await fetchWikiData(w.word);
@@ -206,22 +414,16 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         } catch(_) {}
       }
-
       if (changed) {
-        try {
-          await updateWord(userId, w.id, { tags: newTags });
-          w.tags = newTags;
-        } catch(_) {}
+        try { await updateWord(userId, w.id, { tags: newTags }); w.tags = newTags; } catch(_) {}
       }
-
       await new Promise(r => setTimeout(r, 150));
     }
-
     buildFilterSidebar();
     renderFiltered();
-}
+  }
 
-  /* ─── Filtre Sidebar ─────────────────────────────── */
+  /* ─── Filtre Sidebar ────────────────────────────── */
   function buildFilterSidebar() {
     const tagMap = new Map();
     allWords.forEach(w => {
@@ -263,9 +465,22 @@ document.addEventListener("DOMContentLoaded", () => {
       filterTagList.appendChild(sep);
       filterTagList.appendChild(ui);
     }
+
+    /* Listelerim bağlantısı */
+    const listelerLink = document.createElement("a");
+    listelerLink.href = "../listeler/";
+    listelerLink.className = "sidebar-listeler-link";
+    listelerLink.innerHTML = `
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Listelerim
+    `;
+    const sep2 = document.createElement("div");
+    sep2.style.cssText = "margin:10px 0 6px;border-top:1px solid rgba(255,255,255,0.05);padding-top:8px;";
+    filterTagList.appendChild(sep2);
+    filterTagList.appendChild(listelerLink);
   }
 
-  function renderFiltered() {
+  function getFilteredList() {
     const q = (searchInput?.value||"").toLowerCase();
     let list = allWords;
     if (activeTagFilter === "__untagged__") {
@@ -277,49 +492,150 @@ document.addEventListener("DOMContentLoaded", () => {
       const allM = getMeanings(w).join(" ").toLowerCase();
       return w.word.toLowerCase().includes(q) || allM.includes(q);
     });
-    render(list);
+    return list;
   }
 
-  /* ═══════════════════════════════════════════════════
+  window.getFilteredList = getFilteredList;  /* bulk bar erişimi için */
+
+  function renderFiltered() {
+    const filtered = applySort(getFilteredList());
+    updateStats(filtered);
+    updateBulkBar();
+    render(filtered);
+  }
+
+  /* ═══════════════════════════════════════
      RENDER
-     ═══════════════════════════════════════════════════ */
+     ═══════════════════════════════════════ */
   function render(list) {
     [...wordList.querySelectorAll(".word-card")].forEach(el => el.remove());
 
     const total = allWords.length;
     wordCountBadge.textContent = total === 1 ? "1 kelime" : `${total} kelime`;
 
+    /* Grid/list class */
+    wordList.className = viewMode === "grid" ? "word-list word-list--grid" : "word-list";
+
     if (!list.length) { emptyState.style.display = "block"; return; }
     emptyState.style.display = "none";
 
-    const userId = window.getUserId?.();
+    const userId = currentUserId;
 
     list.forEach((item, idx) => {
-      const card = buildCard(item, idx, userId);
+      const card = viewMode === "grid"
+        ? buildGridCard(item, idx, userId)
+        : buildCard(item, idx, userId);
       wordList.appendChild(card);
     });
   }
 
-  /* ─── Kart oluşturucu ─────────────────────────────── */
+  /* ─── Grid kartı (kompakt) ──────────────────────── */
+  function buildGridCard(item, idx, userId) {
+    const card = document.createElement("article");
+    card.className = "word-card word-card--grid";
+    card.style.animationDelay = (idx * 18) + "ms";
+    if (selectMode) card.classList.add("select-mode");
+    if (selectedIds.has(item.id)) card.classList.add("selected");
+
+    const artikel = extractArtikel(item.word);
+    if (artikel) card.classList.add(`artikel-${artikel}`);
+
+    const tags = Array.isArray(item.tags) ? item.tags : [];
+    const levelTag = tags.find(t => ["A1","A2","B1","B2","C1","C2"].includes(t));
+
+    card.innerHTML = `
+      <div class="grid-card-inner">
+        ${selectMode ? `<div class="grid-checkbox ${selectedIds.has(item.id)?"checked":""}">
+          <svg width="9" height="9" viewBox="0 0 12 10" fill="none">
+            <polyline points="1,5 4.5,8.5 11,1" stroke="#0c0c12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>` : ""}
+        <div class="grid-top">
+          ${artikel ? `<span class="artikel-badge ${artikel}">${artikel}</span>` : ""}
+          ${levelTag ? `<span class="grid-level-badge">${levelTag}</span>` : ""}
+        </div>
+        <div class="grid-word">${esc(item.word)}</div>
+        <div class="grid-meaning">${esc(primaryMeaning(item))}</div>
+        ${tags.filter(t=>!["A1","A2","B1","B2","C1","C2"].includes(t)).slice(0,2).map(t=>`<span class="word-tag-badge" style="margin:2px 2px 0 0">${esc(t)}</span>`).join("")}
+        <div class="grid-actions">
+          <button class="grid-btn example-btn" title="Örnek cümle">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </button>
+          <button class="grid-btn edit-btn" title="Düzenle">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="grid-btn delete-btn" title="Sil">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    /* Select mode click */
+    if (selectMode) {
+      card.addEventListener("click", () => {
+        if (selectedIds.has(item.id)) selectedIds.delete(item.id);
+        else selectedIds.add(item.id);
+        card.classList.toggle("selected", selectedIds.has(item.id));
+        const cb = card.querySelector(".grid-checkbox");
+        if (cb) cb.classList.toggle("checked", selectedIds.has(item.id));
+        updateBulkBar();
+      });
+    } else {
+      card.querySelector(".example-btn")?.addEventListener("click", () => openExampleModal(item.word, primaryMeaning(item)));
+      card.querySelector(".edit-btn")?.addEventListener("click", () => userId && openEditModal(userId, item, "word"));
+      card.querySelector(".delete-btn")?.addEventListener("click", async () => {
+        if (!userId) return;
+        if (!confirm(`"${item.word}" silinsin mi?`)) return;
+        try {
+          await deleteWord(userId, item.id);
+          allWords = allWords.filter(w => w.id !== item.id);
+          card.style.opacity = "0"; card.style.transform = "scale(0.95)"; card.style.transition = "0.2s";
+          setTimeout(() => { buildFilterSidebar(); renderFiltered(); }, 200);
+        } catch(err) { alert("Silme hatası: " + err.message); }
+      });
+      card.addEventListener("dblclick", () => openExampleModal(item.word, primaryMeaning(item)));
+    }
+
+    return card;
+  }
+
+  /* ─── Liste kartı ─────────────────────────────────── */
   function buildCard(item, idx, userId) {
     const card = document.createElement("article");
     card.className = "word-card";
     card.style.animationDelay = (idx * 25) + "ms";
     card.setAttribute("role", "listitem");
     card.setAttribute("aria-label", `${item.word}: ${primaryMeaning(item)}`);
+    if (selectMode) card.classList.add("select-mode");
+    if (selectedIds.has(item.id)) card.classList.add("selected");
 
     const artikel = extractArtikel(item.word);
     if (artikel) card.classList.add(`artikel-${artikel}`);
 
-    /* ── İç wrapper ── */
     const inner = document.createElement("div");
     inner.className = "card-inner";
+
+    /* Select checkbox */
+    if (selectMode) {
+      const checkbox = document.createElement("div");
+      checkbox.className = "card-checkbox" + (selectedIds.has(item.id) ? " checked" : "");
+      checkbox.innerHTML = `<svg width="10" height="10" viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,8.5 11,1" stroke="#0c0c12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      inner.appendChild(checkbox);
+
+      card.addEventListener("click", () => {
+        if (selectedIds.has(item.id)) selectedIds.delete(item.id);
+        else selectedIds.add(item.id);
+        card.classList.toggle("selected", selectedIds.has(item.id));
+        checkbox.classList.toggle("checked", selectedIds.has(item.id));
+        updateBulkBar();
+      });
+    }
 
     /* ── Sol: içerik ── */
     const body = document.createElement("div");
     body.className = "card-body";
 
-    /* Başlık satırı: artikel badge + kelime */
     const headline = document.createElement("div");
     headline.className = "word-headline";
 
@@ -330,38 +646,35 @@ document.addEventListener("DOMContentLoaded", () => {
       headline.appendChild(badge);
     }
 
-    /* Almanca kelime — çift tıkla inline düzenle */
     const germanEl = document.createElement("span");
     germanEl.className = "word-german";
     germanEl.textContent = item.word;
     germanEl.title = "Çift tıkla düzenle · Tek tıkla örnek cümleleri gör";
     germanEl.setAttribute("tabindex", "0");
 
-    germanEl.addEventListener("click", () => openExampleModal(item.word, primaryMeaning(item)));
-    germanEl.addEventListener("dblclick", (e) => {
-      e.stopPropagation();
-      if (!userId) return;
-      startWordEdit(germanEl, item, userId);
-    });
-    germanEl.addEventListener("keydown", e => {
-      if (e.key === "Enter" && !germanEl.isContentEditable) {
-        e.preventDefault();
-        openExampleModal(item.word, primaryMeaning(item));
-      }
-    });
+    if (!selectMode) {
+      germanEl.addEventListener("click", () => openExampleModal(item.word, primaryMeaning(item)));
+      germanEl.addEventListener("dblclick", (e) => { e.stopPropagation(); if (!userId) return; startWordEdit(germanEl, item, userId); });
+      germanEl.addEventListener("keydown", e => {
+        if (e.key === "Enter" && !germanEl.isContentEditable) { e.preventDefault(); openExampleModal(item.word, primaryMeaning(item)); }
+      });
+    }
     headline.appendChild(germanEl);
     body.appendChild(headline);
 
-    /* Anlamlar satırı */
     const meaningsRow = document.createElement("div");
     meaningsRow.className = "meanings-row";
-    buildMeaningPills(meaningsRow, item, userId);
+    if (!selectMode) buildMeaningPills(meaningsRow, item, userId);
+    else {
+      const pill = document.createElement("span");
+      pill.className = "meaning-pill primary";
+      pill.textContent = primaryMeaning(item);
+      meaningsRow.appendChild(pill);
+    }
     body.appendChild(meaningsRow);
 
-    /* Footer: etiketler + tarih */
     const footer = document.createElement("div");
     footer.className = "card-footer";
-
     const tagsDiv = buildTagsRow(item, userId);
     footer.appendChild(tagsDiv);
 
@@ -369,151 +682,117 @@ document.addEventListener("DOMContentLoaded", () => {
       const dateEl = document.createElement("span");
       dateEl.className = "word-date";
       dateEl.textContent = formatDate(item.date);
-      dateEl.setAttribute("aria-label", `Eklenme tarihi: ${formatDate(item.date)}`);
       footer.appendChild(dateEl);
     }
-
     body.appendChild(footer);
     inner.appendChild(body);
 
-    /* ── Sağ: aksiyon butonları ── */
-    const actions = document.createElement("div");
-    actions.className = "card-actions";
-    /* Düzenle butonu — tüm alanları düzenlemek için modal açar */
-    const editBtn = document.createElement("button");
-    editBtn.className = "card-btn";
-    editBtn.title = "Kelimeyi düzenle";
-    editBtn.setAttribute("aria-label", `${item.word} kelimesini düzenle`);
-    editBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
-    editBtn.addEventListener("click", () => userId && openEditModal(userId, item, "word"));
-    actions.appendChild(editBtn);
-    /* Örnek buton */
-    const exBtn = document.createElement("button");
-    exBtn.className = "card-btn example";
-    exBtn.title = "Örnek cümleler";
-    exBtn.setAttribute("aria-label", `${item.word} için örnek cümleler`);
-    exBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
-    exBtn.addEventListener("click", () => openExampleModal(item.word, primaryMeaning(item)));
-    actions.appendChild(exBtn);
+    /* ── Sağ: aksiyon butonları (sadece normal modda) ── */
+    if (!selectMode) {
+      const actions = document.createElement("div");
+      actions.className = "card-actions";
 
-    /* Etiket butonu */
-    const tagBtn = document.createElement("button");
-    tagBtn.className = "card-btn";
-    tagBtn.title = "Etiket düzenle";
-    tagBtn.setAttribute("aria-label", "Etiket düzenle");
-    tagBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`;
-    tagBtn.addEventListener("click", () => userId && openEditModal(userId, item, "tags"));
-    actions.appendChild(tagBtn);
+      const editBtn = document.createElement("button");
+      editBtn.className = "card-btn"; editBtn.title = "Kelimeyi düzenle";
+      editBtn.setAttribute("aria-label", `${item.word} kelimesini düzenle`);
+      editBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+      editBtn.addEventListener("click", () => userId && openEditModal(userId, item, "word"));
+      actions.appendChild(editBtn);
 
-    /* Sil butonu */
-    const delBtn = document.createElement("button");
-    delBtn.className = "card-btn delete";
-    delBtn.title = "Sil";
-    delBtn.setAttribute("aria-label", `${item.word} kelimesini sil`);
-    delBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
-    delBtn.addEventListener("click", async () => {
-      if (!userId) return;
-      if (!confirm(`"${item.word}" silinsin mi?`)) return;
-      try {
-        await deleteWord(userId, item.id);
-        allWords = allWords.filter(w => w.id !== item.id);
-        card.style.opacity = "0";
-        card.style.transform = "translateY(-4px)";
-        card.style.transition = "opacity 0.2s, transform 0.2s";
-        setTimeout(() => { buildFilterSidebar(); renderFiltered(); }, 200);
-      } catch (err) { alert("Silme hatası: " + err.message); }
-    });
-    actions.appendChild(delBtn);
+      const exBtn = document.createElement("button");
+      exBtn.className = "card-btn example"; exBtn.title = "Örnek cümleler";
+      exBtn.setAttribute("aria-label", `${item.word} için örnek cümleler`);
+      exBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+      exBtn.addEventListener("click", () => openExampleModal(item.word, primaryMeaning(item)));
+      actions.appendChild(exBtn);
 
-    inner.appendChild(actions);
+      const tagBtn = document.createElement("button");
+      tagBtn.className = "card-btn"; tagBtn.title = "Etiket düzenle";
+      tagBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`;
+      tagBtn.addEventListener("click", () => userId && openEditModal(userId, item, "tags"));
+      actions.appendChild(tagBtn);
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "card-btn delete"; delBtn.title = "Sil";
+      delBtn.setAttribute("aria-label", `${item.word} kelimesini sil`);
+      delBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
+      delBtn.addEventListener("click", async () => {
+        if (!userId) return;
+        if (!confirm(`"${item.word}" silinsin mi?`)) return;
+        try {
+          await deleteWord(userId, item.id);
+          allWords = allWords.filter(w => w.id !== item.id);
+          card.style.opacity = "0"; card.style.transform = "translateY(-4px)"; card.style.transition = "opacity 0.2s, transform 0.2s";
+          setTimeout(() => { buildFilterSidebar(); renderFiltered(); }, 200);
+        } catch (err) { alert("Silme hatası: " + err.message); }
+      });
+      actions.appendChild(delBtn);
+      inner.appendChild(actions);
+    }
+
     card.appendChild(inner);
     return card;
   }
 
-  /* ═══════════════════════════════════════════════════
-     ANLAM PİLL'LERİ + INLINE DÜZENLEME
-     ═══════════════════════════════════════════════════ */
+  /* ── Anlam pilleri ─────────────────────────────────── */
   function buildMeaningPills(container, item, userId) {
     container.innerHTML = "";
     const meanings = getMeanings(item);
-
     meanings.forEach((m, i) => {
       const pill = createMeaningPill(m, i === 0 ? "primary" : "secondary", item, i, userId, container);
       container.appendChild(pill);
     });
 
-    /* Anlam ekle butonu */
     const addBtn = document.createElement("button");
     addBtn.className = "add-meaning-btn";
     addBtn.setAttribute("aria-label", "Yeni anlam ekle");
     addBtn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> anlam ekle`;
-    addBtn.addEventListener("click", () => {
-      if (!userId) return;
-      startNewMeaningInput(container, item, userId, addBtn);
-    });
+    addBtn.addEventListener("click", () => { if (!userId) return; startNewMeaningInput(container, item, userId, addBtn); });
     container.appendChild(addBtn);
   }
 
   function createMeaningPill(meaning, type, item, meaningIndex, userId, container) {
     const pill = document.createElement("span");
     pill.className = `meaning-pill ${type}`;
-    pill.setAttribute("tabindex", "0");
-    pill.title = "Tıkla: düzenle";
-    pill.setAttribute("role", "button");
-    pill.setAttribute("aria-label", `Anlam ${meaningIndex + 1}: ${meaning}. Düzenlemek için tıkla.`);
+    pill.setAttribute("tabindex","0"); pill.title = "Tıkla: düzenle";
+    pill.setAttribute("role","button");
+    pill.appendChild(document.createTextNode(meaning));
 
-    const textNode = document.createTextNode(meaning);
-    pill.appendChild(textNode);
-
-    /* Sil butonu (primary dışında ve birden fazla anlam varsa) */
     const meanings = getMeanings(item);
     if (meanings.length > 1) {
       const delBtn = document.createElement("button");
-      delBtn.className = "meaning-pill-del";
-      delBtn.innerHTML = "×";
-      delBtn.title = "Bu anlamı kaldır";
-      delBtn.setAttribute("aria-label", `"${meaning}" anlamını kaldır`);
+      delBtn.className = "meaning-pill-del"; delBtn.innerHTML = "×"; delBtn.title = "Bu anlamı kaldır";
       delBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         if (!userId) return;
-        const updated = getMeanings(item).filter((_, i) => i !== meaningIndex);
+        const updated = getMeanings(item).filter((_,i) => i !== meaningIndex);
         if (!updated.length) return;
         try {
           await updateWord(userId, item.id, { meanings: updated, meaning: updated[0] });
-          item.meanings = updated;
-          item.meaning  = updated[0];
+          item.meanings = updated; item.meaning = updated[0];
           buildMeaningPills(container, item, userId);
         } catch(err) { alert("Güncelleme hatası: " + err.message); }
       });
       pill.appendChild(delBtn);
     }
 
-    /* Inline düzenleme */
     const startEdit = () => {
       if (!userId) return;
       pill.classList.add("editing");
       const input = document.createElement("input");
       input.value = meaning;
-      input.setAttribute("aria-label", "Anlamı düzenle");
-      /* Mevcut içeriği input ile değiştir */
-      pill.innerHTML = "";
-      pill.appendChild(input);
-      input.focus();
-      input.select();
+      pill.innerHTML = ""; pill.appendChild(input);
+      input.focus(); input.select();
 
       const save = async () => {
         const val = input.value.trim();
         pill.classList.remove("editing");
-        if (!val || val === meaning) {
-          buildMeaningPills(container, item, userId);
-          return;
-        }
+        if (!val || val === meaning) { buildMeaningPills(container, item, userId); return; }
         const updated = getMeanings(item).slice();
         updated[meaningIndex] = val;
         try {
           await updateWord(userId, item.id, { meanings: updated, meaning: updated[0] });
-          item.meanings = updated;
-          item.meaning  = updated[0];
+          item.meanings = updated; item.meaning = updated[0];
         } catch(err) { alert("Güncelleme hatası: " + err.message); }
         buildMeaningPills(container, item, userId);
       };
@@ -526,40 +805,28 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     pill.addEventListener("click", startEdit);
-    pill.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startEdit(); }
-    });
-
+    pill.addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" ") { e.preventDefault(); startEdit(); } });
     return pill;
   }
 
   function startNewMeaningInput(container, item, userId, addBtn) {
-    /* Geçici giriş alanı */
     addBtn.style.display = "none";
-
     const tempPill = document.createElement("span");
     tempPill.className = "meaning-pill secondary editing";
-
     const input = document.createElement("input");
     input.placeholder = "yeni anlam…";
-    input.setAttribute("aria-label", "Yeni anlam gir");
     tempPill.appendChild(input);
     container.insertBefore(tempPill, addBtn);
     input.focus();
 
-    const cancel = () => {
-      tempPill.remove();
-      addBtn.style.display = "";
-    };
-
+    const cancel = () => { tempPill.remove(); addBtn.style.display = ""; };
     const save = async () => {
       const val = input.value.trim();
       if (!val) { cancel(); return; }
       const updated = [...getMeanings(item), val];
       try {
         await updateWord(userId, item.id, { meanings: updated, meaning: updated[0] });
-        item.meanings = updated;
-        item.meaning  = updated[0];
+        item.meanings = updated; item.meaning = updated[0];
       } catch(err) { alert("Güncelleme hatası: " + err.message); }
       buildMeaningPills(container, item, userId);
     };
@@ -571,22 +838,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ═══════════════════════════════════════════════════
-     ALMANCA KELİME INLINE DÜZENLEME
-     ═══════════════════════════════════════════════════ */
+  /* ── Kelime inline düzenleme ─────────────────────── */
   function startWordEdit(el, item, userId) {
     const original = item.word;
-    el.contentEditable = "true";
-    el.textContent = original;
-    el.focus();
-
-    /* Cursor sona al */
+    el.contentEditable = "true"; el.textContent = original; el.focus();
     const range = document.createRange();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
+    range.selectNodeContents(el); range.collapse(false);
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
 
     const save = async () => {
       el.contentEditable = "false";
@@ -594,10 +852,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!val || val === original) { el.textContent = original; return; }
       try {
         await updateWord(userId, item.id, { word: val });
-        item.word = val;
-        el.textContent = val;
-        /* Artikel badge'i güncelle */
-        const card   = el.closest(".word-card");
+        item.word = val; el.textContent = val;
+        const card = el.closest(".word-card");
         const newArt = extractArtikel(val);
         card?.classList.remove("artikel-der","artikel-die","artikel-das");
         if (newArt) card?.classList.add(`artikel-${newArt}`);
@@ -613,9 +869,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { once: true });
   }
 
-  /* ═══════════════════════════════════════════════════
-     ETİKET SATIRI
-     ═══════════════════════════════════════════════════ */
+  /* ── Etiket satırı ────────────────────────────────── */
   function buildTagsRow(item, userId) {
     const tagsDiv = document.createElement("div");
     tagsDiv.className = "word-tags";
@@ -628,19 +882,17 @@ document.addEventListener("DOMContentLoaded", () => {
         tagsDiv.appendChild(badge);
       });
     }
-    const addTagBtn = document.createElement("button");
-    addTagBtn.className = "add-tag-inline";
-    addTagBtn.textContent = hasTags ? "+ etiket" : "+ etiket ekle";
-    addTagBtn.setAttribute("aria-label", hasTags ? "Etiket ekle" : "İlk etiketi ekle");
-    addTagBtn.addEventListener("click", () => userId && openEditModal(userId, item, "tags"));
-    tagsDiv.appendChild(addTagBtn);
+    if (!selectMode) {
+      const addTagBtn = document.createElement("button");
+      addTagBtn.className = "add-tag-inline";
+      addTagBtn.textContent = hasTags ? "+ etiket" : "+ etiket ekle";
+      addTagBtn.addEventListener("click", () => userId && openEditModal(userId, item, "tags"));
+      tagsDiv.appendChild(addTagBtn);
+    }
     return tagsDiv;
   }
 
-  /* ═══════════════════════════════════════════════════
-     DÜZENLEME MODALİ — "tags" modu
-     (Anlamlar inline düzenleniyor; modal sadece etiketler için)
-     ═══════════════════════════════════════════════════ */
+  /* ── Düzenleme modalı ─────────────────────────────── */
   function openEditModal(userId, item, mode = "tags") {
     document.getElementById("editModalOverlay")?.remove();
 
@@ -650,20 +902,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     overlay.innerHTML = `
       <div class="edit-modal-box" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-
         <div class="edit-modal-header">
-          <h2 class="edit-modal-title" id="editModalTitle">
-            ${mode === "word" ? "Kelimeyi Düzenle" : "Etiket Düzenle"}
-          </h2>
+          <h2 class="edit-modal-title" id="editModalTitle">${mode === "word" ? "Kelimeyi Düzenle" : "Etiket Düzenle"}</h2>
           <button id="editModalClose" class="edit-modal-close" aria-label="Kapat">×</button>
         </div>
         <div class="edit-modal-word-preview" id="_previewWord"></div>
         ${mode === "word" ? `
-        <label class="edit-label">Almanca Kelime</label>
-        <input id="editWordInput" class="edit-input" style="margin-bottom:14px" spellcheck="false"/>
-        <label class="edit-label">Ana Anlam</label>
-        <input id="editMeaningInput" class="edit-input" style="margin-bottom:14px" spellcheck="false"/>
-      ` : ""}
+          <label class="edit-label">Almanca Kelime</label>
+          <input id="editWordInput" class="edit-input" style="margin-bottom:14px" spellcheck="false"/>
+          <label class="edit-label">Ana Anlam</label>
+          <input id="editMeaningInput" class="edit-input" style="margin-bottom:14px" spellcheck="false"/>
+        ` : ""}
         <label class="edit-label" style="margin-top:4px">Etiketler</label>
         <div id="editTagChips" class="edit-tag-chips"></div>
         <div class="edit-modal-actions">
@@ -674,7 +923,6 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     document.body.appendChild(overlay);
 
-    /* Önizleme */
     overlay.querySelector("#_previewWord").innerHTML = `${esc(item.word)}<span class="preview-meaning">— ${esc(primaryMeaning(item))}</span>`;
     if (mode === "word") {
       overlay.querySelector("#editWordInput").value    = item.word;
@@ -682,7 +930,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     renderTagChips("editTagChips", item.tags || [], extractAllTags(allWords));
 
-    const close = () => { overlay.remove(); };
+    const close = () => overlay.remove();
     overlay.querySelector("#editModalClose").addEventListener("click", close);
     overlay.querySelector("#editCancelBtn").addEventListener("click", close);
     overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
@@ -691,53 +939,38 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     overlay.querySelector("#editSaveBtn").addEventListener("click", async () => {
-      const btn     = overlay.querySelector("#editSaveBtn");
+      const btn = overlay.querySelector("#editSaveBtn");
       if (mode === "word") {
         const newWord    = overlay.querySelector("#editWordInput")?.value.trim();
         const newMeaning = overlay.querySelector("#editMeaningInput")?.value.trim();
         if (!newWord || !newMeaning) return;
-        const updatedMeanings = getMeanings(item).slice();
-        updatedMeanings[0]    = newMeaning;
-        const newTags         = getSelectedTags("editTagChips");
-        btn.disabled    = true; btn.textContent = "Kaydediliyor…";
+        const updatedMeanings = getMeanings(item).slice(); updatedMeanings[0] = newMeaning;
+        const newTags = getSelectedTags("editTagChips");
+        btn.disabled = true; btn.textContent = "Kaydediliyor…";
         try {
           await updateWord(userId, item.id, { word: newWord, meanings: updatedMeanings, meaning: newMeaning, tags: newTags });
           item.word = newWord; item.meanings = updatedMeanings; item.meaning = newMeaning; item.tags = newTags;
           close(); buildFilterSidebar(); renderFiltered();
         } catch(err) { btn.disabled = false; btn.textContent = "Kaydet"; alert(err.message); }
-        return; // tags moduna düşmesin
+        return;
       }
       const newTags = getSelectedTags("editTagChips");
-      
-      btn.disabled    = true;
-      btn.textContent = "Kaydediliyor…";
+      btn.disabled = true; btn.textContent = "Kaydediliyor…";
       try {
         await updateWord(userId, item.id, { tags: newTags });
-        item.tags = newTags;
-        close();
-        buildFilterSidebar();
-        renderFiltered();
-      } catch (err) {
-        btn.disabled    = false;
-        btn.textContent = "Kaydet";
-        alert("Güncelleme hatası: " + err.message);
-      }
+        item.tags = newTags; close(); buildFilterSidebar(); renderFiltered();
+      } catch(err) { btn.disabled = false; btn.textContent = "Kaydet"; alert("Güncelleme hatası: " + err.message); }
     });
 
-    /* Focus trap */
     setTimeout(() => overlay.querySelector("#editModalClose")?.focus(), 60);
   }
 
-  /* ═══════════════════════════════════════════════════
-     ÖRNEK CÜMLE MODALİ
-     ═══════════════════════════════════════════════════ */
+  /* ── Örnek cümle modalı ──────────────────────────── */
   async function openExampleModal(word, meaning) {
     document.getElementById("exampleModalOverlay")?.remove();
-
     const overlay = document.createElement("div");
     overlay.id = "exampleModalOverlay";
     overlay.className = "edit-modal-overlay";
-
     overlay.innerHTML = `
       <div class="example-modal-box" role="dialog" aria-modal="true" aria-labelledby="exModalWord">
         <div class="edit-modal-header">
@@ -768,12 +1001,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => overlay.querySelector("#exModalClose")?.focus(), 60);
 
-    const bareWord = word.replace(/^(der|die|das|ein|eine)\s+/i, "").trim();
-    const sents = await fetchExampleSentences(bareWord);    const container = document.getElementById("exampleSentences");
+    const bareWord = word.replace(/^(der|die|das|ein|eine)\s+/i,"").trim();
+    const sents = await fetchExampleSentences(bareWord);
+    const container = document.getElementById("exampleSentences");
     if (!container) return;
-
-    /* Vurgulama regex */
-    
 
     container.innerHTML = sents.map((s, i) => {
       const highlighted = esc(s.original).replace(
@@ -787,10 +1018,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }).join("");
   }
 
-  /* ─── Yardımcı ──────────────────────────────────── */
+  /* ─── Yardımcılar ────────────────────────────────── */
   function formatDate(iso) {
     if (!iso) return "";
     return new Date(iso).toLocaleDateString("tr-TR", { day:"2-digit", month:"short", year:"numeric" });
   }
 
+  window.renderFiltered = renderFiltered;
 });
+
+/* ── Toast bildirimi ────────────────────────────────────── */
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+  toast.className = `toast toast--${type}`;
+  toast.innerHTML = `
+    ${type === "success"
+      ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`
+    }
+    <span>${esc(message)}</span>
+  `;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 3200);
+}
+
+function esc(str) {
+  return String(str ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}

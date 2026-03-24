@@ -13,7 +13,49 @@ function wordCount(text) {
 function escHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+// ── Çeviri ──
+async function fetchTranslate(text) {
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=de&tl=tr&dt=t&q=${encodeURIComponent(text)}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    return data[0]?.map(t => t?.[0]).filter(Boolean).join('') || '—';
+  } catch { return '—'; }
+}
 
+// ── Popup ──
+let _popup = null;
+
+function getPopup() {
+  if (!_popup) {
+    _popup = document.createElement('div');
+    _popup.id = 'tr-popup';
+    _popup.innerHTML = '<span class="tr-popup-flag">🇹🇷</span><span id="tr-popup-text">…</span>';
+    document.body.appendChild(_popup);
+  }
+  return _popup;
+}
+
+async function showTranslatePopup(selectedText, anchorX, anchorY) {
+  const popup = getPopup();
+  const textEl = document.getElementById('tr-popup-text');
+  textEl.textContent = '…';
+  popup.classList.add('visible');
+
+  const vw = window.innerWidth;
+  let left = anchorX + 10;
+  let top  = anchorY - 52 + window.scrollY;
+  if (left + 220 > vw - 8) left = anchorX - 230;
+  if (top < window.scrollY + 8) top = anchorY + 18 + window.scrollY;
+  popup.style.left = left + 'px';
+  popup.style.top  = top  + 'px';
+
+  textEl.textContent = await fetchTranslate(selectedText);
+}
+
+function hidePopup() {
+  getPopup().classList.remove('visible');
+}
 function parseExamples(wikitext) {
   // <ref>...</ref> etiketlerini içerikleriyle birlikte sil
   wikitext = wikitext
@@ -127,11 +169,19 @@ async function getTatoebaExamples(word) {
       return;
     }
 
-    res.innerHTML = sentences.map(text =>
-      `<div class="result-item"><div class="de">🇩🇪 ${escHtml(text)}</div></div>`
+    res.innerHTML = sentences.map((text, i) =>
+      `<div class="result-item">
+        <div class="de selectable" data-i="tatoeba-${i}">🇩🇪 ${escHtml(text)}</div>
+        <div class="tr-line" id="tr-tatoeba-${i}"><span class="tr-loading">çevriliyor…</span></div>
+      </div>`
     ).join('') +
     `<p class="source">Kaynak: <a href="https://tatoeba.org/tr/sentences/search?from=deu&query=${encodeURIComponent(word)}" target="_blank">tatoeba.org</a></p>`;
 
+    sentences.forEach(async (text, i) => {
+      const tr = await fetchTranslate(text);
+      const el = document.getElementById(`tr-tatoeba-${i}`);
+      if (el) el.innerHTML = `<span class="tr-text">🇹🇷 ${escHtml(tr)}</span>`;
+    });
   } catch (e) {
     err.textContent = 'Tatoeba erişim hatası: ' + e.message;
     res.innerHTML = '';
@@ -166,10 +216,19 @@ async function getExamples() {
     const examples = wikitext ? parseExamples(wikitext) : [];
 
     if (examples.length > 0) {
-      res.innerHTML = examples.map(e =>
-        `<div class="result-item"><div class="de">🇩🇪 ${escHtml(e)}</div></div>`
+      res.innerHTML = examples.map((e, i) =>
+        `<div class="result-item">
+          <div class="de selectable" data-i="wiki-${i}">🇩🇪 ${escHtml(e)}</div>
+          <div class="tr-line" id="tr-wiki-${i}"><span class="tr-loading">çevriliyor…</span></div>
+        </div>`
       ).join('') +
       `<p class="source">Kaynak: <a href="https://de.wiktionary.org/wiki/${encodeURIComponent(capitalized)}" target="_blank">Wiktionary</a></p>`;
+
+      examples.forEach(async (e, i) => {
+        const tr = await fetchTranslate(e);
+        const el = document.getElementById(`tr-wiki-${i}`);
+        if (el) el.innerHTML = `<span class="tr-text">🇹🇷 ${escHtml(tr)}</span>`;
+      });
     } else {
       await getTatoebaExamples(word);
     }
@@ -184,5 +243,34 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn').addEventListener('click', getExamples);
   document.getElementById('wordInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') getExamples();
+  });
+
+  // Seçim ile popup
+  document.addEventListener('mouseup', async (e) => {
+    if (e.target.closest('#tr-popup')) return;
+    const sel = window.getSelection();
+    const selected = sel?.toString().trim();
+    if (selected && selected.length > 1 && e.target.closest('.selectable')) {
+      const rect = sel.getRangeAt(0).getBoundingClientRect();
+      await showTranslatePopup(selected, rect.left + rect.width / 2, rect.top);
+      return;
+    }
+    hidePopup();
+  });
+
+  // Tek kelime tıklama
+  document.addEventListener('click', async (e) => {
+    if (e.target.closest('#tr-popup')) return;
+    const target = e.target.closest('.selectable');
+    if (!target) { hidePopup(); return; }
+    const sel = window.getSelection()?.toString().trim();
+    if (sel && sel.length > 1) return; // seçim varsa mouseup halleder
+    // en yakın kelimeyi al
+    const range = document.caretRangeFromPoint?.(e.clientX, e.clientY);
+    if (!range) return;
+    range.expand('word');
+    const word = range.toString().trim().replace(/[^a-zA-ZäöüÄÖÜß]/g, '');
+    if (word.length < 2) return;
+    await showTranslatePopup(word, e.clientX, e.clientY);
   });
 });

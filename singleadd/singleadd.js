@@ -155,8 +155,12 @@ function goToMeaningStep() {
   const word = wordInput.value.trim();
   if (!word) { showStatus("Lütfen bir kelime gir.", "error"); wordInput.focus(); return; }
 
+  const displayWord = wikiData?.artikel
+    ? word.replace(new RegExp(`^${wikiData.artikel}\\s+`, "i"), "")
+    : word;
+
   wordPreview.innerHTML = wikiData?.artikel
-    ? `<span class="preview-artikel preview-artikel--${wikiData.artikel}">${wikiData.artikel}</span> ${escapeHtml(word.charAt(0).toUpperCase() + word.slice(1))}`
+    ? `<span class="preview-artikel preview-artikel--${wikiData.artikel}">${wikiData.artikel}</span> ${escapeHtml(displayWord.charAt(0).toUpperCase() + displayWord.slice(1))}`
     : escapeHtml(word);
 
   stepWord.classList.add("hidden");

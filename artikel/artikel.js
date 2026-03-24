@@ -71,33 +71,50 @@ async function searchArtikel() {
 
 /* ---------- Wiktionary API ---------- */
 async function fetchGenus(word) {
-  const capitalized = word.charAt(0).toUpperCase() + word.slice(1);
+  if (!word) return null;
 
-  const params = new URLSearchParams({
-    action: 'parse',
-    page:   capitalized,
-    prop:   'wikitext',
-    format: 'json',
-    origin: '*',
-  });
+  // 1️⃣ Temizleme: baş/son boşluk, normalize
+  word = word.trim().normalize("NFC");
 
-  const res  = await fetch(`https://de.wiktionary.org/w/api.php?${params}`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  // 2️⃣ Denenecek varyantlar
+  const variants = [
+    word.charAt(0).toUpperCase() + word.slice(1), // Haus
+    word.toLowerCase(),                            // haus
+    word.toUpperCase()                             // HAUS
+  ];
 
-  const data     = await res.json();
-  if (data.error) return null;
+  for (const variant of variants) {
+    try {
+      const params = new URLSearchParams({
+        action: 'parse',
+        page: variant,
+        prop: 'wikitext',
+        format: 'json',
+        origin: '*',
+      });
 
-  const wikitext = data?.parse?.wikitext?.['*'] || '';
+      const res = await fetch(`https://de.wiktionary.org/w/api.php?${params}`);
+      if (!res.ok) continue;
 
-  for (const line of wikitext.split('\n')) {
-    const match = line.match(/\|Genus\s*\d*\s*=\s*([mfnu])/i);
-    if (match) {
-      const g = match[1].toLowerCase();
-      if (g === 'm' || g === 'f' || g === 'n') return g;
+      const data = await res.json();
+      if (data.error) continue;
+
+      const wikitext = data?.parse?.wikitext?.['*'] || '';
+
+      for (const line of wikitext.split('\n')) {
+        const match = line.match(/\|Genus\s*\d*\s*=\s*([mfnu])/i);
+        if (match) {
+          const g = match[1].toLowerCase();
+          if (g === 'm' || g === 'f' || g === 'n') return g;
+        }
+      }
+    } catch (err) {
+      // hata olursa diğer varyanta geç
+      continue;
     }
   }
 
-  return null;
+  return null; // hiçbir varyantta bulunamazsa
 }
 
 /* ---------- render result ---------- */

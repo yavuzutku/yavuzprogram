@@ -553,3 +553,38 @@ body { background: #0c0c12; font-family: 'DM Sans', system-ui, sans-serif; }
   .page-intro { display:none; }
   .toolbar-right { flex-wrap:wrap; }
 }
+/* ── ETİKET SATIRI (liste butonu ile) ─────────────────── */
+.filter-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.filter-tag-row .filter-tag-item {
+  flex: 1;
+}
+.filter-tag-list-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #374151;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s, border-color 0.15s, color 0.15s;
+}
+.filter-tag-row:hover .filter-tag-list-btn {
+  opacity: 1;
+}
+.filter-tag-list-btn:hover {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.25);
+  color: #c9a84c;
+}
+@media (max-width: 700px) {
+  .filter-tag-list-btn { opacity: 1; }
+}

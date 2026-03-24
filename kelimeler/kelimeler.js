@@ -468,6 +468,9 @@ document.addEventListener("DOMContentLoaded", () => {
     filterTagList.appendChild(allItem);
 
     [...tagMap.entries()].sort((a,b)=>b[1]-a[1]).forEach(([tag, count]) => {
+      const row = document.createElement("div");
+      row.className = "filter-tag-row";
+
       const item = document.createElement("button");
       item.className = "filter-tag-item" + (activeTagFilter === tag ? " active" : "");
       item.setAttribute("aria-pressed", activeTagFilter === tag);
@@ -476,7 +479,32 @@ document.addEventListener("DOMContentLoaded", () => {
         activeTagFilter = (activeTagFilter === tag) ? null : tag;
         buildFilterSidebar(); renderFiltered();
       });
-      filterTagList.appendChild(item);
+
+      const addToListBtn = document.createElement("button");
+      addToListBtn.className = "filter-tag-list-btn";
+      addToListBtn.title = `"${tag}" etiketli kelimeleri listeye ekle`;
+      addToListBtn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`;
+      addToListBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (!currentUserId) return;
+        const tagWords = allWords.filter(w => Array.isArray(w.tags) && w.tags.includes(tag));
+        if (!tagWords.length) { showToast("Bu etikette kelime yok.", "error"); return; }
+        openListeModal({
+          allWords,
+          preSelectedIds: tagWords.map(w => w.id),
+          userId: currentUserId,
+          onSave: async ({ name, description, wordIds }) => {
+            await saveListe(currentUserId, name, wordIds, description);
+            allLists = await getListeler(currentUserId).catch(() => allLists);
+            buildFilterSidebar();
+            showToast(`"${name}" listesi oluşturuldu!`, "success");
+          }
+        });
+      });
+
+      row.appendChild(item);
+      row.appendChild(addToListBtn);
+      filterTagList.appendChild(row);
     });
 
     const untagged = allWords.filter(w => !Array.isArray(w.tags)||!w.tags.length).length;

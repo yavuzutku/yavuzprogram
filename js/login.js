@@ -1,6 +1,6 @@
 import {
   loginWithGoogle, loginWithEmail, registerWithEmail,
-  resetPassword, logoutFirebase, onAuthChange
+  resetPassword, logoutFirebase, onAuthChange, sendVerificationEmail 
 } from "./firebase.js";
 
 function showError(elId, msg) {
@@ -61,6 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* Email ile Giriş */
   const btnGiris  = document.getElementById("btn-giris");
   const spanGiris = btnGiris.querySelector("span");
+  // login.js — btnGiris click handler'ını şununla değiştir:
+
   btnGiris.addEventListener("click", async () => {
     const email = document.getElementById("giris-email").value.trim();
     const pass  = document.getElementById("giris-sifre").value;
@@ -71,6 +73,30 @@ document.addEventListener("DOMContentLoaded", () => {
       await loginWithEmail(email, pass);
     } catch (err) {
       setLoading(btnGiris, spanGiris, false, "Giriş Yap");
+
+      if (err.message === "Lütfen e-posta adresini doğrula!") {
+        const errEl = document.getElementById("err-giris");
+        errEl.style.display = "block";
+        errEl.innerHTML = `
+          ⚠️ E-posta adresiniz doğrulanmamış.
+          <button id="resendVerifyBtn" style="
+            display:block; margin-top:8px; width:100%;
+            padding:8px; border:none; border-radius:8px;
+            background:#2563eb; color:#fff; font-size:13px;
+            cursor:pointer; font-weight:500;
+          ">Doğrulama e-postasını tekrar gönder</button>
+        `;
+        document.getElementById("resendVerifyBtn").addEventListener("click", async () => {
+          try {
+            await sendVerificationEmail(email, pass);
+            errEl.innerHTML = "✅ Doğrulama e-postası gönderildi. Lütfen gelen kutunuzu kontrol edin.";
+          } catch(e) {
+            errEl.innerHTML = "❌ Gönderilemedi: " + e.message;
+          }
+        });
+        return;
+      }
+
       showError("err-giris", firebaseErrMsg(err.code));
     }
   });

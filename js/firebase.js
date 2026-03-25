@@ -363,3 +363,11 @@ export async function updateWord(userId, wordId, data) {
     throw new Error("Kelime güncellenemedi. Lütfen tekrar dene.");
   }
 }
+
+// firebase.js — export olarak ekle:
+
+export async function sendVerificationEmail(email, password) {
+  const cred = await signInWithEmailAndPassword(auth, email, password);
+  await sendEmailVerification(cred.user);
+  await signOut(auth); // tekrar çıkış yaptır, giriş açılmasın
+}

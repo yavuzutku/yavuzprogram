@@ -49,6 +49,7 @@ const errorWrap        = document.getElementById("errorWrap");
 const errorMsg         = document.getElementById("errorMsg");
 const loadingWrap      = document.getElementById("loadingWrap");
 const copyBtn          = document.getElementById("copyBtn");
+const speakBtn         = document.getElementById("speakBtn");
 const saveWordBtn      = document.getElementById("saveWordBtn");
 
 const detailEmpty      = document.getElementById("detailEmpty");
@@ -166,7 +167,7 @@ async function translate() {
 
     resultMain.textContent   = mainTranslation;
     resultWrap.style.display = "block";
-
+    speakBtn.style.display = "flex";
     if (alts.length > 0) {
       altChips.innerHTML = "";
       alts.slice(0, 8).forEach(alt => {
@@ -428,7 +429,31 @@ copyBtn.addEventListener("click", async () => {
     }, 1500);
   } catch { /* clipboard erişimi yok */ }
 });
+/* ══════════════════════════════════════════════
+   TELAFFUZ
+══════════════════════════════════════════════ */
+speakBtn.addEventListener("click", () => {
+  if (!lastTranslation || !window.speechSynthesis) return;
 
+  const isDeResult = lastTranslation.tl === "de";
+  const text = isDeResult ? lastTranslation.target : lastTranslation.source;
+  const lang = isDeResult ? "de-DE" : "de-DE"; // detay paneli her zaman Almancayı seslendirsin
+
+  // Hangisi Almanca ise onu seslendir
+  const deText = lastTranslation.sl === "de" ? lastTranslation.source : lastTranslation.target;
+  const trText = lastTranslation.sl === "de" ? lastTranslation.target : lastTranslation.source;
+
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(deText);
+  utt.lang = "de-DE";
+  utt.rate = 0.88;
+
+  speakBtn.style.color = "var(--gold)";
+  utt.onend = () => { speakBtn.style.color = ""; };
+  utt.onerror = () => { speakBtn.style.color = ""; };
+
+  window.speechSynthesis.speak(utt);
+});
 /* ══════════════════════════════════════════════
    SÖZLÜĞE EKLE — MODAL
 ══════════════════════════════════════════════ */
@@ -548,7 +573,10 @@ function setLoading(on) {
   translateBtnText.textContent = on ? "Çevriliyor…" : "Çevir";
 }
 
-function hideResult() { resultWrap.style.display = "none"; }
+function hideResult() {
+  resultWrap.style.display = "none";
+  speakBtn.style.display   = "none";
+}
 function hideError()  { errorWrap.style.display  = "none"; }
 
 function showError(msg) {

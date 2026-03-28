@@ -24,6 +24,7 @@ function loadNavbar(){
   
   navbar.innerHTML = `
     <a class="logo" href="/" aria-label="AlmancaPratik ana sayfa">
+      <img class="logo__favicon" src="/favicon.png" alt="" aria-hidden="true">
       <span class="logo__text">Almanca<span class="logo__accent">Pratik</span></span>
     </a>
     <!-- Mobil hamburger -->
@@ -195,6 +196,20 @@ function loadNavbar(){
 
 
   style.textContent = `
+      .logo {
+      display: flex;        /* bunu ekle — resim ve yazı yan yana dursun */
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .logo__favicon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
     /* ── NAVBAR SHELL ── */
     .navbar {
       position: sticky;
@@ -707,6 +722,13 @@ function loadNavbar(){
       .nav-item-wrap.open .nav-dropdown--pratik { transform: translateX(0) translateY(0); }
       .drop-two-col { grid-template-columns: 1fr; }
     }
+    @media (max-width: 820px) {
+      .logo__favicon { width: 18px; height: 18px; }
+    }
+
+    @media (max-width: 620px) {
+      .logo__favicon { width: 16px; height: 16px; }
+    }
     
 
     /* ── Mobil (≤620px): hamburger slide-in panel ── */
@@ -743,6 +765,7 @@ function loadNavbar(){
         border-radius: 10px;
         font-size: 14px;
       }
+      
       .nav-item span { display: inline; } /* metinleri geri göster */
       .nav-chevron { display: inline; }
 

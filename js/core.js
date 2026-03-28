@@ -204,8 +204,8 @@ function loadNavbar(){
     }
 
     .logo__favicon {
-      width: 22px;
-      height: 22px;
+      width: 36px;
+      height: 36px;
       object-fit: contain;
       border-radius: 5px;
       flex-shrink: 0;
@@ -723,11 +723,11 @@ function loadNavbar(){
       .drop-two-col { grid-template-columns: 1fr; }
     }
     @media (max-width: 820px) {
-      .logo__favicon { width: 18px; height: 18px; }
+      .logo__favicon { width: 26px; height: 26px; }
     }
 
     @media (max-width: 620px) {
-      .logo__favicon { width: 16px; height: 16px; }
+      .logo__favicon { width: 22px; height: 22px; }
     }
     
 

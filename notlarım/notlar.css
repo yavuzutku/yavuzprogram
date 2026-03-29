@@ -1158,3 +1158,146 @@ body {
   .editor-header__right .save-status .save-label { display: none; }
   .toolbar-sep { display: none; }
 }
+/* ── READ OVERLAY ── */
+.read-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: #0a0a0f;
+  display: flex;
+  flex-direction: column;
+  animation: readFadeIn 0.25s cubic-bezier(0.4,0,0.2,1) both;
+  overflow: hidden;
+}
+@keyframes readFadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+ 
+/* Top bar */
+.read-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+  gap: 16px;
+}
+ 
+.read-topbar__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+ 
+.read-color-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+ 
+.read-tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+ 
+.read-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(240,238,232,0.35);
+  font-family: 'DM Sans', sans-serif;
+}
+ 
+.read-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+ 
+.read-date {
+  font-size: 11.5px;
+  color: rgba(240,238,232,0.2);
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+ 
+.read-close-btn {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: rgba(240,238,232,0.45);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.read-close-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: #f0eee8;
+  border-color: rgba(255,255,255,0.16);
+}
+ 
+/* Body */
+.read-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 56px 40px 80px;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+}
+.read-body::-webkit-scrollbar { width: 4px; }
+.read-body::-webkit-scrollbar-track { background: transparent; }
+.read-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 2px; }
+ 
+.read-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #f0eee8;
+  margin: 0 0 32px;
+  line-height: 1.12;
+}
+.read-title:empty { display: none; }
+ 
+.read-content {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+  color: rgba(240,238,232,0.82);
+}
+ 
+/* Inherit note content styles */
+.read-content h1 { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; letter-spacing:-0.025em; color:#f0eee8; margin:.5em 0 .3em; border-bottom:1px solid rgba(201,168,76,0.18); padding-bottom:.3em; }
+.read-content h2 { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; color:#f0eee8; margin:.6em 0 .3em; }
+.read-content h3 { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:rgba(240,238,232,0.85); margin:.7em 0 .3em; }
+.read-content p { margin:0 0 .8em; }
+.read-content ul,.read-content ol { padding-left:1.6em; margin:.4em 0 .8em; }
+.read-content li { margin-bottom:.35em; }
+.read-content strong { color:#f0eee8; }
+.read-content em { color:rgba(240,238,232,0.75); }
+.read-content a { color:#60c8f0; text-decoration-color:rgba(96,200,240,0.3); }
+.read-content hr { border:none; border-top:1px solid rgba(255,255,255,0.07); margin:1.4em 0; }
+.read-content code { font-family:'Fira Code','Courier New',monospace; font-size:13.5px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:2px 7px; color:#a064ff; }
+.read-content pre { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:18px 20px; margin:.8em 0; overflow-x:auto; }
+.read-content pre code { background:none; border:none; padding:0; }
+.read-content blockquote { border-left:3px solid rgba(201,168,76,0.45); padding-left:1.1em; margin:.8em 0; color:rgba(240,238,232,0.5); font-style:italic; }
+ 
+@media (max-width: 640px) {
+  .read-topbar { padding: 12px 18px; }
+  .read-body { padding: 32px 20px 60px; }
+  .read-date { display: none; }
+}

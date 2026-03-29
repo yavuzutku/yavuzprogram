@@ -947,3 +947,70 @@ function formatDate(ts) {
     hour: "2-digit", minute: "2-digit"
   });
 }
+/* ── READ MODE ── */
+const readOverlay  = document.getElementById("readOverlay");
+const readTitle    = document.getElementById("readTitle");
+const readContent  = document.getElementById("readContent");
+const readColorDot = document.getElementById("readColorDot");
+const readTags     = document.getElementById("readTags");
+const readDate     = document.getElementById("readDate");
+const btnReadMode  = document.getElementById("btnReadMode");
+const readCloseBtn = document.getElementById("readCloseBtn");
+ 
+function openReadMode() {
+  if (!activeNoteId) return;
+  const note = notes.find(n => n.id === activeNoteId);
+  if (!note) return;
+ 
+  readTitle.textContent   = note.title || "";
+  readContent.innerHTML   = note.content || "";
+ 
+  // color dot
+  if (note.color) {
+    readColorDot.style.background   = note.color;
+    readColorDot.style.borderColor  = note.color;
+    readColorDot.style.display      = "block";
+  } else {
+    readColorDot.style.display = "none";
+  }
+ 
+  // tags
+  readTags.innerHTML = (note.tags || [])
+    .map(t => `<span class="read-tag">${t.replace(/</g,"&lt;")}</span>`)
+    .join("");
+ 
+  // date
+  const d = new Date(note.updated || note.created);
+  readDate.textContent = d.toLocaleDateString("tr-TR", {
+    day:"numeric", month:"long", year:"numeric"
+  });
+ 
+  readOverlay.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+ 
+function closeReadMode() {
+  readOverlay.classList.add("hidden");
+  document.body.style.overflow = "";
+}
+ 
+btnReadMode?.addEventListener("click", openReadMode);
+readCloseBtn?.addEventListener("click", closeReadMode);
+ 
+// ESC kapatır (mevcut ESC handler'ına readOverlay ekle)
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !readOverlay.classList.contains("hidden")) {
+    closeReadMode();
+  }
+  // Ctrl+Shift+R
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "R") {
+    e.preventDefault();
+    if (readOverlay.classList.contains("hidden")) openReadMode();
+    else closeReadMode();
+  }
+});
+ 
+// Overlay'e tıklayınca (içeriğin dışına) kapat
+readOverlay?.addEventListener("click", e => {
+  if (e.target === readOverlay) closeReadMode();
+});

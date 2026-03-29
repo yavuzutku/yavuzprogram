@@ -128,6 +128,26 @@
         <div class="pq-desc">Sözlüğüne kaydettiğin Almanca kelimelerden otomatik quiz. Almanca→Türkçe ve Türkçe→Almanca yönlü, çoktan seçmeli ve yazarak cevaplama.</div>
         <div class="pq-meta" id="personalWordInfo">Kelimeler yükleniyor…</div>
       </div>
+      <!-- Liste Seçimi -->
+      <div class="pq-list-selector" id="pqListSelector" style="display:none;">
+        <div class="pq-list-header">
+          <button class="pq-source-btn active" id="btnSourceAll">Tüm Kelimeler</button>
+          <button class="pq-source-btn" id="btnSourceList">Listeden Seç</button>
+        </div>
+
+        <div class="pq-list-picker" id="pqListPicker" style="display:none;">
+          <div class="pq-list-loading" id="pqListLoading">
+            <div class="pq-list-spinner"></div>
+            <span>Listeler yükleniyor…</span>
+          </div>
+          <div class="pq-list-grid" id="pqListGrid" style="display:none;"></div>
+          <div class="pq-list-empty" id="pqListEmpty" style="display:none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+            Henüz liste oluşturmadın.
+            <a href="../listeler/" style="color:#c9a84c;text-decoration:none;">Liste oluştur →</a>
+          </div>
+        </div>
+      </div>
       <div class="pq-settings">
         <div class="pq-count-wrap">
           <span class="pq-count-label">Soru sayısı</span>
@@ -312,6 +332,8 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12
 import {
   getFirestore, collection, getDocs, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// Mevcut importların yanına ekle:
+import { getListeler } from "../js/listeler-firebase.js";
 
 /* ── Firebase ── */
 const firebaseConfig = {
@@ -333,29 +355,38 @@ let score      = 0;
 let wrongList  = [];
 let totalCount = 10;
 let activeTab  = "personal";
+let allLists       = [];
+let selectedListId = null;   // seçili liste id'si (null = tüm kelimeler)
+let quizSource     = "all";  // "all" | "list"
 
 /* ── AUTH ── */
 onAuthChange(async (user) => {
   if (user) {
-    document.getElementById("loginPrompt").style.display    = "none";
-    document.getElementById("personalQuizCard").style.display = "flex";
+    document.getElementById("loginPrompt").style.display     = "none";
+    document.getElementById("personalQuizCard").style.display  = "flex";
+    document.getElementById("pqListSelector").style.display    = "block";
+
     try {
-      const data = await getWords(user.uid);
-      allWords = data.map(d => ({ word:d.word, meaning:d.meaning })).filter(d=>d.word&&d.meaning);
-      document.getElementById("personalWordInfo").textContent =
-        allWords.length > 0
-          ? `Sözlüğünde ${allWords.length} kelime var.`
-          : "Sözlüğünde henüz kelime yok. Önce kelime ekle.";
-      document.getElementById("startBtn").disabled = allWords.length < 4;
+      const [data, lists] = await Promise.all([
+        getWords(user.uid),
+        getListeler(user.uid)
+      ]);
+
+      allWords = data.map(d => ({ id: d.id, word: d.word, meaning: d.meaning }))
+                     .filter(d => d.word && d.meaning);
+      allLists = lists;
+
+      updatePersonalWordInfo();
+      renderListPicker();
     } catch {
       document.getElementById("personalWordInfo").textContent = "Kelimeler yüklenemedi.";
     }
   } else {
-    document.getElementById("loginPrompt").style.display      = "flex";
-    document.getElementById("personalQuizCard").style.display = "none";
+    document.getElementById("loginPrompt").style.display       = "flex";
+    document.getElementById("personalQuizCard").style.display  = "none";
+    document.getElementById("pqListSelector").style.display    = "none";
   }
 });
-
 /* ── ADMIN ── */
 onAdminChange((isAdmin) => {
   const btn = document.getElementById("adminQuizBtn");
@@ -434,21 +465,36 @@ function updateCountVal() {
 
 /* ── BAŞLAT ── */
 document.getElementById("startBtn").addEventListener("click", () => {
-  if (allWords.length < 4) {
-    alert("Quiz için en az 4 kelime gerekli. Önce kelime ekle!"); return;
+  const activeWords = getActiveWords();
+
+  if (activeWords.length < 4) {
+    alert("Quiz için en az 4 kelime gerekli. Daha fazla kelime içeren bir liste seç veya kelime ekle!");
+    return;
   }
+
+  // allWords'ü geçici olarak aktif kelimelere çek
+  const savedAllWords = allWords;
+  allWords = activeWords;
+
   buildQuestions();
   current = 0; score = 0; wrongList = [];
   showScreen("quiz");
   renderQuestion();
+
+  // Geri yükle (result/restart için)
+  allWords = savedAllWords;
 });
 
 /* ── GERİ ── */
 document.getElementById("restartBtn").addEventListener("click", () => {
+  const activeWords = getActiveWords();
+  const savedAllWords = allWords;
+  allWords = activeWords;
   buildQuestions();
   current = 0; score = 0; wrongList = [];
   showScreen("quiz");
   renderQuestion();
+  allWords = savedAllWords;
 });
 document.getElementById("homeBtn").addEventListener("click", () => {
   showScreen("main");
@@ -465,7 +511,98 @@ function shuffle(arr) {
   }
   return a;
 }
+/* Aktif kelimeleri döndürür (tüm liste veya seçili liste) */
+function getActiveWords() {
+  if (quizSource === "list" && selectedListId) {
+    const liste = allLists.find(l => l.id === selectedListId);
+    if (liste?.wordIds) {
+      return allWords.filter(w => liste.wordIds.includes(w.id));
+    }
+  }
+  return allWords;
+}
 
+/* Bilgi metnini ve başlat butonunu güncelle */
+function updatePersonalWordInfo() {
+  const words = getActiveWords();
+  const infoEl = document.getElementById("personalWordInfo");
+  const startBtn = document.getElementById("startBtn");
+
+  if (quizSource === "list" && selectedListId) {
+    const liste = allLists.find(l => l.id === selectedListId);
+    infoEl.textContent = liste
+      ? `"${liste.name}" listesinden ${words.length} kelime seçildi.`
+      : `${words.length} kelime seçildi.`;
+  } else {
+    infoEl.textContent = allWords.length > 0
+      ? `Sözlüğünde ${allWords.length} kelime var.`
+      : "Sözlüğünde henüz kelime yok. Önce kelime ekle.";
+  }
+
+  startBtn.disabled = words.length < 4;
+}
+
+/* Liste seçici kartlarını render et */
+function renderListPicker() {
+  const loading = document.getElementById("pqListLoading");
+  const grid    = document.getElementById("pqListGrid");
+  const empty   = document.getElementById("pqListEmpty");
+
+  loading.style.display = "none";
+
+  if (!allLists.length) {
+    grid.style.display  = "none";
+    empty.style.display = "flex";
+    return;
+  }
+
+  empty.style.display = "none";
+  grid.style.display  = "flex";
+  grid.innerHTML = "";
+
+  allLists.forEach(liste => {
+    const item = document.createElement("div");
+    item.className = "pq-list-item" + (selectedListId === liste.id ? " selected" : "");
+    item.dataset.id = liste.id;
+
+    item.innerHTML = `
+      <div class="pq-list-item-left">
+        <div class="pq-list-item-name">${esc(liste.name)}</div>
+        <div class="pq-list-item-count">${liste.wordCount || 0} kelime</div>
+      </div>
+      <div class="pq-list-check">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#0c0c12" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>`;
+
+    item.addEventListener("click", () => {
+      selectedListId = selectedListId === liste.id ? null : liste.id;
+      document.querySelectorAll(".pq-list-item").forEach(el => {
+        el.classList.toggle("selected", el.dataset.id === selectedListId);
+      });
+      updatePersonalWordInfo();
+    });
+
+    grid.appendChild(item);
+  });
+}
+document.getElementById("btnSourceAll").addEventListener("click", () => {
+  quizSource     = "all";
+  selectedListId = null;
+  document.getElementById("btnSourceAll").classList.add("active");
+  document.getElementById("btnSourceList").classList.remove("active");
+  document.getElementById("pqListPicker").style.display = "none";
+  updatePersonalWordInfo();
+});
+
+document.getElementById("btnSourceList").addEventListener("click", () => {
+  quizSource = "list";
+  document.getElementById("btnSourceList").classList.add("active");
+  document.getElementById("btnSourceAll").classList.remove("active");
+  document.getElementById("pqListPicker").style.display = "block";
+  updatePersonalWordInfo();
+});
 function buildQuestions() {
   const pool  = shuffle(allWords);
   const count = Math.min(totalCount, pool.length);

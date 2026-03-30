@@ -17,9 +17,6 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════
-   BACKGROUND
-══════════════════════════════════════════════════ -->
 <div class="bg-canvas" aria-hidden="true">
   <div class="bg-grid"></div>
   <div class="bg-orb bg-orb-1"></div>
@@ -27,9 +24,7 @@
   <div class="bg-orb bg-orb-3"></div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-   SCREEN: LOADING
-══════════════════════════════════════════════════ -->
+<!-- ══ SCREEN: LOADING ══════════════════════════════════ -->
 <div class="screen" id="screen-loading">
   <div class="loader-wrap">
     <div class="loader-ring"></div>
@@ -37,13 +32,11 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-   SCREEN: SETUP
-══════════════════════════════════════════════════ -->
+<!-- ══ SCREEN: SETUP ════════════════════════════════════ -->
 <div class="screen hidden" id="screen-setup">
   <div class="setup-wrap">
 
-    <!-- Login Prompt (shown when logged out) -->
+    <!-- Login Prompt -->
     <div class="login-card" id="loginCard" style="display:none;">
       <div class="login-card-icon">📚</div>
       <div class="login-card-body">
@@ -53,7 +46,7 @@
       <a class="login-card-btn" href="../../login.html">Giriş Yap →</a>
     </div>
 
-    <!-- Setup Body (shown when logged in) -->
+    <!-- Setup Body -->
     <div id="setupBody">
 
       <div class="setup-eyebrow">
@@ -67,11 +60,15 @@
       </h1>
       <p class="setup-sub">
         Kartı çevir, kendini değerlendir — <strong style="color:var(--t1)">Tekrar / Zor / İyi / Kolay</strong>.
-        Algoritma zor kelimeleri daha sık, bildiklerini daha seyrek gösterir.
+        Yeni kelimeler önce <em>dakika bazlı</em> tekrarla öğrenilir, sonra SM-2 ile uzun vadeli hafızaya aktarılır.
       </p>
 
-      <!-- SRS Strip -->
+      <!-- ▸ SRS Strip: 4 hücre (Bugün eklendi) -->
       <div class="srs-strip" id="setupSRSStrip" style="display:none;">
+        <div class="srs-strip-cell srs-today-cell">
+          <span class="srs-strip-num today" id="srsToday">—</span>
+          <span class="srs-strip-label">🔥 Bugün</span>
+        </div>
         <div class="srs-strip-cell">
           <span class="srs-strip-num new" id="srsNew">—</span>
           <span class="srs-strip-label">Yeni</span>
@@ -93,8 +90,6 @@
           <button class="source-tab active" id="srcAll">Tüm Kelimeler</button>
           <button class="source-tab" id="srcList">Listeden Seç</button>
         </div>
-
-        <!-- List Picker (shown when srcList active) -->
         <div id="listPickerWrap" style="display:none;">
           <div id="listPickerLoading" style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:var(--t3);">
             <div style="width:12px;height:12px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;"></div>
@@ -108,7 +103,7 @@
         </div>
       </div>
 
-      <!-- Settings Row: Count -->
+      <!-- Kart Sayısı -->
       <div class="settings-row">
         <span class="setting-label">Kart sayısı:</span>
         <div class="stepper">
@@ -118,7 +113,7 @@
         </div>
       </div>
 
-      <!-- Settings Row: Order -->
+      <!-- Sıralama -->
       <div class="settings-row">
         <span class="setting-label">Sıralama:</span>
         <div class="order-btns">
@@ -128,16 +123,30 @@
         </div>
       </div>
 
-      <!-- Word count info -->
+      <!-- Açıklama: Öğrenme sistemi -->
+      <div class="learning-info-box">
+        <div class="lib-title">📖 Nasıl çalışır?</div>
+        <div class="lib-row">
+          <span class="lib-dot new"></span>
+          <span><strong>Yeni kelime</strong> → 1 dk · 10 dk · 1 sa tekrar, sonra öğrenildi ✅</span>
+        </div>
+        <div class="lib-row">
+          <span class="lib-dot due"></span>
+          <span><strong>Tekrar bekleyen</strong> → SM-2 ile gün bazlı aralıklı tekrar</span>
+        </div>
+        <div class="lib-row">
+          <span class="lib-dot again"></span>
+          <span><strong>Yanlış bilinen</strong> → Aynı seansta tekrar gelir 🔄</span>
+        </div>
+      </div>
+
       <p class="word-count-info" id="wordCountInfo">—</p>
 
-      <!-- Start Button -->
       <button class="btn-start" id="btnStart" disabled>
         <span class="btn-start-icon">🃏</span>
         Flashcard Başlat
       </button>
 
-      <!-- Hint -->
       <p class="setup-hint">
         Klavye kısayolları: <kbd>Space</kbd> kartı çevir &nbsp;·&nbsp;
         <kbd>1</kbd>&thinsp;Tekrar &nbsp;
@@ -146,21 +155,18 @@
         <kbd>4</kbd>&thinsp;Kolay
       </p>
 
-      <!-- Back link -->
       <p style="text-align:center;margin-top:24px;">
         <a href="../" style="font-size:13px;color:var(--t3);text-decoration:none;transition:color .2s;"
            onmouseover="this.style.color='var(--t2)'" onmouseout="this.style.color='var(--t3)'">
           ← Quiz Merkezine Dön
         </a>
       </p>
-    </div><!-- /setupBody -->
 
+    </div><!-- /setupBody -->
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-   SCREEN: STUDY
-══════════════════════════════════════════════════ -->
+<!-- ══ SCREEN: STUDY ═════════════════════════════════════ -->
 <div class="screen hidden" id="screen-study">
   <div class="study-wrap">
 
@@ -176,11 +182,16 @@
     </div>
 
     <!-- 3D Flashcard Scene -->
-    <div class="fc-scene" id="fcScene" role="button" aria-label="Kartı çevirmek için tıkla veya Space'e bas" tabindex="0">
+    <div class="fc-scene" id="fcScene"
+         role="button"
+         aria-label="Kartı çevirmek için tıkla veya Space'e bas"
+         tabindex="0">
       <div class="fc-card" id="fcCard">
 
-        <!-- Front -->
+        <!-- Ön yüz -->
         <div class="fc-face fc-front">
+          <!-- Durum badge (yeni / öğreniliyor / tekrar / öğrenildi) -->
+          <span class="fc-status-badge badge-new" id="fcStatusBadge">🆕 Yeni</span>
           <span class="fc-lang-tag">🇩🇪 Almanca</span>
           <div class="fc-word" id="fcFrontWord">—</div>
           <div class="fc-hint">
@@ -191,7 +202,7 @@
           <span class="fc-card-num" id="fcCardNum">1 / 15</span>
         </div>
 
-        <!-- Back -->
+        <!-- Arka yüz -->
         <div class="fc-face fc-back">
           <span class="fc-lang-tag">🇹🇷 Türkçe</span>
           <div class="fc-meaning" id="fcBackMeaning">—</div>
@@ -213,34 +224,34 @@
           <span class="rate-key">1</span>
           <span class="rate-emoji">😰</span>
           <span class="rate-label">Tekrar</span>
-          <span class="rate-days" id="rateDay1">~1 gün</span>
+          <span class="rate-days" id="rateDay1">~1 dk</span>
         </button>
 
         <button class="rate-btn hard" id="rateBtn2" aria-label="Zor">
           <span class="rate-key">2</span>
           <span class="rate-emoji">😓</span>
           <span class="rate-label">Zor</span>
-          <span class="rate-days" id="rateDay2">~3 gün</span>
+          <span class="rate-days" id="rateDay2">~10 dk</span>
         </button>
 
         <button class="rate-btn good" id="rateBtn3" aria-label="İyi">
           <span class="rate-key">3</span>
           <span class="rate-emoji">😊</span>
           <span class="rate-label">İyi</span>
-          <span class="rate-days" id="rateDay3">~7 gün</span>
+          <span class="rate-days" id="rateDay3">~1 sa</span>
         </button>
 
         <button class="rate-btn easy" id="rateBtn4" aria-label="Kolay">
           <span class="rate-key">4</span>
           <span class="rate-emoji">😄</span>
           <span class="rate-label">Kolay</span>
-          <span class="rate-days" id="rateDay4">~14 gün</span>
+          <span class="rate-days" id="rateDay4">~1 gün</span>
         </button>
 
       </div>
     </div>
 
-    <!-- Back button -->
+    <!-- Geri -->
     <div class="study-back-row">
       <button class="btn-back-study" id="btnBackStudy">← Geri Dön</button>
     </div>
@@ -248,34 +259,26 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-   SCREEN: RESULT
-══════════════════════════════════════════════════ -->
+<!-- ══ SCREEN: RESULT ════════════════════════════════════ -->
 <div class="screen hidden" id="screen-result">
   <div class="result-wrap">
     <div class="result-emoji" id="resultEmoji">🎉</div>
     <h2 class="result-title" id="resultTitle">Harika!</h2>
     <div class="result-score" id="resultScore">0 / 0</div>
     <p class="result-msg" id="resultMsg"></p>
-
     <div class="result-breakdown" id="resultBreakdown"></div>
-
     <div class="result-srs-note" id="resultSrsNote"></div>
-
     <div class="result-actions">
       <button class="btn-restart" id="btnRestart">🔁 Tekrar Dene</button>
-      <button class="btn-home" id="btnHome">← Geri Dön</button>
+      <button class="btn-home"    id="btnHome">← Geri Dön</button>
     </div>
   </div>
 </div>
 
-<!-- Navbar -->
 <script type="module">
   import "../../js/core.js";
   window.loadNavbar();
 </script>
-
-<!-- Flashcard Logic -->
 <script type="module" src="flashcard.js"></script>
 
 </body>

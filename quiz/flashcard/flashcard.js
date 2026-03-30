@@ -1,166 +1,224 @@
 /**
- * AlmancaPratik — Flashcard System v2.0
+ * AlmancaPratik — Flashcard System v3.0
  * File: quiz/flashcard/flashcard.js
  *
- * Features:
- *  - SM-2 Spaced Repetition Algorithm
- *  - Per-word SRS data: interval, repetitions, easeFactor, nextReview
- *  - Session ordering: due → new → learned
- *  - 3D card flip (CSS handles animation)
- *  - Keyboard shortcuts: Space=flip, 1-4=rate
- *  - Source filter: all words / by list
- *  - Stepper (count)
- *  - Order: SRS / Shuffle / Alphabetical
- *  - Proper reset on logout
- *  - No crash on undefined tags / missing fields
+ * Öğrenme Sistemi:
+ *  - Learning Phase  : Yeni / hatalı kartlar dakika bazlı tekrar (1dk → 10dk → 60dk)
+ *  - Review Phase    : SM-2 algoritması ile gün bazlı uzun vadeli tekrar
+ *  - Again → deck'in sonuna eklenir (aynı seansta tekrar gelir)
+ *  - UI   : Learning kartlarda dakika, Review kartlarda gün gösterir
  */
 
 import { getWords, onAuthChange }   from "../../js/firebase.js";
 import { getListeler }              from "../../js/listeler-firebase.js";
 
 /* ══════════════════════════════════════════════════
+   LEARNING STEPS  (dakika cinsinden)
+   Yeni kart: 1dk → 10dk → 60dk → artık "review"
+══════════════════════════════════════════════════ */
+const LEARNING_STEPS = [1, 10, 60];   // dakika
+
+/* ══════════════════════════════════════════════════
    SRS STORAGE  (localStorage, keyed per userId)
 ══════════════════════════════════════════════════ */
-const SRS_VERSION = "ap_srs_v3";
+const SRS_VERSION = "ap_srs_v4";      // v3'ten farklı — temiz başlangıç
 
 function srsKey(userId) {
   return `${SRS_VERSION}_${userId}`;
 }
-
 function getSRSStore(userId) {
-  try {
-    return JSON.parse(localStorage.getItem(srsKey(userId)) || "{}");
-  } catch {
-    return {};
-  }
+  try { return JSON.parse(localStorage.getItem(srsKey(userId)) || "{}"); }
+  catch { return {}; }
 }
-
 function saveSRSStore(userId, data) {
-  try {
-    localStorage.setItem(srsKey(userId), JSON.stringify(data));
-  } catch (e) {
-    console.warn("SRS save error:", e);
-  }
+  try { localStorage.setItem(srsKey(userId), JSON.stringify(data)); }
+  catch (e) { console.warn("SRS save error:", e); }
 }
 
-/**
- * Get SRS card for a word.
- * Returns safe defaults if not found.
- */
-function getCard(userId, wordId) {
-  const store = getSRSStore(userId);
-  return store[wordId] || {
-    interval:    0,
+/* ── Varsayılan kart ─────────────────────────────── */
+function defaultCard() {
+  return {
+    state:       "new",     // "new" | "learning" | "review"
+    step:        0,         // LEARNING_STEPS'teki index
+    interval:    1,         // review fazı için gün
     repetitions: 0,
     easeFactor:  2.5,
-    nextReview:  0,
+    nextReview:  0,         // ms timestamp
     reviewCount: 0,
     lastReviewed: null,
   };
 }
 
-/**
- * SM-2 Algorithm
- * quality: 1=Again(0), 2=Hard(2), 3=Good(4), 4=Easy(5)
- *
- * SM-2 q mapping:
- *   Again → q=0  (total blackout)
- *   Hard  → q=2  (incorrect but remembered)
- *   Good  → q=4  (correct with some effort)
- *   Easy  → q=5  (perfect recall)
- */
-function updateCardSM2(userId, wordId, quality) {
+function getCard(userId, wordId) {
   const store = getSRSStore(userId);
-  const card  = getCard(userId, wordId);
+  const saved = store[wordId];
+  if (!saved) return defaultCard();
+  // Eski v3 kartları learning state'i yoksa migrate et
+  if (!saved.state) {
+    saved.state = saved.repetitions > 0 ? "review" : "new";
+    saved.step  = 0;
+  }
+  return saved;
+}
 
+/* ══════════════════════════════════════════════════
+   LEARNING PHASE HANDLER
+   quality: 1=Again, 2=Hard, 3=Good, 4=Easy
+══════════════════════════════════════════════════ */
+function handleLearning(card, quality) {
+  if (quality === 1) {
+    // Again → başa dön
+    card.step = 0;
+  } else if (quality === 4) {
+    // Easy → direkt review'e gönder (step'leri atla)
+    card.step = LEARNING_STEPS.length;
+  } else {
+    // Hard (2) → aynı step'te kal | Good (3) → bir ileri
+    if (quality === 3) card.step++;
+    // Hard: step değişmez, aynı süre tekrar
+  }
+
+  if (card.step >= LEARNING_STEPS.length) {
+    // 🎓 Öğrenildi → review moduna geç
+    card.state       = "review";
+    card.repetitions = 1;
+    card.interval    = quality === 4 ? 4 : 1; // Easy ise 4 gün, diğerleri 1 gün
+    card.nextReview  = Date.now() + card.interval * 86_400_000;
+  } else {
+    // Hâlâ learning aşamasında
+    card.state      = "learning";
+    const minutes   = LEARNING_STEPS[card.step];
+    card.nextReview = Date.now() + minutes * 60_000;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   SM-2 REVIEW PHASE HANDLER
+══════════════════════════════════════════════════ */
+function handleReviewSM2(card, quality) {
   const qMap = { 1: 0, 2: 2, 3: 4, 4: 5 };
   const q    = qMap[quality] ?? 0;
 
-  if (q >= 3) {
-    // Correct response
-    if (card.repetitions === 0) {
-      card.interval = 1;
-    } else if (card.repetitions === 1) {
-      card.interval = 6;
+  if (q < 3) {
+    // Again/Hard → learning'e geri dön
+    card.state       = "learning";
+    card.step        = 0;
+    card.repetitions = 0;
+    card.interval    = 1;
+    card.nextReview  = Date.now() + LEARNING_STEPS[0] * 60_000;
+  } else {
+    // Doğru cevap → SM-2
+    if (card.repetitions <= 1) {
+      card.interval = card.repetitions === 0 ? 1 : 6;
     } else {
       card.interval = Math.round(card.interval * card.easeFactor);
     }
-    // Easy bonus
     if (quality === 4) card.interval = Math.round(card.interval * 1.3);
     card.repetitions++;
-  } else {
-    // Incorrect → reset
-    card.repetitions = 0;
-    card.interval     = 1;
+    card.nextReview = Date.now() + card.interval * 86_400_000;
   }
 
-  // Update ease factor (SM-2 formula, min 1.3)
+  // Ease factor güncelle (SM-2, min 1.3)
   card.easeFactor = Math.max(
     1.3,
     card.easeFactor + 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)
   );
+}
 
-  card.nextReview = Date.now() + card.interval * 86_400_000; // 5 saniye
-  card.reviewCount = (card.reviewCount || 0) + 1;
+/* ══════════════════════════════════════════════════
+   ANA GÜNCELLEME FONKSİYONU
+══════════════════════════════════════════════════ */
+function updateCard(userId, wordId, quality) {
+  const store = getSRSStore(userId);
+  const card  = getCard(userId, wordId);
+
+  if (card.state === "review") {
+    handleReviewSM2(card, quality);
+  } else {
+    handleLearning(card, quality);
+  }
+
+  card.reviewCount  = (card.reviewCount || 0) + 1;
   card.lastReviewed = Date.now();
-
-  store[wordId] = card;
+  store[wordId]     = card;
   saveSRSStore(userId, store);
   return card;
 }
 
-/**
- * Card status:
- *  'new'     → never reviewed
- *  'due'     → reviewed but nextReview ≤ now
- *  'learned' → reviewed and nextReview > now
- */
+/* ══════════════════════════════════════════════════
+   KART DURUMU
+══════════════════════════════════════════════════ */
 function getCardStatus(userId, wordId) {
   const c = getCard(userId, wordId);
+  if (c.state === "new")                        return "new";
+  if (c.state === "learning")                   return "learning";
+  if (c.state === "review" && c.nextReview <= Date.now()) return "due";
+  if (c.state === "review" && c.nextReview >  Date.now()) return "learned";
+  // Fallback — eski veri
   if (c.repetitions === 0 && c.reviewCount === 0) return "new";
-  if (c.nextReview <= Date.now()) return "due";
+  if (c.nextReview <= Date.now())                  return "due";
   return "learned";
 }
 
-/**
- * Preview next interval (days) without writing to storage.
- */
-function previewInterval(userId, wordId, quality) {
+/* ══════════════════════════════════════════════════
+   PREVIEW — Bir sonraki tekrar süresi (yazmadan)
+   Dönen değer: { value: number, unit: "dk" | "sa" | "gün" }
+══════════════════════════════════════════════════ */
+function previewNextReview(userId, wordId, quality) {
   const card = getCard(userId, wordId);
+
+  if (card.state !== "review") {
+    // Learning phase preview
+    let step = card.step;
+    if (quality === 1) step = 0;
+    else if (quality === 4) step = LEARNING_STEPS.length; // review'e geç
+    else if (quality === 3) step = card.step + 1;
+    // Hard → aynı step
+
+    if (step >= LEARNING_STEPS.length) {
+      return { value: quality === 4 ? 4 : 1, unit: "gün" };
+    }
+    const minutes = LEARNING_STEPS[step];
+    if (minutes < 60) return { value: minutes,       unit: "dk" };
+    else              return { value: minutes / 60,   unit: "sa" };
+  }
+
+  // Review phase preview (SM-2)
   const qMap = { 1: 0, 2: 2, 3: 4, 4: 5 };
   const q    = qMap[quality] ?? 0;
-
-  if (q < 3) return 1;
+  if (q < 3) {
+    return { value: LEARNING_STEPS[0], unit: "dk" }; // geri learning'e
+  }
 
   let interval = card.interval;
-  if (card.repetitions === 0)      interval = 1;
-  else if (card.repetitions === 1) interval = 6;
+  if (card.repetitions <= 1)      interval = card.repetitions === 0 ? 1 : 6;
   else interval = Math.round(interval * card.easeFactor);
-
   if (quality === 4) interval = Math.round(interval * 1.3);
-  return Math.max(1, interval);
+  return { value: Math.max(1, interval), unit: "gün" };
+}
+
+function formatPreview({ value, unit }) {
+  return `~${value} ${unit}`;
 }
 
 /* ══════════════════════════════════════════════════
    STATE
 ══════════════════════════════════════════════════ */
 let state = {
-  userId:        null,
-  allWords:      [],   // raw words from Firestore
-  allLists:      [],   // user's lists
-  activeWords:   [],   // filtered pool
-  quizSource:    "all",
+  userId:         null,
+  allWords:       [],
+  allLists:       [],
+  activeWords:    [],
+  quizSource:     "all",
   selectedListId: null,
-  totalCount:    15,
-  order:         "srs",  // "srs" | "shuffle" | "alpha"
+  totalCount:     15,
+  order:          "srs",
 
   // Session
-  deck:       [],   // ordered cards for this session
-  deckIndex:  0,
-  flipped:    false,
-
-  // Ratings this session
-  ratings:    { 1: 0, 2: 0, 3: 0, 4: 0 },
+  deck:      [],
+  deckIndex: 0,
+  flipped:   false,
+  ratings:   { 1: 0, 2: 0, 3: 0, 4: 0 },
 };
 
 /* ══════════════════════════════════════════════════
@@ -190,10 +248,9 @@ function showScreen(name) {
 ══════════════════════════════════════════════════ */
 onAuthChange(async (user) => {
   if (!user) {
-    // BUGFIX #6: reset UI on logout
-    state.userId    = null;
-    state.allWords  = [];
-    state.allLists  = [];
+    state.userId      = null;
+    state.allWords    = [];
+    state.allLists    = [];
     state.activeWords = [];
     resetSetupUI();
     showLoginPrompt(true);
@@ -211,18 +268,15 @@ onAuthChange(async (user) => {
       getListeler(user.uid)
     ]);
 
-    // BUGFIX #3: proper data model — normalize every word
     state.allWords = rawWords
       .map(d => ({
-        id:      d.id,
-        word:    String(d.word   || "").trim(),
-        meaning: String(d.meaning || "").trim(),
-        // BUGFIX #2: safe tags — always Array
-        tags:    Array.isArray(d.tags) ? d.tags : [],
+        id:       d.id,
+        word:     String(d.word    || "").trim(),
+        meaning:  String(d.meaning || "").trim(),
+        tags:     Array.isArray(d.tags) ? d.tags : [],
         meanings: Array.isArray(d.meanings) && d.meanings.length
           ? d.meanings
           : [String(d.meaning || "").trim()],
-        // SRS fields — stored in localStorage, not Firestore
       }))
       .filter(d => d.word && d.meaning);
 
@@ -239,10 +293,10 @@ onAuthChange(async (user) => {
 });
 
 function showLoginPrompt(show) {
-  const el = $("loginCard");
-  if (el) el.style.display = show ? "flex" : "none";
+  const el   = $("loginCard");
   const body = $("setupBody");
-  if (body) body.style.display = show ? "none" : "block";
+  if (el)   el.style.display   = show ? "flex" : "none";
+  if (body) body.style.display = show ? "none"  : "block";
 }
 
 /* ══════════════════════════════════════════════════
@@ -276,8 +330,7 @@ function updateWordCountInfo() {
 
 function updateStartBtnState() {
   const btn = $("btnStart");
-  if (!btn) return;
-  btn.disabled = state.activeWords.length < 1;
+  if (btn) btn.disabled = state.activeWords.length < 1;
 }
 
 function resetSetupUI() {
@@ -288,28 +341,32 @@ function resetSetupUI() {
 }
 
 /* ══════════════════════════════════════════════════
-   SRS STRIP (setup screen)
+   SRS STRIP — Setup ekranında özet
 ══════════════════════════════════════════════════ */
 function updateSetupSRSStrip() {
+  const strip = $("setupSRSStrip");
   if (!state.userId || !state.activeWords.length) {
-    const strip = $("setupSRSStrip");
     if (strip) strip.style.display = "none";
     return;
   }
-  const strip = $("setupSRSStrip");
   if (strip) strip.style.display = "grid";
 
-  let newC = 0, dueC = 0, doneC = 0;
+  let newC = 0, learningC = 0, dueC = 0, learnedC = 0;
   state.activeWords.forEach(w => {
     const s = getCardStatus(state.userId, w.id);
-    if      (s === "new")  newC++;
-    else if (s === "due")  dueC++;
-    else                   doneC++;
+    if      (s === "new")      newC++;
+    else if (s === "learning") learningC++;
+    else if (s === "due")      dueC++;
+    else                       learnedC++;
   });
 
-  setNum("srsNew",  newC);
-  setNum("srsDue",  dueC);
-  setNum("srsDone", doneC);
+  // Bugün çalışılacak: yeni + learning + due
+  const todayCount = newC + learningC + dueC;
+
+  setNum("srsNew",     newC);
+  setNum("srsDue",     dueC + learningC); // learning + due = "tekrar"
+  setNum("srsDone",    learnedC);
+  setNum("srsToday",   todayCount);
 }
 
 function setNum(id, val) {
@@ -336,7 +393,7 @@ function renderListPicker() {
   if (empty) empty.style.display = "none";
   if (!grid) return;
   grid.style.display = "flex";
-  grid.innerHTML = "";
+  grid.innerHTML     = "";
 
   state.allLists.forEach(liste => {
     const item = document.createElement("div");
@@ -385,14 +442,13 @@ function updateStepperVal() {
 ══════════════════════════════════════════════════ */
 function initSourceTabs() {
   $("srcAll")?.addEventListener("click", () => {
-    state.quizSource    = "all";
+    state.quizSource     = "all";
     state.selectedListId = null;
     toggleActive("srcAll", "srcList");
     const wrap = $("listPickerWrap");
     if (wrap) wrap.style.display = "none";
     refreshActiveWords();
   });
-
   $("srcList")?.addEventListener("click", () => {
     state.quizSource = "list";
     toggleActive("srcList", "srcAll");
@@ -411,11 +467,10 @@ function toggleActive(on, off) {
    ORDER BUTTONS
 ══════════════════════════════════════════════════ */
 function initOrderBtns() {
-  ["orderSRS","orderShuffle","orderAlpha"].forEach(id => {
+  ["orderSRS", "orderShuffle", "orderAlpha"].forEach(id => {
     $(id)?.addEventListener("click", () => {
-      state.order = id.replace("order","").toLowerCase();
-      if (state.order === "srs") state.order = "srs";
-      ["orderSRS","orderShuffle","orderAlpha"].forEach(bid => {
+      state.order = id.replace("order", "").toLowerCase();
+      ["orderSRS", "orderShuffle", "orderAlpha"].forEach(bid => {
         $(bid)?.classList.toggle("active", bid === id);
       });
     });
@@ -424,29 +479,29 @@ function initOrderBtns() {
 
 /* ══════════════════════════════════════════════════
    BUILD DECK
+   Öncelik: learning → due → new → learned
 ══════════════════════════════════════════════════ */
 function buildDeck() {
   const pool  = [...state.activeWords];
   const count = Math.min(state.totalCount, pool.length);
 
   if (state.order === "srs") {
-    const due     = pool.filter(w => getCardStatus(state.userId, w.id) === "due");
-    const newW    = pool.filter(w => getCardStatus(state.userId, w.id) === "new");
-    const learned = pool.filter(w => getCardStatus(state.userId, w.id) === "learned");
+    const learning = pool.filter(w => getCardStatus(state.userId, w.id) === "learning");
+    const due      = pool.filter(w => getCardStatus(state.userId, w.id) === "due");
+    const newW     = pool.filter(w => getCardStatus(state.userId, w.id) === "new");
+    const learned  = pool.filter(w => getCardStatus(state.userId, w.id) === "learned");
     return [
+      ...shuffle(learning),
       ...shuffle(due),
       ...shuffle(newW),
-      ...shuffle(learned)
+      ...shuffle(learned),
     ].slice(0, count);
   }
 
   if (state.order === "alpha") {
-    return [...pool]
-      .sort((a, b) => a.word.localeCompare(b.word, "de"))
-      .slice(0, count);
+    return [...pool].sort((a, b) => a.word.localeCompare(b.word, "de")).slice(0, count);
   }
 
-  // default: shuffle
   return shuffle(pool).slice(0, count);
 }
 
@@ -474,18 +529,17 @@ function renderCard() {
     return;
   }
 
-  const card = state.deck[state.deckIndex];
+  const card    = state.deck[state.deckIndex];
   state.flipped = false;
 
-  // Reset 3D
   const fcCard = $("fcCard");
   if (fcCard) fcCard.classList.remove("flipped");
 
-  // Front
+  // Ön yüz
   const frontWord = $("fcFrontWord");
   if (frontWord) frontWord.textContent = card.word;
 
-  // Back
+  // Arka yüz
   const backMeaning = $("fcBackMeaning");
   if (backMeaning) backMeaning.textContent = card.meaning;
 
@@ -506,26 +560,46 @@ function renderCard() {
     }
   }
 
-  // Card number
+  // Kart numarası
   const cardNum = $("fcCardNum");
   if (cardNum) cardNum.textContent = `${state.deckIndex + 1} / ${state.deck.length}`;
 
-  // Hide rating
+  // Kart durumu etiketi (learning / review / new)
+  updateCardStatusBadge(card);
+
+  // Rating gizle
   const ratingWrap = $("ratingWrap");
   if (ratingWrap) ratingWrap.classList.remove("visible");
 
   // Progress
   updateStudyProgress();
 
-  // Update preview days
-  updateRateDayPreviews(card.id);
+  // Preview süreler
+  updateRatePreviews(card.id);
 
   // Session stats
   updateSessionStats();
 
-  // Re-enable scene click
+  // Sahneyi yeniden aktif et
   const scene = $("fcScene");
   if (scene) scene.style.pointerEvents = "auto";
+}
+
+/* ── Kart durum etiketi (ön yüzde küçük badge) ── */
+function updateCardStatusBadge(card) {
+  let badge = $("fcStatusBadge");
+  if (!badge) return;
+
+  const status = getCardStatus(state.userId, card.id);
+  const labels = {
+    new:      { text: "🆕 Yeni",       cls: "badge-new"      },
+    learning: { text: "📖 Öğreniliyor", cls: "badge-learning" },
+    due:      { text: "⏰ Tekrar",      cls: "badge-due"      },
+    learned:  { text: "✅ Öğrenildi",   cls: "badge-learned"  },
+  };
+  const info = labels[status] || labels.new;
+  badge.textContent = info.text;
+  badge.className   = "fc-status-badge " + info.cls;
 }
 
 /* ══════════════════════════════════════════════════
@@ -538,11 +612,9 @@ function flipCard() {
   const fcCard = $("fcCard");
   if (fcCard) fcCard.classList.add("flipped");
 
-  // Show rating after flip animation
   setTimeout(() => {
     const ratingWrap = $("ratingWrap");
     if (ratingWrap) ratingWrap.classList.add("visible");
-    // Block scene click to prevent accidental double-flip
     const scene = $("fcScene");
     if (scene) scene.style.pointerEvents = "none";
   }, 320);
@@ -550,16 +622,21 @@ function flipCard() {
 
 /* ══════════════════════════════════════════════════
    RATE CARD
+   Again (1) → deck'in sonuna eklenir, seans içinde tekrar gelir
 ══════════════════════════════════════════════════ */
 function rateCard(quality) {
-  if (!state.flipped) return; // must flip first
+  if (!state.flipped) return;
   const card = state.deck[state.deckIndex];
 
-  updateCardSM2(state.userId, card.id, quality);
+  updateCard(state.userId, card.id, quality);
   state.ratings[quality]++;
-  state.deckIndex++;
 
-  // Update setup SRS strip for next time
+  // Again → kartı deck'in sonuna ekle (aynı seansta tekrar görünür)
+  if (quality === 1) {
+    state.deck.push({ ...card });
+  }
+
+  state.deckIndex++;
   updateSetupSRSStrip();
 
   if (state.deckIndex >= state.deck.length) {
@@ -573,9 +650,7 @@ function rateCard(quality) {
    PROGRESS & STATS
 ══════════════════════════════════════════════════ */
 function updateStudyProgress() {
-  const pct = state.deck.length > 0
-    ? (state.deckIndex / state.deck.length) * 100
-    : 0;
+  const pct  = state.deck.length > 0 ? (state.deckIndex / state.deck.length) * 100 : 0;
   const fill = $("studyProgressFill");
   if (fill) fill.style.width = pct + "%";
   const label = $("studyProgressLabel");
@@ -583,34 +658,35 @@ function updateStudyProgress() {
 }
 
 function updateSessionStats() {
-  const done = state.deckIndex;
+  const done      = state.deckIndex;
   const remaining = state.deck.length - done;
 
-  // Count new/due in remaining
-  let newR = 0, dueR = 0;
+  let newR = 0, dueR = 0, learningR = 0;
   for (let i = done; i < state.deck.length; i++) {
     const s = getCardStatus(state.userId, state.deck[i].id);
-    if      (s === "new") newR++;
-    else if (s === "due") dueR++;
+    if      (s === "new")      newR++;
+    else if (s === "due")      dueR++;
+    else if (s === "learning") learningR++;
   }
 
   const row = $("sessionStats");
   if (!row) return;
   row.innerHTML = "";
-  if (dueR) row.innerHTML += `<span class="ss-pip due">${dueR} tekrar</span>`;
-  if (newR) row.innerHTML += `<span class="ss-pip new">${newR} yeni</span>`;
-  if (done) row.innerHTML += `<span class="ss-pip done">${done} tamamlandı</span>`;
+  if (learningR) row.innerHTML += `<span class="ss-pip learning">${learningR} öğrenme</span>`;
+  if (dueR)      row.innerHTML += `<span class="ss-pip due">${dueR} tekrar</span>`;
+  if (newR)      row.innerHTML += `<span class="ss-pip new">${newR} yeni</span>`;
+  if (done)      row.innerHTML += `<span class="ss-pip done">${done} tamam</span>`;
 }
 
 /* ══════════════════════════════════════════════════
-   RATE DAY PREVIEWS
+   PREVIEW SÜRELER (buton altında gösterir)
 ══════════════════════════════════════════════════ */
-function updateRateDayPreviews(wordId) {
+function updateRatePreviews(wordId) {
   [1, 2, 3, 4].forEach(q => {
     const el = $("rateDay" + q);
     if (!el) return;
-    const days = previewInterval(state.userId, wordId, q);
-    el.textContent = days === 1 ? "~1 gün" : `~${days} gün`;
+    const preview = previewNextReview(state.userId, wordId, q);
+    el.textContent = formatPreview(preview);
   });
 }
 
@@ -618,23 +694,22 @@ function updateRateDayPreviews(wordId) {
    RESULT SCREEN
 ══════════════════════════════════════════════════ */
 function showResult() {
-  const total   = state.deck.length;
+  const total   = state.ratings[1] + state.ratings[2] + state.ratings[3] + state.ratings[4];
   const correct = state.ratings[3] + state.ratings[4];
   const pct     = total > 0 ? Math.round((correct / total) * 100) : 0;
 
   let emoji, title, msg;
-  if      (pct === 100) { emoji = "🏆"; title = "Mükemmel!";        msg = "Tüm kartları doğru yanıtladın. Muhteşem bir seans!"; }
-  else if (pct >= 80)   { emoji = "🎉"; title = "Harika!";           msg = "Çok başarılı bir performans. Böyle devam!"; }
-  else if (pct >= 60)   { emoji = "👍"; title = "İyi İş!";           msg = "Biraz daha pratikle mükemmel olacak."; }
-  else if (pct >= 40)   { emoji = "📚"; title = "Çalışmaya Devam!"; msg = "Bu kelimeleri bir kez daha gözden geçir."; }
-  else                  { emoji = "💪"; title = "Devam Et!";         msg = "Her tekrar seni ileriye taşıyor. Pes etme!"; }
+  if      (pct === 100) { emoji="🏆"; title="Mükemmel!";        msg="Tüm kartları doğru yanıtladın. Muhteşem bir seans!"; }
+  else if (pct >= 80)   { emoji="🎉"; title="Harika!";           msg="Çok başarılı bir performans. Böyle devam!"; }
+  else if (pct >= 60)   { emoji="👍"; title="İyi İş!";           msg="Biraz daha pratikle mükemmel olacak."; }
+  else if (pct >= 40)   { emoji="📚"; title="Çalışmaya Devam!"; msg="Bu kelimeleri bir kez daha gözden geçir."; }
+  else                  { emoji="💪"; title="Devam Et!";         msg="Her tekrar seni ileriye taşıyor. Pes etme!"; }
 
   $("resultEmoji")  && ($("resultEmoji").textContent  = emoji);
   $("resultTitle")  && ($("resultTitle").textContent  = title);
   $("resultScore")  && ($("resultScore").textContent  = `${correct} / ${total}`);
   $("resultMsg")    && ($("resultMsg").textContent    = msg);
 
-  // Breakdown
   const bd = $("resultBreakdown");
   if (bd) {
     bd.innerHTML = `
@@ -656,11 +731,15 @@ function showResult() {
       </div>`;
   }
 
-  // SRS note
-  const words  = state.activeWords;
-  const dueNow = words.filter(w => getCardStatus(state.userId, w.id) === "due").length;
-  const learned= words.filter(w => getCardStatus(state.userId, w.id) === "learned").length;
-  const note   = $("resultSrsNote");
+  // SRS özet notu
+  const words    = state.activeWords;
+  const dueNow   = words.filter(w => {
+    const s = getCardStatus(state.userId, w.id);
+    return s === "due" || s === "learning";
+  }).length;
+  const learned  = words.filter(w => getCardStatus(state.userId, w.id) === "learned").length;
+
+  const note = $("resultSrsNote");
   if (note) {
     note.innerHTML = `
       <strong>Seans tamamlandı!</strong>
@@ -677,9 +756,7 @@ function showResult() {
 ══════════════════════════════════════════════════ */
 function initKeyboard() {
   document.addEventListener("keydown", (e) => {
-    // Only active on study screen
     if ($("screen-study")?.classList.contains("hidden")) return;
-    // Ignore when typing in an input
     if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
 
     if (e.code === "Space" || e.code === "ArrowRight") {
@@ -700,37 +777,23 @@ function initKeyboard() {
    EVENT WIRING
 ══════════════════════════════════════════════════ */
 function initEvents() {
-  // Flip card
   $("fcScene")?.addEventListener("click", () => flipCard());
   $("fcScene")?.setAttribute("tabindex", "0");
   $("fcScene")?.addEventListener("keydown", e => {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flipCard(); }
   });
 
-  // Rate buttons
   [1, 2, 3, 4].forEach(q => {
     $("rateBtn" + q)?.addEventListener("click", () => rateCard(q));
   });
 
-  // Start button
   $("btnStart")?.addEventListener("click", startSession);
-
-  // Restart button
   $("btnRestart")?.addEventListener("click", startSession);
-
-  // Home button
   $("btnHome")?.addEventListener("click", () => showScreen("setup"));
-
-  // Back from study
   $("btnBackStudy")?.addEventListener("click", () => showScreen("setup"));
 
-  // Source tabs
   initSourceTabs();
-
-  // Stepper
   initStepper();
-
-  // Order buttons
   initOrderBtns();
 }
 
@@ -759,8 +822,5 @@ function esc(s) {
 document.addEventListener("DOMContentLoaded", () => {
   initEvents();
   initKeyboard();
-  // Show setup initially (auth will trigger data load)
   showScreen("setup");
 });
-
-// Expose minimal API for inline HTML handlers (none needed — all wired above)

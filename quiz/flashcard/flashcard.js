@@ -100,7 +100,7 @@ function updateCardSM2(userId, wordId, quality) {
     card.easeFactor + 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)
   );
 
-  ccard.nextReview = Date.now() + card.interval * 5000; // 5 saniye
+  card.nextReview = Date.now() + card.interval * 5000; // 5 saniye
   card.reviewCount = (card.reviewCount || 0) + 1;
   card.lastReviewed = Date.now();
 

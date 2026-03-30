@@ -700,8 +700,7 @@ body { font-family:var(--fb); background:var(--bg); color:var(--t1); -webkit-fon
 
       <div class="mode-grid">
         <!-- FLASHCARD -->
-        <div class="mode-card flashcard" id="modeFlashcard" onclick="startMode('flashcard')" style="animation-delay:0ms">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="mode-card flashcard" id="modeFlashcard" onclick="window.location.href='flashcard/'" style="animation-delay:0ms">          <div style="display:flex;align-items:flex-start;justify-content:space-between;">
             <div class="mode-card-icon">🃏</div>
             <span class="mode-card-arrow">→</span>
           </div>
@@ -870,65 +869,7 @@ body { font-family:var(--fb); background:var(--bg); color:var(--t1); -webkit-fon
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     FLASHCARD EKRANI
-══════════════════════════════════════════════════ -->
-<div class="screen-wrap hidden" id="view-flashcard">
-  <div class="fc-layout">
-    <!-- Topbar -->
-    <div class="fc-topbar">
-      <div class="fc-progress-wrap">
-        <div class="progress-bar"><div class="progress-fill" id="fcProgressFill"></div></div>
-        <span class="progress-label" id="fcProgressLabel">1 / 10</span>
-      </div>
-      <div class="fc-stats-row" id="fcStatsRow"></div>
-    </div>
 
-    <!-- 3D Kart -->
-    <div class="fc-scene" id="fcScene" onclick="flipCard()">
-      <div class="fc-card" id="fcCard">
-        <div class="fc-face fc-front">
-          <span class="fc-lang-tag">🇩🇪 Almanca</span>
-          <div class="fc-word" id="fcFrontWord">—</div>
-          <div class="fc-hint"><span class="fc-hint-icon">👆</span> Anlamı görmek için tıkla</div>
-        </div>
-        <div class="fc-face fc-back">
-          <span class="fc-lang-tag">🇹🇷 Türkçe</span>
-          <div class="fc-meaning" id="fcBackMeaning">—</div>
-          <div class="fc-meanings-list" id="fcBackMeanings"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Değerlendirme Butonları -->
-    <div class="fc-rating-wrap" id="fcRatingWrap">
-      <div class="fc-rating-label">Bu kelimeyi ne kadar bildiniz?</div>
-      <div class="fc-rating-btns">
-        <button class="fc-rate-btn again" onclick="rateCard(1)">
-          <span class="rate-label">Tekrar</span>
-          <span class="rate-days" id="rateDay1">~1 gün</span>
-        </button>
-        <button class="fc-rate-btn hard" onclick="rateCard(2)">
-          <span class="rate-label">Zor</span>
-          <span class="rate-days" id="rateDay2">~3 gün</span>
-        </button>
-        <button class="fc-rate-btn good" onclick="rateCard(3)">
-          <span class="rate-label">İyi</span>
-          <span class="rate-days" id="rateDay3">~7 gün</span>
-        </button>
-        <button class="fc-rate-btn easy" onclick="rateCard(4)">
-          <span class="rate-label">Kolay</span>
-          <span class="rate-days" id="rateDay4">~14 gün</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Geri -->
-    <div class="fc-skip-wrap">
-      <button class="fc-btn-back" onclick="showScreen('home')">← Geri Dön</button>
-    </div>
-  </div>
-</div>
 
 <!-- ══════════════════════════════════════════════════
      ÇOKTAN SEÇMELİ EKRANI
@@ -999,7 +940,7 @@ body { font-family:var(--fb); background:var(--bg); color:var(--t1); -webkit-fon
       <button class="btn-restart" id="restartBtn">Tekrar Dene</button>
       <button class="btn-home-result" id="homeBtn">← Geri</button>
     </div>
-    <div class="fc-result-note" id="fcResultNote" style="display:none;"></div>
+    
   </div>
 </div>
 
@@ -1041,53 +982,7 @@ let totalCount     = 10;
 let activeMode     = null; // 'flashcard' | 'multiple' | 'typing'
 let currentUserId  = null;
 
-/* ─── SRS (SM-2 Algorithm) ─── */
-const SRS_KEY = 'ap_srs_v2';
 
-function getSRS() {
-  try { return JSON.parse(localStorage.getItem(SRS_KEY) || '{}'); } catch { return {}; }
-}
-function saveSRS(data) {
-  try { localStorage.setItem(SRS_KEY, JSON.stringify(data)); } catch {}
-}
-function getCard(wordId) {
-  const d = getSRS();
-  return d[wordId] || { interval:0, reps:0, ef:2.5, next:0 };
-}
-function rateCardSRS(wordId, quality) {
-  // quality: 1=Again(0), 2=Hard(2), 3=Good(4), 4=Easy(5)
-  const q = [0, 0, 2, 4, 5][quality];
-  const d = getSRS();
-  const c = getCard(wordId);
-  if (q >= 3) {
-    if      (c.reps === 0) c.interval = 1;
-    else if (c.reps === 1) c.interval = 6;
-    else c.interval = Math.round(c.interval * c.ef);
-    c.reps++;
-  } else {
-    c.reps = 0;
-    c.interval = 1;
-  }
-  c.ef = Math.max(1.3, c.ef + 0.1 - (5-q)*(0.08+(5-q)*0.02));
-  c.next = Date.now() + c.interval * 864e5;
-  d[wordId] = c;
-  saveSRS(d);
-  return c;
-}
-function getCardStatus(wordId) {
-  const c = getCard(wordId);
-  if (c.reps === 0) return 'new';
-  if (c.next <= Date.now()) return 'due';
-  return 'learned';
-}
-function intervalDays(quality, wordId) {
-  const c = getCard(wordId || '_preview');
-  const q = [0, 0, 2, 4, 5][quality];
-  if (q < 3) return 1;
-  if (c.reps === 0) return 1;
-  if (c.reps === 1) return 6;
-  return Math.round(c.interval * c.ef);
-}
 
 /* ─── AUTH ─── */
 onAuthChange(async (user) => {
@@ -1108,7 +1003,6 @@ onAuthChange(async (user) => {
       })).filter(d => d.word && d.meaning);
       allLists = lists;
       refreshActiveWords();
-      updateSRSPips();
       renderListPicker();
     } catch {
       document.getElementById("wordInfoText").textContent = "Kelimeler yüklenemedi.";
@@ -1125,22 +1019,8 @@ onAdminChange(isAdmin => {
   if (btn) btn.classList.toggle("visible", isAdmin);
 });
 
-/* ─── SRS PIP STATS ─── */
-function updateSRSPips() {
-  const words = getActiveWords();
-  let newC=0, dueC=0, doneC=0;
-  words.forEach(w => {
-    const s = getCardStatus(w.id);
-    if      (s === 'new')     newC++;
-    else if (s === 'due')     dueC++;
-    else                      doneC++;
-  });
-  const pips = document.getElementById("srsPips");
-  pips.innerHTML = "";
-  if (newC)  pips.innerHTML += `<span class="srs-pip new">${newC} yeni</span>`;
-  if (dueC)  pips.innerHTML += `<span class="srs-pip due">${dueC} tekrar</span>`;
-  if (doneC) pips.innerHTML += `<span class="srs-pip done">${doneC} öğrenildi</span>`;
-}
+
+
 
 /* ─── ACTIVE WORDS ─── */
 function getActiveWords() {
@@ -1164,14 +1044,14 @@ document.getElementById("btnSrcAll").addEventListener("click", () => {
   document.getElementById("btnSrcAll").classList.add("active");
   document.getElementById("btnSrcList").classList.remove("active");
   document.getElementById("listPickerWrap").style.display = "none";
-  refreshActiveWords(); updateSRSPips();
+  refreshActiveWords();
 });
 document.getElementById("btnSrcList").addEventListener("click", () => {
   quizSource = "list";
   document.getElementById("btnSrcList").classList.add("active");
   document.getElementById("btnSrcAll").classList.remove("active");
   document.getElementById("listPickerWrap").style.display = "block";
-  refreshActiveWords(); updateSRSPips();
+  refreshActiveWords();
 });
 
 /* ─── LIST PICKER ─── */
@@ -1201,7 +1081,7 @@ function renderListPicker() {
       document.querySelectorAll(".list-item").forEach(el => {
         el.classList.toggle("selected", el.dataset.id === selectedListId);
       });
-      refreshActiveWords(); updateSRSPips();
+      refreshActiveWords();
     });
     grid.appendChild(item);
   });
@@ -1232,124 +1112,10 @@ window.startMode = function(mode) {
     return;
   }
   activeMode = mode;
-  if (mode === "flashcard") startFlashcard();
-  else if (mode === "multiple") startMCQuiz();
-  else startTypingQuiz();
+  if      (mode === "multiple") startMCQuiz();
+  else if (mode === "typing")   startTypingQuiz();
 };
 
-/* ════════════════════════════════════
-   FLASHCARD
-════════════════════════════════════ */
-let fcCards     = [];
-let fcCurrent   = 0;
-let fcCorrect   = 0;
-let fcFlipped   = false;
-
-function startFlashcard() {
-  const words = getActiveWords();
-  const srs   = getSRS();
-  // Önce due, sonra new, sonra learned
-  const due     = words.filter(w => getCardStatus(w.id) === 'due');
-  const newW    = words.filter(w => getCardStatus(w.id) === 'new');
-  const learned = words.filter(w => getCardStatus(w.id) === 'learned');
-  const pool = [...shuffle(due), ...shuffle(newW), ...shuffle(learned)];
-  fcCards   = pool.slice(0, Math.min(totalCount, pool.length));
-  fcCurrent = 0; fcCorrect = 0;
-  showScreen("flashcard");
-  renderFCCard();
-}
-
-function renderFCCard() {
-  if (fcCurrent >= fcCards.length) { showFCResult(); return; }
-  const card = fcCards[fcCurrent];
-  fcFlipped  = false;
-  document.getElementById("fcCard").classList.remove("flipped");
-  document.getElementById("fcFrontWord").textContent  = card.word;
-  document.getElementById("fcBackMeaning").textContent = card.meaning;
-
-  const ml = document.getElementById("fcBackMeanings");
-  ml.innerHTML = "";
-  if (card.meanings && card.meanings.length > 1) {
-    card.meanings.slice(1).forEach(m => {
-      const span = document.createElement("div");
-      span.className   = "fc-meaning-item";
-      span.textContent = m;
-      ml.appendChild(span);
-    });
-  }
-
-  document.getElementById("fcRatingWrap").classList.remove("visible");
-  document.getElementById("fcProgressFill").style.width = (fcCurrent / fcCards.length * 100) + "%";
-  document.getElementById("fcProgressLabel").textContent = `${fcCurrent+1} / ${fcCards.length}`;
-
-  // Preview intervals
-  updateRateDays(card.id);
-  updateFCStats();
-}
-
-function updateRateDays(wordId) {
-  const labels = ["~1 gün","~3 gün","~7 gün","~14 gün"];
-  const days = [
-    intervalDays(1, wordId),
-    intervalDays(2, wordId),
-    intervalDays(3, wordId),
-    intervalDays(4, wordId)
-  ];
-  days.forEach((d,i) => {
-    const el = document.getElementById("rateDay" + (i+1));
-    if (el) el.textContent = d === 1 ? "~1 gün" : `~${d} gün`;
-  });
-}
-
-function updateFCStats() {
-  const words = getActiveWords();
-  let newC=0, dueC=0, doneC=0;
-  words.forEach(w => {
-    const s = getCardStatus(w.id);
-    if      (s === 'new') newC++;
-    else if (s === 'due') dueC++;
-    else                  doneC++;
-  });
-  const row = document.getElementById("fcStatsRow");
-  row.innerHTML = "";
-  if (newC)  row.innerHTML += `<span class="fc-stat new">${newC} yeni</span>`;
-  if (dueC)  row.innerHTML += `<span class="fc-stat due">${dueC} tekrar</span>`;
-  const done = fcCurrent;
-  if (done)  row.innerHTML += `<span class="fc-stat done">${done} tamamlandı</span>`;
-}
-
-window.flipCard = function() {
-  if (fcFlipped) return;
-  fcFlipped = true;
-  document.getElementById("fcCard").classList.add("flipped");
-  setTimeout(() => {
-    document.getElementById("fcRatingWrap").classList.add("visible");
-  }, 350);
-};
-
-window.rateCard = function(quality) {
-  const card = fcCards[fcCurrent];
-  rateCardSRS(card.id, quality);
-  if (quality >= 3) fcCorrect++;
-  fcCurrent++;
-  if (fcCurrent >= fcCards.length) showFCResult();
-  else renderFCCard();
-  updateSRSPips();
-};
-
-function showFCResult() {
-  const total = fcCards.length;
-  const note  = document.getElementById("fcResultNote");
-  note.style.display = "block";
-
-  // SRS stats after session
-  const words = getActiveWords();
-  const dueNow = words.filter(w => getCardStatus(w.id) === 'due').length;
-  const learned = words.filter(w => getCardStatus(w.id) === 'learned').length;
-  note.innerHTML = `<strong>Seans tamamlandı!</strong> Öğrenilen: <strong style="color:var(--gr)">${learned}</strong> · Tekrar bekleyen: <strong style="color:var(--re)">${dueNow}</strong> kelime.`;
-
-  showResultScreen(fcCorrect, total, 'flashcard');
-}
 
 /* ════════════════════════════════════
    ÇOKTAN SEÇMELİ
@@ -1527,16 +1293,14 @@ function showResultScreen(score, total, mode) {
     <div class="rb-cell"><span class="rb-num red">${total-score}</span><span class="rb-label">Yanlış</span></div>
     <div class="rb-cell"><span class="rb-num" style="color:var(--v)">${pct}%</span><span class="rb-label">Başarı</span></div>`;
 
-  if (mode !== 'flashcard') document.getElementById("fcResultNote").style.display = "none";
-
+  
   showScreen("result");
 }
 
 document.getElementById("restartBtn").addEventListener("click", () => {
   if (!lastMode) { showScreen("home"); return; }
-  if      (lastMode === "flashcard") startFlashcard();
-  else if (lastMode === "multiple")  startMCQuiz();
-  else                               startTypingQuiz();
+  if (lastMode === "multiple") startMCQuiz();
+  else                         startTypingQuiz();
 });
 document.getElementById("homeBtn").addEventListener("click", () => showScreen("home"));
 
@@ -1606,7 +1370,7 @@ function esc(s) {
 
 function showScreen(name) {
   const home = document.getElementById("view-home");
-  const all  = ["view-loading","view-flashcard","view-mc","view-typing","view-result"];
+  const all  = ["view-loading","view-mc","view-typing","view-result"];
   home.style.display = name==="home" ? "block" : "none";
   all.forEach(id => {
     const el = document.getElementById(id);

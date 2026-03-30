@@ -3,100 +3,674 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Almanca Kelime Quizi — A1'den C1'e Ücretsiz Test | AlmancaPratik</title>
-  <meta name="description" content="Almanca kelime quizi ile A1'den C1'e tüm seviyelerde pratik yap. Kendi kelime listen veya hazır quizler ile der/die/das artikel testi, kelime ezber, çoktan seçmeli sorular. Ücretsiz.">
-  <meta name="keywords" content="almanca kelime quizi, almanca quiz, der die das quiz, almanca artikel testi, almanca kelime testi, almanca a1 quiz, almanca b1 quiz, almanca pratik">
+  <title>Almanca Kelime Quizi — A1'den C1'e Ücretsiz | AlmancaPratik</title>
+  <meta name="description" content="Almanca kelime quizi ile A1'den C1'e tüm seviyelerde pratik yap. Flaş kartlar, çoktan seçmeli, yazarak cevaplama ve der/die/das artikel testi.">
+  <meta name="keywords" content="almanca kelime quizi, almanca quiz, der die das quiz, almanca artikel testi, almanca flashcard, almanca pratik">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://almancapratik.com/quiz/">
-
-  <meta property="og:type"        content="website">
-  <meta property="og:url"         content="https://almancapratik.com/quiz/">
-  <meta property="og:title"       content="Almanca Kelime Quizi — AlmancaPratik">
-  <meta property="og:description" content="Kendi kelime listen veya hazır quizlerle Almanca pratik yap. Der/die/das artikel testi, A1-C1 arası kelime testleri. Ücretsiz.">
-  <meta property="og:locale"      content="tr_TR">
-  <meta property="og:site_name"   content="AlmancaPratik">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Almanca Kelime Quizi",
-    "url": "https://almancapratik.com/quiz/",
-    "description": "Almanca kelime quizi uygulaması. Kendi kelime listesi veya hazır quizlerle A1-C1 arası pratik yapma imkânı sunar.",
-    "applicationCategory": "EducationalApplication",
-    "inLanguage": "tr",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
-    "breadcrumb": {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Ana Sayfa", "item": "https://almancapratik.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Kelime Quizi", "item": "https://almancapratik.com/quiz/" }
-      ]
-    }
-  }
-  </script>
-
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://almancapratik.com/quiz/">
+  <meta property="og:title" content="Almanca Kelime Quizi — AlmancaPratik">
+  <meta property="og:description" content="Flashcard, çoktan seçmeli veya yazarak cevaplama modlarında Almanca pratik yap. Tekrarlama algoritması ile kalıcı öğrenme.">
+  <meta property="og:locale" content="tr_TR">
   <link rel="icon" href="../favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/global.css">
-  <link rel="stylesheet" href="./quiz.css">
+  <style>
+/* ══════════════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════════════ */
+:root {
+  --bg:       #07070a;
+  --s1:       rgba(255,255,255,0.030);
+  --s2:       rgba(255,255,255,0.056);
+  --s3:       rgba(255,255,255,0.088);
+  --br:       rgba(255,255,255,0.068);
+  --br2:      rgba(255,255,255,0.14);
+  --t1:       #f2efe9;
+  --t2:       rgba(242,239,233,0.52);
+  --t3:       rgba(242,239,233,0.28);
+  --v:        #a064ff;
+  --vd:       #7040cc;
+  --vg:       rgba(160,100,255,0.22);
+  --g:        #c9a84c;
+  --gl:       #e8c97a;
+  --gg:       rgba(201,168,76,0.22);
+  --gr:       #4fd69c;
+  --grg:      rgba(79,214,156,0.22);
+  --re:       #f07068;
+  --reg:      rgba(240,112,104,0.18);
+  --bl:       #60c8f0;
+  --blg:      rgba(96,200,240,0.18);
+  --fd:       'Syne', sans-serif;
+  --fb:       'DM Sans', sans-serif;
+  --fm:       'DM Mono', monospace;
+  --ease:     0.22s cubic-bezier(0.4,0,0.2,1);
+  --spring:   0.44s cubic-bezier(0.22,1,0.36,1);
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:var(--fb); background:var(--bg); color:var(--t1); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
 
+/* ══════════════════════════════════════════════════
+   BACKGROUND
+══════════════════════════════════════════════════ */
+.bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.bg-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 80% 70% at 50% 0%, black 20%, transparent 100%);
+}
+.bg-orb { position:absolute; border-radius:50%; filter:blur(130px); animation:drift 16s ease-in-out infinite alternate; }
+.bg-orb-1 { width:700px; height:700px; top:-260px; left:-180px; background:radial-gradient(circle, rgba(160,100,255,0.1), transparent 70%); }
+.bg-orb-2 { width:500px; height:500px; bottom:5%; right:-150px; background:radial-gradient(circle, rgba(201,168,76,0.07), transparent 70%); animation-delay:-8s; }
+.bg-orb-3 { width:400px; height:400px; top:40%; left:50%; background:radial-gradient(circle, rgba(96,200,240,0.045), transparent 70%); animation-delay:-4s; }
+@keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(40px,28px) scale(1.08)} }
 
+/* ══════════════════════════════════════════════════
+   PAGE / LAYOUT
+══════════════════════════════════════════════════ */
+.page { position:relative; z-index:1; max-width:1060px; margin:0 auto; padding:52px 24px 120px; }
+.screen-wrap { position:relative; z-index:1; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:88px 20px 48px; }
+.screen-wrap.hidden { display:none !important; }
+#view-home { position:relative; z-index:1; }
+
+/* ══════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════ */
+.hero {
+  text-align:center;
+  padding:64px 20px 52px;
+  animation:fadeUp var(--spring) both;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--v); margin-bottom:22px;
+  padding:5px 16px 5px 10px;
+  border:1px solid rgba(160,100,255,0.26); border-radius:999px;
+  background:rgba(160,100,255,0.07);
+}
+.eyebrow-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--v); box-shadow:0 0 10px var(--v);
+  animation:blink 2.6s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.6)} }
+
+.hero-title {
+  font-family:var(--fd); font-size:clamp(38px,7vw,72px);
+  font-weight:800; letter-spacing:-0.045em; line-height:.95;
+  color:var(--t1); margin-bottom:20px;
+}
+.hero-title-em {
+  display:block;
+  background:linear-gradient(135deg, #c084ff 0%, #a064ff 40%, #7cc8ff 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; background-size:200% 200%;
+  animation:shimmer 6s ease-in-out infinite;
+}
+@keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+.hero-sub {
+  font-size:16px; line-height:1.8; color:var(--t2);
+  max-width:540px; margin:0 auto 36px;
+}
+
+/* Stats */
+.hero-stats {
+  display:flex; align-items:center; justify-content:center;
+  gap:0; margin-bottom:48px;
+}
+.stat-pill { display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 28px; }
+.stat-pill-num { font-family:var(--fd); font-size:24px; font-weight:800; color:var(--t1); }
+.stat-pill-label { font-size:11px; color:var(--t3); text-transform:uppercase; letter-spacing:.08em; }
+.stat-div { width:1px; height:36px; background:var(--br); }
+
+/* Tabs */
+.tab-row {
+  display:flex; background:var(--s1); border:1px solid var(--br);
+  border-radius:16px; padding:5px; gap:4px;
+  max-width:580px; margin:0 auto 52px;
+}
+.tab-btn {
+  flex:1; padding:12px 18px; background:transparent; border:none; border-radius:12px;
+  color:var(--t2); font-family:var(--fb); font-size:14px; font-weight:500; cursor:pointer;
+  transition:var(--ease); display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.tab-btn svg { width:16px; height:16px; flex-shrink:0; }
+.tab-btn:hover { background:var(--s2); color:var(--t1); }
+.tab-btn.active { background:var(--v); color:#fff; font-weight:700; box-shadow:0 4px 20px var(--vg); }
+
+/* ══════════════════════════════════════════════════
+   LOGIN PROMPT
+══════════════════════════════════════════════════ */
+.login-card {
+  display:flex; align-items:center; gap:18px;
+  background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.2);
+  border-radius:16px; padding:22px 26px; margin-bottom:36px;
+}
+.login-card-icon { font-size:32px; flex-shrink:0; }
+.login-card-body { flex:1; }
+.login-card-title { font-family:var(--fd); font-size:15px; font-weight:700; color:var(--t1); margin-bottom:4px; }
+.login-card-desc { font-size:13px; color:var(--t2); line-height:1.6; }
+.login-card-btn {
+  padding:10px 22px; background:var(--g); border:none; border-radius:10px;
+  color:#0a0a0f; font-family:var(--fb); font-size:13px; font-weight:700;
+  text-decoration:none; white-space:nowrap; transition:var(--ease);
+}
+.login-card-btn:hover { background:var(--gl); }
+
+/* ══════════════════════════════════════════════════
+   MODE SELECTION CARDS
+══════════════════════════════════════════════════ */
+.mode-section-header {
+  display:flex; align-items:center; gap:12px; margin-bottom:20px;
+}
+.mode-section-label {
+  font-family:var(--fm); font-size:10px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--t3);
+}
+.mode-section-line { flex:1; height:1px; background:var(--br); }
+
+.mode-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px;
+}
+@media(max-width:640px) { .mode-grid { grid-template-columns:1fr; } }
+
+.mode-card {
+  position:relative; overflow:hidden;
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:20px; padding:28px 24px;
+  cursor:pointer; transition:var(--spring);
+  display:flex; flex-direction:column; gap:14px;
+  animation:fadeUp var(--spring) both;
+}
+.mode-card::before {
+  content:''; position:absolute; inset:0; opacity:0;
+  transition:opacity var(--ease);
+  border-radius:inherit;
+}
+.mode-card:hover { transform:translateY(-4px); border-color:var(--mode-color); box-shadow:0 16px 48px var(--mode-glow); }
+.mode-card:hover::before { opacity:1; background:radial-gradient(ellipse 80% 60% at 50% 0%, var(--mode-fade), transparent); }
+
+.mode-card.flashcard { --mode-color:rgba(201,168,76,0.5); --mode-glow:rgba(201,168,76,0.14); --mode-fade:rgba(201,168,76,0.06); }
+.mode-card.multiple  { --mode-color:rgba(160,100,255,0.5); --mode-glow:rgba(160,100,255,0.14); --mode-fade:rgba(160,100,255,0.06); }
+.mode-card.typing    { --mode-color:rgba(96,200,240,0.5);  --mode-glow:rgba(96,200,240,0.14);  --mode-fade:rgba(96,200,240,0.06); }
+
+.mode-card-icon {
+  width:48px; height:48px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; flex-shrink:0;
+  border:1px solid;
+}
+.mode-card.flashcard .mode-card-icon { background:rgba(201,168,76,0.1); border-color:rgba(201,168,76,0.25); }
+.mode-card.multiple  .mode-card-icon { background:rgba(160,100,255,0.1); border-color:rgba(160,100,255,0.25); }
+.mode-card.typing    .mode-card-icon { background:rgba(96,200,240,0.1);  border-color:rgba(96,200,240,0.25); }
+
+.mode-card-body {}
+.mode-card-title { font-family:var(--fd); font-size:16px; font-weight:800; color:var(--t1); margin-bottom:6px; letter-spacing:-.02em; }
+.mode-card-desc  { font-size:13px; color:var(--t2); line-height:1.6; }
+
+.mode-card-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:var(--fm); font-size:10px; font-weight:600; letter-spacing:.06em;
+  padding:3px 10px; border-radius:6px;
+}
+.mode-card.flashcard .mode-card-badge { background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); color:var(--g); }
+.mode-card.multiple  .mode-card-badge { background:rgba(160,100,255,0.1); border:1px solid rgba(160,100,255,0.2); color:var(--v); }
+.mode-card.typing    .mode-card-badge { background:rgba(96,200,240,0.1);  border:1px solid rgba(96,200,240,0.2);  color:var(--bl); }
+
+.mode-card-arrow {
+  margin-left:auto; font-size:14px; opacity:0; transform:translateX(-6px);
+  transition:var(--ease); color:var(--t2);
+}
+.mode-card:hover .mode-card-arrow { opacity:1; transform:translateX(0); }
+
+/* SRS stats on flashcard card */
+.mode-srs-stats { display:flex; gap:8px; flex-wrap:wrap; }
+.srs-pip {
+  font-family:var(--fm); font-size:10px; font-weight:600;
+  padding:3px 9px; border-radius:5px;
+}
+.srs-pip.new  { background:rgba(96,200,240,0.1);  border:1px solid rgba(96,200,240,0.2);  color:var(--bl); }
+.srs-pip.due  { background:rgba(240,112,104,0.1); border:1px solid rgba(240,112,104,0.2); color:var(--re); }
+.srs-pip.done { background:rgba(79,214,156,0.1);  border:1px solid rgba(79,214,156,0.2);  color:var(--gr); }
+
+/* Settings row */
+.quiz-settings-row {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--s1); border:1px solid var(--br);
+  border-radius:16px; padding:18px 24px;
+  gap:16px; flex-wrap:wrap; margin-bottom:14px;
+}
+.settings-group { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.setting-label { font-size:13px; color:var(--t2); }
+.stepper { display:flex; align-items:center; gap:10px; }
+.stepper button {
+  width:32px; height:32px; border-radius:50%;
+  border:1px solid var(--br); background:var(--s2); color:var(--t1);
+  font-size:16px; cursor:pointer; transition:var(--ease);
+  display:flex; align-items:center; justify-content:center;
+}
+.stepper button:hover { border-color:var(--v); background:var(--vg); color:var(--v); }
+.stepper span { font-family:var(--fd); font-size:22px; font-weight:700; min-width:30px; text-align:center; }
+
+/* List selector */
+.list-selector-wrap { margin-bottom:14px; }
+.list-source-tabs { display:flex; gap:6px; margin-bottom:10px; }
+.list-source-tab {
+  flex:1; padding:8px 12px; background:var(--s1);
+  border:1px solid var(--br); border-radius:9px;
+  color:var(--t3); font-family:var(--fb); font-size:12px; font-weight:500;
+  cursor:pointer; transition:var(--ease); text-align:center;
+}
+.list-source-tab:hover { background:var(--s2); color:var(--t2); }
+.list-source-tab.active { background:rgba(201,168,76,0.1); border-color:rgba(201,168,76,0.3); color:var(--g); }
+
+.list-picker { margin-top:6px; }
+.list-grid { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.08) transparent; }
+.list-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 14px; background:rgba(255,255,255,0.025);
+  border:1px solid var(--br); border-radius:9px;
+  cursor:pointer; transition:var(--ease);
+}
+.list-item:hover { background:var(--s2); border-color:var(--br2); }
+.list-item.selected { background:rgba(201,168,76,0.08); border-color:rgba(201,168,76,0.3); }
+.list-item-name { font-size:13px; font-weight:500; color:var(--t1); }
+.list-item.selected .list-item-name { color:var(--g); }
+.list-item-count { font-size:11px; color:var(--t3); }
+.list-check { width:17px; height:17px; border:1.5px solid var(--br2); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:var(--ease); }
+.list-item.selected .list-check { background:var(--g); border-color:var(--g); }
+.list-check-inner { display:none; }
+.list-item.selected .list-check-inner { display:block; width:7px; height:7px; background:#0a0a0f; border-radius:50%; }
+
+/* Admin / word info */
+.word-info-bar {
+  font-family:var(--fm); font-size:11px; color:var(--t3);
+  padding:8px 0; display:flex; align-items:center; justify-content:space-between;
+}
+.btn-admin-create {
+  display:none; align-items:center; gap:6px;
+  padding:7px 14px; background:rgba(201,168,76,0.08);
+  border:1px solid rgba(201,168,76,0.22); border-radius:8px;
+  color:var(--g); font-family:var(--fb); font-size:12px; font-weight:700;
+  text-decoration:none; transition:var(--ease);
+}
+.btn-admin-create:hover { background:rgba(201,168,76,0.16); }
+.btn-admin-create.visible { display:flex; }
+
+/* ══════════════════════════════════════════════════
+   SHARED QUIZ GRID
+══════════════════════════════════════════════════ */
+.section-header { margin-bottom:24px; }
+.section-eyebrow { font-family:var(--fm); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--t3); margin-bottom:8px; }
+.section-title { font-family:var(--fd); font-size:clamp(18px,3vw,26px); font-weight:800; letter-spacing:-.025em; color:var(--t1); }
+
+.shared-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(290px,1fr));
+  gap:16px; margin-bottom:56px;
+}
+.shared-card {
+  background:var(--s1); border:1px solid var(--br); border-radius:18px;
+  padding:24px; text-decoration:none; display:flex; flex-direction:column; gap:12px;
+  cursor:pointer; transition:var(--spring);
+  animation:fadeUp var(--spring) both;
+}
+.shared-card:hover { border-color:rgba(160,100,255,0.3); background:var(--s2); transform:translateY(-3px); box-shadow:0 16px 48px rgba(160,100,255,0.1); }
+.shared-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.shared-card-icon { width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+.shared-card-icon.normal  { background:rgba(96,200,240,0.1); border:1px solid rgba(96,200,240,0.2); }
+.shared-card-icon.artikel { background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); }
+.shared-card-badge { font-family:var(--fm); font-size:10px; font-weight:600; padding:3px 9px; border-radius:5px; }
+.shared-card-badge.normal  { background:rgba(96,200,240,0.1); border:1px solid rgba(96,200,240,0.2); color:var(--bl); }
+.shared-card-badge.artikel { background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); color:var(--g); }
+.shared-card-name { font-family:var(--fd); font-size:15px; font-weight:700; color:var(--t1); letter-spacing:-.01em; line-height:1.3; }
+.shared-card-desc { font-size:13px; color:var(--t2); line-height:1.5; }
+.shared-card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--br); }
+.shared-card-meta { font-family:var(--fm); font-size:10.5px; color:var(--t3); }
+.shared-card-arrow { font-size:14px; color:var(--v); opacity:0; transform:translateX(-4px); transition:var(--ease); }
+.shared-card:hover .shared-card-arrow { opacity:1; transform:translateX(0); }
+
+.grid-loading { display:flex; align-items:center; gap:12px; padding:36px; color:var(--t2); font-size:14px; grid-column:1/-1; }
+.grid-spinner { width:20px; height:20px; border:2px solid rgba(255,255,255,0.1); border-top-color:var(--v); border-radius:50%; animation:spin .7s linear infinite; flex-shrink:0; }
+@keyframes spin { to { transform:rotate(360deg) } }
+.grid-empty { grid-column:1/-1; text-align:center; padding:56px 20px; color:var(--t3); font-size:14px; }
+
+/* ══════════════════════════════════════════════════
+   LOADING SCREEN
+══════════════════════════════════════════════════ */
+.loader-card { text-align:center; }
+.loader-ring { width:56px; height:56px; border:3px solid rgba(255,255,255,0.06); border-top-color:var(--v); border-radius:50%; animation:spin 1s linear infinite; margin:0 auto 20px; }
+.loader-text { color:var(--t2); font-size:15px; }
+
+/* ══════════════════════════════════════════════════
+   QUIZ TOP BAR (shared by MC + Typing)
+══════════════════════════════════════════════════ */
+.quiz-layout { width:100%; max-width:660px; display:flex; flex-direction:column; gap:22px; animation:fadeUp var(--spring) both; }
+
+.quiz-topbar { display:flex; align-items:center; gap:16px; }
+.progress-wrap { flex:1; display:flex; align-items:center; gap:12px; }
+.progress-bar { flex:1; height:5px; background:rgba(255,255,255,0.07); border-radius:99px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--v),#7cc8ff); border-radius:99px; transition:width .5s var(--spring); width:0%; }
+.progress-label { font-size:13px; color:var(--t3); white-space:nowrap; font-weight:500; font-family:var(--fm); }
+.score-badge {
+  background:rgba(79,214,156,0.1); border:1px solid rgba(79,214,156,0.22);
+  color:var(--gr); font-family:var(--fd); font-size:14px; font-weight:700;
+  padding:5px 14px; border-radius:20px; white-space:nowrap; transition:var(--ease);
+}
+.mode-label-pill {
+  font-family:var(--fm); font-size:10px; font-weight:600; padding:4px 11px;
+  border-radius:6px; letter-spacing:.05em;
+}
+.mode-label-pill.mc     { background:rgba(160,100,255,0.1); border:1px solid rgba(160,100,255,0.2); color:var(--v); }
+.mode-label-pill.typing { background:rgba(96,200,240,0.1);  border:1px solid rgba(96,200,240,0.2);  color:var(--bl); }
+
+/* Question card */
+.question-card {
+  background:var(--s1); border:1px solid var(--br); border-radius:26px;
+  padding:52px 44px 44px; text-align:center; position:relative; overflow:hidden;
+}
+.question-card::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 70% 55% at 50% 0%, rgba(160,100,255,0.055), transparent);
+  pointer-events:none;
+}
+.q-direction { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--v); font-weight:600; margin-bottom:18px; opacity:.8; }
+.q-word { font-family:var(--fd); font-size:clamp(30px,5.5vw,52px); font-weight:800; line-height:1.1; color:var(--t1); margin-bottom:0; word-break:break-word; }
+
+/* Choice buttons */
+.choices-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.choice-btn {
+  background:var(--s1); border:1.5px solid var(--br); border-radius:16px;
+  padding:20px 16px; color:var(--t1); font-family:var(--fb); font-size:15px;
+  cursor:pointer; transition:var(--ease); text-align:left; line-height:1.4; word-break:break-word;
+}
+.choice-btn:hover:not(:disabled) { border-color:var(--v); background:rgba(160,100,255,0.08); transform:translateY(-2px); }
+.choice-btn.correct { border-color:var(--gr) !important; background:rgba(79,214,156,0.1) !important; color:var(--gr); }
+.choice-btn.wrong   { border-color:var(--re) !important; background:rgba(240,112,104,0.07) !important; color:var(--re); }
+.choice-btn:disabled { cursor:default; }
+
+/* Type area */
+.type-area { display:flex; gap:10px; }
+.type-area input {
+  flex:1; background:var(--s2); border:1.5px solid var(--br); border-radius:14px;
+  padding:17px 20px; color:var(--t1); font-family:var(--fb); font-size:16px;
+  outline:none; transition:var(--ease);
+}
+.type-area input:focus { border-color:var(--v); box-shadow:0 0 0 3px rgba(160,100,255,0.12); }
+.type-area input.correct { border-color:var(--gr); background:rgba(79,214,156,0.05); }
+.type-area input.wrong   { border-color:var(--re); background:rgba(240,112,104,0.05); }
+.btn-check {
+  background:var(--v); border:none; border-radius:14px; padding:17px 26px;
+  color:white; font-family:var(--fd); font-size:15px; font-weight:700;
+  cursor:pointer; transition:var(--ease); white-space:nowrap;
+}
+.btn-check:hover { background:var(--vd); transform:translateY(-2px); }
+.btn-check:disabled { opacity:.5; cursor:default; transform:none; }
+
+/* Feedback */
+.feedback {
+  background:var(--s1); border:1px solid var(--br); border-radius:20px;
+  padding:22px 26px; display:flex; align-items:center; gap:16px;
+  animation:slideIn .3s var(--spring) both;
+}
+@keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.feedback.hidden { display:none; }
+.feedback.correct-fb { border-color:rgba(79,214,156,0.3); background:rgba(79,214,156,0.05); }
+.feedback.wrong-fb   { border-color:rgba(240,112,104,0.3); background:rgba(240,112,104,0.05); }
+.feedback-icon { font-size:26px; flex-shrink:0; }
+.feedback-text { flex:1; font-size:14px; line-height:1.65; color:var(--t2); }
+.feedback-text strong { color:var(--t1); font-size:15px; }
+.btn-next {
+  background:transparent; border:1px solid var(--br); border-radius:10px;
+  padding:10px 20px; color:var(--t1); font-family:var(--fd); font-size:14px;
+  font-weight:600; cursor:pointer; transition:var(--ease); white-space:nowrap; flex-shrink:0;
+}
+.btn-next:hover { border-color:var(--v); color:var(--v); }
+
+.hidden { display:none !important; }
+
+/* ══════════════════════════════════════════════════
+   FLASHCARD SCREEN
+══════════════════════════════════════════════════ */
+.fc-layout { width:100%; max-width:620px; display:flex; flex-direction:column; gap:20px; animation:fadeUp var(--spring) both; }
+
+.fc-topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.fc-progress-wrap { flex:1; display:flex; align-items:center; gap:12px; }
+.fc-stats-row { display:flex; gap:8px; }
+.fc-stat { font-family:var(--fm); font-size:10px; font-weight:600; padding:4px 10px; border-radius:6px; }
+.fc-stat.new  { background:rgba(96,200,240,0.1); border:1px solid rgba(96,200,240,0.2); color:var(--bl); }
+.fc-stat.due  { background:rgba(240,112,104,0.1); border:1px solid rgba(240,112,104,0.2); color:var(--re); }
+.fc-stat.done { background:rgba(79,214,156,0.1); border:1px solid rgba(79,214,156,0.2); color:var(--gr); }
+
+/* 3D Flashcard */
+.fc-scene { perspective:1200px; width:100%; }
+.fc-card {
+  width:100%; min-height:260px;
+  position:relative; transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(0.4, 0.2, 0.2, 1);
+  cursor:pointer;
+}
+.fc-card.flipped { transform:rotateY(180deg); }
+
+.fc-face {
+  position:absolute; inset:0;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  border-radius:24px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:44px 40px;
+  border:1px solid var(--br); min-height:260px;
+}
+.fc-front {
+  background:var(--s1);
+  background-image:radial-gradient(ellipse 70% 55% at 50% 0%, rgba(201,168,76,0.06), transparent);
+}
+.fc-back {
+  transform:rotateY(180deg);
+  background:var(--s1);
+  background-image:radial-gradient(ellipse 70% 55% at 50% 0%, rgba(79,214,156,0.06), transparent);
+}
+
+.fc-lang-tag {
+  font-family:var(--fm); font-size:10px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; padding:4px 12px; border-radius:20px; margin-bottom:20px;
+}
+.fc-front .fc-lang-tag { background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25); color:var(--g); }
+.fc-back  .fc-lang-tag { background:rgba(79,214,156,0.1); border:1px solid rgba(79,214,156,0.25); color:var(--gr); }
+
+.fc-word {
+  font-family:var(--fd); font-size:clamp(32px,6vw,54px); font-weight:800;
+  letter-spacing:-.04em; color:var(--t1); text-align:center; word-break:break-word; line-height:1.1;
+}
+.fc-hint {
+  margin-top:18px; font-size:12px; color:var(--t3); display:flex; align-items:center; gap:7px;
+  animation:breathe 2.5s ease-in-out infinite;
+}
+@keyframes breathe { 0%,100%{opacity:.5} 50%{opacity:1} }
+.fc-hint-icon { font-size:14px; }
+.fc-meaning { font-size:clamp(20px,3.5vw,32px); color:var(--gr); font-family:var(--fd); font-weight:700; text-align:center; word-break:break-word; }
+.fc-meanings-list { display:flex; flex-direction:column; gap:4px; text-align:center; margin-top:8px; }
+.fc-meaning-item { font-size:14px; color:var(--t2); }
+
+/* Rating buttons */
+.fc-rating-wrap {
+  display:none; flex-direction:column; gap:12px;
+  animation:fadeUp .3s var(--spring) both;
+}
+.fc-rating-wrap.visible { display:flex; }
+.fc-rating-label { text-align:center; font-size:12px; color:var(--t3); letter-spacing:.05em; }
+.fc-rating-btns { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.fc-rate-btn {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:16px 8px; border-radius:16px; border:1.5px solid var(--br);
+  background:var(--s1); cursor:pointer; transition:var(--spring); font-family:var(--fb);
+}
+.fc-rate-btn:hover { transform:translateY(-3px); }
+.fc-rate-btn .rate-label { font-size:14px; font-weight:700; }
+.fc-rate-btn .rate-days  { font-size:10px; color:var(--t3); font-family:var(--fm); }
+
+.fc-rate-btn.again { --rc:var(--re); --rcg:var(--reg); }
+.fc-rate-btn.hard  { --rc:rgba(255,165,80,0.9); --rcg:rgba(255,165,80,0.15); }
+.fc-rate-btn.good  { --rc:var(--v); --rcg:var(--vg); }
+.fc-rate-btn.easy  { --rc:var(--gr); --rcg:var(--grg); }
+
+.fc-rate-btn { color:var(--rc); }
+.fc-rate-btn:hover { border-color:var(--rc); background:var(--rcg); box-shadow:0 8px 24px var(--rcg); }
+
+.fc-skip-wrap { display:flex; justify-content:center; gap:12px; }
+.fc-btn-back {
+  background:transparent; border:1px solid var(--br); border-radius:10px;
+  padding:9px 20px; color:var(--t2); font-family:var(--fd); font-size:13px;
+  font-weight:600; cursor:pointer; transition:var(--ease);
+}
+.fc-btn-back:hover { border-color:var(--br2); color:var(--t1); }
+
+/* ══════════════════════════════════════════════════
+   RESULT SCREEN
+══════════════════════════════════════════════════ */
+.result-layout { text-align:center; max-width:520px; animation:fadeUp var(--spring) both; }
+.result-emoji { font-size:72px; margin-bottom:16px; animation:bounce .7s var(--spring) both .2s; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+.result-title { font-family:var(--fd); font-size:clamp(36px,6vw,56px); font-weight:800; letter-spacing:-.04em; margin-bottom:12px; }
+.result-score {
+  font-family:var(--fd); font-size:clamp(60px,10vw,88px); font-weight:800; line-height:1;
+  background:linear-gradient(135deg,var(--g),var(--v)); -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:10px;
+}
+.result-msg { color:var(--t2); font-size:16px; margin-bottom:32px; }
+
+.result-breakdown { display:flex; gap:14px; justify-content:center; margin-bottom:36px; flex-wrap:wrap; }
+.rb-cell {
+  background:var(--s1); border:1px solid var(--br); border-radius:16px;
+  padding:18px 24px; display:flex; flex-direction:column; align-items:center; gap:5px;
+  min-width:100px;
+}
+.rb-num { font-family:var(--fd); font-size:32px; font-weight:800; }
+.rb-num.green  { color:var(--gr); }
+.rb-num.red    { color:var(--re); }
+.rb-label { font-size:11px; color:var(--t3); text-transform:uppercase; letter-spacing:.08em; }
+
+.result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.btn-restart {
+  background:linear-gradient(135deg,var(--v),var(--vd)); border:none;
+  border-radius:14px; padding:15px 36px; color:white;
+  font-family:var(--fd); font-size:16px; font-weight:700;
+  cursor:pointer; transition:var(--spring); box-shadow:0 8px 28px var(--vg);
+}
+.btn-restart:hover { transform:translateY(-3px); box-shadow:0 18px 44px var(--vg); }
+.btn-home-result {
+  background:transparent; border:1px solid var(--br); border-radius:14px;
+  padding:15px 32px; color:var(--t2); font-family:var(--fd); font-size:16px;
+  font-weight:600; cursor:pointer; transition:var(--ease);
+}
+.btn-home-result:hover { border-color:var(--br2); color:var(--t1); }
+
+/* Flashcard result note */
+.fc-result-note {
+  margin-top:16px; padding:16px 20px;
+  background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.18);
+  border-radius:12px; font-size:13px; color:var(--t2); line-height:1.7;
+}
+.fc-result-note strong { color:var(--g); }
+
+/* ══════════════════════════════════════════════════
+   SEO SECTION
+══════════════════════════════════════════════════ */
+.seo-section { margin-top:72px; padding-top:52px; border-top:1px solid var(--br); }
+.feat-strip {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:1px; background:var(--br); border:1px solid var(--br);
+  border-radius:16px; overflow:hidden; margin-bottom:20px;
+}
+@media(max-width:600px) { .feat-strip { grid-template-columns:repeat(2,1fr); } }
+.feat-cell { background:var(--bg); padding:22px 18px; display:flex; flex-direction:column; gap:5px; }
+.feat-num { font-family:var(--fd); font-size:26px; font-weight:800; color:var(--v); }
+.feat-label { font-size:12px; color:var(--t3); }
+
+.seo-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px; }
+@media(max-width:640px) { .seo-grid { grid-template-columns:1fr; } }
+.seo-card { padding:28px 24px; background:var(--s1); border:1px solid var(--br); border-radius:16px; transition:border-color var(--ease); }
+.seo-card:hover { border-color:var(--br2); }
+.seo-card-wide { grid-column:1/-1; }
+.seo-kicker { font-family:var(--fm); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--v); opacity:.7; margin-bottom:10px; }
+.seo-card h2 { font-family:var(--fd); font-size:clamp(15px,2.2vw,18px); font-weight:800; letter-spacing:-.02em; color:var(--t1); margin-bottom:12px; line-height:1.3; }
+.seo-card p  { font-size:13.5px; line-height:1.8; color:var(--t2); margin-bottom:9px; }
+.seo-card p:last-child { margin-bottom:0; }
+.seo-card a  { color:var(--g); text-decoration:none; }
+.seo-card a:hover { text-decoration:underline; }
+.seo-card strong { color:var(--t1); font-weight:600; }
+.seo-card ul { list-style:none; display:flex; flex-direction:column; gap:7px; margin:8px 0; }
+.seo-card ul li { font-size:13.5px; line-height:1.7; color:var(--t2); padding-left:16px; position:relative; }
+.seo-card ul li::before { content:''; position:absolute; left:0; top:9px; width:4px; height:4px; border-radius:50%; background:var(--v); opacity:.6; }
+.faq { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.faq-item { padding:16px 18px; background:rgba(255,255,255,0.02); border:1px solid var(--br); border-radius:10px; transition:border-color var(--ease); }
+.faq-item:hover { border-color:var(--br2); }
+.faq-q { font-family:var(--fd); font-size:13.5px; font-weight:700; color:var(--t1); margin-bottom:6px; }
+.faq-a { font-size:13px; line-height:1.75; color:var(--t2); }
+.faq-a a { color:var(--g); text-decoration:none; }
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════ */
+@media(max-width:640px) {
+  .choices-grid { grid-template-columns:1fr; }
+  .type-area { flex-direction:column; }
+  .question-card { padding:36px 24px; }
+  .fc-rating-btns { grid-template-columns:1fr 1fr; }
+  .fc-face { padding:36px 24px; }
+  .hero-stats { flex-wrap:wrap; gap:16px; }
+  .stat-div { display:none; }
+  .stat-pill { padding:0 14px; }
+  .login-card { flex-direction:column; text-align:center; }
+}
+@media(max-width:480px) {
+  .mode-grid { gap:10px; }
+  .result-breakdown { gap:10px; }
+  .result-actions { flex-direction:column; align-items:center; }
+}
+  </style>
 </head>
 <body>
 
+<!-- BG -->
 <div class="bg-canvas" aria-hidden="true">
   <div class="bg-grid"></div>
-  <div class="bg-glow bg-glow-1"></div>
-  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ══════════════════════════════════════════════════
      ANA SAYFA
-══════════════════════════════════════ -->
-<div id="viewMain">
+══════════════════════════════════════════════════ -->
+<div id="view-home">
 <div class="page">
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-eyebrow"><span class="eyebrow-dot"></span>Ücretsiz · Türkçe · A1–C1</div>
-    <h1 class="hero-title">
-      Almanca Kelime<br>
-      <span class="hero-title-em">Quiz Merkezi</span>
-    </h1>
-    <p class="hero-sub">
-      Kendi kelime listenle kişisel quiz oluştur veya hazır quizlerden birini seç.
-      Çoktan seçmeli, yazarak cevaplama ve <strong>der/die/das artikel testi</strong> modlarıyla pratik yap.
-    </p>
+    <h1 class="hero-title">Almanca Kelime<br><span class="hero-title-em">Quiz Merkezi</span></h1>
+    <p class="hero-sub">Flashcard ile kalıcı öğren, çoktan seçmeli ile kendini sına, yazarak pekiştir. Tek platformda üç güçlü mod.</p>
 
-    <div class="hero-stats" role="status" aria-label="Platform istatistikleri">
-      <div class="stat-pill">
-        <span class="stat-pill-num">2</span>
-        <span class="stat-pill-label">Quiz Modu</span>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-pill">
-        <span class="stat-pill-num">A1–C1</span>
-        <span class="stat-pill-label">Seviye</span>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-pill">
-        <span class="stat-pill-num">0₺</span>
-        <span class="stat-pill-label">Ücret</span>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-pill">
-        <span class="stat-pill-num" id="statQuizCount">—</span>
-        <span class="stat-pill-label">Hazır Quiz</span>
-      </div>
+    <div class="hero-stats" role="status">
+      <div class="stat-pill"><span class="stat-pill-num">3</span><span class="stat-pill-label">Quiz Modu</span></div>
+      <div class="stat-div"></div>
+      <div class="stat-pill"><span class="stat-pill-num">SRS</span><span class="stat-pill-label">Algoritma</span></div>
+      <div class="stat-div"></div>
+      <div class="stat-pill"><span class="stat-pill-num">A1–C1</span><span class="stat-pill-label">Seviye</span></div>
+      <div class="stat-div"></div>
+      <div class="stat-pill"><span class="stat-pill-num" id="statQuizCount">—</span><span class="stat-pill-label">Hazır Quiz</span></div>
     </div>
 
-    <!-- Tab seçici -->
-    <div class="tab-wrap" role="tablist">
+    <div class="tab-row" role="tablist">
       <button class="tab-btn active" id="tabBtnPersonal" onclick="switchTab('personal')" role="tab" aria-selected="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Kendi Quizim
+        Kişisel Quizim
       </button>
       <button class="tab-btn" id="tabBtnShared" onclick="switchTab('shared')" role="tab" aria-selected="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -105,207 +679,317 @@
     </div>
   </section>
 
-  <!-- ── KİŞİSEL QUIZ ── -->
-  <section id="sectionPersonal">
-
-    <!-- Giriş yapmamış kullanıcı -->
-    <div class="login-prompt" id="loginPrompt" style="display:none;">
-      <div class="login-prompt-icon">📚</div>
-      <div class="login-prompt-body">
-        <div class="login-prompt-title">Kişisel kelime listen için giriş yap</div>
-        <div class="login-prompt-desc">Kendi sözlüğünden quiz oluşturmak için ücretsiz hesabınla giriş yap. Hazır quizleri giriş yapmadan oynayabilirsin.</div>
+  <!-- KİŞİSEL QUIZ -->
+  <section id="section-personal">
+    <!-- Giriş yapmamış -->
+    <div class="login-card" id="loginPrompt" style="display:none;">
+      <div class="login-card-icon">📚</div>
+      <div class="login-card-body">
+        <div class="login-card-title">Kişisel kelime listen için giriş yap</div>
+        <div class="login-card-desc">Sözlüğündeki kelimelerle quiz oluşturmak için ücretsiz hesabınla giriş yap.</div>
       </div>
-      <a class="login-prompt-btn" href="../login.html">Giriş Yap →</a>
+      <a class="login-card-btn" href="../login.html">Giriş Yap →</a>
     </div>
 
-    <!-- Kişisel quiz kartı -->
-    <div class="personal-quiz-card" id="personalQuizCard">
-      <div class="pq-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <!-- MOD SEÇİMİ -->
+    <div id="modeSection" style="display:none;">
+      <div class="mode-section-header">
+        <span class="mode-section-label">Mod Seç</span>
+        <div class="mode-section-line"></div>
       </div>
-      <div class="pq-body">
-        <div class="pq-title">Kişisel Kelime Quizi</div>
-        <div class="pq-desc">Sözlüğüne kaydettiğin Almanca kelimelerden otomatik quiz. Almanca→Türkçe ve Türkçe→Almanca yönlü, çoktan seçmeli ve yazarak cevaplama.</div>
-        <div class="pq-meta" id="personalWordInfo">Kelimeler yükleniyor…</div>
-      </div>
-      <!-- Liste Seçimi -->
-      <div class="pq-list-selector" id="pqListSelector" style="display:none;">
-        <div class="pq-list-header">
-          <button class="pq-source-btn active" id="btnSourceAll">Tüm Kelimeler</button>
-          <button class="pq-source-btn" id="btnSourceList">Listeden Seç</button>
+
+      <div class="mode-grid">
+        <!-- FLASHCARD -->
+        <div class="mode-card flashcard" id="modeFlashcard" onclick="startMode('flashcard')" style="animation-delay:0ms">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+            <div class="mode-card-icon">🃏</div>
+            <span class="mode-card-arrow">→</span>
+          </div>
+          <div class="mode-card-body">
+            <div class="mode-card-title">Flashcard</div>
+            <div class="mode-card-desc">Kartı çevir, kendini değerlendir. Akıllı tekrarlama algoritması ile kalıcı ezber.</div>
+          </div>
+          <div>
+            <span class="mode-card-badge">SRS Algoritması</span>
+            <div class="mode-srs-stats" id="srsPips" style="margin-top:8px;"></div>
+          </div>
         </div>
 
-        <div class="pq-list-picker" id="pqListPicker" style="display:none;">
-          <div class="pq-list-loading" id="pqListLoading">
-            <div class="pq-list-spinner"></div>
-            <span>Listeler yükleniyor…</span>
+        <!-- ÇOKTAN SEÇMELİ -->
+        <div class="mode-card multiple" id="modeMC" onclick="startMode('multiple')" style="animation-delay:60ms">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+            <div class="mode-card-icon">🎯</div>
+            <span class="mode-card-arrow">→</span>
           </div>
-          <div class="pq-list-grid" id="pqListGrid" style="display:none;"></div>
-          <div class="pq-list-empty" id="pqListEmpty" style="display:none;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
-            Henüz liste oluşturmadın.
-            <a href="../listeler/" style="color:#c9a84c;text-decoration:none;">Liste oluştur →</a>
+          <div class="mode-card-body">
+            <div class="mode-card-title">Çoktan Seçmeli</div>
+            <div class="mode-card-desc">4 seçenek arasından doğru olanı bul. Hızlı ve motive edici alıştırma formatı.</div>
           </div>
+          <div><span class="mode-card-badge">4 Şık · Hızlı</span></div>
+        </div>
+
+        <!-- YAZARAK -->
+        <div class="mode-card typing" id="modeTyping" onclick="startMode('typing')" style="animation-delay:120ms">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+            <div class="mode-card-icon">✍️</div>
+            <span class="mode-card-arrow">→</span>
+          </div>
+          <div class="mode-card-body">
+            <div class="mode-card-title">Yazarak Cevapla</div>
+            <div class="mode-card-desc">Cevabı kendin yaz. En zorlu mod — ama en çok gelişimi sağlayan.</div>
+          </div>
+          <div><span class="mode-card-badge">Yazma · Zorlu</span></div>
         </div>
       </div>
-      <div class="pq-settings">
-        <div class="pq-count-wrap">
-          <span class="pq-count-label">Soru sayısı</span>
+
+      <!-- Ayarlar -->
+      <div class="quiz-settings-row">
+        <div class="settings-group">
+          <span class="setting-label">Soru sayısı:</span>
           <div class="stepper">
             <button id="countDown" aria-label="Azalt">−</button>
             <span id="countVal" aria-live="polite">10</span>
             <button id="countUp" aria-label="Artır">+</button>
           </div>
         </div>
-        <button class="btn-start-personal" id="startBtn">Başla →</button>
+        <span id="wordInfoText" style="font-family:var(--fm);font-size:11px;color:var(--t3);"></span>
+      </div>
+
+      <!-- Liste seçimi -->
+      <div class="list-selector-wrap">
+        <div class="list-source-tabs">
+          <button class="list-source-tab active" id="btnSrcAll">Tüm Kelimeler</button>
+          <button class="list-source-tab" id="btnSrcList">Listeden Seç</button>
+        </div>
+        <div id="listPickerWrap" style="display:none;">
+          <div class="list-picker">
+            <div id="listPickerLoading" style="display:flex;align-items:center;gap:8px;padding:10px 0;font-size:12px;color:var(--t3);">
+              <div class="grid-spinner" style="width:14px;height:14px;border-width:2px;border-top-color:var(--g);"></div>
+              Listeler yükleniyor…
+            </div>
+            <div class="list-grid" id="listGrid" style="display:none;"></div>
+            <div id="listEmpty" style="display:none;font-size:12px;color:var(--t3);padding:10px 4px;">
+              Henüz liste yok. <a href="../listeler/" style="color:var(--g);text-decoration:none;">Liste oluştur →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+        <a class="btn-admin-create" id="adminQuizBtn" href="shared/">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Paylaşılabilir Quiz Oluştur
+        </a>
       </div>
     </div>
-
-    <!-- Admin quiz oluştur linki -->
-    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
-      <a class="admin-quiz-btn" id="adminQuizBtn" href="shared/">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-        Paylaşılabilir Quiz Oluştur
-      </a>
-    </div>
-
   </section>
 
-  <!-- ── HAZIR QUIZler ── -->
-  <section id="sectionShared" style="display:none;">
-    <div class="section-head">
-      <div>
-        <div class="section-label">Hazır Quizler</div>
-        <h2 class="section-title">Herkese açık quizler</h2>
-      </div>
+  <!-- HAZIR QUIZler -->
+  <section id="section-shared" style="display:none;">
+    <div class="section-header">
+      <div class="section-eyebrow">Hazır Quizler</div>
+      <h2 class="section-title">Herkese Açık Quizler</h2>
     </div>
     <div class="shared-grid" id="sharedGrid">
-      <div class="grid-loading"><div class="spinner"></div><span>Quizler yükleniyor…</span></div>
+      <div class="grid-loading"><div class="grid-spinner"></div><span>Quizler yükleniyor…</span></div>
     </div>
   </section>
 
-  <!-- ── SEO İÇERİK ── -->
+  <!-- SEO -->
   <div class="seo-section">
-
-    <div class="feature-strip">
-      <div class="feature-cell"><span class="feat-num">2</span><span class="feat-label">Quiz modu</span></div>
-      <div class="feature-cell"><span class="feat-num">∞</span><span class="feat-label">Kişisel kelime</span></div>
-      <div class="feature-cell"><span class="feat-num">5</span><span class="feat-label">CEFR seviyesi</span></div>
-      <div class="feature-cell"><span class="feat-num">0₺</span><span class="feat-label">Tamamen ücretsiz</span></div>
+    <div class="feat-strip">
+      <div class="feat-cell"><span class="feat-num">3</span><span class="feat-label">Quiz modu</span></div>
+      <div class="feat-cell"><span class="feat-num">SRS</span><span class="feat-label">Tekrarlama</span></div>
+      <div class="feat-cell"><span class="feat-num">5</span><span class="feat-label">CEFR seviyesi</span></div>
+      <div class="feat-cell"><span class="feat-num">0₺</span><span class="feat-label">Tamamen ücretsiz</span></div>
     </div>
-
     <div class="seo-grid">
-
       <div class="seo-card">
-        <div class="seo-kicker">Nasıl Çalışır</div>
-        <h2>Almanca Kelime Quizi Nasıl Kullanılır?</h2>
-        <p>AlmancaPratik'in quiz aracı iki farklı şekilde çalışır. <strong>Kişisel Quiz</strong> modunda, <a href="../kelimeler/">sözlüğüne kaydettiğin kelimeler</a> otomatik olarak test sorularına dönüşür. Almanca→Türkçe ve Türkçe→Almanca yönlerinde hem çoktan seçmeli hem de yazarak cevaplama soruları gelir.</p>
-        <p><strong>Hazır Quiz</strong> modunda ise giriş yapmana gerek yoktur. Hazır kelime listelerinden oluşturulan quizleri hemen oynayabilirsin.</p>
-        <p>Her iki modda da soru sayısını 4'ten kelime listesinin tamamına kadar ayarlayabilirsin.</p>
+        <div class="seo-kicker">Flashcard & SRS</div>
+        <h2>Tekrarlama Algoritması Nedir?</h2>
+        <p>Flashcard modunda <strong>SM-2 algoritması</strong> kullanılır. Her kelimeyi "Tekrar / Zor / İyi / Kolay" şeklinde değerlendirirsin. Algoritma zorlandığın kelimeleri daha sık, bildiğin kelimeleri daha seyrek gösterir.</p>
+        <p>Bu yöntem, klasik ezberden çok daha verimlidir. <strong>Aktif hatırlama</strong> ile bilginin uzun süreli belleğe aktarılması hızlanır.</p>
       </div>
-
       <div class="seo-card">
-        <div class="seo-kicker">Artikel Quizi</div>
-        <h2>Der Die Das Quizi Nedir?</h2>
-        <p>Almancada en çok zorlanan konulardan biri isim artikelleridir. <strong>Der</strong> (maskulin), <strong>Die</strong> (feminin) ve <strong>Das</strong> (nötrum) arasındaki farkı ezberlemek yerine test ederek öğrenmek çok daha kalıcıdır.</p>
-        <p>Artikel quiz modunda ekrana bir Almanca isim gelir, altında üç büyük renkli buton çıkar: mavi <strong>der</strong>, kırmızı <strong>die</strong>, mor <strong>das</strong>. Doğru artikeli seçmen yeterli.</p>
-        <p>Hazır artikel quizlerini deneyin veya <a href="../artikel/">artikel bulucu aracı</a>nı kullanın.</p>
+        <div class="seo-kicker">Modlar</div>
+        <h2>Hangi Modu Seçmeliyim?</h2>
+        <p><strong>Yeni kelimeler öğreniyorsan:</strong> Flashcard modu ile başla. Kartı çevir, kendini değerlendir ve SRS'in işini yapmasına izin ver.</p>
+        <p><strong>Test etmek istiyorsan:</strong> Çoktan seçmeli mod hızlı ve motive edicidir. <strong>Gerçek sınavlara hazırlanıyorsan:</strong> Yazarak cevapla modu en zorlu, ama en etkili seçenek.</p>
       </div>
-
       <div class="seo-card">
         <div class="seo-kicker">İpuçları</div>
-        <h2>Almanca Kelime Ezberleme Taktikleri</h2>
+        <h2>Almanca Kelime Ezberleme</h2>
         <ul>
-          <li>Her kelimeyi artikeli ile birlikte kaydet — "Hund" değil "der Hund" olarak.</li>
-          <li><a href="../metin/">Metin analizi aracıyla</a> gerçek metinlerde gördüğün kelimeleri ekle, ardından quizle pekiştir.</li>
-          <li>Günde 10-15 dakika düzenli quiz, haftada 2 saatlik sıkışık çalışmadan daha etkilidir.</li>
-          <li>Yanlış cevapladığın kelimeler için <a href="../cumlebul/">cümle örnekleri bak</a>; bağlamda gören kelimeler daha kolay hatırlanır.</li>
-          <li>A1-A2 için temel fiiller, B1 için bağlaçlar ve B2+ için akademik kelimeler önceliklidir.</li>
+          <li>Her kelimeyi artikeli ile birlikte öğren — "Hund" değil "der Hund".</li>
+          <li>Günde 10-15 dakika düzenli flashcard, haftada 2 saatlik sıkışık çalışmadan daha etkili.</li>
+          <li><a href="../metin/">Metin analizi aracıyla</a> gerçek metinlerde gördüğün kelimeleri ekle.</li>
+          <li>Yanlış yaptığın kelimeleri <a href="../cumlebul/">cümle örnekleriyle</a> pekiştir.</li>
         </ul>
       </div>
-
       <div class="seo-card">
         <div class="seo-kicker">Diğer Araçlar</div>
         <h2>Quiz Sonrası Ne Yapmalısın?</h2>
-        <p>Quizde yanlış yaptığın kelimeleri <a href="../ceviri/">çeviri aracıyla</a> detaylı incele — artikel, kelime türü ve örnek cümlelerini gör.</p>
-        <p>Seviyeni bilmiyorsan <a href="../seviyeler/seviyetespit/">25 soruluk ücretsiz seviye testini</a> çöz. Hangi CEFR seviyesinde olduğunu öğren ve ona göre kelime listesi oluştur.</p>
-        <p>Yeni kelime eklemek için <a href="../singleadd/">tekli kelime ekleme</a> veya <a href="../wordsadd/">toplu ekleme</a> araçlarını kullanabilirsin.</p>
+        <p>Yanlış yaptığın kelimeleri <a href="../ceviri/">çeviri aracıyla</a> incele. Seviyeni bilmiyorsan <a href="../seviyeler/seviyetespit/">ücretsiz seviye testini</a> çöz.</p>
+        <p>Yeni kelime eklemek için <a href="../singleadd/">tekli</a> veya <a href="../wordsadd/">toplu ekleme</a> araçlarını kullan.</p>
       </div>
-
       <div class="seo-card seo-card-wide">
         <div class="seo-kicker">Sık Sorulan Sorular</div>
-        <h2>Almanca Quiz Hakkında Merak Edilenler</h2>
+        <h2>Quiz Hakkında Merak Edilenler</h2>
         <div class="faq">
           <div class="faq-item">
-            <div class="faq-q">Almanca kelime quizi ücretsiz mi?</div>
-            <p class="faq-a">Evet, tamamen ücretsizdir. Hazır quizleri giriş yapmadan oynayabilirsin. Kişisel kelime listenden quiz oluşturmak için ücretsiz hesap oluşturman yeterli.</p>
+            <div class="faq-q">Flashcard modu nasıl çalışır?</div>
+            <p class="faq-a">Ön yüzde Almanca kelime görünür. Kartı tıklayınca Türkçe anlamı açılır. Ardından "Tekrar / Zor / İyi / Kolay" butonlarından birini seçersin. Algoritma bu değerlendirmeye göre o kelimeyi ne zaman tekrar göstereceğine karar verir.</p>
           </div>
           <div class="faq-item">
-            <div class="faq-q">Der die das quizi nasıl çalışır?</div>
-            <p class="faq-a">Artikel quizinde ekrana bir Almanca isim gelir. Altındaki üç renkli butona (der/die/das) tıklayarak doğru artikeli seçersin. Her doğru cevaptan sonra hemen bir sonraki soruya geçilir. <a href="../artikel/">Artikel bulucu aracımızı</a> da deneyebilirsin.</p>
+            <div class="faq-q">Modlar arasındaki fark nedir?</div>
+            <p class="faq-a">Flashcard SRS algoritmasıyla uzun süreli öğrenme için. Çoktan seçmeli 4 şık arasından seçim yapar, hızlı feedback sunar. Yazarak cevapla modunda ise şıklar yoktur, cevabı tamamen kendin yazarsın.</p>
           </div>
           <div class="faq-item">
-            <div class="faq-q">Kaç kelime eklersem quiz yapabilirim?</div>
-            <p class="faq-a">En az 4 kelime gereklidir. Sözlüğüne ne kadar çok kelime eklersen, quiz o kadar çeşitlenir ve zorlaşır. <a href="../kelimeler/">Kelimeler sayfandan</a> mevcut listenini görebilirsin.</p>
+            <div class="faq-q">SRS verilerim kaydoluyor mu?</div>
+            <p class="faq-a">Evet, tarayıcının yerel depolama alanına (localStorage) kaydedilir. Aynı cihaz ve tarayıcıda devam edebilirsin. Farklı cihazlarla senkronizasyon şu an desteklenmemektedir.</p>
           </div>
           <div class="faq-item">
-            <div class="faq-q">Hazır quizleri de başkasıyla paylaşabilir miyim?</div>
-            <p class="faq-a">Evet! Her hazır quizin kendine özel bir linki var. Linki kopyalayıp arkadaşlarınla paylaşabilirsin. Quize giriş yapmadan da erişilebilir.</p>
+            <div class="faq-q">Kaç kelime gerekli?</div>
+            <p class="faq-a">En az 4 kelime gereklidir. Flashcard için özellikle daha fazla kelime eklemenizi öneririz — SRS algoritması büyük listelerde daha etkili çalışır.</p>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
 </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     QUIZ OYNANMA EKRANLARI
-══════════════════════════════════════ -->
-
-<!-- Yüklenme -->
-<div class="screen hidden" id="screen-loading">
-  <div class="loader-wrap">
+<!-- ══════════════════════════════════════════════════
+     LOADING
+══════════════════════════════════════════════════ -->
+<div class="screen-wrap hidden" id="view-loading">
+  <div class="loader-card">
     <div class="loader-ring"></div>
-    <p>Kelimeler yükleniyor…</p>
+    <p class="loader-text">Kelimeler yükleniyor…</p>
   </div>
 </div>
 
-<!-- Quiz -->
-<div class="screen hidden" id="screen-quiz">
+<!-- ══════════════════════════════════════════════════
+     FLASHCARD EKRANI
+══════════════════════════════════════════════════ -->
+<div class="screen-wrap hidden" id="view-flashcard">
+  <div class="fc-layout">
+    <!-- Topbar -->
+    <div class="fc-topbar">
+      <div class="fc-progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="fcProgressFill"></div></div>
+        <span class="progress-label" id="fcProgressLabel">1 / 10</span>
+      </div>
+      <div class="fc-stats-row" id="fcStatsRow"></div>
+    </div>
+
+    <!-- 3D Kart -->
+    <div class="fc-scene" id="fcScene" onclick="flipCard()">
+      <div class="fc-card" id="fcCard">
+        <div class="fc-face fc-front">
+          <span class="fc-lang-tag">🇩🇪 Almanca</span>
+          <div class="fc-word" id="fcFrontWord">—</div>
+          <div class="fc-hint"><span class="fc-hint-icon">👆</span> Anlamı görmek için tıkla</div>
+        </div>
+        <div class="fc-face fc-back">
+          <span class="fc-lang-tag">🇹🇷 Türkçe</span>
+          <div class="fc-meaning" id="fcBackMeaning">—</div>
+          <div class="fc-meanings-list" id="fcBackMeanings"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Değerlendirme Butonları -->
+    <div class="fc-rating-wrap" id="fcRatingWrap">
+      <div class="fc-rating-label">Bu kelimeyi ne kadar bildiniz?</div>
+      <div class="fc-rating-btns">
+        <button class="fc-rate-btn again" onclick="rateCard(1)">
+          <span class="rate-label">Tekrar</span>
+          <span class="rate-days" id="rateDay1">~1 gün</span>
+        </button>
+        <button class="fc-rate-btn hard" onclick="rateCard(2)">
+          <span class="rate-label">Zor</span>
+          <span class="rate-days" id="rateDay2">~3 gün</span>
+        </button>
+        <button class="fc-rate-btn good" onclick="rateCard(3)">
+          <span class="rate-label">İyi</span>
+          <span class="rate-days" id="rateDay3">~7 gün</span>
+        </button>
+        <button class="fc-rate-btn easy" onclick="rateCard(4)">
+          <span class="rate-label">Kolay</span>
+          <span class="rate-days" id="rateDay4">~14 gün</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Geri -->
+    <div class="fc-skip-wrap">
+      <button class="fc-btn-back" onclick="showScreen('home')">← Geri Dön</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     ÇOKTAN SEÇMELİ EKRANI
+══════════════════════════════════════════════════ -->
+<div class="screen-wrap hidden" id="view-mc">
   <div class="quiz-layout">
     <div class="quiz-topbar">
       <div class="progress-wrap">
-        <div class="progress-bar" role="progressbar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <span class="progress-label" id="progressLabel">1 / 10</span>
+        <div class="progress-bar"><div class="progress-fill" id="mcProgressFill"></div></div>
+        <span class="progress-label" id="mcProgressLabel">1 / 10</span>
       </div>
-      <div class="score-badge" id="scoreBadge">✓ 0</div>
+      <span class="mode-label-pill mc">Çoktan Seçmeli</span>
+      <div class="score-badge" id="mcScoreBadge">✓ 0</div>
     </div>
     <div class="question-card">
-      <div class="q-direction" id="qDirection">Almanca → Türkçe</div>
-      <div class="q-word" id="qWord">—</div>
-      <div class="q-mode-tag" id="qModeTag">Çoktan Seçmeli</div>
+      <div class="q-direction" id="mcQDirection">Almanca → Türkçe</div>
+      <div class="q-word" id="mcQWord">—</div>
     </div>
-    <div class="choices-grid" id="choicesGrid" role="list"></div>
-    <div class="type-area hidden" id="typeArea">
-      <input type="text" id="typeInput" placeholder="Cevabını yaz…" autocomplete="off" spellcheck="false" aria-label="Cevabınızı yazın">
-      <button class="btn-check" id="checkBtn">Kontrol Et</button>
-    </div>
-    <div class="feedback hidden" id="feedback" aria-live="polite">
-      <div class="feedback-icon" id="feedbackIcon"></div>
-      <div class="feedback-text" id="feedbackText"></div>
-      <button class="btn-next" id="nextBtn">Sonraki →</button>
+    <div class="choices-grid" id="mcChoicesGrid"></div>
+    <div class="feedback hidden" id="mcFeedback">
+      <div class="feedback-icon" id="mcFeedbackIcon"></div>
+      <div class="feedback-text" id="mcFeedbackText"></div>
+      <button class="btn-next" id="mcNextBtn">Sonraki →</button>
     </div>
   </div>
 </div>
 
-<!-- Sonuç -->
-<div class="screen hidden" id="screen-result">
-  <div class="result-wrap">
+<!-- ══════════════════════════════════════════════════
+     YAZARAK CEVAPLA EKRANI
+══════════════════════════════════════════════════ -->
+<div class="screen-wrap hidden" id="view-typing">
+  <div class="quiz-layout">
+    <div class="quiz-topbar">
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="tyProgressFill"></div></div>
+        <span class="progress-label" id="tyProgressLabel">1 / 10</span>
+      </div>
+      <span class="mode-label-pill typing">Yazarak Cevapla</span>
+      <div class="score-badge" id="tyScoreBadge">✓ 0</div>
+    </div>
+    <div class="question-card">
+      <div class="q-direction" id="tyQDirection">Almanca → Türkçe</div>
+      <div class="q-word" id="tyQWord">—</div>
+    </div>
+    <div class="type-area">
+      <input type="text" id="tyInput" placeholder="Cevabını yaz…" autocomplete="off" spellcheck="false" aria-label="Cevabınızı yazın">
+      <button class="btn-check" id="tyCheckBtn">Kontrol Et</button>
+    </div>
+    <div class="feedback hidden" id="tyFeedback">
+      <div class="feedback-icon" id="tyFeedbackIcon"></div>
+      <div class="feedback-text" id="tyFeedbackText"></div>
+      <button class="btn-next" id="tyNextBtn">Sonraki →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SONUÇ EKRANI
+══════════════════════════════════════════════════ -->
+<div class="screen-wrap hidden" id="view-result">
+  <div class="result-layout">
     <div class="result-emoji" id="resultEmoji">🎉</div>
     <h2 class="result-title" id="resultTitle">Harika!</h2>
     <div class="result-score" id="resultScore">0 / 0</div>
@@ -313,8 +997,9 @@
     <div class="result-breakdown" id="resultBreakdown"></div>
     <div class="result-actions">
       <button class="btn-restart" id="restartBtn">Tekrar Dene</button>
-      <button class="btn-home" id="homeBtn">← Geri</button>
+      <button class="btn-home-result" id="homeBtn">← Geri</button>
     </div>
+    <div class="fc-result-note" id="fcResultNote" style="display:none;"></div>
   </div>
 </div>
 
@@ -324,19 +1009,18 @@
   window.loadNavbar();
 </script>
 
-<!-- Quiz Logic -->
+<!-- QUIZ LOGIC -->
 <script type="module">
-import { getWords, onAuthChange } from "../js/firebase.js";
-import { onAdminChange }          from "../src/admin.js";
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getWords, onAuthChange }          from "../js/firebase.js";
+import { onAdminChange }                   from "../src/admin.js";
+import { getListeler }                     from "../js/listeler-firebase.js";
+import { initializeApp, getApps }          from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, getDocs, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-// Mevcut importların yanına ekle:
-import { getListeler } from "../js/listeler-firebase.js";
 
-/* ── Firebase ── */
-const firebaseConfig = {
+/* ─── Firebase ─── */
+const FB = {
   apiKey:"AIzaSyCGpRMUNNSx4Kla2YrmDOBHlLSt4rOM1wQ",
   authDomain:"lernen-deutsch-bea69.firebaseapp.com",
   projectId:"lernen-deutsch-bea69",
@@ -344,102 +1028,552 @@ const firebaseConfig = {
   messagingSenderId:"653560965391",
   appId:"1:653560965391:web:545142e9be6d130a54b67a"
 };
-const app = getApps().find(a=>a.name==="[DEFAULT]") || initializeApp(firebaseConfig);
+const app = getApps().find(a=>a.name==="[DEFAULT]") || initializeApp(FB);
 const db  = getFirestore(app);
 
-/* ── STATE ── */
-let allWords   = [];
-let questions  = [];
-let current    = 0;
-let score      = 0;
-let wrongList  = [];
-let totalCount = 10;
-let activeTab  = "personal";
+/* ─── STATE ─── */
+let allWords       = [];
 let allLists       = [];
-let selectedListId = null;   // seçili liste id'si (null = tüm kelimeler)
-let quizSource     = "all";  // "all" | "list"
+let activeWords    = [];
+let quizSource     = "all";
+let selectedListId = null;
+let totalCount     = 10;
+let activeMode     = null; // 'flashcard' | 'multiple' | 'typing'
+let currentUserId  = null;
 
-/* ── AUTH ── */
+/* ─── SRS (SM-2 Algorithm) ─── */
+const SRS_KEY = 'ap_srs_v2';
+
+function getSRS() {
+  try { return JSON.parse(localStorage.getItem(SRS_KEY) || '{}'); } catch { return {}; }
+}
+function saveSRS(data) {
+  try { localStorage.setItem(SRS_KEY, JSON.stringify(data)); } catch {}
+}
+function getCard(wordId) {
+  const d = getSRS();
+  return d[wordId] || { interval:0, reps:0, ef:2.5, next:0 };
+}
+function rateCardSRS(wordId, quality) {
+  // quality: 1=Again(0), 2=Hard(2), 3=Good(4), 4=Easy(5)
+  const q = [0, 0, 2, 4, 5][quality];
+  const d = getSRS();
+  const c = getCard(wordId);
+  if (q >= 3) {
+    if      (c.reps === 0) c.interval = 1;
+    else if (c.reps === 1) c.interval = 6;
+    else c.interval = Math.round(c.interval * c.ef);
+    c.reps++;
+  } else {
+    c.reps = 0;
+    c.interval = 1;
+  }
+  c.ef = Math.max(1.3, c.ef + 0.1 - (5-q)*(0.08+(5-q)*0.02));
+  c.next = Date.now() + c.interval * 864e5;
+  d[wordId] = c;
+  saveSRS(d);
+  return c;
+}
+function getCardStatus(wordId) {
+  const c = getCard(wordId);
+  if (c.reps === 0) return 'new';
+  if (c.next <= Date.now()) return 'due';
+  return 'learned';
+}
+function intervalDays(quality, wordId) {
+  const c = getCard(wordId || '_preview');
+  const q = [0, 0, 2, 4, 5][quality];
+  if (q < 3) return 1;
+  if (c.reps === 0) return 1;
+  if (c.reps === 1) return 6;
+  return Math.round(c.interval * c.ef);
+}
+
+/* ─── AUTH ─── */
 onAuthChange(async (user) => {
   if (user) {
-    document.getElementById("loginPrompt").style.display     = "none";
-    document.getElementById("personalQuizCard").style.display  = "flex";
-    document.getElementById("pqListSelector").style.display    = "block";
-
+    currentUserId = user.uid;
+    document.getElementById("loginPrompt").style.display  = "none";
+    document.getElementById("modeSection").style.display  = "block";
     try {
-      const [data, lists] = await Promise.all([
+      const [words, lists] = await Promise.all([
         getWords(user.uid),
         getListeler(user.uid)
       ]);
-
-      // YENİ
-      allWords = data.map(d => ({
+      allWords = words.map(d => ({
         id: d.id,
         word: d.word,
         meaning: d.meaning,
         meanings: Array.isArray(d.meanings) && d.meanings.length ? d.meanings : [d.meaning]
       })).filter(d => d.word && d.meaning);
       allLists = lists;
-
-      updatePersonalWordInfo();
+      refreshActiveWords();
+      updateSRSPips();
       renderListPicker();
     } catch {
-      document.getElementById("personalWordInfo").textContent = "Kelimeler yüklenemedi.";
+      document.getElementById("wordInfoText").textContent = "Kelimeler yüklenemedi.";
     }
   } else {
-    document.getElementById("loginPrompt").style.display       = "flex";
-    document.getElementById("personalQuizCard").style.display  = "none";
-    document.getElementById("pqListSelector").style.display    = "none";
+    document.getElementById("loginPrompt").style.display  = "flex";
+    document.getElementById("modeSection").style.display  = "none";
   }
 });
-/* ── ADMIN ── */
-onAdminChange((isAdmin) => {
+
+/* ─── ADMIN ─── */
+onAdminChange(isAdmin => {
   const btn = document.getElementById("adminQuizBtn");
   if (btn) btn.classList.toggle("visible", isAdmin);
 });
 
-/* ── HAZIR QUIZLERİ YÜKLE ── */
+/* ─── SRS PIP STATS ─── */
+function updateSRSPips() {
+  const words = getActiveWords();
+  let newC=0, dueC=0, doneC=0;
+  words.forEach(w => {
+    const s = getCardStatus(w.id);
+    if      (s === 'new')     newC++;
+    else if (s === 'due')     dueC++;
+    else                      doneC++;
+  });
+  const pips = document.getElementById("srsPips");
+  pips.innerHTML = "";
+  if (newC)  pips.innerHTML += `<span class="srs-pip new">${newC} yeni</span>`;
+  if (dueC)  pips.innerHTML += `<span class="srs-pip due">${dueC} tekrar</span>`;
+  if (doneC) pips.innerHTML += `<span class="srs-pip done">${doneC} öğrenildi</span>`;
+}
+
+/* ─── ACTIVE WORDS ─── */
+function getActiveWords() {
+  if (quizSource === "list" && selectedListId) {
+    const l = allLists.find(l => l.id === selectedListId);
+    if (l?.wordIds) return allWords.filter(w => l.wordIds.includes(w.id));
+  }
+  return allWords;
+}
+function refreshActiveWords() {
+  activeWords = getActiveWords();
+  const info = document.getElementById("wordInfoText");
+  info.textContent = activeWords.length > 0
+    ? `${activeWords.length} kelime mevcut`
+    : "Kelime bulunamadı";
+}
+
+/* ─── LIST SOURCE TABS ─── */
+document.getElementById("btnSrcAll").addEventListener("click", () => {
+  quizSource = "all"; selectedListId = null;
+  document.getElementById("btnSrcAll").classList.add("active");
+  document.getElementById("btnSrcList").classList.remove("active");
+  document.getElementById("listPickerWrap").style.display = "none";
+  refreshActiveWords(); updateSRSPips();
+});
+document.getElementById("btnSrcList").addEventListener("click", () => {
+  quizSource = "list";
+  document.getElementById("btnSrcList").classList.add("active");
+  document.getElementById("btnSrcAll").classList.remove("active");
+  document.getElementById("listPickerWrap").style.display = "block";
+  refreshActiveWords(); updateSRSPips();
+});
+
+/* ─── LIST PICKER ─── */
+function renderListPicker() {
+  const loading = document.getElementById("listPickerLoading");
+  const grid    = document.getElementById("listGrid");
+  const empty   = document.getElementById("listEmpty");
+  loading.style.display = "none";
+  if (!allLists.length) {
+    grid.style.display = "none"; empty.style.display = "block"; return;
+  }
+  empty.style.display = "none";
+  grid.style.display  = "flex";
+  grid.innerHTML = "";
+  allLists.forEach(liste => {
+    const item = document.createElement("div");
+    item.className = "list-item" + (selectedListId === liste.id ? " selected" : "");
+    item.dataset.id = liste.id;
+    item.innerHTML = `
+      <div>
+        <div class="list-item-name">${esc(liste.name)}</div>
+        <div class="list-item-count">${liste.wordCount||0} kelime</div>
+      </div>
+      <div class="list-check"><div class="list-check-inner"></div></div>`;
+    item.addEventListener("click", () => {
+      selectedListId = selectedListId === liste.id ? null : liste.id;
+      document.querySelectorAll(".list-item").forEach(el => {
+        el.classList.toggle("selected", el.dataset.id === selectedListId);
+      });
+      refreshActiveWords(); updateSRSPips();
+    });
+    grid.appendChild(item);
+  });
+}
+
+/* ─── STEPPER ─── */
+document.getElementById("countDown").addEventListener("click", () => {
+  totalCount = Math.max(5, totalCount - 5); updateCountVal();
+});
+document.getElementById("countUp").addEventListener("click", () => {
+  totalCount = Math.min(50, totalCount + 5); updateCountVal();
+});
+function updateCountVal() { document.getElementById("countVal").textContent = totalCount; }
+
+/* ─── TAB ─── */
+window.switchTab = function(tab) {
+  document.getElementById("tabBtnPersonal").classList.toggle("active", tab === "personal");
+  document.getElementById("tabBtnShared").classList.toggle("active",   tab === "shared");
+  document.getElementById("section-personal").style.display = tab === "personal" ? "block" : "none";
+  document.getElementById("section-shared").style.display   = tab === "shared"   ? "block" : "none";
+};
+
+/* ─── MOD BAŞLAT ─── */
+window.startMode = function(mode) {
+  const words = getActiveWords();
+  if (words.length < 4) {
+    alert("Bu mod için en az 4 kelime gerekli. Lütfen kelime ekle veya farklı bir liste seç.");
+    return;
+  }
+  activeMode = mode;
+  if (mode === "flashcard") startFlashcard();
+  else if (mode === "multiple") startMCQuiz();
+  else startTypingQuiz();
+};
+
+/* ════════════════════════════════════
+   FLASHCARD
+════════════════════════════════════ */
+let fcCards     = [];
+let fcCurrent   = 0;
+let fcCorrect   = 0;
+let fcFlipped   = false;
+
+function startFlashcard() {
+  const words = getActiveWords();
+  const srs   = getSRS();
+  // Önce due, sonra new, sonra learned
+  const due     = words.filter(w => getCardStatus(w.id) === 'due');
+  const newW    = words.filter(w => getCardStatus(w.id) === 'new');
+  const learned = words.filter(w => getCardStatus(w.id) === 'learned');
+  const pool = [...shuffle(due), ...shuffle(newW), ...shuffle(learned)];
+  fcCards   = pool.slice(0, Math.min(totalCount, pool.length));
+  fcCurrent = 0; fcCorrect = 0;
+  showScreen("flashcard");
+  renderFCCard();
+}
+
+function renderFCCard() {
+  if (fcCurrent >= fcCards.length) { showFCResult(); return; }
+  const card = fcCards[fcCurrent];
+  fcFlipped  = false;
+  document.getElementById("fcCard").classList.remove("flipped");
+  document.getElementById("fcFrontWord").textContent  = card.word;
+  document.getElementById("fcBackMeaning").textContent = card.meaning;
+
+  const ml = document.getElementById("fcBackMeanings");
+  ml.innerHTML = "";
+  if (card.meanings && card.meanings.length > 1) {
+    card.meanings.slice(1).forEach(m => {
+      const span = document.createElement("div");
+      span.className   = "fc-meaning-item";
+      span.textContent = m;
+      ml.appendChild(span);
+    });
+  }
+
+  document.getElementById("fcRatingWrap").classList.remove("visible");
+  document.getElementById("fcProgressFill").style.width = (fcCurrent / fcCards.length * 100) + "%";
+  document.getElementById("fcProgressLabel").textContent = `${fcCurrent+1} / ${fcCards.length}`;
+
+  // Preview intervals
+  updateRateDays(card.id);
+  updateFCStats();
+}
+
+function updateRateDays(wordId) {
+  const labels = ["~1 gün","~3 gün","~7 gün","~14 gün"];
+  const days = [
+    intervalDays(1, wordId),
+    intervalDays(2, wordId),
+    intervalDays(3, wordId),
+    intervalDays(4, wordId)
+  ];
+  days.forEach((d,i) => {
+    const el = document.getElementById("rateDay" + (i+1));
+    if (el) el.textContent = d === 1 ? "~1 gün" : `~${d} gün`;
+  });
+}
+
+function updateFCStats() {
+  const words = getActiveWords();
+  let newC=0, dueC=0, doneC=0;
+  words.forEach(w => {
+    const s = getCardStatus(w.id);
+    if      (s === 'new') newC++;
+    else if (s === 'due') dueC++;
+    else                  doneC++;
+  });
+  const row = document.getElementById("fcStatsRow");
+  row.innerHTML = "";
+  if (newC)  row.innerHTML += `<span class="fc-stat new">${newC} yeni</span>`;
+  if (dueC)  row.innerHTML += `<span class="fc-stat due">${dueC} tekrar</span>`;
+  const done = fcCurrent;
+  if (done)  row.innerHTML += `<span class="fc-stat done">${done} tamamlandı</span>`;
+}
+
+window.flipCard = function() {
+  if (fcFlipped) return;
+  fcFlipped = true;
+  document.getElementById("fcCard").classList.add("flipped");
+  setTimeout(() => {
+    document.getElementById("fcRatingWrap").classList.add("visible");
+  }, 350);
+};
+
+window.rateCard = function(quality) {
+  const card = fcCards[fcCurrent];
+  rateCardSRS(card.id, quality);
+  if (quality >= 3) fcCorrect++;
+  fcCurrent++;
+  if (fcCurrent >= fcCards.length) showFCResult();
+  else renderFCCard();
+  updateSRSPips();
+};
+
+function showFCResult() {
+  const total = fcCards.length;
+  const note  = document.getElementById("fcResultNote");
+  note.style.display = "block";
+
+  // SRS stats after session
+  const words = getActiveWords();
+  const dueNow = words.filter(w => getCardStatus(w.id) === 'due').length;
+  const learned = words.filter(w => getCardStatus(w.id) === 'learned').length;
+  note.innerHTML = `<strong>Seans tamamlandı!</strong> Öğrenilen: <strong style="color:var(--gr)">${learned}</strong> · Tekrar bekleyen: <strong style="color:var(--re)">${dueNow}</strong> kelime.`;
+
+  showResultScreen(fcCorrect, total, 'flashcard');
+}
+
+/* ════════════════════════════════════
+   ÇOKTAN SEÇMELİ
+════════════════════════════════════ */
+let mcQuestions = [];
+let mcCurrent   = 0;
+let mcScore     = 0;
+let mcWrong     = [];
+
+function startMCQuiz() {
+  const words    = getActiveWords();
+  const pool     = shuffle(words);
+  const count    = Math.min(totalCount, pool.length);
+  mcQuestions    = [];
+  mcCurrent = 0; mcScore = 0; mcWrong = [];
+
+  for (let i = 0; i < count; i++) {
+    const item  = pool[i];
+    const dir   = Math.random() < .5 ? "de-tr" : "tr-de";
+    const q     = dir === "de-tr" ? item.word    : item.meaning;
+    const a     = dir === "de-tr" ? item.meaning : item.word;
+    const ans   = dir === "de-tr" ? (item.meanings||[a]) : [item.word];
+    const wrongs = shuffle(words.filter(w=>w!==item).map(w=>dir==="de-tr"?w.meaning:w.word)).slice(0,3);
+    mcQuestions.push({ q, a, ans, dir, choices: shuffle([a,...wrongs]) });
+  }
+
+  showScreen("mc");
+  renderMCQuestion();
+}
+
+function renderMCQuestion() {
+  const q = mcQuestions[mcCurrent];
+  document.getElementById("mcProgressFill").style.width  = (mcCurrent/mcQuestions.length*100)+"%";
+  document.getElementById("mcProgressLabel").textContent = `${mcCurrent+1} / ${mcQuestions.length}`;
+  document.getElementById("mcScoreBadge").textContent    = `✓ ${mcScore}`;
+  document.getElementById("mcQDirection").textContent    = q.dir==="de-tr" ? "Almanca → Türkçe" : "Türkçe → Almanca";
+  document.getElementById("mcQWord").textContent         = q.q;
+  document.getElementById("mcFeedback").classList.add("hidden");
+
+  const grid = document.getElementById("mcChoicesGrid");
+  grid.innerHTML = "";
+  q.choices.forEach(ch => {
+    const btn = document.createElement("button");
+    btn.className   = "choice-btn";
+    btn.textContent = ch;
+    btn.addEventListener("click", () => handleMCChoice(ch, q.a, grid));
+    grid.appendChild(btn);
+  });
+}
+
+function handleMCChoice(chosen, correct, grid) {
+  grid.querySelectorAll(".choice-btn").forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correct) b.classList.add("correct");
+    if (b.textContent === chosen && chosen !== correct) b.classList.add("wrong");
+  });
+  const ok = chosen === correct;
+  if (ok) mcScore++;
+  else    mcWrong.push(mcQuestions[mcCurrent]);
+  showMCFeedback(ok, correct);
+}
+
+function showMCFeedback(ok, correct) {
+  const fb = document.getElementById("mcFeedback");
+  fb.className = "feedback " + (ok ? "correct-fb" : "wrong-fb");
+  document.getElementById("mcFeedbackIcon").textContent = ok ? "✅" : "❌";
+  document.getElementById("mcFeedbackText").innerHTML   = ok
+    ? "<strong>Doğru!</strong> Harika gidiyor."
+    : `<strong>Yanlış.</strong> Doğru: <strong style="color:#f2efe9">${esc(correct)}</strong>`;
+}
+
+document.getElementById("mcNextBtn").addEventListener("click", () => {
+  mcCurrent++;
+  if (mcCurrent >= mcQuestions.length) showResultScreen(mcScore, mcQuestions.length, 'multiple');
+  else renderMCQuestion();
+});
+
+/* ════════════════════════════════════
+   YAZARAK CEVAPLA
+════════════════════════════════════ */
+let tyQuestions = [];
+let tyCurrent   = 0;
+let tyScore     = 0;
+let tyWrong     = [];
+
+function startTypingQuiz() {
+  const words  = getActiveWords();
+  const pool   = shuffle(words);
+  const count  = Math.min(totalCount, pool.length);
+  tyQuestions  = [];
+  tyCurrent = 0; tyScore = 0; tyWrong = [];
+
+  for (let i = 0; i < count; i++) {
+    const item = pool[i];
+    const dir  = Math.random() < .5 ? "de-tr" : "tr-de";
+    const q    = dir === "de-tr" ? item.word    : item.meaning;
+    const a    = dir === "de-tr" ? item.meaning : item.word;
+    const ans  = dir === "de-tr" ? (item.meanings||[a]) : [item.word];
+    tyQuestions.push({ q, a, ans, dir });
+  }
+
+  showScreen("typing");
+  renderTYQuestion();
+}
+
+function renderTYQuestion() {
+  const q = tyQuestions[tyCurrent];
+  document.getElementById("tyProgressFill").style.width  = (tyCurrent/tyQuestions.length*100)+"%";
+  document.getElementById("tyProgressLabel").textContent = `${tyCurrent+1} / ${tyQuestions.length}`;
+  document.getElementById("tyScoreBadge").textContent    = `✓ ${tyScore}`;
+  document.getElementById("tyQDirection").textContent    = q.dir==="de-tr" ? "Almanca → Türkçe" : "Türkçe → Almanca";
+  document.getElementById("tyQWord").textContent         = q.q;
+  document.getElementById("tyFeedback").classList.add("hidden");
+
+  const inp = document.getElementById("tyInput");
+  inp.value = ""; inp.disabled = false;
+  inp.className = "";
+  document.getElementById("tyCheckBtn").disabled = false;
+  setTimeout(() => inp.focus(), 80);
+}
+
+document.getElementById("tyCheckBtn").addEventListener("click", checkTyping);
+document.getElementById("tyInput").addEventListener("keydown", e => { if (e.key==="Enter") checkTyping(); });
+
+function checkTyping() {
+  const q   = tyQuestions[tyCurrent];
+  const inp = document.getElementById("tyInput");
+  const val = inp.value.trim();
+  if (!val) return;
+  const ok  = (q.ans||[q.a]).some(a => norm(a) === norm(val));
+  inp.disabled = true;
+  document.getElementById("tyCheckBtn").disabled = true;
+  inp.classList.add(ok ? "correct" : "wrong");
+  if (ok) tyScore++;
+  else    tyWrong.push(tyQuestions[tyCurrent]);
+  showTYFeedback(ok, q.a);
+}
+
+function showTYFeedback(ok, correct) {
+  const fb = document.getElementById("tyFeedback");
+  fb.className = "feedback " + (ok ? "correct-fb" : "wrong-fb");
+  document.getElementById("tyFeedbackIcon").textContent = ok ? "✅" : "❌";
+  document.getElementById("tyFeedbackText").innerHTML   = ok
+    ? "<strong>Doğru!</strong> Mükemmel."
+    : `<strong>Yanlış.</strong> Doğrusu: <strong style="color:#f2efe9">${esc(correct)}</strong>`;
+}
+
+document.getElementById("tyNextBtn").addEventListener("click", () => {
+  tyCurrent++;
+  if (tyCurrent >= tyQuestions.length) showResultScreen(tyScore, tyQuestions.length, 'typing');
+  else renderTYQuestion();
+});
+
+/* ════════════════════════════════════
+   RESULT SCREEN
+════════════════════════════════════ */
+let lastScore=0, lastTotal=0, lastMode=null;
+
+function showResultScreen(score, total, mode) {
+  lastScore=score; lastTotal=total; lastMode=mode;
+  const pct = Math.round((score/total)*100);
+  let emoji, title, msg;
+  if (pct===100)   {emoji="🏆";title="Mükemmel!";        msg="Tüm soruları doğru yanıtladın!";}
+  else if(pct>=80) {emoji="🎉";title="Harika!";           msg="Çok başarılı bir performans!";}
+  else if(pct>=60) {emoji="👍";title="İyi İş!";           msg="Biraz daha pratikle mükemmel olacak.";}
+  else if(pct>=40) {emoji="📚";title="Çalışmaya Devam!"; msg="Bu kelimeleri biraz daha tekrar et.";}
+  else             {emoji="💪";title="Devam Et!";         msg="Her tekrar seni daha iyi yapıyor.";}
+
+  document.getElementById("resultEmoji").textContent = emoji;
+  document.getElementById("resultTitle").textContent = title;
+  document.getElementById("resultScore").textContent = `${score} / ${total}`;
+  document.getElementById("resultMsg").textContent   = msg;
+  document.getElementById("resultBreakdown").innerHTML = `
+    <div class="rb-cell"><span class="rb-num green">${score}</span><span class="rb-label">Doğru</span></div>
+    <div class="rb-cell"><span class="rb-num red">${total-score}</span><span class="rb-label">Yanlış</span></div>
+    <div class="rb-cell"><span class="rb-num" style="color:var(--v)">${pct}%</span><span class="rb-label">Başarı</span></div>`;
+
+  if (mode !== 'flashcard') document.getElementById("fcResultNote").style.display = "none";
+
+  showScreen("result");
+}
+
+document.getElementById("restartBtn").addEventListener("click", () => {
+  if (!lastMode) { showScreen("home"); return; }
+  if      (lastMode === "flashcard") startFlashcard();
+  else if (lastMode === "multiple")  startMCQuiz();
+  else                               startTypingQuiz();
+});
+document.getElementById("homeBtn").addEventListener("click", () => showScreen("home"));
+
+/* ════════════════════════════════════
+   HAZIR QUIZler
+════════════════════════════════════ */
 async function loadSharedQuizzes() {
   const grid = document.getElementById("sharedGrid");
   try {
     const snap = await getDocs(query(collection(db,"sharedQuizzes"), orderBy("createdAt","desc")));
     const list = snap.docs.map(d=>({id:d.id,...d.data()}));
-
-    // Stat güncelle
     document.getElementById("statQuizCount").textContent = list.length;
-
     if (!list.length) {
-      grid.innerHTML = `<div class="grid-empty"><div class="grid-empty-icon">📋</div><p>Henüz hazır quiz eklenmemiş.</p></div>`;
+      grid.innerHTML = `<div class="grid-empty"><p>Henüz hazır quiz eklenmemiş.</p></div>`;
       return;
     }
-
     grid.innerHTML = "";
     list.forEach((q, i) => {
       const card = document.createElement("a");
       card.className = "shared-card";
       card.href      = `play/?id=${q.id}`;
-      card.style.animationDelay = (i * 50) + "ms";
-
+      card.style.animationDelay = (i*50)+"ms";
       const isArtikel = q.quizType === "artikel";
-      const icon      = isArtikel ? "🇩🇪" : "🔤";
-      const badgeCls  = isArtikel ? "artikel" : "normal";
-      const badgeTxt  = isArtikel ? "Artikel Quizi" : "Kelime Quizi";
-      const date      = q.createdAt?.toDate
+      const date = q.createdAt?.toDate
         ? q.createdAt.toDate().toLocaleDateString("tr-TR",{day:"2-digit",month:"short"})
         : "—";
-
       card.innerHTML = `
         <div class="shared-card-top">
-          <div class="shared-card-icon ${badgeCls}">${icon}</div>
-          <span class="shared-card-badge ${badgeCls}">${badgeTxt}</span>
+          <div class="shared-card-icon ${isArtikel?"artikel":"normal"}">${isArtikel?"🇩🇪":"🔤"}</div>
+          <span class="shared-card-badge ${isArtikel?"artikel":"normal"}">${isArtikel?"Artikel Quizi":"Kelime Quizi"}</span>
         </div>
         <div class="shared-card-name">${esc(q.name)}</div>
-        ${q.desc ? `<div class="shared-card-desc">${esc(q.desc)}</div>` : ""}
+        ${q.desc?`<div class="shared-card-desc">${esc(q.desc)}</div>`:""}
         <div class="shared-card-footer">
           <span class="shared-card-meta">${q.words?.length||0} kelime · ${date} · ${q.playCount||0} oynama</span>
           <span class="shared-card-arrow">→</span>
         </div>`;
-
       grid.appendChild(card);
     });
   } catch(e) {
@@ -448,312 +1582,39 @@ async function loadSharedQuizzes() {
 }
 loadSharedQuizzes();
 
-/* ── TAB GEÇIŞI ── */
-window.switchTab = function(tab) {
-  activeTab = tab;
-  document.getElementById("tabBtnPersonal").classList.toggle("active", tab === "personal");
-  document.getElementById("tabBtnShared").classList.toggle("active",   tab === "shared");
-  document.getElementById("sectionPersonal").style.display = tab === "personal" ? "block" : "none";
-  document.getElementById("sectionShared").style.display   = tab === "shared"   ? "block" : "none";
-};
-
-/* ── STEPPER ── */
-document.getElementById("countDown").addEventListener("click", () => {
-  if (totalCount > 5) { totalCount -= 5; updateCountVal(); }
-});
-document.getElementById("countUp").addEventListener("click", () => {
-  if (totalCount < 50) { totalCount += 5; updateCountVal(); }
-});
-function updateCountVal() {
-  document.getElementById("countVal").textContent = totalCount;
-}
-
-/* ── BAŞLAT ── */
-document.getElementById("startBtn").addEventListener("click", () => {
-  const activeWords = getActiveWords();
-
-  if (activeWords.length < 4) {
-    alert("Quiz için en az 4 kelime gerekli. Daha fazla kelime içeren bir liste seç veya kelime ekle!");
-    return;
-  }
-
-  // allWords'ü geçici olarak aktif kelimelere çek
-  const savedAllWords = allWords;
-  allWords = activeWords;
-
-  buildQuestions();
-  current = 0; score = 0; wrongList = [];
-  showScreen("quiz");
-  renderQuestion();
-
-  // Geri yükle (result/restart için)
-  allWords = savedAllWords;
-});
-
-/* ── GERİ ── */
-document.getElementById("restartBtn").addEventListener("click", () => {
-  const activeWords = getActiveWords();
-  const savedAllWords = allWords;
-  allWords = activeWords;
-  buildQuestions();
-  current = 0; score = 0; wrongList = [];
-  showScreen("quiz");
-  renderQuestion();
-  allWords = savedAllWords;
-});
-document.getElementById("homeBtn").addEventListener("click", () => {
-  showScreen("main");
-});
-
 /* ════════════════════════════════════
-   QUIZ LOGIC
+   UTILITIES
 ════════════════════════════════════ */
 function shuffle(arr) {
   const a = [...arr];
-  for (let i = a.length-1; i>0; i--) {
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]] = [a[j],a[i]];
+  for (let i=a.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
   }
   return a;
 }
-/* Aktif kelimeleri döndürür (tüm liste veya seçili liste) */
-function getActiveWords() {
-  if (quizSource === "list" && selectedListId) {
-    const liste = allLists.find(l => l.id === selectedListId);
-    if (liste?.wordIds) {
-      return allWords.filter(w => liste.wordIds.includes(w.id));
-    }
-  }
-  return allWords;
-}
-
-/* Bilgi metnini ve başlat butonunu güncelle */
-function updatePersonalWordInfo() {
-  const words = getActiveWords();
-  const infoEl = document.getElementById("personalWordInfo");
-  const startBtn = document.getElementById("startBtn");
-
-  if (quizSource === "list" && selectedListId) {
-    const liste = allLists.find(l => l.id === selectedListId);
-    infoEl.textContent = liste
-      ? `"${liste.name}" listesinden ${words.length} kelime seçildi.`
-      : `${words.length} kelime seçildi.`;
-  } else {
-    infoEl.textContent = allWords.length > 0
-      ? `Sözlüğünde ${allWords.length} kelime var.`
-      : "Sözlüğünde henüz kelime yok. Önce kelime ekle.";
-  }
-
-  startBtn.disabled = words.length < 4;
-}
-
-/* Liste seçici kartlarını render et */
-function renderListPicker() {
-  const loading = document.getElementById("pqListLoading");
-  const grid    = document.getElementById("pqListGrid");
-  const empty   = document.getElementById("pqListEmpty");
-
-  loading.style.display = "none";
-
-  if (!allLists.length) {
-    grid.style.display  = "none";
-    empty.style.display = "flex";
-    return;
-  }
-
-  empty.style.display = "none";
-  grid.style.display  = "flex";
-  grid.innerHTML = "";
-
-  allLists.forEach(liste => {
-    const item = document.createElement("div");
-    item.className = "pq-list-item" + (selectedListId === liste.id ? " selected" : "");
-    item.dataset.id = liste.id;
-
-    item.innerHTML = `
-      <div class="pq-list-item-left">
-        <div class="pq-list-item-name">${esc(liste.name)}</div>
-        <div class="pq-list-item-count">${liste.wordCount || 0} kelime</div>
-      </div>
-      <div class="pq-list-check">
-        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#0c0c12" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      </div>`;
-
-    item.addEventListener("click", () => {
-      selectedListId = selectedListId === liste.id ? null : liste.id;
-      document.querySelectorAll(".pq-list-item").forEach(el => {
-        el.classList.toggle("selected", el.dataset.id === selectedListId);
-      });
-      updatePersonalWordInfo();
-    });
-
-    grid.appendChild(item);
-  });
-}
-document.getElementById("btnSourceAll").addEventListener("click", () => {
-  quizSource     = "all";
-  selectedListId = null;
-  document.getElementById("btnSourceAll").classList.add("active");
-  document.getElementById("btnSourceList").classList.remove("active");
-  document.getElementById("pqListPicker").style.display = "none";
-  updatePersonalWordInfo();
-});
-
-document.getElementById("btnSourceList").addEventListener("click", () => {
-  quizSource = "list";
-  document.getElementById("btnSourceList").classList.add("active");
-  document.getElementById("btnSourceAll").classList.remove("active");
-  document.getElementById("pqListPicker").style.display = "block";
-  updatePersonalWordInfo();
-});
-function buildQuestions() {
-  const pool  = shuffle(allWords);
-  const count = Math.min(totalCount, pool.length);
-  questions   = [];
-  for (let i = 0; i < count; i++) {
-    const item      = pool[i];
-    const direction = Math.random() < .5 ? "de-tr" : "tr-de";
-    const mode      = Math.random() < .6 ? "multiple" : "typing";
-    const question  = direction === "de-tr" ? item.word    : item.meaning;
-    const answer    = direction === "de-tr" ? item.meaning : item.word;
-    let choices = null;
-    if (mode === "multiple") {
-      const wrongs = shuffle(
-        allWords.filter(w=>w!==item).map(w => direction==="de-tr" ? w.meaning : w.word)
-      ).slice(0,3);
-      choices = shuffle([answer,...wrongs]);
-    }
-    const answers = direction === "de-tr"
-      ? (item.meanings?.length ? item.meanings : [item.meaning])
-      : [item.word];
-    questions.push({ question, answer, answers, direction, mode, choices });
-  }
-}
-
-function renderQuestion() {
-  const q = questions[current];
-  const pct = (current / questions.length) * 100;
-  document.getElementById("progressFill").style.width  = pct + "%";
-  document.getElementById("progressLabel").textContent = `${current+1} / ${questions.length}`;
-  document.getElementById("scoreBadge").textContent    = `✓ ${score}`;
-  document.getElementById("qDirection").textContent    = q.direction==="de-tr" ? "Almanca → Türkçe" : "Türkçe → Almanca";
-  document.getElementById("qWord").textContent         = q.question;
-  const mt = document.getElementById("qModeTag");
-  mt.textContent = q.mode==="multiple" ? "Çoktan Seçmeli" : "Yazarak Cevapla";
-  mt.className   = "q-mode-tag " + (q.mode==="multiple" ? "multiple" : "typing");
-  hideFeedback();
-
-  const grid = document.getElementById("choicesGrid");
-  const ta   = document.getElementById("typeArea");
-  const inp  = document.getElementById("typeInput");
-
-  if (q.mode === "multiple") {
-    grid.classList.remove("hidden"); ta.classList.add("hidden");
-    grid.innerHTML = "";
-    q.choices.forEach(ch => {
-      const btn = document.createElement("button");
-      btn.className   = "choice-btn";
-      btn.textContent = ch;
-      btn.addEventListener("click", () => handleChoice(ch, q.answer, grid));
-      grid.appendChild(btn);
-    });
-  } else {
-    grid.classList.add("hidden"); ta.classList.remove("hidden");
-    inp.value=""; inp.disabled=false; inp.className="";
-    document.getElementById("checkBtn").disabled=false;
-    setTimeout(() => inp.focus(), 60);
-  }
-}
-
-function handleChoice(chosen, correct, grid) {
-  grid.querySelectorAll(".choice-btn").forEach(b => {
-    b.disabled = true;
-    if (b.textContent===correct) b.classList.add("correct");
-    if (b.textContent===chosen && chosen!==correct) b.classList.add("wrong");
-  });
-  if (chosen===correct) score++;
-  else wrongList.push(questions[current]);
-  showFeedback(chosen===correct, correct);
-}
-
-document.getElementById("checkBtn").addEventListener("click", checkTyping);
-document.getElementById("typeInput").addEventListener("keydown", e => { if(e.key==="Enter") checkTyping(); });
-
-function checkTyping() {
-  const q   = questions[current];
-  const inp = document.getElementById("typeInput");
-  const val = inp.value.trim();
-  if (!val) return;
-  const ok = (q.answers || [q.answer]).some(a => norm(a) === norm(val));
-  inp.disabled = true;
-  document.getElementById("checkBtn").disabled = true;
-  inp.classList.add(ok ? "correct" : "wrong");
-  if (ok) score++;
-  else wrongList.push(questions[current]);
-  showFeedback(ok, q.answer);
-}
 
 function norm(s) {
-  return s.trim().toLowerCase()
+  return String(s||"").trim().toLowerCase()
     .replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss")
     .replace(/[^a-z0-9\s]/g,"");
-}
-
-document.getElementById("nextBtn").addEventListener("click", () => {
-  current++;
-  if (current >= questions.length) showResult();
-  else renderQuestion();
-});
-
-function showFeedback(ok, correct) {
-  const fb = document.getElementById("feedback");
-  fb.classList.remove("hidden","correct-fb","wrong-fb");
-  fb.classList.add(ok ? "correct-fb" : "wrong-fb");
-  document.getElementById("feedbackIcon").textContent = ok ? "✅" : "❌";
-  document.getElementById("feedbackText").innerHTML   = ok
-    ? "<strong>Doğru!</strong> Harika gidiyor."
-    : `<strong>Yanlış.</strong> Doğru cevap: <strong style="color:#f0ede8">${esc(correct)}</strong>`;
-}
-
-function hideFeedback() {
-  document.getElementById("feedback").classList.add("hidden");
-}
-
-function showResult() {
-  showScreen("result");
-  const total = questions.length;
-  const pct   = Math.round((score/total)*100);
-  let emoji, title, msg;
-  if(pct===100)    {emoji="🏆";title="Mükemmel!";         msg="Tüm soruları doğru yanıtladın!";}
-  else if(pct>=80) {emoji="🎉";title="Harika!";            msg="Çok başarılı bir performans!";}
-  else if(pct>=60) {emoji="👍";title="İyi İş!";            msg="Biraz daha pratikle mükemmel olacak.";}
-  else if(pct>=40) {emoji="📚";title="Çalışmaya Devam!";  msg="Bu kelimeleri biraz daha tekrar et.";}
-  else             {emoji="💪";title="Devam Et!";          msg="Her tekrar seni daha iyi yapıyor.";}
-  document.getElementById("resultEmoji").textContent  = emoji;
-  document.getElementById("resultTitle").textContent  = title;
-  document.getElementById("resultScore").textContent  = `${score} / ${total}`;
-  document.getElementById("resultMsg").textContent    = msg;
-  document.getElementById("resultBreakdown").innerHTML = `
-    <div class="rb-item"><span class="rb-num green">${score}</span><span class="rb-label">Doğru</span></div>
-    <div class="rb-item"><span class="rb-num red">${total-score}</span><span class="rb-label">Yanlış</span></div>
-    <div class="rb-item"><span class="rb-num" style="color:var(--purple)">${pct}%</span><span class="rb-label">Başarı</span></div>`;
-}
-
-/* ── Ekran geçişi ── */
-function showScreen(name) {
-  document.getElementById("viewMain").style.display         = name==="main"    ? "block"  : "none";
-  document.getElementById("screen-loading").classList.toggle("hidden", name!=="loading");
-  document.getElementById("screen-quiz").classList.toggle("hidden",    name!=="quiz");
-  document.getElementById("screen-result").classList.toggle("hidden",  name!=="result");
-  if (name !== "main") window.scrollTo(0,0);
 }
 
 function esc(s) {
   return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
-</script>
 
+function showScreen(name) {
+  const home = document.getElementById("view-home");
+  const all  = ["view-loading","view-flashcard","view-mc","view-typing","view-result"];
+  home.style.display = name==="home" ? "block" : "none";
+  all.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle("hidden", id !== "view-"+name);
+  });
+  if (name !== "home") window.scrollTo(0,0);
+}
+window.showScreen = showScreen;
+</script>
 </body>
 </html>

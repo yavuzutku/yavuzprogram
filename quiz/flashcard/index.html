@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Almanca Flashcard — SRS ile Kalıcı Öğren | AlmancaPratik</title>
+  <meta name="description" content="SM-2 spaced repetition algoritmasıyla Almanca kelime flashcard. A1'den C1'e tüm seviyeler. Tekrar / Zor / İyi / Kolay değerlendirmesiyle akıllı tekrarlama.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://almancapratik.com/quiz/flashcard/">
+  <meta property="og:title" content="Almanca Flashcard — AlmancaPratik">
+  <meta property="og:description" content="SRS algoritmasıyla Almanca kelime flashcard. Kart çevir, kendini değerlendir, kalıcı öğren.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="../../favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="flashcard.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+   BACKGROUND
+══════════════════════════════════════════════════ -->
+<div class="bg-canvas" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+   SCREEN: LOADING
+══════════════════════════════════════════════════ -->
+<div class="screen" id="screen-loading">
+  <div class="loader-wrap">
+    <div class="loader-ring"></div>
+    <p class="loader-text">Kelimeler yükleniyor…</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+   SCREEN: SETUP
+══════════════════════════════════════════════════ -->
+<div class="screen hidden" id="screen-setup">
+  <div class="setup-wrap">
+
+    <!-- Login Prompt (shown when logged out) -->
+    <div class="login-card" id="loginCard" style="display:none;">
+      <div class="login-card-icon">📚</div>
+      <div class="login-card-body">
+        <div class="login-card-title">Kişisel kelime listen için giriş yap</div>
+        <div class="login-card-desc">Sözlüğündeki kelimelerle flashcard oluşturmak için ücretsiz hesabınla giriş yap.</div>
+      </div>
+      <a class="login-card-btn" href="../../login.html">Giriş Yap →</a>
+    </div>
+
+    <!-- Setup Body (shown when logged in) -->
+    <div id="setupBody">
+
+      <div class="setup-eyebrow">
+        <span class="eyebrow-dot"></span>
+        SRS · SM-2 Algoritması
+      </div>
+
+      <h1 class="setup-title">
+        Almanca<br>
+        <span class="setup-title-em">Flashcard</span>
+      </h1>
+      <p class="setup-sub">
+        Kartı çevir, kendini değerlendir — <strong style="color:var(--t1)">Tekrar / Zor / İyi / Kolay</strong>.
+        Algoritma zor kelimeleri daha sık, bildiklerini daha seyrek gösterir.
+      </p>
+
+      <!-- SRS Strip -->
+      <div class="srs-strip" id="setupSRSStrip" style="display:none;">
+        <div class="srs-strip-cell">
+          <span class="srs-strip-num new" id="srsNew">—</span>
+          <span class="srs-strip-label">Yeni</span>
+        </div>
+        <div class="srs-strip-cell">
+          <span class="srs-strip-num due" id="srsDue">—</span>
+          <span class="srs-strip-label">Tekrar</span>
+        </div>
+        <div class="srs-strip-cell">
+          <span class="srs-strip-num done" id="srsDone">—</span>
+          <span class="srs-strip-label">Öğrenildi</span>
+        </div>
+      </div>
+
+      <!-- Source Card -->
+      <div class="source-card">
+        <div class="source-label">Kelime Kaynağı</div>
+        <div class="source-tabs">
+          <button class="source-tab active" id="srcAll">Tüm Kelimeler</button>
+          <button class="source-tab" id="srcList">Listeden Seç</button>
+        </div>
+
+        <!-- List Picker (shown when srcList active) -->
+        <div id="listPickerWrap" style="display:none;">
+          <div id="listPickerLoading" style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:var(--t3);">
+            <div style="width:12px;height:12px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;"></div>
+            Listeler yükleniyor…
+          </div>
+          <div class="list-grid" id="listPickerGrid" style="display:none;"></div>
+          <div id="listPickerEmpty" style="display:none;font-size:12px;color:var(--t3);padding:8px 4px;">
+            Henüz liste yok.
+            <a href="../../listeler/" style="color:var(--g);text-decoration:none;">Liste oluştur →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Row: Count -->
+      <div class="settings-row">
+        <span class="setting-label">Kart sayısı:</span>
+        <div class="stepper">
+          <button class="stepper-btn" id="stepperDown" aria-label="Azalt">−</button>
+          <span class="stepper-val" id="stepperVal" aria-live="polite">15</span>
+          <button class="stepper-btn" id="stepperUp" aria-label="Artır">+</button>
+        </div>
+      </div>
+
+      <!-- Settings Row: Order -->
+      <div class="settings-row">
+        <span class="setting-label">Sıralama:</span>
+        <div class="order-btns">
+          <button class="order-btn active" id="orderSRS">SRS Öncelikli</button>
+          <button class="order-btn" id="orderShuffle">Karışık</button>
+          <button class="order-btn" id="orderAlpha">Alfabetik</button>
+        </div>
+      </div>
+
+      <!-- Word count info -->
+      <p class="word-count-info" id="wordCountInfo">—</p>
+
+      <!-- Start Button -->
+      <button class="btn-start" id="btnStart" disabled>
+        <span class="btn-start-icon">🃏</span>
+        Flashcard Başlat
+      </button>
+
+      <!-- Hint -->
+      <p class="setup-hint">
+        Klavye kısayolları: <kbd>Space</kbd> kartı çevir &nbsp;·&nbsp;
+        <kbd>1</kbd>&thinsp;Tekrar &nbsp;
+        <kbd>2</kbd>&thinsp;Zor &nbsp;
+        <kbd>3</kbd>&thinsp;İyi &nbsp;
+        <kbd>4</kbd>&thinsp;Kolay
+      </p>
+
+      <!-- Back link -->
+      <p style="text-align:center;margin-top:24px;">
+        <a href="../" style="font-size:13px;color:var(--t3);text-decoration:none;transition:color .2s;"
+           onmouseover="this.style.color='var(--t2)'" onmouseout="this.style.color='var(--t3)'">
+          ← Quiz Merkezine Dön
+        </a>
+      </p>
+    </div><!-- /setupBody -->
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+   SCREEN: STUDY
+══════════════════════════════════════════════════ -->
+<div class="screen hidden" id="screen-study">
+  <div class="study-wrap">
+
+    <!-- Topbar -->
+    <div class="study-topbar">
+      <div class="progress-wrap">
+        <div class="progress-bar">
+          <div class="progress-fill" id="studyProgressFill"></div>
+        </div>
+        <span class="progress-label" id="studyProgressLabel">1 / 15</span>
+      </div>
+      <div class="session-stats" id="sessionStats"></div>
+    </div>
+
+    <!-- 3D Flashcard Scene -->
+    <div class="fc-scene" id="fcScene" role="button" aria-label="Kartı çevirmek için tıkla veya Space'e bas" tabindex="0">
+      <div class="fc-card" id="fcCard">
+
+        <!-- Front -->
+        <div class="fc-face fc-front">
+          <span class="fc-lang-tag">🇩🇪 Almanca</span>
+          <div class="fc-word" id="fcFrontWord">—</div>
+          <div class="fc-hint">
+            <span class="fc-hint-icon">👆</span>
+            Anlamı görmek için tıkla
+          </div>
+          <div class="fc-shortcut-hint"><kbd>Space</kbd></div>
+          <span class="fc-card-num" id="fcCardNum">1 / 15</span>
+        </div>
+
+        <!-- Back -->
+        <div class="fc-face fc-back">
+          <span class="fc-lang-tag">🇹🇷 Türkçe</span>
+          <div class="fc-meaning" id="fcBackMeaning">—</div>
+          <div class="fc-extra-meanings" id="fcExtraMeanings"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Rating Buttons -->
+    <div class="rating-wrap" id="ratingWrap">
+      <div class="rating-header">
+        <span class="rating-label">Bu kelimeyi ne kadar bildiniz?</span>
+        <span class="rating-keyboard-hint">Klavye: 1 · 2 · 3 · 4</span>
+      </div>
+      <div class="rating-btns">
+
+        <button class="rate-btn again" id="rateBtn1" aria-label="Tekrar">
+          <span class="rate-key">1</span>
+          <span class="rate-emoji">😰</span>
+          <span class="rate-label">Tekrar</span>
+          <span class="rate-days" id="rateDay1">~1 gün</span>
+        </button>
+
+        <button class="rate-btn hard" id="rateBtn2" aria-label="Zor">
+          <span class="rate-key">2</span>
+          <span class="rate-emoji">😓</span>
+          <span class="rate-label">Zor</span>
+          <span class="rate-days" id="rateDay2">~3 gün</span>
+        </button>
+
+        <button class="rate-btn good" id="rateBtn3" aria-label="İyi">
+          <span class="rate-key">3</span>
+          <span class="rate-emoji">😊</span>
+          <span class="rate-label">İyi</span>
+          <span class="rate-days" id="rateDay3">~7 gün</span>
+        </button>
+
+        <button class="rate-btn easy" id="rateBtn4" aria-label="Kolay">
+          <span class="rate-key">4</span>
+          <span class="rate-emoji">😄</span>
+          <span class="rate-label">Kolay</span>
+          <span class="rate-days" id="rateDay4">~14 gün</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Back button -->
+    <div class="study-back-row">
+      <button class="btn-back-study" id="btnBackStudy">← Geri Dön</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+   SCREEN: RESULT
+══════════════════════════════════════════════════ -->
+<div class="screen hidden" id="screen-result">
+  <div class="result-wrap">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <h2 class="result-title" id="resultTitle">Harika!</h2>
+    <div class="result-score" id="resultScore">0 / 0</div>
+    <p class="result-msg" id="resultMsg"></p>
+
+    <div class="result-breakdown" id="resultBreakdown"></div>
+
+    <div class="result-srs-note" id="resultSrsNote"></div>
+
+    <div class="result-actions">
+      <button class="btn-restart" id="btnRestart">🔁 Tekrar Dene</button>
+      <button class="btn-home" id="btnHome">← Geri Dön</button>
+    </div>
+  </div>
+</div>
+
+<!-- Navbar -->
+<script type="module">
+  import "../../js/core.js";
+  window.loadNavbar();
+</script>
+
+<!-- Flashcard Logic -->
+<script type="module" src="flashcard.js"></script>
+
+</body>
+</html>

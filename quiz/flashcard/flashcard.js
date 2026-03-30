@@ -540,25 +540,29 @@ function renderCard() {
   if (frontWord) frontWord.textContent = card.word;
 
   // Arka yüz
-  const backMeaning = $("fcBackMeaning");
-  if (backMeaning) backMeaning.textContent = card.meaning;
+  // Arka yüz içeriğini flip animasyonu bittikten SONRA güncelle
+  // --flip: 0.55s → 560ms bekle
+  setTimeout(() => {
+    const backMeaning = $("fcBackMeaning");
+    if (backMeaning) backMeaning.textContent = card.meaning;
 
-  const extraList = $("fcExtraMeanings");
-  if (extraList) {
-    extraList.innerHTML = "";
-    const extras = (card.meanings || []).slice(1).filter(Boolean);
-    if (extras.length) {
-      const sep = document.createElement("div");
-      sep.className = "fc-extra-sep";
-      extraList.appendChild(sep);
-      extras.forEach(m => {
-        const div = document.createElement("div");
-        div.className   = "fc-extra-meaning";
-        div.textContent = m;
-        extraList.appendChild(div);
-      });
+    const extraList = $("fcExtraMeanings");
+    if (extraList) {
+      extraList.innerHTML = "";
+      const extras = (card.meanings || []).slice(1).filter(Boolean);
+      if (extras.length) {
+        const sep = document.createElement("div");
+        sep.className = "fc-extra-sep";
+        extraList.appendChild(sep);
+        extras.forEach(m => {
+          const div = document.createElement("div");
+          div.className   = "fc-extra-meaning";
+          div.textContent = m;
+          extraList.appendChild(div);
+        });
+      }
     }
-  }
+  }, 560); // CSS --flip süresiyle eşleşmeli
 
   // Kart numarası
   const cardNum = $("fcCardNum");

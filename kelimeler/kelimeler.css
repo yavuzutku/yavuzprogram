@@ -593,3 +593,7 @@ body { background: #0c0c12; font-family: 'DM Sans', system-ui, sans-serif; }
   border-color: rgba(239,68,68,0.25);
   color: #ef4444;
 }
+/* ── Delete Progress Bar ────────────────────────────────── */
+#deleteProgressBar {
+  background: linear-gradient(90deg, #c9a84c, #d4b055);
+}

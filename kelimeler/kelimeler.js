@@ -1,4 +1,4 @@
-import { getWords, deleteWord, updateWord, onAuthChange } from "../js/firebase.js";
+import { getWords, deleteWord, updateWord, onAuthChange, batchDeleteWords } from "../js/firebase.js";
 import { showLemmaHintOnce } from '../src/components/lemmaHint.js';
 import { renderTagChips, getSelectedTags, extractAllTags, getAutoLevel } from "../js/tag.js";
 import { fetchWikiData } from "../src/services/wiktionary.js";
@@ -290,22 +290,30 @@ function injectBulkBar() {
       }
     });
   });
+  
   bar.querySelector("#bulkDeleteBtn").addEventListener("click", async () => {
     if (!currentUserId || !selectedIds.size) return;
     const count = selectedIds.size;
     if (!confirm(`Seçili ${count} kelime silinsin mi? Bu işlem geri alınamaz.`)) return;
     const ids = [...selectedIds];
+
+    showProgressModal(count);
     try {
-      await Promise.allSettled(ids.map(id => deleteWord(currentUserId, id)));
+      await batchDeleteWords(currentUserId, ids, (deleted, total) => {
+        updateProgressModal(deleted, total);
+      });
       allWords = allWords.filter(w => !ids.includes(w.id));
+      closeProgressModal();
       exitSelectMode();
-      buildFilterSidebar();
-      renderFiltered();
+      window.buildFilterSidebar?.();
+      window.renderFiltered?.();
       showToast(`${count} kelime silindi.`, "success");
     } catch(err) {
+      closeProgressModal();
       alert("Silme hatası: " + err.message);
     }
   });
+
   bar.querySelector("#bulkCancel").addEventListener("click", exitSelectMode);
 }
 
@@ -1178,7 +1186,53 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   window.renderFiltered = renderFiltered;
+  window.buildFilterSidebar = buildFilterSidebar;  // ← EKLENDİ
 });
+
+/* ── Progress Modal ─────────────────────────────────────── */
+function showProgressModal(total) {
+  document.getElementById("deleteProgressModal")?.remove();
+  const modal = document.createElement("div");
+  modal.id = "deleteProgressModal";
+  modal.style.cssText = `
+    position:fixed; inset:0; background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(6px); z-index:99999;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  `;
+  modal.innerHTML = `
+    <div style="background:#111118; border:1px solid rgba(255,255,255,0.1);
+      border-radius:16px; padding:32px 36px; width:360px; max-width:100%;
+      box-shadow:0 32px 80px rgba(0,0,0,0.8); text-align:center;">
+      <div style="font-size:13px; color:#6b7280; margin-bottom:10px; font-family:'DM Sans',sans-serif;">
+        Siliniyor…
+      </div>
+      <div id="deleteProgressText" style="font-family:'DM Serif Display',Georgia,serif;
+        font-size:22px; color:#f1ece0; margin-bottom:20px;">
+        0 / ${total}
+      </div>
+      <div style="background:rgba(255,255,255,0.06); border-radius:100px; height:6px; overflow:hidden;">
+        <div id="deleteProgressBar" style="height:100%; width:0%; background:#c9a84c;
+          border-radius:100px; transition:width 0.3s ease;"></div>
+      </div>
+      <div id="deleteProgressPct" style="font-size:12px; color:#4b5563; margin-top:10px;">%0</div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function updateProgressModal(deleted, total) {
+  const pct = Math.round((deleted / total) * 100);
+  const textEl = document.getElementById("deleteProgressText");
+  const barEl  = document.getElementById("deleteProgressBar");
+  const pctEl  = document.getElementById("deleteProgressPct");
+  if (textEl) textEl.textContent = `${deleted} / ${total}`;
+  if (barEl)  barEl.style.width  = pct + "%";
+  if (pctEl)  pctEl.textContent  = `%${pct}`;
+}
+
+function closeProgressModal() {
+  document.getElementById("deleteProgressModal")?.remove();
+}
 
 /* ── Toast bildirimi ────────────────────────────────────── */
 function showToast(message, type = "success") {

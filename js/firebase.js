@@ -13,6 +13,7 @@ import {
   sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// YENİ:
 import {
   getFirestore,
   collection,
@@ -22,7 +23,8 @@ import {
   updateDoc,
   doc,
   query,
-  orderBy
+  orderBy,
+  writeBatch          // ← EKLENDİ
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -330,5 +332,32 @@ export async function updateWord(userId, wordId, data) {
   } catch (err) {
     console.error("[updateWord] Firestore hatası:", err);
     throw new Error("Kelime güncellenemedi. Lütfen tekrar dene.");
+  }
+}
+
+/* ============================
+   TOPLU KELİME SİL (Batch)
+============================= */
+
+export async function batchDeleteWords(userId, wordIds, onProgress) {
+  if (!userId || !wordIds?.length) throw new Error("Geçersiz parametre.");
+
+  const BATCH_SIZE = 499; // Firestore limiti 500, güvenli tarafta kalıyoruz
+  let deleted = 0;
+
+  for (let i = 0; i < wordIds.length; i += BATCH_SIZE) {
+    const chunk = wordIds.slice(i, i + BATCH_SIZE);
+    const batch = writeBatch(db);
+    chunk.forEach(id => {
+      batch.delete(doc(db, "users", userId, "words", id));
+    });
+    try {
+      await batch.commit();
+    } catch (err) {
+      console.error("[batchDeleteWords] batch.commit hatası:", err);
+      throw new Error("Toplu silme sırasında hata oluştu.");
+    }
+    deleted += chunk.length;
+    if (typeof onProgress === "function") onProgress(deleted, wordIds.length);
   }
 }

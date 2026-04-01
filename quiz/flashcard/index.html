@@ -11,12 +11,12 @@
   <meta property="og:description" content="SRS algoritmasıyla Almanca kelime flashcard. Kart çevir, kendini değerlendir, kalıcı öğren.">
   <meta property="og:type" content="website">
   <link rel="icon" href="../../favicon.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/global.css">
   <link rel="stylesheet" href="flashcard.css">
 </head>
 <body>
 
+<!-- Background Canvas -->
 <div class="bg-canvas" aria-hidden="true">
   <div class="bg-grid"></div>
   <div class="bg-orb bg-orb-1"></div>
@@ -28,7 +28,7 @@
 <div class="screen" id="screen-loading">
   <div class="loader-wrap">
     <div class="loader-ring"></div>
-    <p class="loader-text">Kelimeler yükleniyor…</p>
+    <p class="loader-text">Yükleniyor…</p>
   </div>
 </div>
 
@@ -38,20 +38,24 @@
 
     <!-- Login Prompt -->
     <div class="login-card" id="loginCard" style="display:none;">
-      <div class="login-card-icon">📚</div>
+      <div class="login-card-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
       <div class="login-card-body">
         <div class="login-card-title">Kişisel kelime listen için giriş yap</div>
         <div class="login-card-desc">Sözlüğündeki kelimelerle flashcard oluşturmak için ücretsiz hesabınla giriş yap.</div>
       </div>
-      <a class="login-card-btn" href="../../login.html">Giriş Yap →</a>
+      <a class="login-card-btn" href="../../login.html">Giriş Yap</a>
     </div>
 
     <!-- Setup Body -->
     <div id="setupBody">
 
       <div class="setup-eyebrow">
-        <span class="eyebrow-dot"></span>
-        SRS · SM-2 Algoritması
+        <span class="eyebrow-dot" aria-hidden="true"></span>
+        SM-2 · Spaced Repetition
       </div>
 
       <h1 class="setup-title">
@@ -59,15 +63,17 @@
         <span class="setup-title-em">Flashcard</span>
       </h1>
       <p class="setup-sub">
-        Kartı çevir, kendini değerlendir — <strong style="color:var(--t1)">Tekrar / Zor / İyi / Kolay</strong>.
-        Yeni kelimeler önce <em>dakika bazlı</em> tekrarla öğrenilir, sonra SM-2 ile uzun vadeli hafızaya aktarılır.
+        Kartı çevir, kendini değerlendir —
+        <strong>Tekrar / Zor / İyi / Kolay.</strong>
+        Yeni kelimeler önce dakika bazlı öğrenme adımlarından geçer,
+        ardından SM-2 algoritmasıyla uzun vadeli hafızaya aktarılır.
       </p>
 
-      <!-- ▸ SRS Strip: 4 hücre (Bugün eklendi) -->
+      <!-- SRS Strip -->
       <div class="srs-strip" id="setupSRSStrip" style="display:none;">
         <div class="srs-strip-cell srs-today-cell">
           <span class="srs-strip-num today" id="srsToday">—</span>
-          <span class="srs-strip-label">🔥 Bugün</span>
+          <span class="srs-strip-label">Bugün</span>
         </div>
         <div class="srs-strip-cell">
           <span class="srs-strip-num new" id="srsNew">—</span>
@@ -91,21 +97,21 @@
           <button class="source-tab" id="srcList">Listeden Seç</button>
         </div>
         <div id="listPickerWrap" style="display:none;">
-          <div id="listPickerLoading" style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:var(--t3);">
-            <div style="width:12px;height:12px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;"></div>
+          <div id="listPickerLoading" style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:11.5px;color:var(--t3);">
+            <div style="width:11px;height:11px;border:1.5px solid rgba(255,255,255,0.1);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;"></div>
             Listeler yükleniyor…
           </div>
           <div class="list-grid" id="listPickerGrid" style="display:none;"></div>
-          <div id="listPickerEmpty" style="display:none;font-size:12px;color:var(--t3);padding:8px 4px;">
+          <div id="listPickerEmpty" style="display:none;font-size:11.5px;color:var(--t3);padding:8px 4px;">
             Henüz liste yok.
-            <a href="../../listeler/" style="color:var(--g);text-decoration:none;">Liste oluştur →</a>
+            <a href="../../listeler/" style="color:var(--g);text-decoration:none;">Liste oluştur</a>
           </div>
         </div>
       </div>
 
       <!-- Kart Sayısı -->
       <div class="settings-row">
-        <span class="setting-label">Kart sayısı:</span>
+        <span class="setting-label">Kart sayısı</span>
         <div class="stepper">
           <button class="stepper-btn" id="stepperDown" aria-label="Azalt">−</button>
           <span class="stepper-val" id="stepperVal" aria-live="polite">15</span>
@@ -115,7 +121,7 @@
 
       <!-- Sıralama -->
       <div class="settings-row">
-        <span class="setting-label">Sıralama:</span>
+        <span class="setting-label">Sıralama</span>
         <div class="order-btns">
           <button class="order-btn active" id="orderSRS">SRS Öncelikli</button>
           <button class="order-btn" id="orderShuffle">Karışık</button>
@@ -123,42 +129,43 @@
         </div>
       </div>
 
-      <!-- Açıklama: Öğrenme sistemi -->
+      <!-- Öğrenme sistemi açıklaması -->
       <div class="learning-info-box">
-        <div class="lib-title">📖 Nasıl çalışır?</div>
+        <div class="lib-title">Nasıl çalışır?</div>
         <div class="lib-row">
-          <span class="lib-dot new"></span>
-          <span><strong>Yeni kelime</strong> → 1 dk · 10 dk · 1 sa tekrar, sonra öğrenildi ✅</span>
+          <span class="lib-dot new" aria-hidden="true"></span>
+          <span><strong>Yeni kelime</strong> — 1 dk · 10 dk · 1 sa adımları, ardından öğrenildi</span>
         </div>
         <div class="lib-row">
-          <span class="lib-dot due"></span>
-          <span><strong>Tekrar bekleyen</strong> → SM-2 ile gün bazlı aralıklı tekrar</span>
+          <span class="lib-dot due" aria-hidden="true"></span>
+          <span><strong>Tekrar bekleyen</strong> — SM-2 ile gün bazlı aralıklı tekrar</span>
         </div>
         <div class="lib-row">
-          <span class="lib-dot again"></span>
-          <span><strong>Yanlış bilinen</strong> → Aynı seansta tekrar gelir 🔄</span>
+          <span class="lib-dot again" aria-hidden="true"></span>
+          <span><strong>Yanlış bilinen</strong> — Aynı seansta deck sonuna eklenir</span>
         </div>
       </div>
 
       <p class="word-count-info" id="wordCountInfo">—</p>
 
       <button class="btn-start" id="btnStart" disabled>
-        <span class="btn-start-icon">🃏</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+        </svg>
         Flashcard Başlat
       </button>
 
       <p class="setup-hint">
-        Klavye kısayolları: <kbd>Space</kbd> kartı çevir &nbsp;·&nbsp;
-        <kbd>1</kbd>&thinsp;Tekrar &nbsp;
-        <kbd>2</kbd>&thinsp;Zor &nbsp;
-        <kbd>3</kbd>&thinsp;İyi &nbsp;
-        <kbd>4</kbd>&thinsp;Kolay
+        Klavye — <kbd>Space</kbd> kartı çevir &nbsp;·&nbsp;
+        <kbd>R</kbd> yeniden oku &nbsp;·&nbsp;
+        <kbd>B</kbd> atla &nbsp;·&nbsp;
+        <kbd>1</kbd>–<kbd>4</kbd> değerlendir
       </p>
 
-      <p style="text-align:center;margin-top:24px;">
-        <a href="../" style="font-size:13px;color:var(--t3);text-decoration:none;transition:color .2s;"
+      <p style="text-align:center;margin-top:20px;">
+        <a href="../" style="font-size:12px;color:var(--t3);text-decoration:none;transition:color .2s;"
            onmouseover="this.style.color='var(--t2)'" onmouseout="this.style.color='var(--t3)'">
-          ← Quiz Merkezine Dön
+          Geri dön
         </a>
       </p>
 
@@ -172,78 +179,166 @@
 
     <!-- Topbar -->
     <div class="study-topbar">
-      <div class="progress-wrap">
-        <div class="progress-bar">
+      <div class="progress-section">
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
           <div class="progress-fill" id="studyProgressFill"></div>
         </div>
         <span class="progress-label" id="studyProgressLabel">1 / 15</span>
       </div>
-      <div class="session-stats" id="sessionStats"></div>
+      <div class="topbar-actions">
+        <span class="session-timer" id="sessionTimer" title="Seans süresi">00:00</span>
+
+        <!-- TTS Toggle -->
+        <button class="topbar-btn active" id="ttsToggle" title="Sesi kapat (Müt)" aria-label="Sesi aç/kapat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+
+        <!-- Card Info -->
+        <button class="topbar-btn" id="infoBtn" title="Kart bilgisi (I)" aria-label="Kart bilgisi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v4M12 16h.01"/>
+          </svg>
+        </button>
+
+        <!-- Bury / Skip -->
+        <button class="topbar-btn" id="buryBtn" title="Bu kartı atla (B)" aria-label="Kartı atla">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
     </div>
+
+    <!-- Session Stats -->
+    <div class="session-stats-row" id="sessionStats"></div>
 
     <!-- 3D Flashcard Scene -->
     <div class="fc-scene" id="fcScene"
          role="button"
-         aria-label="Kartı çevirmek için tıkla veya Space'e bas"
+         aria-label="Kartı çevirmek için tıkla"
          tabindex="0">
       <div class="fc-card" id="fcCard">
 
-        <!-- Ön yüz -->
+        <!-- Ön yüz (Almanca) -->
         <div class="fc-face fc-front">
-          <!-- Durum badge (yeni / öğreniliyor / tekrar / öğrenildi) -->
-          <span class="fc-status-badge badge-new" id="fcStatusBadge">🆕 Yeni</span>
-          <span class="fc-lang-tag">🇩🇪 Almanca</span>
-          <div class="fc-word" id="fcFrontWord">—</div>
+          <span class="fc-status-badge badge-new" id="fcStatusBadge">Yeni</span>
+
+          <span class="fc-lang-tag">Almanca</span>
+          <div class="fc-word" id="fcFrontWord" lang="de">—</div>
+
           <div class="fc-hint">
-            <span class="fc-hint-icon">👆</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
             Anlamı görmek için tıkla
           </div>
           <div class="fc-shortcut-hint"><kbd>Space</kbd></div>
+
+          <!-- TTS replay -->
+          <button class="tts-replay-btn" id="ttsReplay" title="Yeniden oku (R)" aria-label="Kelimeyi yeniden oku">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </button>
+
           <span class="fc-card-num" id="fcCardNum">1 / 15</span>
         </div>
 
-        <!-- Arka yüz -->
+        <!-- Arka yüz (Türkçe) -->
         <div class="fc-face fc-back">
-          <span class="fc-lang-tag">🇹🇷 Türkçe</span>
-          <div class="fc-meaning" id="fcBackMeaning">—</div>
+          <span class="fc-lang-tag">Türkçe</span>
+          <div class="fc-meaning" id="fcBackMeaning" lang="tr">—</div>
           <div class="fc-extra-meanings" id="fcExtraMeanings"></div>
         </div>
 
       </div>
     </div>
 
+    <!-- Card Info Panel (collapsible) -->
+    <div class="card-info-panel" id="cardInfoPanel" aria-label="Kart SRS bilgileri">
+      <div class="cip-header">Kart Bilgisi</div>
+      <div class="cip-grid">
+        <div class="cip-row">
+          <span>Durum</span>
+          <span id="infoState">—</span>
+        </div>
+        <div class="cip-row">
+          <span>Aralık</span>
+          <span id="infoInterval">—</span>
+        </div>
+        <div class="cip-row">
+          <span>Kolaylık Faktörü</span>
+          <span id="infoEase">—</span>
+        </div>
+        <div class="cip-row">
+          <span>Toplam Tekrar</span>
+          <span id="infoReviews">—</span>
+        </div>
+        <div class="cip-row">
+          <span>Sonraki Tekrar</span>
+          <span id="infoNext">—</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Rating Buttons -->
     <div class="rating-wrap" id="ratingWrap">
       <div class="rating-header">
-        <span class="rating-label">Bu kelimeyi ne kadar bildiniz?</span>
-        <span class="rating-keyboard-hint">Klavye: 1 · 2 · 3 · 4</span>
+        <span class="rating-label">Bu kelimeyi ne kadar iyi bildiniz?</span>
+        <span class="rating-keyboard-hint">1 · 2 · 3 · 4</span>
       </div>
       <div class="rating-btns">
 
-        <button class="rate-btn again" id="rateBtn1" aria-label="Tekrar">
+        <!-- Tekrar (Again) -->
+        <button class="rate-btn again" id="rateBtn1" aria-label="Tekrar — bilmedim">
           <span class="rate-key">1</span>
-          <span class="rate-emoji">😰</span>
+          <span class="rate-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.52"/>
+            </svg>
+          </span>
           <span class="rate-label">Tekrar</span>
           <span class="rate-days" id="rateDay1">~1 dk</span>
         </button>
 
-        <button class="rate-btn hard" id="rateBtn2" aria-label="Zor">
+        <!-- Zor (Hard) -->
+        <button class="rate-btn hard" id="rateBtn2" aria-label="Zor — zorlandım">
           <span class="rate-key">2</span>
-          <span class="rate-emoji">😓</span>
+          <span class="rate-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </span>
           <span class="rate-label">Zor</span>
           <span class="rate-days" id="rateDay2">~10 dk</span>
         </button>
 
-        <button class="rate-btn good" id="rateBtn3" aria-label="İyi">
+        <!-- İyi (Good) -->
+        <button class="rate-btn good" id="rateBtn3" aria-label="İyi — bildim">
           <span class="rate-key">3</span>
-          <span class="rate-emoji">😊</span>
+          <span class="rate-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </span>
           <span class="rate-label">İyi</span>
           <span class="rate-days" id="rateDay3">~1 sa</span>
         </button>
 
-        <button class="rate-btn easy" id="rateBtn4" aria-label="Kolay">
+        <!-- Kolay (Easy) -->
+        <button class="rate-btn easy" id="rateBtn4" aria-label="Kolay — çok kolay">
           <span class="rate-key">4</span>
-          <span class="rate-emoji">😄</span>
+          <span class="rate-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/><polyline points="20 12 9 23 4 18"/>
+            </svg>
+          </span>
           <span class="rate-label">Kolay</span>
           <span class="rate-days" id="rateDay4">~1 gün</span>
         </button>
@@ -251,9 +346,9 @@
       </div>
     </div>
 
-    <!-- Geri -->
+    <!-- Back -->
     <div class="study-back-row">
-      <button class="btn-back-study" id="btnBackStudy">← Geri Dön</button>
+      <button class="btn-back-study" id="btnBackStudy">Geri Dön</button>
     </div>
 
   </div>
@@ -262,16 +357,45 @@
 <!-- ══ SCREEN: RESULT ════════════════════════════════════ -->
 <div class="screen hidden" id="screen-result">
   <div class="result-wrap">
-    <div class="result-emoji" id="resultEmoji">🎉</div>
+
+    <!-- Streak -->
+    <div class="result-streak" id="resultStreak" style="display:none;">
+      <span class="result-streak-flame" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+        </svg>
+      </span>
+      <span><strong id="streakDays">0</strong> günlük seri</span>
+    </div>
+
     <h2 class="result-title" id="resultTitle">Harika!</h2>
     <div class="result-score" id="resultScore">0 / 0</div>
     <p class="result-msg" id="resultMsg"></p>
+
     <div class="result-breakdown" id="resultBreakdown"></div>
     <div class="result-srs-note" id="resultSrsNote"></div>
-    <div class="result-actions">
-      <button class="btn-restart" id="btnRestart">🔁 Tekrar Dene</button>
-      <button class="btn-home"    id="btnHome">← Geri Dön</button>
+
+    <!-- Activity Heatmap -->
+    <div class="result-heatmap" id="resultHeatmap" style="display:none;">
+      <div class="heatmap-header">
+        <span class="heatmap-title">Son 30 Gün</span>
+        <div class="heatmap-legend">
+          <span>Az</span>
+          <span class="heatmap-legend-swatch" style="background:rgba(139,92,246,0.18);"></span>
+          <span class="heatmap-legend-swatch" style="background:rgba(139,92,246,0.40);"></span>
+          <span class="heatmap-legend-swatch" style="background:rgba(139,92,246,0.62);"></span>
+          <span class="heatmap-legend-swatch" style="background:rgba(139,92,246,0.85);"></span>
+          <span>Çok</span>
+        </div>
+      </div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
     </div>
+
+    <div class="result-actions">
+      <button class="btn-restart" id="btnRestart">Tekrar Dene</button>
+      <button class="btn-home" id="btnHome">Geri Dön</button>
+    </div>
+
   </div>
 </div>
 

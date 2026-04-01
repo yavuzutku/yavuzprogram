@@ -1,51 +1,52 @@
 /**
- * AlmancaPratik — Flashcard System v3.0
+ * AlmancaPratik — Flashcard System v4.0
  * File: quiz/flashcard/flashcard.js
  *
- * Öğrenme Sistemi:
+ * Yenilikler v4:
+ *  - TTS  : Kart açıldığında Almanca kelime otomatik okunur (de-DE)
+ *           Replay butonu (R kısayolu) ile tekrar dinlenebilir
+ *           Topbar'da ses açma/kapama toggle'ı
+ *  - Timer: Seans kronometresi (MM:SS)
+ *  - Bury : Kartı bu seanstan çıkar (B kısayolu)
+ *  - Info : Kart SRS verilerini göster (I kısayolu)
+ *  - Heatmap: Sonuç ekranında 30 günlük aktivite haritası
+ *  - Streak : Sonuç ekranında ardışık çalışma serisi
+ *
+ *  SRS Sistemi (değişmedi):
  *  - Learning Phase  : Yeni / hatalı kartlar dakika bazlı tekrar (1dk → 10dk → 60dk)
  *  - Review Phase    : SM-2 algoritması ile gün bazlı uzun vadeli tekrar
- *  - Again → deck'in sonuna eklenir (aynı seansta tekrar gelir)
- *  - UI   : Learning kartlarda dakika, Review kartlarda gün gösterir
  */
 
 import { getWords, onAuthChange }   from "../../js/firebase.js";
 import { getListeler }              from "../../js/listeler-firebase.js";
 
 /* ══════════════════════════════════════════════════
-   LEARNING STEPS  (dakika cinsinden)
-   Yeni kart: 1dk → 10dk → 60dk → artık "review"
+   LEARNING STEPS (dakika)
 ══════════════════════════════════════════════════ */
-const LEARNING_STEPS = [1, 10, 60];   // dakika
+const LEARNING_STEPS = [1, 10, 60];
 
 /* ══════════════════════════════════════════════════
-   SRS STORAGE  (localStorage, keyed per userId)
+   SRS STORAGE
 ══════════════════════════════════════════════════ */
-const SRS_VERSION = "ap_srs_v4";      // v3'ten farklı — temiz başlangıç
+const SRS_VERSION = "ap_srs_v4";
 
-function srsKey(userId) {
-  return `${SRS_VERSION}_${userId}`;
-}
+function srsKey(userId) { return `${SRS_VERSION}_${userId}`; }
+
 function getSRSStore(userId) {
   try { return JSON.parse(localStorage.getItem(srsKey(userId)) || "{}"); }
   catch { return {}; }
 }
+
 function saveSRSStore(userId, data) {
   try { localStorage.setItem(srsKey(userId), JSON.stringify(data)); }
   catch (e) { console.warn("SRS save error:", e); }
 }
 
-/* ── Varsayılan kart ─────────────────────────────── */
 function defaultCard() {
   return {
-    state:       "new",     // "new" | "learning" | "review"
-    step:        0,         // LEARNING_STEPS'teki index
-    interval:    1,         // review fazı için gün
-    repetitions: 0,
-    easeFactor:  2.5,
-    nextReview:  0,         // ms timestamp
-    reviewCount: 0,
-    lastReviewed: null,
+    state: "new", step: 0, interval: 1,
+    repetitions: 0, easeFactor: 2.5,
+    nextReview: 0, reviewCount: 0, lastReviewed: null,
   };
 }
 
@@ -53,7 +54,6 @@ function getCard(userId, wordId) {
   const store = getSRSStore(userId);
   const saved = store[wordId];
   if (!saved) return defaultCard();
-  // Eski v3 kartları learning state'i yoksa migrate et
   if (!saved.state) {
     saved.state = saved.repetitions > 0 ? "review" : "new";
     saved.step  = 0;
@@ -62,30 +62,23 @@ function getCard(userId, wordId) {
 }
 
 /* ══════════════════════════════════════════════════
-   LEARNING PHASE HANDLER
-   quality: 1=Again, 2=Hard, 3=Good, 4=Easy
+   LEARNING PHASE
 ══════════════════════════════════════════════════ */
 function handleLearning(card, quality) {
   if (quality === 1) {
-    // Again → başa dön
     card.step = 0;
   } else if (quality === 4) {
-    // Easy → direkt review'e gönder (step'leri atla)
     card.step = LEARNING_STEPS.length;
   } else {
-    // Hard (2) → aynı step'te kal | Good (3) → bir ileri
     if (quality === 3) card.step++;
-    // Hard: step değişmez, aynı süre tekrar
   }
 
   if (card.step >= LEARNING_STEPS.length) {
-    // 🎓 Öğrenildi → review moduna geç
     card.state       = "review";
     card.repetitions = 1;
-    card.interval    = quality === 4 ? 4 : 1; // Easy ise 4 gün, diğerleri 1 gün
+    card.interval    = quality === 4 ? 4 : 1;
     card.nextReview  = Date.now() + card.interval * 86_400_000;
   } else {
-    // Hâlâ learning aşamasında
     card.state      = "learning";
     const minutes   = LEARNING_STEPS[card.step];
     card.nextReview = Date.now() + minutes * 60_000;
@@ -93,21 +86,19 @@ function handleLearning(card, quality) {
 }
 
 /* ══════════════════════════════════════════════════
-   SM-2 REVIEW PHASE HANDLER
+   SM-2 REVIEW PHASE
 ══════════════════════════════════════════════════ */
 function handleReviewSM2(card, quality) {
   const qMap = { 1: 0, 2: 2, 3: 4, 4: 5 };
   const q    = qMap[quality] ?? 0;
 
   if (q < 3) {
-    // Again/Hard → learning'e geri dön
     card.state       = "learning";
     card.step        = 0;
     card.repetitions = 0;
     card.interval    = 1;
     card.nextReview  = Date.now() + LEARNING_STEPS[0] * 60_000;
   } else {
-    // Doğru cevap → SM-2
     if (card.repetitions <= 1) {
       card.interval = card.repetitions === 0 ? 1 : 6;
     } else {
@@ -118,7 +109,6 @@ function handleReviewSM2(card, quality) {
     card.nextReview = Date.now() + card.interval * 86_400_000;
   }
 
-  // Ease factor güncelle (SM-2, min 1.3)
   card.easeFactor = Math.max(
     1.3,
     card.easeFactor + 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)
@@ -126,7 +116,7 @@ function handleReviewSM2(card, quality) {
 }
 
 /* ══════════════════════════════════════════════════
-   ANA GÜNCELLEME FONKSİYONU
+   UPDATE CARD
 ══════════════════════════════════════════════════ */
 function updateCard(userId, wordId, quality) {
   const store = getSRSStore(userId);
@@ -146,52 +136,45 @@ function updateCard(userId, wordId, quality) {
 }
 
 /* ══════════════════════════════════════════════════
-   KART DURUMU
+   CARD STATUS
 ══════════════════════════════════════════════════ */
 function getCardStatus(userId, wordId) {
   const c = getCard(userId, wordId);
-  if (c.state === "new")                        return "new";
-  if (c.state === "learning")                   return "learning";
+  if (c.state === "new")                          return "new";
+  if (c.state === "learning")                     return "learning";
   if (c.state === "review" && c.nextReview <= Date.now()) return "due";
   if (c.state === "review" && c.nextReview >  Date.now()) return "learned";
-  // Fallback — eski veri
-  if (c.repetitions === 0 && c.reviewCount === 0) return "new";
-  if (c.nextReview <= Date.now())                  return "due";
+  if (c.repetitions === 0 && c.reviewCount === 0)  return "new";
+  if (c.nextReview <= Date.now())                   return "due";
   return "learned";
 }
 
 /* ══════════════════════════════════════════════════
-   PREVIEW — Bir sonraki tekrar süresi (yazmadan)
-   Dönen değer: { value: number, unit: "dk" | "sa" | "gün" }
+   PREVIEW NEXT REVIEW
 ══════════════════════════════════════════════════ */
 function previewNextReview(userId, wordId, quality) {
   const card = getCard(userId, wordId);
 
   if (card.state !== "review") {
-    // Learning phase preview
     let step = card.step;
     if (quality === 1) step = 0;
-    else if (quality === 4) step = LEARNING_STEPS.length; // review'e geç
+    else if (quality === 4) step = LEARNING_STEPS.length;
     else if (quality === 3) step = card.step + 1;
-    // Hard → aynı step
 
     if (step >= LEARNING_STEPS.length) {
       return { value: quality === 4 ? 4 : 1, unit: "gün" };
     }
     const minutes = LEARNING_STEPS[step];
-    if (minutes < 60) return { value: minutes,       unit: "dk" };
-    else              return { value: minutes / 60,   unit: "sa" };
+    if (minutes < 60) return { value: minutes,     unit: "dk"  };
+    else              return { value: minutes / 60, unit: "sa"  };
   }
 
-  // Review phase preview (SM-2)
   const qMap = { 1: 0, 2: 2, 3: 4, 4: 5 };
   const q    = qMap[quality] ?? 0;
-  if (q < 3) {
-    return { value: LEARNING_STEPS[0], unit: "dk" }; // geri learning'e
-  }
+  if (q < 3) return { value: LEARNING_STEPS[0], unit: "dk" };
 
   let interval = card.interval;
-  if (card.repetitions <= 1)      interval = card.repetitions === 0 ? 1 : 6;
+  if (card.repetitions <= 1) interval = card.repetitions === 0 ? 1 : 6;
   else interval = Math.round(interval * card.easeFactor);
   if (quality === 4) interval = Math.round(interval * 1.3);
   return { value: Math.max(1, interval), unit: "gün" };
@@ -199,6 +182,276 @@ function previewNextReview(userId, wordId, quality) {
 
 function formatPreview({ value, unit }) {
   return `~${value} ${unit}`;
+}
+
+/* ══════════════════════════════════════════════════
+   TTS — TEXT TO SPEECH
+══════════════════════════════════════════════════ */
+let ttsEnabled = true;
+let ttsVoices  = [];
+
+function loadVoices() {
+  ttsVoices = window.speechSynthesis?.getVoices() || [];
+}
+
+if (window.speechSynthesis) {
+  loadVoices();
+  window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+}
+
+async function speakWord(text, lang = "de-DE") {
+  if (!ttsEnabled || !window.speechSynthesis || !text) return;
+
+  // Önceki konuşmayı durdur
+  window.speechSynthesis.cancel();
+
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang  = lang;
+  utt.rate  = 0.82;
+  utt.pitch = 1.0;
+
+  // Almanca ses ara
+  const germanVoice = ttsVoices.find(v =>
+    v.lang.toLowerCase().startsWith("de")
+  );
+  if (germanVoice) utt.voice = germanVoice;
+
+  // Replay buton animasyonu
+  const replayBtn = $("ttsReplay");
+  if (replayBtn) replayBtn.classList.add("speaking");
+
+  utt.onend  = () => replayBtn?.classList.remove("speaking");
+  utt.onerror = () => replayBtn?.classList.remove("speaking");
+
+  window.speechSynthesis.speak(utt);
+}
+
+function toggleTTS() {
+  ttsEnabled = !ttsEnabled;
+  const btn = $("ttsToggle");
+  if (!btn) return;
+  if (ttsEnabled) {
+    btn.classList.remove("tts-off");
+    btn.classList.add("active");
+    btn.title = "Sesi kapat";
+  } else {
+    btn.classList.add("tts-off");
+    btn.classList.remove("active");
+    btn.title = "Sesi aç";
+    window.speechSynthesis?.cancel();
+    $("ttsReplay")?.classList.remove("speaking");
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   SESSION TIMER
+══════════════════════════════════════════════════ */
+let sessionStartTime = null;
+let timerInterval    = null;
+
+function startTimer() {
+  sessionStartTime = Date.now();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimer, 1000);
+  updateTimer();
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function updateTimer() {
+  const el = $("sessionTimer");
+  if (!el || !sessionStartTime) return;
+  const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+  const m = Math.floor(elapsed / 60).toString().padStart(2, "0");
+  const s = (elapsed % 60).toString().padStart(2, "0");
+  el.textContent = `${m}:${s}`;
+}
+
+/* ══════════════════════════════════════════════════
+   BURY CARD — Bu seanstan çıkar
+══════════════════════════════════════════════════ */
+function buryCard() {
+  // Sadece kart görünürken (henüz rating yapılmamışken) çalışır
+  state.deck.splice(state.deckIndex, 1);
+  if (state.deck.length === 0 || state.deckIndex >= state.deck.length) {
+    showResult();
+  } else {
+    renderCard();
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   CARD INFO PANEL
+══════════════════════════════════════════════════ */
+function toggleCardInfo() {
+  const panel = $("cardInfoPanel");
+  if (!panel) return;
+
+  const isVisible = panel.classList.contains("visible");
+  if (isVisible) {
+    panel.classList.remove("visible");
+    $("infoBtn")?.classList.remove("active");
+    return;
+  }
+
+  // Mevcut kartın SRS verilerini doldur
+  if (state.deckIndex < state.deck.length) {
+    const card    = state.deck[state.deckIndex];
+    const srsCard = getCard(state.userId, card.id);
+    const status  = getCardStatus(state.userId, card.id);
+
+    // Sonraki tekrar
+    let nextStr = "—";
+    if (srsCard.nextReview && srsCard.nextReview > 0) {
+      const diff = srsCard.nextReview - Date.now();
+      if (diff <= 0) {
+        nextStr = "Şimdi (gecikmiş)";
+      } else {
+        const days  = Math.floor(diff / 86_400_000);
+        const hours = Math.floor((diff % 86_400_000) / 3_600_000);
+        const mins  = Math.floor((diff % 3_600_000) / 60_000);
+        if (days > 0)       nextStr = `${days} gün sonra`;
+        else if (hours > 0) nextStr = `${hours} saat sonra`;
+        else                nextStr = `${mins} dk sonra`;
+      }
+    }
+
+    const statusLabels = {
+      new:      "Yeni",
+      learning: "Öğreniliyor",
+      due:      "Tekrar Bekliyor",
+      learned:  "Öğrenildi",
+    };
+    const statusClasses = {
+      new:      "cip-state-new",
+      learning: "cip-state-learning",
+      due:      "cip-state-due",
+      learned:  "cip-state-learned",
+    };
+
+    const stateEl = $("infoState");
+    if (stateEl) {
+      stateEl.textContent = statusLabels[status] || "—";
+      stateEl.className   = statusClasses[status] || "";
+    }
+
+    const intervalStr = srsCard.state === "review"
+      ? `${srsCard.interval} gün`
+      : srsCard.state === "learning"
+        ? `${LEARNING_STEPS[srsCard.step] || 1} dk`
+        : "—";
+
+    setInfoField("infoInterval", intervalStr);
+    setInfoField("infoEase",     `${Math.round(srsCard.easeFactor * 100)}%`);
+    setInfoField("infoReviews",  `${srsCard.reviewCount || 0}`);
+    setInfoField("infoNext",     nextStr);
+  }
+
+  panel.classList.add("visible");
+  $("infoBtn")?.classList.add("active");
+}
+
+function setInfoField(id, val) {
+  const el = $(id);
+  if (el) el.textContent = val;
+}
+
+/* ══════════════════════════════════════════════════
+   STREAK
+══════════════════════════════════════════════════ */
+function computeStreak(userId) {
+  const store = getSRSStore(userId);
+  const daySet = new Set();
+
+  Object.values(store).forEach(card => {
+    if (card.lastReviewed) {
+      const d = new Date(card.lastReviewed);
+      daySet.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+    }
+  });
+
+  if (!daySet.size) return 0;
+
+  let streak = 0;
+  const today = new Date();
+
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    if (daySet.has(key)) {
+      streak++;
+    } else if (i > 0) {
+      // i=0 bugün — bugün henüz giriş olmasa da devam et
+      // i>0 boşluk varsa dur
+      break;
+    }
+  }
+  return streak;
+}
+
+/* ══════════════════════════════════════════════════
+   HEATMAP DATA
+══════════════════════════════════════════════════ */
+function generateHeatmapData(userId, days = 30) {
+  const store  = getSRSStore(userId);
+  const counts = {};
+
+  Object.values(store).forEach(card => {
+    if (card.lastReviewed) {
+      const d = new Date(card.lastReviewed);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      counts[key] = (counts[key] || 0) + 1;
+    }
+  });
+
+  const result = [];
+  const today  = new Date();
+
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    result.push({ date: key, count: counts[key] || 0 });
+  }
+
+  return result;
+}
+
+function renderHeatmap(userId) {
+  const grid      = $("heatmapGrid");
+  const container = $("resultHeatmap");
+  if (!grid || !container) return;
+
+  const data    = generateHeatmapData(userId, 30);
+  const maxVal  = Math.max(...data.map(d => d.count), 1);
+  container.style.display = "block";
+  grid.innerHTML = "";
+
+  data.forEach(({ date, count }) => {
+    const cell       = document.createElement("div");
+    cell.className   = "hm-cell";
+
+    // Seviye hesapla
+    if (count > 0) {
+      const ratio = count / maxVal;
+      if      (ratio <= 0.25) cell.classList.add("lv-1");
+      else if (ratio <= 0.50) cell.classList.add("lv-2");
+      else if (ratio <= 0.75) cell.classList.add("lv-3");
+      else                    cell.classList.add("lv-4");
+    }
+
+    // Tooltip
+    const [y, m, d] = date.split("-");
+    const label = `${d}.${m} — ${count} tekrar`;
+    cell.setAttribute("data-tooltip", label);
+    cell.setAttribute("title", label);
+
+    grid.appendChild(cell);
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -213,12 +466,10 @@ let state = {
   selectedListId: null,
   totalCount:     15,
   order:          "srs",
-
-  // Session
-  deck:      [],
-  deckIndex: 0,
-  flipped:   false,
-  ratings:   { 1: 0, 2: 0, 3: 0, 4: 0 },
+  deck:           [],
+  deckIndex:      0,
+  flipped:        false,
+  ratings:        { 1: 0, 2: 0, 3: 0, 4: 0 },
 };
 
 /* ══════════════════════════════════════════════════
@@ -240,7 +491,15 @@ function showScreen(name) {
   Object.entries(screens).forEach(([k, el]) => {
     if (el) el.classList.toggle("hidden", k !== name);
   });
-  if (name !== "study") window.scrollTo(0, 0);
+
+  if (name === "study") {
+    // nothing
+  } else {
+    stopTimer();
+    window.speechSynthesis?.cancel();
+    $("ttsReplay")?.classList.remove("speaking");
+    window.scrollTo(0, 0);
+  }
 }
 
 /* ══════════════════════════════════════════════════
@@ -341,7 +600,7 @@ function resetSetupUI() {
 }
 
 /* ══════════════════════════════════════════════════
-   SRS STRIP — Setup ekranında özet
+   SRS STRIP
 ══════════════════════════════════════════════════ */
 function updateSetupSRSStrip() {
   const strip = $("setupSRSStrip");
@@ -360,13 +619,11 @@ function updateSetupSRSStrip() {
     else                       learnedC++;
   });
 
-  // Bugün çalışılacak: yeni + learning + due
   const todayCount = newC + learningC + dueC;
-
-  setNum("srsNew",     newC);
-  setNum("srsDue",     dueC + learningC); // learning + due = "tekrar"
-  setNum("srsDone",    learnedC);
-  setNum("srsToday",   todayCount);
+  setNum("srsNew",   newC);
+  setNum("srsDue",   dueC + learningC);
+  setNum("srsDone",  learnedC);
+  setNum("srsToday", todayCount);
 }
 
 function setNum(id, val) {
@@ -396,18 +653,21 @@ function renderListPicker() {
   grid.innerHTML     = "";
 
   state.allLists.forEach(liste => {
-    const item = document.createElement("div");
-    item.className = "list-item" + (state.selectedListId === liste.id ? " selected" : "");
+    const item      = document.createElement("div");
+    item.className  = "list-item" + (state.selectedListId === liste.id ? " selected" : "");
     item.dataset.id = liste.id;
+
     const wordCount = typeof liste.wordCount === "number"
       ? liste.wordCount
       : (Array.isArray(liste.wordIds) ? liste.wordIds.length : 0);
+
     item.innerHTML = `
       <div>
         <div class="list-item-name">${esc(liste.name)}</div>
         <div class="list-item-count">${wordCount} kelime</div>
       </div>
       <div class="list-check"><div class="list-check-dot"></div></div>`;
+
     item.addEventListener("click", () => {
       state.selectedListId = state.selectedListId === liste.id ? null : liste.id;
       grid.querySelectorAll(".list-item").forEach(el => {
@@ -415,6 +675,7 @@ function renderListPicker() {
       });
       refreshActiveWords();
     });
+
     grid.appendChild(item);
   });
 }
@@ -479,7 +740,6 @@ function initOrderBtns() {
 
 /* ══════════════════════════════════════════════════
    BUILD DECK
-   Öncelik: learning → due → new → learned
 ══════════════════════════════════════════════════ */
 function buildDeck() {
   const pool  = [...state.activeWords];
@@ -516,7 +776,12 @@ function startSession() {
   state.flipped   = false;
   state.ratings   = { 1: 0, 2: 0, 3: 0, 4: 0 };
 
+  // Timer sıfırla
+  const timerEl = $("sessionTimer");
+  if (timerEl) timerEl.textContent = "00:00";
+
   showScreen("study");
+  startTimer();
   renderCard();
 }
 
@@ -532,6 +797,11 @@ function renderCard() {
   const card    = state.deck[state.deckIndex];
   state.flipped = false;
 
+  // Kart info panelini kapat
+  $("cardInfoPanel")?.classList.remove("visible");
+  $("infoBtn")?.classList.remove("active");
+
+  // Flip sıfırla
   const fcCard = $("fcCard");
   if (fcCard) fcCard.classList.remove("flipped");
 
@@ -539,9 +809,7 @@ function renderCard() {
   const frontWord = $("fcFrontWord");
   if (frontWord) frontWord.textContent = card.word;
 
-  // Arka yüz
-  // Arka yüz içeriğini flip animasyonu bittikten SONRA güncelle
-  // --flip: 0.55s → 560ms bekle
+  // Arka yüzü animasyon bittikten sonra güncelle
   setTimeout(() => {
     const backMeaning = $("fcBackMeaning");
     if (backMeaning) backMeaning.textContent = card.meaning;
@@ -562,13 +830,13 @@ function renderCard() {
         });
       }
     }
-  }, 560); // CSS --flip süresiyle eşleşmeli
+  }, 540);
 
   // Kart numarası
   const cardNum = $("fcCardNum");
   if (cardNum) cardNum.textContent = `${state.deckIndex + 1} / ${state.deck.length}`;
 
-  // Kart durumu etiketi (learning / review / new)
+  // Status badge
   updateCardStatusBadge(card);
 
   // Rating gizle
@@ -584,24 +852,31 @@ function renderCard() {
   // Session stats
   updateSessionStats();
 
-  // Sahneyi yeniden aktif et
+  // Replay butonu data attribute
+  const replayBtn = $("ttsReplay");
+  if (replayBtn) replayBtn.setAttribute("data-word", card.word || "");
+
+  // Scene tekrar aktif et
   const scene = $("fcScene");
   if (scene) scene.style.pointerEvents = "auto";
+
+  // Otomatik TTS — Almanca kelimeyi oku
+  speakWord(card.word, "de-DE");
 }
 
-/* ── Kart durum etiketi (ön yüzde küçük badge) ── */
+/* ── Status Badge ── */
 function updateCardStatusBadge(card) {
-  let badge = $("fcStatusBadge");
+  const badge = $("fcStatusBadge");
   if (!badge) return;
 
   const status = getCardStatus(state.userId, card.id);
   const labels = {
-    new:      { text: "🆕 Yeni",       cls: "badge-new"      },
-    learning: { text: "📖 Öğreniliyor", cls: "badge-learning" },
-    due:      { text: "⏰ Tekrar",      cls: "badge-due"      },
-    learned:  { text: "✅ Öğrenildi",   cls: "badge-learned"  },
+    new:      { text: "Yeni",          cls: "badge-new"      },
+    learning: { text: "Öğreniliyor",   cls: "badge-learning" },
+    due:      { text: "Tekrar",        cls: "badge-due"      },
+    learned:  { text: "Öğrenildi",     cls: "badge-learned"  },
   };
-  const info = labels[status] || labels.new;
+  const info    = labels[status] || labels.new;
   badge.textContent = info.text;
   badge.className   = "fc-status-badge " + info.cls;
 }
@@ -621,12 +896,11 @@ function flipCard() {
     if (ratingWrap) ratingWrap.classList.add("visible");
     const scene = $("fcScene");
     if (scene) scene.style.pointerEvents = "none";
-  }, 320);
+  }, 300);
 }
 
 /* ══════════════════════════════════════════════════
    RATE CARD
-   Again (1) → deck'in sonuna eklenir, seans içinde tekrar gelir
 ══════════════════════════════════════════════════ */
 function rateCard(quality) {
   if (!state.flipped) return;
@@ -635,7 +909,7 @@ function rateCard(quality) {
   updateCard(state.userId, card.id, quality);
   state.ratings[quality]++;
 
-  // Again → kartı deck'in sonuna ekle (aynı seansta tekrar görünür)
+  // Again → deck sonuna ekle
   if (quality === 1) {
     state.deck.push({ ...card });
   }
@@ -662,10 +936,9 @@ function updateStudyProgress() {
 }
 
 function updateSessionStats() {
-  const done      = state.deckIndex;
-  const remaining = state.deck.length - done;
-
+  const done = state.deckIndex;
   let newR = 0, dueR = 0, learningR = 0;
+
   for (let i = done; i < state.deck.length; i++) {
     const s = getCardStatus(state.userId, state.deck[i].id);
     if      (s === "new")      newR++;
@@ -676,6 +949,7 @@ function updateSessionStats() {
   const row = $("sessionStats");
   if (!row) return;
   row.innerHTML = "";
+
   if (learningR) row.innerHTML += `<span class="ss-pip learning">${learningR} öğrenme</span>`;
   if (dueR)      row.innerHTML += `<span class="ss-pip due">${dueR} tekrar</span>`;
   if (newR)      row.innerHTML += `<span class="ss-pip new">${newR} yeni</span>`;
@@ -683,7 +957,7 @@ function updateSessionStats() {
 }
 
 /* ══════════════════════════════════════════════════
-   PREVIEW SÜRELER (buton altında gösterir)
+   PREVIEW SÜRELER
 ══════════════════════════════════════════════════ */
 function updateRatePreviews(wordId) {
   [1, 2, 3, 4].forEach(q => {
@@ -698,59 +972,66 @@ function updateRatePreviews(wordId) {
    RESULT SCREEN
 ══════════════════════════════════════════════════ */
 function showResult() {
-  const total   = state.ratings[1] + state.ratings[2] + state.ratings[3] + state.ratings[4];
+  stopTimer();
+
+  const total   = Object.values(state.ratings).reduce((a, b) => a + b, 0);
   const correct = state.ratings[3] + state.ratings[4];
   const pct     = total > 0 ? Math.round((correct / total) * 100) : 0;
 
-  let emoji, title, msg;
-  if      (pct === 100) { emoji="🏆"; title="Mükemmel!";        msg="Tüm kartları doğru yanıtladın. Muhteşem bir seans!"; }
-  else if (pct >= 80)   { emoji="🎉"; title="Harika!";           msg="Çok başarılı bir performans. Böyle devam!"; }
-  else if (pct >= 60)   { emoji="👍"; title="İyi İş!";           msg="Biraz daha pratikle mükemmel olacak."; }
-  else if (pct >= 40)   { emoji="📚"; title="Çalışmaya Devam!"; msg="Bu kelimeleri bir kez daha gözden geçir."; }
-  else                  { emoji="💪"; title="Devam Et!";         msg="Her tekrar seni ileriye taşıyor. Pes etme!"; }
+  let title, msg;
+  if      (pct === 100) { title = "Mükemmel!";       msg = "Tüm kartları doğru yanıtladın. İnanılmaz bir seans!"; }
+  else if (pct >= 80)   { title = "Çok İyi!";         msg = "Yüksek başarı oranıyla seans tamamlandı."; }
+  else if (pct >= 60)   { title = "İyi İş!";          msg = "Biraz daha pratikle mükemmel olacak."; }
+  else if (pct >= 40)   { title = "Çalışmaya Devam!"; msg = "Bu kelimeleri bir kez daha gözden geçir."; }
+  else                  { title = "Devam Et!";         msg = "Her tekrar seni ileriye taşıyor."; }
 
-  $("resultEmoji")  && ($("resultEmoji").textContent  = emoji);
-  $("resultTitle")  && ($("resultTitle").textContent  = title);
-  $("resultScore")  && ($("resultScore").textContent  = `${correct} / ${total}`);
-  $("resultMsg")    && ($("resultMsg").textContent    = msg);
+  const titleEl = $("resultTitle");
+  const scoreEl = $("resultScore");
+  const msgEl   = $("resultMsg");
+  if (titleEl) titleEl.textContent = title;
+  if (scoreEl) scoreEl.textContent = `${correct} / ${total}`;
+  if (msgEl)   msgEl.textContent   = msg;
 
   const bd = $("resultBreakdown");
   if (bd) {
     bd.innerHTML = `
-      <div class="rb-cell">
-        <span class="rb-num again">${state.ratings[1]}</span>
-        <span class="rb-label">Tekrar</span>
-      </div>
-      <div class="rb-cell">
-        <span class="rb-num hard">${state.ratings[2]}</span>
-        <span class="rb-label">Zor</span>
-      </div>
-      <div class="rb-cell">
-        <span class="rb-num good">${state.ratings[3]}</span>
-        <span class="rb-label">İyi</span>
-      </div>
-      <div class="rb-cell">
-        <span class="rb-num easy">${state.ratings[4]}</span>
-        <span class="rb-label">Kolay</span>
-      </div>`;
+      <div class="rb-cell"><span class="rb-num again">${state.ratings[1]}</span><span class="rb-label">Tekrar</span></div>
+      <div class="rb-cell"><span class="rb-num hard">${state.ratings[2]}</span><span class="rb-label">Zor</span></div>
+      <div class="rb-cell"><span class="rb-num good">${state.ratings[3]}</span><span class="rb-label">İyi</span></div>
+      <div class="rb-cell"><span class="rb-num easy">${state.ratings[4]}</span><span class="rb-label">Kolay</span></div>`;
   }
 
-  // SRS özet notu
-  const words    = state.activeWords;
-  const dueNow   = words.filter(w => {
+  // SRS özet
+  const words   = state.activeWords;
+  const dueNow  = words.filter(w => {
     const s = getCardStatus(state.userId, w.id);
     return s === "due" || s === "learning";
   }).length;
-  const learned  = words.filter(w => getCardStatus(state.userId, w.id) === "learned").length;
+  const learned = words.filter(w => getCardStatus(state.userId, w.id) === "learned").length;
 
   const note = $("resultSrsNote");
   if (note) {
     note.innerHTML = `
-      <strong>Seans tamamlandı!</strong>
-      Öğrenilen: <strong style="color:var(--gr)">${learned}</strong> kelime &nbsp;·&nbsp;
-      Tekrar bekleyen: <strong style="color:var(--re)">${dueNow}</strong> kelime.
+      Seans tamamlandı. Öğrenilen: <strong>${learned}</strong> kelime &nbsp;·&nbsp;
+      Tekrar bekleyen: <strong style="color:var(--rel)">${dueNow}</strong> kelime.
       ${dueNow > 0 ? "<br>Tekrar bekleyen kelimeler için yeni bir seans başlatabilirsin." : ""}`;
   }
+
+  // Streak
+  const streak    = computeStreak(state.userId);
+  const streakEl  = $("resultStreak");
+  const streakNum = $("streakDays");
+  if (streakEl && streakNum) {
+    if (streak > 1) {
+      streakNum.textContent   = streak;
+      streakEl.style.display  = "inline-flex";
+    } else {
+      streakEl.style.display  = "none";
+    }
+  }
+
+  // Heatmap
+  renderHeatmap(state.userId);
 
   showScreen("result");
 }
@@ -763,11 +1044,37 @@ function initKeyboard() {
     if ($("screen-study")?.classList.contains("hidden")) return;
     if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
 
+    // Kartı çevir
     if (e.code === "Space" || e.code === "ArrowRight") {
       e.preventDefault();
       flipCard();
       return;
     }
+
+    // Yeniden oku
+    if (e.key === "r" || e.key === "R") {
+      e.preventDefault();
+      const btn = $("ttsReplay");
+      const word = btn?.getAttribute("data-word") || "";
+      if (word) speakWord(word, "de-DE");
+      return;
+    }
+
+    // Bury / skip
+    if (e.key === "b" || e.key === "B") {
+      e.preventDefault();
+      if (!state.flipped) buryCard();
+      return;
+    }
+
+    // Kart bilgisi
+    if (e.key === "i" || e.key === "I") {
+      e.preventDefault();
+      toggleCardInfo();
+      return;
+    }
+
+    // Rating
     if (state.flipped) {
       if (e.key === "1") { e.preventDefault(); rateCard(1); }
       if (e.key === "2") { e.preventDefault(); rateCard(2); }
@@ -781,16 +1088,37 @@ function initKeyboard() {
    EVENT WIRING
 ══════════════════════════════════════════════════ */
 function initEvents() {
+  // Kart flip
   $("fcScene")?.addEventListener("click", () => flipCard());
   $("fcScene")?.setAttribute("tabindex", "0");
   $("fcScene")?.addEventListener("keydown", e => {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flipCard(); }
   });
 
+  // Rating buttons
   [1, 2, 3, 4].forEach(q => {
     $("rateBtn" + q)?.addEventListener("click", () => rateCard(q));
   });
 
+  // TTS Replay
+  $("ttsReplay")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const word = e.currentTarget.getAttribute("data-word") || "";
+    if (word) speakWord(word, "de-DE");
+  });
+
+  // TTS Toggle
+  $("ttsToggle")?.addEventListener("click", toggleTTS);
+
+  // Card Info
+  $("infoBtn")?.addEventListener("click", toggleCardInfo);
+
+  // Bury
+  $("buryBtn")?.addEventListener("click", () => {
+    if (!state.flipped) buryCard();
+  });
+
+  // Nav buttons
   $("btnStart")?.addEventListener("click", startSession);
   $("btnRestart")?.addEventListener("click", startSession);
   $("btnHome")?.addEventListener("click", () => showScreen("setup"));
@@ -815,9 +1143,7 @@ function shuffle(arr) {
 
 function esc(s) {
   return String(s || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 /* ══════════════════════════════════════════════════

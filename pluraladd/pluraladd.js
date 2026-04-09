@@ -139,33 +139,211 @@ export function analyzePattern(rawLines) {
 /* ═══════════════════════════════════════════════════════════
    GENEL TEMİZLEYİCİLER
    ═══════════════════════════════════════════════════════════ */
+
+
 const ARTICLE_RE = /^(der|die|das|ein|eine)\s+/i;
 
+/* ─── 1. ADIM: Markdown / Biçimlendirme Soy ─────────────── */
+function stripFormatting(s) {
+  if (!s) return '';
+
+  // Bold+Italic: ***text*** veya ___text___
+  s = s.replace(/\*{3}([^*]+?)\*{3}/g, '$1');
+  s = s.replace(/_{3}([^_]+?)_{3}/g, '$1');
+
+  // Bold: **text** veya __text__
+  s = s.replace(/\*{2}([^*]+?)\*{2}/g, '$1');
+  s = s.replace(/_{2}([^_]+?)_{2}/g, '$1');
+
+  // Italic: *text* (ama ** değil)
+  s = s.replace(/(?<!\*)\*([^*\n]+?)\*(?!\*)/g, '$1');
+
+  // Italic: _text_ (kelime içi _ değil, sadece sınırlarda)
+  s = s.replace(/(?<![a-zA-Z0-9äöüÄÖÜß])_([^_\n]+?)_(?![a-zA-Z0-9äöüÄÖÜß])/g, '$1');
+
+  // Strikethrough: ~~text~~
+  s = s.replace(/~~([^~]+?)~~/g, '$1');
+
+  // Code: `text` veya ``text``
+  s = s.replace(/``([^`]+?)``/g, '$1');
+  s = s.replace(/`([^`]+?)`/g, '$1');
+
+  // HTML etiketleri: <b>text</b> <strong>text</strong> <i>text</i> vb.
+  s = s.replace(/<\/?(b|strong|i|em|u|s|del|ins|mark|span|code|tt)[^>]*>/gi, '');
+  // Diğer HTML etiketleri de temizle
+  s = s.replace(/<[^>]{0,80}>/g, '');
+
+  // HTML entity'leri
+  s = s.replace(/&amp;/g,  '&')
+       .replace(/&lt;/g,   '<')
+       .replace(/&gt;/g,   '>')
+       .replace(/&quot;/g, '"')
+       .replace(/&apos;/g, "'")
+       .replace(/&nbsp;/g, ' ')
+       .replace(/&#8203;/g, '')  // zero-width space
+       .replace(/&#x?\d+;/g, '') // diğer entity'ler
+       .replace(/&[a-z]{2,8};/g, ''); // named entity'ler
+
+  return s;
+}
+
+/* ─── 2. ADIM: Liste İşaretleri / Numara Prefix ─────────── */
 function stripMarker(line) {
+  if (!line) return '';
   return line
-    .replace(/^\s*\d+[\t .):·\-]+/, '')
-    .replace(/^[•\-\*◦▸▹›»·#☐☑✓✗✕]\s*/, '')
+    // Numaralı listeler: "1." "2)" "3:" "4·" "(5)" "[6]" vs.
+    .replace(/^\s*\(?(\d{1,3}|[a-z])[.):\-·\]]+\s*/i, '')
+    // Roma rakamları: "I." "II)" "III:" vs.
+    .replace(/^\s*(?:x{0,3}(?:ix|iv|v?i{0,3}))[.):\-]+\s*/i, '')
+    // Bullet karakterleri
+    .replace(/^[•·▸▹▶►→⇒✓✗✕✘☐☑✔◦‣⁃∙⊹◉○●◆◇▪▫□■]\s*/u, '')
+    // Tire/çizgi bullet: "- item" "– item" "— item"
+    .replace(/^[-–—]\s+/, '')
+    // Yıldız bullet: "* item" (ama **bold** değil)
+    .replace(/^\*\s+(?!\*)/, '')
+    // Artı/kare bullet: "+ item" "# item"
+    .replace(/^[+#]\s+/, '')
     .trim();
 }
 
-function stripQuotes(s) {
-  return s.replace(/^["'«»„\u201c\u201d\u2018\u2019`´❝❞❛❜]+|["'«»„\u201c\u201d\u2018\u2019`´❝❞❛❜]+$/g, '').trim();
-}
-
-function stripTrailingPunct(s) {
-  return s.replace(/[.,;:!?。、…]+$/, '').trim();
-}
-
-
-
-function cleanPart(s) {
+/* ─── 3. ADIM: Dekoratif Emoji / Sembol Prefix/Suffix ───── */
+function stripDecorative(s) {
   if (!s) return '';
-  s = s.trim();
-  s = stripQuotes(s);
-  s = stripTrailingPunct(s);
+
+  // Başlangıçtaki emoji blokları (Unicode emoji ranges)
+  s = s.replace(/^(?:[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FEFF}\u{1FA00}-\u{1FAFF}]\s*)+/gu, '');
+
+  // Sondaki emoji blokları
+  s = s.replace(/(?:\s*[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FEFF}\u{1FA00}-\u{1FAFF}])+$/gu, '');
+
+  // Dekoratif semboller başta: ★ ☆ ✦ ✧ ♦ ♠ ♣ ♥ ◆ ▲ ▼ ◉
+  s = s.replace(/^[★☆✦✧♦♠♣♥♤♡♢♧◆◇▲△▼▽◉●◎⊕⊗✱✲✳✴✵✶✷✸✹✺✻✼✽✾✿❀❁❂❃❄❅❆❇❈❉❊❋\u25A0-\u25FF]\s*/u, '');
+
+  // Dekoratif semboller sonda (noktalama hariç)
+  s = s.replace(/\s*[★☆✦✧♦♠♣♥♤♡♢♧◆◇▲△▼▽◉●◎⊕⊗✱✲✳✴✵✶✷✸✹✺✻✼✽✾✿❀❁❂❃❄❅❆❇❈❉❊❋]$/u, '');
+
+  return s;
+}
+
+/* ─── 4. ADIM: Tırnak İşaretleri Soy ───────────────────── */
+function stripQuotes(s) {
+  if (!s) return '';
+  // Eşleşen tırnak çiftlerini kaldır (içeride bırak)
+  const pairs = [
+    ['"',  '"'],  // straight double
+    ["'",  "'"],  // straight single
+    ['\u201C', '\u201D'], // "curved double"
+    ['\u2018', '\u2019'], // 'curved single'
+    ['\u201E', '\u201C'], // „German low"
+    ['\u00AB', '\u00BB'], // «guillemets»
+    ['\u2039', '\u203A'], // ‹single guillemets›
+    ['«',  '»'],
+    ['„',  '"'],
+    ['❝',  '❞'],
+    ['❛',  '❜'],
+    ['`',  '`'],
+    ['´',  '´'],
+  ];
+  for (const [open, close] of pairs) {
+    const oe = open.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const ce = close.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`^${oe}(.+?)${ce}$`);
+    const m = s.match(re);
+    if (m && m[1].trim()) { s = m[1].trim(); break; }
+  }
+  // Simetrik tek/çift tırnak başta ve sonda
+  s = s.replace(/^(['"´`])\1*(.+?)\1+$/, '$2');
   return s.trim();
 }
 
+/* ─── 5. ADIM: Notasyon / Açıklama Temizleme ────────────── */
+function stripAnnotations(s) {
+  if (!s) return '';
+
+  // Köşeli parantez açıklamalar: [Pl.] [veraltet] [ugs.] [A2] [B1] vb.
+  // Ama [der Hund] gibi Almanca olanları bırak (büyük harf + kısa)
+  s = s.replace(/\s*\[(?!(?:der|die|das|ein|eine)\s)[^\]]{1,40}\]/gi, '');
+
+  // Curly brace notlar: {formal} {ugs} {dated}
+  s = s.replace(/\s*\{[^}]{1,60}\}/g, '');
+
+  // Parantez içi dil etiketleri: (tr) (de) (en) (fr) (formal) (ugs.)
+  s = s.replace(/\s*\((?:tr|de|en|fr|es|it|formal|ugs\.?|inf\.?|Pl\.?|Sg\.?|n\.?|m\.?|f\.?|nt\.?)\)/gi, '');
+
+  // Seviye etiketleri: (A1) (B2) (C1)
+  s = s.replace(/\s*\([ABC][12]\)/gi, '');
+
+  // Alman dilbilgisi notları parantez içinde, ama kısa: (r) (e) (s) (der/die)
+  // Bunları genellikle bırakalım çünkü belirsizlik var
+
+  return s;
+}
+
+/* ─── 6. ADIM: Sondaki Noktalama Temizle ────────────────── */
+function stripTrailingPunct(s) {
+  if (!s) return '';
+  // Nokta, virgül, noktalı virgül, iki nokta, ünlem, soru işareti — sonda
+  // Ama "..." (üç nokta) gibi özellikli şeylere dikkat et
+  s = s.replace(/[,;:!?。、]+$/, '');
+  // Tekli nokta (kısaltma noktası değilse) — 2+ harf sonra nokta
+  s = s.replace(/(?<=[a-zA-ZäöüÄÖÜß]{2,})\.$/, '');
+  return s.trim();
+}
+
+/* ─── 7. ADIM: Whitespace Normalize ─────────────────────── */
+function normalizeSpaces(s) {
+  if (!s) return '';
+  // Birden fazla boşluğu teke indir
+  s = s.replace(/[ \t]+/g, ' ');
+  // Sıfır genişlikli karakterleri kaldır
+  s = s.replace(/[\u200B\u200C\u200D\uFEFF\u00AD]/g, '');
+  // Satır sonu varsa boşluğa çevir
+  s = s.replace(/[\r\n]+/g, ' ');
+  return s.trim();
+}
+
+/* ─── 8. ADIM: Özel Durum Düzeltmeleri ──────────────────── */
+function fixSpecialCases(s) {
+  if (!s) return '';
+
+  // "- " ile başlayan (tire+boşluk) liste artığı
+  s = s.replace(/^[-–—]\s+/, '');
+
+  // Parantez içindeyse çıkar: "(Haus)" → "Haus"
+  const parenAll = s.match(/^\((.+)\)$/);
+  if (parenAll && parenAll[1].trim()) s = parenAll[1].trim();
+
+  // Köşeli parantez içindeyse çıkar: "[Haus]" → "Haus"
+  const bracketAll = s.match(/^\[(.+)\]$/);
+  if (bracketAll && bracketAll[1].trim()) s = bracketAll[1].trim();
+
+  // Çift boşluk tekrar temizle (annotation temizliği sonrası)
+  s = s.replace(/\s{2,}/g, ' ');
+
+  return s.trim();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANA TEMİZLEYİCİ — Tüm adımları sırayla uygular
+   ═══════════════════════════════════════════════════════════ */
+function cleanPart(s) {
+  if (!s) return '';
+  s = String(s);
+
+  s = normalizeSpaces(s);      // önce whitespace normalize
+  s = stripFormatting(s);      // **bold** *italic* `code` HTML
+  s = stripMarker(s);          // 1. 2) • - * # bullet'ları
+  s = stripDecorative(s);      // emoji, ★, ♦ gibi dekoratifler
+  s = stripAnnotations(s);     // [Pl.] {ugs.} (A1) notlar
+  s = stripQuotes(s);          // "tırnak" 'temizleme'
+  s = stripTrailingPunct(s);   // sondaki , ; : ! ?
+  s = fixSpecialCases(s);      // (parantez) [köşeli] artıklar
+  s = normalizeSpaces(s);      // son kez whitespace
+
+  return s.trim();
+}
+
+/* ─── Yardımcılar (değişmedi) ────────────────────────────── */
 function looksLikeTurkish(s) {
   if (!s) return false;
   if (/[şğıçŞĞİÇ]/.test(s)) return true;
@@ -183,6 +361,10 @@ function looksLikeGerman(s) {
 }
 
 function maybeSwap(de, tr) {
+  // Eğer de Türkçe, tr Almanca görünüyorsa yer değiştir
+  if (de && tr && looksLikeTurkish(de) && looksLikeGerman(tr)) {
+    return { de: tr, tr: de };
+  }
   return { de, tr };
 }
 

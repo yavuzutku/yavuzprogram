@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutsch Verb Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--surface:#131313;--surface2:#1a1a1a;--surface3:#222;
+  --border:#272727;--border2:#333;
+  --accent:#c8902a;--accent-l:#e8b84b;--accent-dim:rgba(200,144,42,.13);
+  --text:#ede8dd;--text2:#9a9080;--text3:#5a5040;
+  --ok:#4caf65;--ok-bg:rgba(76,175,101,.12);
+  --err:#e05555;--err-bg:rgba(224,85,85,.12);
+  --c-strong:#5b9bd5;--c-modal:#9b7fd4;--c-mixed:#d4835b;--c-irregular:#d45b8a;
+  --c-haben:#5ba3c9;--c-sein:#c9855b;
+  --r:12px;--r-s:6px;
+  --shadow:0 6px 32px rgba(0,0,0,.5);
+  --ff-d:'Playfair Display',Georgia,serif;
+  --ff-u:'DM Sans',system-ui,sans-serif;
+  --ff-m:'DM Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--ff-u);font-size:15px;line-height:1.6;overflow:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* ── LOADING ─────────────────────────────────────────── */
+#loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:999;padding:2rem;gap:2.5rem;text-align:center}
+.load-title{font-family:var(--ff-d);font-size:clamp(2rem,6vw,3.75rem);font-weight:700;letter-spacing:.02em;line-height:1}
+.load-title span{color:var(--accent)}
+.load-sub{color:var(--text3);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;margin-top:-.75rem}
+.drop-zone{width:min(460px,90vw);border:2px dashed var(--border2);border-radius:var(--r);padding:2.5rem 2rem;cursor:pointer;transition:all .3s;display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.drop-zone:hover,.drop-zone.over{border-color:var(--accent);background:var(--accent-dim)}
+.drop-zone svg{color:var(--text3);transition:color .3s}
+.drop-zone:hover svg,.drop-zone.over svg{color:var(--accent)}
+.drop-zone p{color:var(--text2);font-size:.875rem}
+.drop-zone strong{color:var(--text)}
+.load-btn{background:var(--accent);color:#000;border:none;padding:.7rem 2rem;border-radius:var(--r-s);font-family:var(--ff-u);font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.04em}
+.load-btn:hover{background:var(--accent-l);transform:translateY(-1px)}
+#load-file{display:none}
+.load-hint{color:var(--text3);font-size:.78rem;max-width:360px}
+#load-err{color:var(--err);font-size:.875rem;display:none}
+
+/* ── APP LAYOUT ──────────────────────────────────────── */
+#app{height:100vh;display:grid;grid-template-columns:210px 1fr}
+
+/* ── SIDEBAR ──────────────────────────────────────────── */
+#sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.25rem 0;overflow:hidden}
+.sb-logo{padding:0 1.25rem 1.25rem;border-bottom:1px solid var(--border);margin-bottom:.75rem}
+.sb-logo h1{font-family:var(--ff-d);font-size:1.2rem;font-weight:700;line-height:1.2}
+.sb-logo h1 span{color:var(--accent)}
+.sb-logo p{color:var(--text3);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;margin-top:.2rem}
+.nav-label{color:var(--text3);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;padding:.6rem .75rem .2rem 1rem;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .75rem .6rem 1rem;border-radius:var(--r-s);cursor:pointer;transition:all .2s;color:var(--text2);font-size:.85rem;font-weight:400;position:relative;margin:0 .5rem 2px;border:none;background:none;width:calc(100% - 1rem);text-align:left}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--accent-dim);color:var(--accent);font-weight:500}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;border-radius:0 2px 2px 0;background:var(--accent)}
+.nav-icon{font-size:.95rem;width:1.4rem;text-align:center;flex-shrink:0}
+.sb-foot{padding:1rem 1.25rem;border-top:1px solid var(--border);margin-top:auto}
+.sb-stat{display:flex;justify-content:space-between;color:var(--text3);font-size:.73rem;padding:.15rem 0}
+.sb-stat span:last-child{color:var(--accent);font-weight:600}
+
+/* ── MAIN ────────────────────────────────────────────── */
+#main{overflow:hidden;display:flex;flex-direction:column}
+.section{display:none;flex:1;overflow:hidden;flex-direction:column}
+.section.active{display:flex}
+.sec-head{padding:1.25rem 1.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;flex-shrink:0;background:var(--surface)}
+.sec-head h2{font-family:var(--ff-d);font-size:1.35rem;font-weight:700;flex:1}
+.sec-head h2 em{color:var(--accent);font-style:italic}
+.sec-body{flex:1;overflow-y:auto;padding:1.5rem 1.75rem}
+
+/* ── SEARCH + FILTER ─────────────────────────────────── */
+.search-bar{position:relative;flex:1;min-width:160px;max-width:320px}
+.search-bar input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-s);padding:.55rem 1rem .55rem 2.25rem;color:var(--text);font-family:var(--ff-u);font-size:.85rem;outline:none;transition:border-color .2s}
+.search-bar input:focus{border-color:var(--accent)}
+.search-bar input::placeholder{color:var(--text3)}
+.si{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.85rem;pointer-events:none}
+.filter-row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;padding:.65rem 1.75rem;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.f-grp{display:flex;gap:.2rem;align-items:center}
+.f-lbl{color:var(--text3);font-size:.72rem;margin-right:.15rem;white-space:nowrap}
+.chip{padding:.25rem .65rem;border-radius:999px;font-size:.72rem;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .2s;font-family:var(--ff-u);white-space:nowrap}
+.chip:hover{border-color:var(--accent);color:var(--text)}
+.chip.on{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+
+/* ── VERB GRID ────────────────────────────────────────── */
+.verb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.875rem}
+.verb-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;cursor:pointer;transition:all .22s;position:relative;display:flex;flex-direction:column;gap:.45rem}
+.verb-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+.verb-card.learned{border-color:rgba(76,175,101,.3)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start}
+.tbadge{font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.18rem .45rem;border-radius:3px}
+.tbadge.strong{background:rgba(91,155,213,.15);color:var(--c-strong)}
+.tbadge.modal{background:rgba(155,127,212,.15);color:var(--c-modal)}
+.tbadge.mixed{background:rgba(212,131,91,.15);color:var(--c-mixed)}
+.tbadge.irregular{background:rgba(212,91,138,.15);color:var(--c-irregular)}
+.fav-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:.95rem;transition:color .2s;padding:0;line-height:1;flex-shrink:0}
+.fav-btn.on{color:var(--accent)}
+.fav-btn:hover{color:var(--accent-l)}
+.card-inf{font-family:var(--ff-d);font-size:1.25rem;font-weight:700;color:var(--text);line-height:1.2}
+.sep-lbl{font-size:.6rem;color:var(--accent);font-family:var(--ff-u);font-weight:600;margin-left:.3rem;vertical-align:middle;border:1px solid var(--accent);padding:.05rem .3rem;border-radius:2px}
+.card-meaning{color:var(--text2);font-size:.82rem;font-style:italic}
+.card-forms{display:flex;gap:.6rem;margin-top:.15rem}
+.cf{flex:1;background:var(--surface2);border-radius:4px;padding:.35rem .45rem}
+.cf-lbl{font-size:.57rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
+.cf-val{font-family:var(--ff-m);font-size:.78rem;color:var(--text);margin-top:1px}
+.card-bot{display:flex;justify-content:space-between;align-items:center;margin-top:.1rem}
+.abadge{font-size:.67rem;font-weight:600;padding:.13rem .45rem;border-radius:3px}
+.abadge.haben{background:rgba(91,163,201,.15);color:var(--c-haben)}
+.abadge.sein{background:rgba(201,133,91,.15);color:var(--c-sein)}
+.lbadge{font-size:.62rem;font-weight:600;color:var(--ok);letter-spacing:.04em}
+.no-res{text-align:center;padding:4rem 2rem;color:var(--text3);grid-column:1/-1}
+.no-res h3{font-family:var(--ff-d);font-size:1.4rem;margin-bottom:.5rem;color:var(--text2)}
+
+/* ── CONJUGATION ─────────────────────────────────────── */
+.back-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:.38rem .9rem;border-radius:var(--r-s);cursor:pointer;font-family:var(--ff-u);font-size:.82rem;transition:all .2s;display:flex;align-items:center;gap:.35rem}
+.back-btn:hover{border-color:var(--accent);color:var(--accent)}
+.conj-head{background:var(--surface);padding:1.5rem 1.75rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.conj-inf{font-family:var(--ff-d);font-size:2.25rem;font-weight:700;line-height:1;margin-bottom:.5rem}
+.conj-meta{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem}
+.conj-meaning{color:var(--text2);font-style:italic;font-size:.9rem}
+.conj-note{background:var(--surface2);border-left:3px solid var(--accent);padding:.45rem 1rem;border-radius:0 var(--r-s) var(--r-s) 0;color:var(--text2);font-size:.82rem;margin-top:.5rem}
+.conj-actions{display:flex;gap:.6rem;margin-top:.75rem;flex-wrap:wrap}
+.action-btn{background:none;border:1px solid var(--border);padding:.32rem .8rem;border-radius:var(--r-s);cursor:pointer;font-size:.78rem;color:var(--text2);font-family:var(--ff-u);transition:all .2s}
+.action-btn:hover{border-color:var(--accent);color:var(--accent)}
+.action-btn.on-ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.action-btn.on-fav{color:var(--accent);border-color:var(--accent);background:var(--accent-dim)}
+.tense-tabs{display:flex;padding:0 1.75rem;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;flex-shrink:0}
+.ttab{padding:.65rem 1.1rem;cursor:pointer;font-size:.78rem;font-weight:500;color:var(--text3);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;background:none;border-left:none;border-right:none;border-top:none;font-family:var(--ff-u)}
+.ttab:hover{color:var(--text)}
+.ttab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.conj-wrap{padding:1.75rem;flex:1;overflow-y:auto}
+.ctable{width:100%;border-collapse:collapse;max-width:480px}
+.ctable th,.ctable td{padding:.65rem .9rem;text-align:left;border-bottom:1px solid var(--border)}
+.ctable th{color:var(--text3);font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:var(--surface2)}
+.ctable tr:last-child td{border-bottom:none}
+.ctable .pc{color:var(--text2);font-size:.82rem;font-style:italic;width:110px}
+.ctable .fc{font-family:var(--ff-m);font-size:.92rem;color:var(--text)}
+.ctable .fc.empty{color:var(--text3);font-style:italic}
+.ctable tr:hover td{background:var(--surface2)}
+.alt-note{margin-top:1.25rem;padding:.9rem 1.1rem;background:var(--surface2);border-radius:var(--r-s);border:1px solid var(--border);max-width:480px}
+.alt-note h4{color:var(--text3);font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.alt-note p{font-family:var(--ff-m);font-size:.88rem;color:var(--text);line-height:1.9}
+
+/* ── FLASHCARD ───────────────────────────────────────── */
+.fc-settings{display:flex;flex-wrap:wrap;gap:.75rem;padding:1.1rem 1.75rem;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;align-items:center}
+.fc-set{display:flex;align-items:center;gap:.4rem}
+.fc-set label{color:var(--text3);font-size:.78rem;white-space:nowrap}
+.fc-set select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.3rem .65rem;border-radius:var(--r-s);font-family:var(--ff-u);font-size:.78rem;outline:none;cursor:pointer}
+.start-btn{background:var(--accent);color:#000;border:none;padding:.48rem 1.4rem;border-radius:var(--r-s);font-family:var(--ff-u);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;margin-left:auto}
+.start-btn:hover{background:var(--accent-l)}
+.fc-pbar{height:3px;background:var(--border);flex-shrink:0}
+.fc-pfill{height:100%;background:var(--accent);transition:width .35s ease}
+.fc-arena{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1.25rem}
+.fc-info{color:var(--text3);font-size:.82rem;text-align:center}
+.fc-cont{perspective:1100px;width:min(540px,90vw);height:270px;cursor:pointer}
+.fc-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.fc-card.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.75rem;text-align:center}
+.fc-front{background:var(--surface);border:1px solid var(--border2)}
+.fc-back{background:var(--surface2);border:1px solid var(--accent);transform:rotateY(180deg)}
+.fc-type-lbl{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);position:absolute;top:.9rem;left:1.1rem}
+.fc-q{font-family:var(--ff-d);font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:.4rem;line-height:1.3}
+.fc-hint{color:var(--text2);font-size:.82rem;font-style:italic}
+.fc-tap{position:absolute;bottom:.85rem;right:1.1rem;font-size:.67rem;color:var(--text3)}
+.fc-ans{font-family:var(--ff-d);font-size:1.35rem;font-weight:700;color:var(--accent);margin-bottom:.4rem;line-height:1.3}
+.fc-det{color:var(--text2);font-size:.82rem;font-family:var(--ff-m);line-height:1.9}
+.fc-acts{display:flex;gap:.85rem}
+.fc-btn{padding:.55rem 1.75rem;border-radius:var(--r-s);font-family:var(--ff-u);font-size:.875rem;font-weight:600;cursor:pointer;border:2px solid;transition:all .2s}
+.fc-btn.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.fc-btn.ok:hover{background:var(--ok);color:#000}
+.fc-btn.err{background:var(--err-bg);border-color:var(--err);color:var(--err)}
+.fc-btn.err:hover{background:var(--err);color:#fff}
+.fc-done{text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.25rem}
+.fc-done h3{font-family:var(--ff-d);font-size:1.75rem}
+.fc-pct{font-size:4rem;font-weight:700;color:var(--accent);font-family:var(--ff-d);line-height:1}
+.fc-plbl{color:var(--text2);font-size:.875rem}
+.fc-done-btns{display:flex;gap:.75rem}
+.sec-btn{background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:.48rem 1.2rem;border-radius:var(--r-s);font-family:var(--ff-u);font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s}
+.sec-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── QUIZ ────────────────────────────────────────────── */
+.quiz-settings{display:flex;flex-wrap:wrap;gap:.75rem;padding:1.1rem 1.75rem;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;align-items:center}
+.qset{display:flex;align-items:center;gap:.4rem}
+.qset label{color:var(--text3);font-size:.78rem;white-space:nowrap}
+.qset select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.3rem .65rem;border-radius:var(--r-s);font-family:var(--ff-u);font-size:.78rem;outline:none;cursor:pointer}
+.quiz-arena{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:1.75rem;gap:1.1rem;overflow-y:auto}
+.q-counter{color:var(--text3);font-size:.82rem;align-self:stretch;display:flex;justify-content:space-between;max-width:600px;width:100%;align-self:center}
+.q-score{color:var(--accent);font-weight:600}
+.qpbar-wrap{width:100%;max-width:600px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.qpbar-fill{height:100%;background:var(--accent);transition:width .35s}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;width:min(600px,100%)}
+.q-type{font-size:.62rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:.75rem}
+.q-text{font-family:var(--ff-d);font-size:1.2rem;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:.2rem}
+.q-ctx{color:var(--text2);font-size:.82rem;margin-bottom:1.25rem;font-style:italic}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.q-opt{background:var(--surface2);border:2px solid var(--border);border-radius:var(--r-s);padding:.75rem .9rem;cursor:pointer;font-family:var(--ff-m);font-size:.875rem;color:var(--text);transition:all .2s;text-align:left;line-height:1.35}
+.q-opt:hover:not(.dis){border-color:var(--accent);background:var(--accent-dim)}
+.q-opt.correct{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.q-opt.wrong{border-color:var(--err);background:var(--err-bg);color:var(--err)}
+.q-opt.dis{cursor:not-allowed}
+.q-fb{background:var(--surface);border-radius:var(--r-s);padding:.85rem 1.1rem;width:min(600px,100%);font-size:.85rem;display:none;border-left:3px solid}
+.q-fb.ok{border-color:var(--ok);color:var(--ok)}
+.q-fb.err{border-color:var(--err)}
+.q-fb .expl{color:var(--text2);margin-top:.2rem;font-family:var(--ff-m);font-size:.82rem}
+.q-next{background:var(--accent);color:#000;border:none;padding:.58rem 1.75rem;border-radius:var(--r-s);font-family:var(--ff-u);font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s;display:none}
+.q-next:hover{background:var(--accent-l)}
+.q-next.show{display:block}
+.q-done{text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.25rem;width:min(600px,100%)}
+.q-final{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2.5rem;width:100%}
+.q-final h3{font-family:var(--ff-d);font-size:1.6rem;margin-bottom:.75rem}
+.q-pct{font-size:4.5rem;font-weight:700;line-height:1;font-family:var(--ff-d);margin-bottom:.25rem}
+.q-pct.great{color:var(--ok)}.q-pct.good{color:var(--accent)}.q-pct.poor{color:var(--err)}
+.q-plbl{color:var(--text2);font-size:.9rem;margin-bottom:1.5rem}
+.q-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-top:1rem}
+.qb-item{background:var(--surface2);border-radius:var(--r-s);padding:.65rem;display:flex;flex-direction:column;gap:.2rem}
+.qb-lbl{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.qb-val{font-size:1.05rem;font-weight:600;color:var(--text)}
+
+/* ── STATISTICS ──────────────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.875rem;margin-bottom:1.75rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem}
+.sc-lbl{color:var(--text3);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.sc-val{font-family:var(--ff-d);font-size:2.1rem;font-weight:700;color:var(--text);line-height:1}
+.sc-sub{color:var(--text2);font-size:.75rem;margin-top:.25rem}
+.prog-sec h3{font-family:var(--ff-d);font-size:1.05rem;margin-bottom:.875rem;color:var(--text)}
+.type-progs{display:flex;flex-direction:column;gap:.65rem;margin-bottom:1.5rem}
+.tp-item{display:flex;align-items:center;gap:.875rem}
+.tp-name{width:72px;font-size:.78rem;color:var(--text2);flex-shrink:0}
+.tp-bar-w{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden}
+.tp-fill{height:100%;border-radius:4px;transition:width .7s ease}
+.tp-cnt{font-size:.72rem;color:var(--text3);width:46px;text-align:right;flex-shrink:0}
+.miss-list{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.75rem}
+.miss-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-s);padding:.35rem .65rem;font-size:.78rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.miss-item:hover{border-color:var(--accent)}
+.miss-rate{background:var(--err-bg);color:var(--err);font-size:.62rem;font-weight:700;padding:.08rem .3rem;border-radius:2px}
+
+/* ── KBD HINT ────────────────────────────────────────── */
+.kbd-hint{position:fixed;bottom:1rem;right:1rem;display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end;pointer-events:none}
+.kbd{background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:.15rem .4rem;font-family:var(--ff-m);font-size:.65rem;color:var(--text3)}
+.kbd-pair{display:flex;align-items:center;gap:.25rem;color:var(--text3);font-size:.65rem}
+
+/* ── UTILS ────────────────────────────────────────────── */
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.section.active .sec-body{animation:fi .22s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.shake{animation:shake .28s ease}
+@media(max-width:720px){
+  #app{grid-template-columns:1fr}
+  #sidebar{display:none}
+  .q-opts{grid-template-columns:1fr}
+  .q-breakdown{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div>
+    <div class="load-title">Deutsch <span>Verb</span> Atlas</div>
+    <div class="load-sub">Almanca Fiil Öğrenme Sistemi · 150 Fiil</div>
+  </div>
+  <div class="drop-zone" id="drop-zone">
+    <svg width="44" height="44" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+    </svg>
+    <div>
+      <strong>JSON dosyasını buraya sürükleyin</strong>
+      <p>veya aşağıdan dosya seçin</p>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:.65rem">
+    <button class="load-btn" onclick="document.getElementById('load-file').click()">📂 Dosya Seç</button>
+    <input type="file" id="load-file" accept=".json">
+    <p class="load-hint">JSON dosyasını HTML ile aynı klasöre <strong>verbs.json</strong> adıyla kaydettiğinizde otomatik yüklenir (yerel sunucu gerekir). Aksi hâlde dosyayı seçin.</p>
+  </div>
+  <div id="load-err">❌ Geçersiz dosya. Lütfen doğru JSON dosyasını seçin.</div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-logo">
+      <h1>Verb <span>Atlas</span></h1>
+      <p>Almanca Fiil Sistemi</p>
+    </div>
+    <nav style="padding:0 0;flex:1">
+      <div class="nav-label">Çalışma Modları</div>
+      <button class="nav-item active" data-sec="browser" onclick="showSec('browser')"><span class="nav-icon">📚</span>Sözlük</button>
+      <button class="nav-item" data-sec="conjugation" id="nav-conj" style="display:none" onclick="showSec('conjugation')"><span class="nav-icon">📖</span>Çekim Tablosu</button>
+      <button class="nav-item" data-sec="flashcard" onclick="showSec('flashcard')"><span class="nav-icon">🃏</span>Flashcard</button>
+      <button class="nav-item" data-sec="quiz" onclick="showSec('quiz')"><span class="nav-icon">🎯</span>Quiz</button>
+      <div class="nav-label">Analiz</div>
+      <button class="nav-item" data-sec="stats" onclick="showSec('stats')"><span class="nav-icon">📊</span>İstatistik</button>
+    </nav>
+    <div class="sb-foot" id="sb-foot"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="main">
+
+    <!-- BROWSER -->
+    <section class="section active" id="section-browser">
+      <div class="sec-head">
+        <h2>Fiil <em>Sözlüğü</em></h2>
+        <div class="search-bar">
+          <span class="si">🔍</span>
+          <input type="text" id="search-inp" placeholder="Fiil veya anlam ara…" oninput="doFilter()">
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="f-grp">
+          <span class="f-lbl">Tür:</span>
+          <button class="chip on" data-fg="type" data-fv="all" onclick="setF('type','all',this)">Tümü</button>
+          <button class="chip" data-fg="type" data-fv="strong" onclick="setF('type','strong',this)">Güçlü</button>
+          <button class="chip" data-fg="type" data-fv="modal" onclick="setF('type','modal',this)">Modal</button>
+          <button class="chip" data-fg="type" data-fv="mixed" onclick="setF('type','mixed',this)">Karışık</button>
+          <button class="chip" data-fg="type" data-fv="irregular" onclick="setF('type','irregular',this)">Düzensiz</button>
+        </div>
+        <div class="f-grp">
+          <span class="f-lbl">Yardımcı:</span>
+          <button class="chip on" data-fg="aux" data-fv="all" onclick="setF('aux','all',this)">Tümü</button>
+          <button class="chip" data-fg="aux" data-fv="haben" onclick="setF('aux','haben',this)">haben</button>
+          <button class="chip" data-fg="aux" data-fv="sein" onclick="setF('aux','sein',this)">sein</button>
+        </div>
+        <div class="f-grp">
+          <span class="f-lbl">Filtre:</span>
+          <button class="chip" id="f-sep" onclick="togF('sep',this)">Ayrılabilir</button>
+          <button class="chip" id="f-learned" onclick="togF('learned',this)">✓ Öğrenildi</button>
+          <button class="chip" id="f-fav" onclick="togF('fav',this)">⭐ Favoriler</button>
+        </div>
+      </div>
+      <div class="sec-body">
+        <div style="color:var(--text3);font-size:.78rem;margin-bottom:.875rem" id="v-count"></div>
+        <div class="verb-grid" id="verb-grid"></div>
+      </div>
+    </section>
+
+    <!-- CONJUGATION -->
+    <section class="section" id="section-conjugation">
+      <div class="sec-head">
+        <button class="back-btn" onclick="showSec('browser')">← Sözlük</button>
+      </div>
+      <div id="conj-head-area"></div>
+      <div class="tense-tabs" id="tense-tabs"></div>
+      <div class="conj-wrap" id="conj-wrap"></div>
+    </section>
+
+    <!-- FLASHCARD -->
+    <section class="section" id="section-flashcard">
+      <div class="sec-head"><h2>Flash <em>Kartlar</em></h2></div>
+      <div class="fc-settings">
+        <div class="fc-set"><label>Kart Türü:</label>
+          <select id="fc-type">
+            <option value="meaning-to-verb">Anlam → Fiil</option>
+            <option value="verb-to-meaning">Fiil → Anlam</option>
+            <option value="forms">Fiil → Temel Formlar</option>
+            <option value="conjugation">Çekim Sorusu</option>
+            <option value="mixed" selected>Karışık</option>
+          </select>
+        </div>
+        <div class="fc-set"><label>Fiil Türü:</label>
+          <select id="fc-vtype">
+            <option value="all">Tümü</option>
+            <option value="strong">Güçlü</option>
+            <option value="modal">Modal</option>
+            <option value="mixed">Karışık</option>
+            <option value="sein">sein kullananlar</option>
+          </select>
+        </div>
+        <div class="fc-set"><label>Kart Sayısı:</label>
+          <select id="fc-count">
+            <option value="10">10 kart</option>
+            <option value="20" selected>20 kart</option>
+            <option value="50">50 kart</option>
+            <option value="all">Tümü</option>
+          </select>
+        </div>
+        <button class="start-btn" onclick="startFC()">▶ Başla</button>
+      </div>
+      <div class="fc-pbar"><div class="fc-pfill" id="fc-pfill" style="width:0"></div></div>
+      <div class="fc-arena" id="fc-arena">
+        <div style="text-align:center;color:var(--text3)">
+          <p style="font-size:2.5rem;margin-bottom:.75rem">🃏</p>
+          <p>Ayarları seçin ve <strong style="color:var(--accent)">Başla</strong>'ya tıklayın</p>
+          <p style="font-size:.78rem;margin-top:.5rem">Klavye: <kbd>Boşluk</kbd> çevir · <kbd>←</kbd> yanlış · <kbd>→</kbd> doğru</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="section" id="section-quiz">
+      <div class="sec-head"><h2>Bilgi <em>Testi</em></h2></div>
+      <div class="quiz-settings">
+        <div class="qset"><label>Soru Sayısı:</label>
+          <select id="qz-count"><option value="10">10</option><option value="20" selected>20</option><option value="30">30</option></select>
+        </div>
+        <div class="qset"><label>Soru Türü:</label>
+          <select id="qz-qtype">
+            <option value="mixed">Karışık</option>
+            <option value="conjugation">Çekim Formu</option>
+            <option value="meaning">Anlam</option>
+            <option value="auxiliary">Yardımcı Fiil</option>
+            <option value="prateritum">Präteritum</option>
+          </select>
+        </div>
+        <div class="qset"><label>Fiil Türü:</label>
+          <select id="qz-vtype"><option value="all">Tümü</option><option value="strong">Güçlü</option><option value="modal">Modal</option><option value="mixed">Karışık</option></select>
+        </div>
+        <button class="start-btn" onclick="startQuiz()">▶ Quiz Başlat</button>
+      </div>
+      <div class="quiz-arena" id="quiz-arena">
+        <div style="text-align:center;color:var(--text3)">
+          <p style="font-size:2.5rem;margin-bottom:.75rem">🎯</p>
+          <p>Ayarları seçin ve <strong style="color:var(--accent)">Quiz Başlat</strong>'a tıklayın</p>
+          <p style="font-size:.78rem;margin-top:.5rem">Klavye: <kbd>1-4</kbd> seçenek · <kbd>Enter</kbd> ileri</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="section" id="section-stats">
+      <div class="sec-head">
+        <h2>Öğrenme <em>İstatistikleri</em></h2>
+        <button onclick="resetProg()" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--text3);padding:.35rem .7rem;border-radius:6px;cursor:pointer;font-family:var(--ff-u);font-size:.75rem;transition:all .2s" onmouseover="this.style.borderColor='var(--err)'" onmouseout="this.style.borderColor='var(--border)'">İlerlemeyi Sıfırla</button>
+      </div>
+      <div class="sec-body" id="stats-body"></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let verbs = [];
+let filters = { type:'all', aux:'all', sep:false, learned:false, fav:false };
+let currentVerb = null;
+let activeTense = 'prasens';
+let activeSec = 'browser';
+let fcSess = { cards:[], idx:0, correct:0, flipped:false };
+let qzSess = { questions:[], idx:0, score:0, answered:false };
+let prog = {};
+try { prog = JSON.parse(localStorage.getItem('dva_prog') || '{}'); } catch(e) {}
+
+const TLABELS = { strong:'Güçlü', modal:'Modal', mixed:'Karışık', irregular:'Düzensiz' };
+const TENSES = [
+  {key:'prasens',        label:'Präsens',        sub:'Geniş Zaman'},
+  {key:'prateritum_full',label:'Präteritum',     sub:'Geçmiş Zaman'},
+  {key:'perfekt',        label:'Perfekt',         sub:'Bitmiş Geçmiş'},
+  {key:'plusquamperfekt',label:'Plusquamperf.',   sub:'Önceki Geçmiş'},
+  {key:'futur1',         label:'Futur I',         sub:'Gelecek Zaman'},
+  {key:'konjunktiv2',   label:'Konjunktiv II',   sub:'Dilek Kipi'},
+  {key:'imperativ',      label:'İmperativ',       sub:'Emir Kipi'},
+];
+const PERSONS = ['ich','du','er/sie/es','wir','ihr','sie/Sie'];
+const IMP_PERS = ['du','ihr','Sie'];
+
+// ═══════════════════════════════════════════════
+//  LOADING
+// ═══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  fetch('./irregular_verbs.json').then(r => { if(!r.ok) throw 0; return r.json(); })
+    .then(d => initApp(d)).catch(() => {});
+});
+
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); const f=e.dataTransfer.files[0]; if(f) readFile(f); });
+
+document.getElementById('load-file').addEventListener('change', e => { if(e.target.files[0]) readFile(e.target.files[0]); });
+
+function readFile(file) {
+  const r = new FileReader();
+  r.onload = e => {
+    try { initApp(JSON.parse(e.target.result)); }
+    catch { document.getElementById('load-err').style.display='block'; }
+  };
+  r.readAsText(file);
+}
+
+function initApp(data) {
+  verbs = (data.verbs || data) || [];
+  if (!verbs.length) { document.getElementById('load-err').style.display='block'; return; }
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'grid';
+  doFilter();
+  updateSBStats();
+}
+
+// ═══════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════
+function showSec(id) {
+  activeSec = id;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  const ni = document.querySelector(`.nav-item[data-sec="${id}"]`);
+  if (ni) ni.classList.add('active');
+  if (id === 'stats') renderStats();
+}
+
+// ═══════════════════════════════════════════════
+//  BROWSER
+// ═══════════════════════════════════════════════
+function setF(group, val, btn) {
+  filters[group] = val;
+  btn.closest('.f-grp').querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+  doFilter();
+}
+function togF(key, btn) {
+  filters[key] = !filters[key];
+  btn.classList.toggle('on', filters[key]);
+  doFilter();
+}
+
+function doFilter() {
+  const q = (document.getElementById('search-inp')?.value||'').toLowerCase().trim();
+  let list = verbs.filter(v => {
+    if (q && !v.infinitiv.toLowerCase().includes(q) && !v.meaning.toLowerCase().includes(q)) return false;
+    if (filters.type !== 'all' && v.type !== filters.type) return false;
+    if (filters.aux !== 'all' && v.auxiliary !== filters.aux) return false;
+    if (filters.sep && !v.meta?.separable) return false;
+    if (filters.learned && !prog[v.infinitiv]?.learned) return false;
+    if (filters.fav && !prog[v.infinitiv]?.favorite) return false;
+    return true;
+  });
+  renderGrid(list);
+}
+
+function renderGrid(list) {
+  const grid = document.getElementById('verb-grid');
+  const cnt = document.getElementById('v-count');
+  if (cnt) cnt.textContent = list.length + ' fiil listeleniyor';
+  if (!list.length) {
+    grid.innerHTML = `<div class="no-res"><h3>Sonuç bulunamadı</h3><p>Farklı filtreler deneyin</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(v => {
+    const p = prog[v.infinitiv] || {};
+    return `<div class="verb-card${p.learned?' learned':''}" onclick="openConj('${v.infinitiv}')">
+      <div class="card-top">
+        <span class="tbadge ${v.type}">${TLABELS[v.type]||v.type}</span>
+        <button class="fav-btn${p.favorite?' on':''}" onclick="event.stopPropagation();togFav('${v.infinitiv}',this)" title="Favorilere ekle">${p.favorite?'⭐':'☆'}</button>
+      </div>
+      <div class="card-inf">${v.infinitiv}${v.meta?.separable?'<span class="sep-lbl">ayr.</span>':''}</div>
+      <div class="card-meaning">${v.meaning}</div>
+      <div class="card-forms">
+        <div class="cf"><div class="cf-lbl">Präteritum</div><div class="cf-val">${v.forms.prateritum}</div></div>
+        <div class="cf"><div class="cf-lbl">Partizip II</div><div class="cf-val">${v.forms.partizip2}</div></div>
+      </div>
+      <div class="card-bot">
+        <span class="abadge ${v.auxiliary}">${v.auxiliary}</span>
+        ${p.learned?'<span class="lbadge">✓ Öğrenildi</span>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togFav(inf, btn) {
+  if (!prog[inf]) prog[inf] = {};
+  prog[inf].favorite = !prog[inf].favorite;
+  btn.classList.toggle('on', prog[inf].favorite);
+  btn.textContent = prog[inf].favorite ? '⭐' : '☆';
+  saveProg(); updateSBStats();
+}
+
+// ═══════════════════════════════════════════════
+//  CONJUGATION
+// ═══════════════════════════════════════════════
+function openConj(inf) {
+  currentVerb = verbs.find(v => v.infinitiv === inf);
+  if (!currentVerb) return;
+  activeTense = 'prasens';
+  document.getElementById('nav-conj').style.display = 'flex';
+  showSec('conjugation');
+  renderConjHead();
+  renderTenseTabs();
+  renderConjTable();
+}
+
+function renderConjHead() {
+  const v = currentVerb;
+  const p = prog[v.infinitiv] || {};
+  document.getElementById('conj-head-area').innerHTML = `
+    <div class="conj-head">
+      <div class="conj-inf">${v.infinitiv}</div>
+      <div class="conj-meta">
+        <span class="tbadge ${v.type}">${TLABELS[v.type]||v.type}</span>
+        <span class="abadge ${v.auxiliary}">${v.auxiliary} ile</span>
+        ${v.meta?.separable?'<span class="tbadge" style="border:1px solid var(--accent);color:var(--accent);background:var(--accent-dim)">Ayrılabilir</span>':''}
+        <span class="conj-meaning">${v.meaning}</span>
+      </div>
+      <div class="conj-actions">
+        <button class="action-btn${p.favorite?' on-fav':''}" onclick="togFavConj('${v.infinitiv}')" id="cfav-btn">
+          ${p.favorite?'⭐ Favoride':'☆ Favoriye Ekle'}
+        </button>
+        <button class="action-btn${p.learned?' on-ok':''}" onclick="togLearnConj('${v.infinitiv}')" id="clearn-btn">
+          ${p.learned?'✓ Öğrenildi':'○ Öğrenildi İşaretle'}
+        </button>
+      </div>
+      ${v.meta?.notes?`<div class="conj-note">💡 ${v.meta.notes}</div>`:''}
+    </div>`;
+}
+
+function togFavConj(inf) {
+  if (!prog[inf]) prog[inf] = {};
+  prog[inf].favorite = !prog[inf].favorite;
+  saveProg(); updateSBStats(); renderConjHead();
+}
+function togLearnConj(inf) {
+  if (!prog[inf]) prog[inf] = {};
+  prog[inf].learned = !prog[inf].learned;
+  saveProg(); updateSBStats(); renderConjHead();
+}
+
+function renderTenseTabs() {
+  document.getElementById('tense-tabs').innerHTML = TENSES.map(t =>
+    `<button class="ttab${activeTense===t.key?' active':''}" onclick="setTense('${t.key}')">${t.label}</button>`
+  ).join('');
+}
+
+function setTense(key) { activeTense = key; renderTenseTabs(); renderConjTable(); }
+
+function renderConjTable() {
+  const v = currentVerb;
+  const wrap = document.getElementById('conj-wrap');
+
+  if (activeTense === 'imperativ') {
+    const imp = v.imperativ || {};
+    wrap.innerHTML = `<table class="ctable">
+      <thead><tr><th>Şahıs</th><th>Emir Formu</th></tr></thead>
+      <tbody>${IMP_PERS.map(p => {
+        const f = imp[p]; const empty = !f||f==='—';
+        return `<tr><td class="pc">${p}</td><td class="fc${empty?' empty':''}">${f||'—'}</td></tr>`;
+      }).join('')}</tbody></table>`;
+    return;
+  }
+
+  const td = v[activeTense];
+  if (!td) { wrap.innerHTML='<p style="color:var(--text3)">Bu zaman için form bulunamadı.</p>'; return; }
+
+  const rows = PERSONS.map(p => {
+    const f = td[p]; const empty = !f||f==='—';
+    return `<tr><td class="pc">${p}</td><td class="fc${empty?' empty':''}">${f||'—'}</td></tr>`;
+  }).join('');
+
+  let altHtml = '';
+  if (activeTense === 'konjunktiv2' && td.alternative) {
+    const parts = Object.entries(td.alternative).filter(([,f]) => f && f!=='—').map(([k,f]) => `${k}: ${f}`).join(' &nbsp;·&nbsp; ');
+    if (parts) altHtml = `<div class="alt-note"><h4>Alternatif Form (würde + Infinitiv)</h4><p>${parts}</p></div>`;
+  }
+
+  wrap.innerHTML = `<table class="ctable">
+    <thead><tr><th>Şahıs</th><th>Form</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>${altHtml}`;
+}
+
+// ═══════════════════════════════════════════════
+//  FLASHCARD
+// ═══════════════════════════════════════════════
+function startFC() {
+  const type  = document.getElementById('fc-type').value;
+  const vtype = document.getElementById('fc-vtype').value;
+  const cnt   = document.getElementById('fc-count').value;
+
+  let pool = verbs.filter(v => {
+    if (vtype === 'all') return true;
+    if (vtype === 'sein') return v.auxiliary === 'sein';
+    return v.type === vtype;
+  });
+  pool = shuffle([...pool]);
+  if (cnt !== 'all') pool = pool.slice(0, parseInt(cnt));
+
+  fcSess = { cards: pool.map(v => makeCard(v, type)), idx:0, correct:0, flipped:false };
+  document.getElementById('fc-pfill').style.width = '0%';
+  drawFC();
+}
+
+function makeCard(verb, type) {
+  if (type === 'mixed') type = rnd(['meaning-to-verb','verb-to-meaning','forms','conjugation']);
+  if (type === 'meaning-to-verb') return {
+    verb, frontLbl:'Türkçe Anlam → Almanca Fiil',
+    front: verb.meaning, hint: `(${TLABELS[verb.type]}, ${verb.auxiliary})`,
+    back: verb.infinitiv, det: `Präteritum: ${verb.forms.prateritum} · Part.II: ${verb.forms.partizip2}`
+  };
+  if (type === 'verb-to-meaning') return {
+    verb, frontLbl:'Almanca Fiil → Türkçe Anlam',
+    front: verb.infinitiv, hint: `(${TLABELS[verb.type]})`,
+    back: verb.meaning, det: `${verb.forms.prateritum} · ${verb.forms.partizip2}`
+  };
+  if (type === 'forms') return {
+    verb, frontLbl:'Fiil → Temel Formlar',
+    front: verb.infinitiv, hint: 'Präteritum ve Partizip II\'yi düşünün',
+    back: `${verb.forms.prateritum} / ${verb.forms.partizip2}`, det: `${verb.meaning} · ${verb.auxiliary}`
+  };
+  // conjugation card
+  const tkeys = ['prasens','prateritum_full'];
+  let tk, person, form;
+  for (let i = 0; i < 15; i++) {
+    tk = rnd(tkeys);
+    const ps = PERSONS.filter(p => { const f=verb[tk]?.[p]; return f&&f!=='—'; });
+    if (!ps.length) continue;
+    person = rnd(ps); form = verb[tk][person]; break;
+  }
+  if (!form) return makeCard(verb, 'forms');
+  const tlbl = tk==='prasens'?'Präsens':'Präteritum';
+  return {
+    verb, frontLbl:'Çekim Formu',
+    front: `${verb.infinitiv} → ${tlbl} (${person})`, hint: `Anlam: ${verb.meaning}`,
+    back: form, det: `${verb.infinitiv} · ${tlbl} ${person}`
+  };
+}
+
+function drawFC() {
+  const arena = document.getElementById('fc-arena');
+  if (fcSess.idx >= fcSess.cards.length) {
+    const pct = Math.round(fcSess.correct/fcSess.cards.length*100);
+    arena.innerHTML = `<div class="fc-done">
+      <h3>Oturum Tamamlandı 🎉</h3>
+      <div><div class="fc-pct">${pct}%</div><div class="fc-plbl">${fcSess.correct} / ${fcSess.cards.length} doğru</div></div>
+      <div class="fc-done-btns">
+        <button class="start-btn" onclick="startFC()">Tekrar</button>
+        <button class="sec-btn" onclick="showSec('browser')">Sözlük</button>
+      </div>
+    </div>`;
+    document.getElementById('fc-pfill').style.width = '100%';
+    return;
+  }
+  const card = fcSess.cards[fcSess.idx];
+  const pct = (fcSess.idx / fcSess.cards.length * 100).toFixed(1);
+  document.getElementById('fc-pfill').style.width = pct + '%';
+  fcSess.flipped = false;
+  arena.innerHTML = `
+    <div class="fc-info">${fcSess.idx+1} / ${fcSess.cards.length} &nbsp;·&nbsp; ${fcSess.correct} doğru</div>
+    <div class="fc-cont" onclick="flipFC()">
+      <div class="fc-card" id="fc-card">
+        <div class="fc-face fc-front">
+          <div class="fc-type-lbl">${card.frontLbl}</div>
+          <div class="fc-q">${card.front}</div>
+          <div class="fc-hint">${card.hint||''}</div>
+          <div class="fc-tap">Cevabı görmek için tıkla ↻</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-type-lbl">${card.frontLbl}</div>
+          <div class="fc-ans">${card.back}</div>
+          <div class="fc-det">${card.det||''}</div>
+        </div>
+      </div>
+    </div>
+    <div id="fc-acts" style="display:none">
+      <div class="fc-acts">
+        <button class="fc-btn err" onclick="fcAns(false)">✗ Yanlış</button>
+        <button class="fc-btn ok" onclick="fcAns(true)">✓ Doğru</button>
+      </div>
+    </div>`;
+}
+
+function flipFC() {
+  if (fcSess.flipped) return;
+  fcSess.flipped = true;
+  document.getElementById('fc-card').classList.add('flipped');
+  setTimeout(() => {
+    const a = document.getElementById('fc-acts');
+    if (a) { a.style.display = 'flex'; a.style.justifyContent = 'center'; }
+  }, 320);
+}
+
+function fcAns(correct) {
+  const card = fcSess.cards[fcSess.idx];
+  if (correct) fcSess.correct++;
+  addQProg(card.verb.infinitiv, correct);
+  fcSess.idx++;
+  drawFC();
+}
+
+// ═══════════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════════
+function startQuiz() {
+  const count = parseInt(document.getElementById('qz-count').value);
+  const qtype = document.getElementById('qz-qtype').value;
+  const vtype = document.getElementById('qz-vtype').value;
+  let pool = verbs.filter(v => vtype==='all' || v.type===vtype);
+  if (pool.length < 4) { alert('Yeterli fiil bulunamadı.'); return; }
+
+  const qs = [];
+  for (let i=0; i<count; i++) {
+    let q=null, tries=0;
+    while(!q && tries<25) { q=genQ(pool, qtype); tries++; }
+    if (q) qs.push(q);
+  }
+  qzSess = { questions:qs, idx:0, score:0, answered:false };
+  drawQ();
+}
+
+function genQ(pool, qtype) {
+  const types = qtype==='mixed' ? ['conjugation','meaning','auxiliary','prateritum'] : [qtype];
+  const t = rnd(types);
+  if (t==='conjugation') return genConjQ(pool);
+  if (t==='meaning') return genMeanQ(pool);
+  if (t==='auxiliary') return genAuxQ(pool);
+  if (t==='prateritum') return genPratQ(pool);
+  return genConjQ(pool);
+}
+
+function genConjQ(pool) {
+  const v = rnd(pool);
+  const tens = [{key:'prasens',lbl:'Präsens'},{key:'prateritum_full',lbl:'Präteritum'},{key:'perfekt',lbl:'Perfekt'}];
+  const t = rnd(tens);
+  const p = rnd(PERSONS);
+  const correct = v[t.key]?.[p];
+  if (!correct || correct==='—' || correct.includes('—')) return null;
+  const used = new Set([correct]);
+  const wrongs = [];
+  const others = shuffle(pool.filter(x=>x.infinitiv!==v.infinitiv));
+  for (const o of others) {
+    if (wrongs.length>=3) break;
+    const f = o[t.key]?.[p];
+    if (f && f!=='—' && !f.includes('—') && !used.has(f)) { wrongs.push(f); used.add(f); }
+  }
+  if (wrongs.length<3) return null;
+  return { type:'Çekim Formu', q:`"${v.infinitiv}" → ${t.lbl} (${p})`, ctx:`(${v.meaning})`,
+    opts:shuffle([correct,...wrongs]), correct, expl:`${v.infinitiv}: ${t.lbl} ${p} = "${correct}"`, inf:v.infinitiv };
+}
+
+function genMeanQ(pool) {
+  const v = rnd(pool);
+  const correct = v.meaning;
+  const wrongs = shuffle(pool.filter(x=>x.infinitiv!==v.infinitiv)).slice(0,3).map(x=>x.meaning);
+  if (wrongs.length<3) return null;
+  return { type:'Anlam', q:`"${v.infinitiv}" fiilinin Türkçe anlamı?`, ctx:`(${TLABELS[v.type]}, ${v.forms.prateritum} / ${v.forms.partizip2})`,
+    opts:shuffle([correct,...wrongs]), correct, expl:`${v.infinitiv} = "${correct}"`, inf:v.infinitiv };
+}
+
+function genAuxQ(pool) {
+  const v = rnd(pool);
+  const correct = v.auxiliary;
+  const wrong = correct==='haben'?'sein':'haben';
+  return { type:'Yardımcı Fiil', q:`"${v.infinitiv}" Perfekt'te hangi yardımcı fiili kullanır?`, ctx:`(${v.meaning} · ${v.forms.partizip2})`,
+    opts:[correct, wrong], correct, expl:`${v.infinitiv} → ${correct} + ${v.forms.partizip2}`, inf:v.infinitiv };
+}
+
+function genPratQ(pool) {
+  const v = rnd(pool);
+  const correct = v.forms.prateritum;
+  const others = shuffle(pool.filter(x=>x.infinitiv!==v.infinitiv && x.forms.prateritum!==correct));
+  if (others.length<3) return null;
+  const wrongs = others.slice(0,3).map(x=>x.forms.prateritum);
+  return { type:'Präteritum (ich)', q:`"${v.infinitiv}" → Präteritum (ich) formu?`, ctx:`(${v.meaning})`,
+    opts:shuffle([correct,...wrongs]), correct, expl:`${v.infinitiv}: Präteritum = "${correct}"`, inf:v.infinitiv };
+}
+
+function drawQ() {
+  const arena = document.getElementById('quiz-arena');
+  if (qzSess.idx >= qzSess.questions.length) { drawQDone(); return; }
+  const q = qzSess.questions[qzSess.idx];
+  const tot = qzSess.questions.length;
+  const pct = ((qzSess.idx)/tot*100).toFixed(0);
+  arena.innerHTML = `
+    <div class="q-counter" style="max-width:600px;width:100%">
+      <span>Soru ${qzSess.idx+1} / ${tot}</span>
+      <span class="q-score">✓ ${qzSess.score}</span>
+    </div>
+    <div class="qpbar-wrap"><div class="qpbar-fill" style="width:${pct}%"></div></div>
+    <div class="q-card">
+      <div class="q-type">${q.type}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-ctx">${q.ctx||''}</div>
+      <div class="q-opts" id="q-opts">
+        ${q.opts.map(o=>`<button class="q-opt" data-val="${escH(o)}" onclick="checkQ(this)">${o}</button>`).join('')}
+      </div>
+    </div>
+    <div class="q-fb" id="q-fb"></div>
+    <button class="q-next" id="q-next" onclick="nextQ()">${qzSess.idx+1<tot?'Sonraki Soru →':'Sonuçları Gör →'}</button>`;
+}
+
+function checkQ(btn) {
+  if (qzSess.answered) return;
+  qzSess.answered = true;
+  const q = qzSess.questions[qzSess.idx];
+  const sel = btn.dataset.val;
+  const ok = sel === q.correct;
+  if (ok) qzSess.score++;
+  document.querySelectorAll('.q-opt').forEach(b => {
+    b.classList.add('dis');
+    if (b.dataset.val === q.correct) b.classList.add('correct');
+    else if (b.dataset.val === sel && !ok) b.classList.add('wrong');
+  });
+  addQProg(q.inf, ok);
+  const fb = document.getElementById('q-fb');
+  fb.style.display = 'block';
+  fb.className = 'q-fb ' + (ok?'ok':'err');
+  fb.innerHTML = `<strong>${ok?'✓ Doğru!':'✗ Yanlış!'}</strong><div class="expl">${q.expl}</div>`;
+  document.getElementById('q-next').classList.add('show');
+}
+
+function nextQ() { qzSess.idx++; qzSess.answered=false; drawQ(); }
+
+function drawQDone() {
+  const tot=qzSess.questions.length, sc=qzSess.score;
+  const pct=Math.round(sc/tot*100);
+  const cls = pct>=80?'great':pct>=60?'good':'poor';
+  const em = pct>=80?'🏆':pct>=60?'👍':'💪';
+  const msg = pct>=80?'Mükemmel!':pct>=60?'İyi İş!':'Daha Fazla Pratik!';
+  document.getElementById('quiz-arena').innerHTML = `
+    <div class="q-done">
+      <div class="q-final">
+        <h3>${em} ${msg}</h3>
+        <div class="q-pct ${cls}">${pct}%</div>
+        <div class="q-plbl">${sc} / ${tot} doğru cevap</div>
+        <div class="q-breakdown">
+          <div class="qb-item"><div class="qb-lbl">Doğru</div><div class="qb-val" style="color:var(--ok)">${sc}</div></div>
+          <div class="qb-item"><div class="qb-lbl">Yanlış</div><div class="qb-val" style="color:var(--err)">${tot-sc}</div></div>
+          <div class="qb-item"><div class="qb-lbl">Toplam</div><div class="qb-val">${tot}</div></div>
+          <div class="qb-item"><div class="qb-lbl">Başarı</div><div class="qb-val">${pct}%</div></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
+        <button class="start-btn" onclick="startQuiz()">Tekrar Oyna</button>
+        <button class="sec-btn" onclick="showSec('stats')">İstatistikler</button>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+//  STATISTICS
+// ═══════════════════════════════════════════════
+function renderStats() {
+  const tot = verbs.length;
+  const learnedN = Object.values(prog).filter(p=>p.learned).length;
+  const favN = Object.values(prog).filter(p=>p.favorite).length;
+  let tq=0, tc=0;
+  Object.values(prog).forEach(p => { tq+=p.qt||0; tc+=p.qc||0; });
+  const acc = tq>0 ? Math.round(tc/tq*100) : 0;
+
+  const typeData = ['strong','modal','mixed','irregular'].map(t => ({
+    t, lbl:TLABELS[t]||t,
+    tot: verbs.filter(v=>v.type===t).length,
+    lrn: verbs.filter(v=>v.type===t&&prog[v.infinitiv]?.learned).length,
+    color: t==='strong'?'var(--c-strong)':t==='modal'?'var(--c-modal)':t==='mixed'?'var(--c-mixed)':'var(--c-irregular)'
+  })).filter(d=>d.tot>0);
+
+  const missed = verbs
+    .filter(v => (prog[v.infinitiv]?.qt||0) >= 2)
+    .map(v => ({ inf:v.infinitiv, meaning:v.meaning, rate: Math.round((1-(prog[v.infinitiv].qc||0)/(prog[v.infinitiv].qt||1))*100) }))
+    .filter(v=>v.rate>0).sort((a,b)=>b.rate-a.rate).slice(0,14);
+
+  document.getElementById('stats-body').innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card"><div class="sc-lbl">Toplam Fiil</div><div class="sc-val">${tot}</div><div class="sc-sub">veri tabanında</div></div>
+      <div class="stat-card"><div class="sc-lbl">Öğrenildi</div><div class="sc-val" style="color:var(--ok)">${learnedN}</div><div class="sc-sub">%${Math.round(learnedN/tot*100)} tamamlandı</div></div>
+      <div class="stat-card"><div class="sc-lbl">Quiz Sorusu</div><div class="sc-val">${tq}</div><div class="sc-sub">${tc} doğru cevap</div></div>
+      <div class="stat-card"><div class="sc-lbl">Quiz Başarısı</div><div class="sc-val" style="color:var(--accent)">${acc}%</div><div class="sc-sub">genel doğruluk</div></div>
+      <div class="stat-card"><div class="sc-lbl">Favoriler</div><div class="sc-val">⭐ ${favN}</div><div class="sc-sub">fiil işaretlendi</div></div>
+    </div>
+
+    <div class="prog-sec">
+      <h3>Türe Göre İlerleme</h3>
+      <div class="type-progs">
+        ${typeData.map(d=>`
+          <div class="tp-item">
+            <div class="tp-name">${d.lbl}</div>
+            <div class="tp-bar-w"><div class="tp-fill" style="width:${d.tot?Math.round(d.lrn/d.tot*100):0}%;background:${d.color}"></div></div>
+            <div class="tp-cnt">${d.lrn}/${d.tot}</div>
+          </div>`).join('')}
+      </div>
+
+      <h3>Yardımcı Fiil Dağılımı</h3>
+      <div style="display:flex;gap:2rem;margin-top:.75rem;margin-bottom:1.75rem">
+        ${['haben','sein'].map(aux => {
+          const c=verbs.filter(v=>v.auxiliary===aux).length;
+          const l=verbs.filter(v=>v.auxiliary===aux&&prog[v.infinitiv]?.learned).length;
+          return `<div>
+            <span class="abadge ${aux}" style="display:inline-block;margin-bottom:.4rem">${aux}</span>
+            <div style="font-size:1.5rem;font-weight:700;color:var(--text);font-family:var(--ff-d)">${c} fiil</div>
+            <div style="font-size:.78rem;color:var(--text3)">${l} öğrenildi (%${c?Math.round(l/c*100):0})</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    ${missed.length?`
+    <div>
+      <h3 style="font-family:var(--ff-d);font-size:1.05rem;margin-bottom:.75rem">En Çok Hata Yapılan Fiiller</h3>
+      <div class="miss-list">
+        ${missed.map(v=>`
+          <div class="miss-item" onclick="openConj('${v.inf}')">
+            <span style="font-weight:600">${v.inf}</span>
+            <span style="color:var(--text3);font-size:.7rem;font-style:italic">${v.meaning}</span>
+            <span class="miss-rate">%${v.rate}</span>
+          </div>`).join('')}
+      </div>
+    </div>`:''}
+  `;
+}
+
+// ═══════════════════════════════════════════════
+//  PROGRESS & UTILS
+// ═══════════════════════════════════════════════
+function addQProg(inf, correct) {
+  if (!inf) return;
+  if (!prog[inf]) prog[inf] = {};
+  prog[inf].qt = (prog[inf].qt||0) + 1;
+  if (correct) prog[inf].qc = (prog[inf].qc||0) + 1;
+  saveProg(); updateSBStats();
+}
+
+function saveProg() { try { localStorage.setItem('dva_prog', JSON.stringify(prog)); } catch(e){} }
+
+function updateSBStats() {
+  const tot = verbs.length;
+  const ln = Object.values(prog).filter(p=>p.learned).length;
+  const fn = Object.values(prog).filter(p=>p.favorite).length;
+  let tq=0,tc=0; Object.values(prog).forEach(p=>{tq+=p.qt||0;tc+=p.qc||0;});
+  const el = document.getElementById('sb-foot');
+  if (el) el.innerHTML = `
+    <div class="sb-stat"><span>Öğrenildi</span><span>${ln}/${tot}</span></div>
+    <div class="sb-stat"><span>Favoriler</span><span>${fn}</span></div>
+    <div class="sb-stat"><span>Quiz Başarı</span><span>${tq?Math.round(tc/tq*100):0}%</span></div>`;
+}
+
+function resetProg() {
+  if (!confirm('Tüm ilerlemeniz silinecek. Emin misiniz?')) return;
+  prog = {}; saveProg(); updateSBStats();
+  renderStats(); doFilter();
+}
+
+function shuffle(a) {
+  const b=[...a];
+  for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]; }
+  return b;
+}
+function rnd(a) { return a[Math.floor(Math.random()*a.length)]; }
+function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ═══════════════════════════════════════════════
+//  KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (activeSec === 'flashcard') {
+    if (e.code === 'Space') { e.preventDefault(); if (!fcSess.flipped) flipFC(); }
+    if (e.code === 'ArrowLeft'  && fcSess.flipped) { e.preventDefault(); fcAns(false); }
+    if (e.code === 'ArrowRight' && fcSess.flipped) { e.preventDefault(); fcAns(true); }
+  }
+  if (activeSec === 'quiz') {
+    if (!qzSess.answered) {
+      const map = {'Digit1':0,'Digit2':1,'Digit3':2,'Digit4':3,'Numpad1':0,'Numpad2':1,'Numpad3':2,'Numpad4':3};
+      const idx = map[e.code];
+      if (idx !== undefined) {
+        const opts = document.querySelectorAll('.q-opt:not(.dis)');
+        if (opts[idx]) opts[idx].click();
+      }
+    }
+    if ((e.code==='Enter'||e.code==='Space') && qzSess.answered) {
+      e.preventDefault();
+      document.getElementById('q-next')?.click();
+    }
+  }
+  if (activeSec === 'conjugation') {
+    const keys = {'ArrowLeft':-1,'ArrowRight':1};
+    if (keys[e.code] !== undefined) {
+      const idx = TENSES.findIndex(t=>t.key===activeTense);
+      const next = (idx + keys[e.code] + TENSES.length) % TENSES.length;
+      setTense(TENSES[next].key);
+    }
+  }
+});
+</script>
+</body>
+</html>

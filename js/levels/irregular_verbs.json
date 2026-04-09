@@ -165,9 +165,9 @@
         "ich": "hatte",
         "du": "hattest",
         "er/sie/es": "hatte",
-        "wir": "hatteen",
+        "wir": "hatten",
         "ihr": "hattet",
-        "sie/Sie": "hatteen"
+        "sie/Sie": "hatten"
       },
       "perfekt": {
         "ich": "habe gehabt",
@@ -237,9 +237,9 @@
         "ich": "wurde",
         "du": "wurdest",
         "er/sie/es": "wurde",
-        "wir": "wurdeen",
+        "wir": "wurden",
         "ihr": "wurdet",
-        "sie/Sie": "wurdeen"
+        "sie/Sie": "wurden"
       },
       "perfekt": {
         "ich": "bin geworden",
@@ -814,7 +814,7 @@
         "du": "standst",
         "er/sie/es": "stand",
         "wir": "standen",
-        "ihr": "standt",
+        "ihr": "standet",
         "sie/Sie": "standen"
       },
       "perfekt": {
@@ -886,7 +886,7 @@
         "du": "fandst",
         "er/sie/es": "fand",
         "wir": "fanden",
-        "ihr": "fandt",
+        "ihr": "fandet",
         "sie/Sie": "fanden"
       },
       "perfekt": {
@@ -2035,10 +2035,10 @@
       },
       "prateritum_full": {
         "ich": "hielt",
-        "du": "hieltst",
+        "du": "hieltest",
         "er/sie/es": "hielt",
         "wir": "hielten",
-        "ihr": "hieltt",
+        "ihr": "hieltet",
         "sie/Sie": "hielten"
       },
       "perfekt": {
@@ -3334,7 +3334,7 @@
         "du": "batst",
         "er/sie/es": "bat",
         "wir": "baten",
-        "ihr": "batt",
+        "ihr": "batet",
         "sie/Sie": "baten"
       },
       "perfekt": {
@@ -4198,7 +4198,7 @@
         "du": "schnittst",
         "er/sie/es": "schnitt",
         "wir": "schnitten",
-        "ihr": "schnittt",
+        "ihr": "schnittet",
         "sie/Sie": "schnitten"
       },
       "perfekt": {
@@ -4270,7 +4270,7 @@
         "du": "rittst",
         "er/sie/es": "ritt",
         "wir": "ritten",
-        "ihr": "rittt",
+        "ihr": "rittet",
         "sie/Sie": "ritten"
       },
       "perfekt": {
@@ -4342,7 +4342,7 @@
         "du": "strittst",
         "er/sie/es": "stritt",
         "wir": "stritten",
-        "ihr": "strittt",
+        "ihr": "strittet",
         "sie/Sie": "stritten"
       },
       "perfekt": {
@@ -4414,7 +4414,7 @@
         "du": "littst",
         "er/sie/es": "litt",
         "wir": "litten",
-        "ihr": "littt",
+        "ihr": "littet",
         "sie/Sie": "litten"
       },
       "perfekt": {
@@ -5494,7 +5494,7 @@
         "du": "bandst",
         "er/sie/es": "band",
         "wir": "banden",
-        "ihr": "bandt",
+        "ihr": "bandet",
         "sie/Sie": "banden"
       },
       "perfekt": {
@@ -5710,7 +5710,7 @@
         "du": "galtst",
         "er/sie/es": "galt",
         "wir": "galten",
-        "ihr": "galtt",
+        "ihr": "galtet",
         "sie/Sie": "galten"
       },
       "perfekt": {
@@ -6285,9 +6285,9 @@
         "ich": "konnte",
         "du": "konntest",
         "er/sie/es": "konnte",
-        "wir": "konnteen",
+        "wir": "konnten",
         "ihr": "konntet",
-        "sie/Sie": "konnteen"
+        "sie/Sie": "konnten"
       },
       "perfekt": {
         "ich": "habe gekonnt",
@@ -6357,9 +6357,9 @@
         "ich": "musste",
         "du": "musstest",
         "er/sie/es": "musste",
-        "wir": "mussteen",
+        "wir": "mussten",
         "ihr": "musstet",
-        "sie/Sie": "mussteen"
+        "sie/Sie": "mussten"
       },
       "perfekt": {
         "ich": "habe gemusst",
@@ -6429,9 +6429,9 @@
         "ich": "durfte",
         "du": "durftest",
         "er/sie/es": "durfte",
-        "wir": "durfteen",
+        "wir": "durften",
         "ihr": "durftet",
-        "sie/Sie": "durfteen"
+        "sie/Sie": "durften"
       },
       "perfekt": {
         "ich": "habe gedurft",
@@ -6501,9 +6501,9 @@
         "ich": "sollte",
         "du": "solltest",
         "er/sie/es": "sollte",
-        "wir": "sollteen",
+        "wir": "sollten",
         "ihr": "solltet",
-        "sie/Sie": "sollteen"
+        "sie/Sie": "sollten"
       },
       "perfekt": {
         "ich": "habe gesollt",
@@ -6573,9 +6573,9 @@
         "ich": "wollte",
         "du": "wolltest",
         "er/sie/es": "wollte",
-        "wir": "wollteen",
+        "wir": "wollten",
         "ihr": "wolltet",
-        "sie/Sie": "wollteen"
+        "sie/Sie": "wollten"
       },
       "perfekt": {
         "ich": "habe gewollt",
@@ -6645,9 +6645,9 @@
         "ich": "mochte",
         "du": "mochtest",
         "er/sie/es": "mochte",
-        "wir": "mochteen",
+        "wir": "mochten",
         "ihr": "mochtet",
-        "sie/Sie": "mochteen"
+        "sie/Sie": "mochten"
       },
       "perfekt": {
         "ich": "habe gemocht",
@@ -6790,7 +6790,7 @@
         "du": "verstandst",
         "er/sie/es": "verstand",
         "wir": "verstanden",
-        "ihr": "verstandt",
+        "ihr": "verstandet",
         "sie/Sie": "verstanden"
       },
       "perfekt": {
@@ -6859,11 +6859,11 @@
       },
       "prateritum_full": {
         "ich": "fing an",
-        "du": "fing anst",
+        "du": "fingst an",
         "er/sie/es": "fing an",
-        "wir": "fing anen",
-        "ihr": "fing ant",
-        "sie/Sie": "fing anen"
+        "wir": "fingen an",
+        "ihr": "fingt an",
+        "sie/Sie": "fingen an"
       },
       "perfekt": {
         "ich": "habe angefangen",
@@ -6931,11 +6931,11 @@
       },
       "prateritum_full": {
         "ich": "stand auf",
-        "du": "stand aufst",
+        "du": "standst auf",
         "er/sie/es": "stand auf",
-        "wir": "stand aufen",
-        "ihr": "stand auft",
-        "sie/Sie": "stand aufen"
+        "wir": "standen auf",
+        "ihr": "standet auf",
+        "sie/Sie": "standen auf"
       },
       "perfekt": {
         "ich": "bin aufgestanden",
@@ -6965,9 +6965,9 @@
         "ich": "stände auf",
         "du": "ständest auf",
         "er/sie/es": "stände auf",
-        "wir": "stänten auf",
+        "wir": "ständen auf",
         "ihr": "ständet auf",
-        "sie/Sie": "stänten auf",
+        "sie/Sie": "ständen auf",
         "alternative": {
           "ich": "würde aufstehen",
           "du": "würdest aufstehen"
@@ -7003,11 +7003,11 @@
       },
       "prateritum_full": {
         "ich": "schlief ein",
-        "du": "schlief einst",
+        "du": "schliefst ein",
         "er/sie/es": "schlief ein",
-        "wir": "schlief einen",
-        "ihr": "schlief eint",
-        "sie/Sie": "schlief einen"
+        "wir": "schliefen ein",
+        "ihr": "schlieft ein",
+        "sie/Sie": "schliefen ein"
       },
       "perfekt": {
         "ich": "bin eingeschlafen",
@@ -7075,11 +7075,11 @@
       },
       "prateritum_full": {
         "ich": "rief an",
-        "du": "rief anst",
+        "du": "riefst an",
         "er/sie/es": "rief an",
-        "wir": "rief anen",
-        "ihr": "rief ant",
-        "sie/Sie": "rief anen"
+        "wir": "riefen an",
+        "ihr": "rieft an",
+        "sie/Sie": "riefen an"
       },
       "perfekt": {
         "ich": "habe angerufen",
@@ -7147,11 +7147,11 @@
       },
       "prateritum_full": {
         "ich": "brachte mit",
-        "du": "brachte mitst",
+        "du": "brachtest mit",
         "er/sie/es": "brachte mit",
-        "wir": "brachte mitn",
-        "ihr": "brachte mitt",
-        "sie/Sie": "brachte mitn"
+        "wir": "brachten mit",
+        "ihr": "brachtet mit",
+        "sie/Sie": "brachten mit"
       },
       "perfekt": {
         "ich": "habe mitgebracht",
@@ -7219,11 +7219,11 @@
       },
       "prateritum_full": {
         "ich": "schlug vor",
-        "du": "schlug vorst",
+        "du": "schlugst vor",
         "er/sie/es": "schlug vor",
-        "wir": "schlug voren",
-        "ihr": "schlug vort",
-        "sie/Sie": "schlug voren"
+        "wir": "schlugen vor",
+        "ihr": "schlugt vor",
+        "sie/Sie": "schlugen vor"
       },
       "perfekt": {
         "ich": "habe vorgeschlagen",
@@ -7438,7 +7438,7 @@
         "du": "verbandst",
         "er/sie/es": "verband",
         "wir": "verbanden",
-        "ihr": "verbandt",
+        "ihr": "verbandet",
         "sie/Sie": "verbanden"
       },
       "perfekt": {
@@ -7582,7 +7582,7 @@
         "du": "erhieltst",
         "er/sie/es": "erhielt",
         "wir": "erhielten",
-        "ihr": "erhieltt",
+        "ihr": "erhieltet",
         "sie/Sie": "erhielten"
       },
       "perfekt": {
@@ -7726,7 +7726,7 @@
         "du": "bestandst",
         "er/sie/es": "bestand",
         "wir": "bestanden",
-        "ihr": "bestandt",
+        "ihr": "bestandet",
         "sie/Sie": "bestanden"
       },
       "perfekt": {
@@ -7798,7 +7798,7 @@
         "du": "entstandst",
         "er/sie/es": "entstand",
         "wir": "entstanden",
-        "ihr": "entstandt",
+        "ihr": "entstandet",
         "sie/Sie": "entstanden"
       },
       "perfekt": {
@@ -7867,11 +7867,11 @@
       },
       "prateritum_full": {
         "ich": "lud ein",
-        "du": "lud einst",
+        "du": "ludst ein",
         "er/sie/es": "lud ein",
-        "wir": "lud einen",
-        "ihr": "lud eint",
-        "sie/Sie": "lud einen"
+        "wir": "luden ein",
+        "ihr": "ludt ein",
+        "sie/Sie": "luden ein"
       },
       "perfekt": {
         "ich": "habe eingeladen",
@@ -7939,11 +7939,11 @@
       },
       "prateritum_full": {
         "ich": "nahm auf",
-        "du": "nahm aufst",
+        "du": "nahmst auf",
         "er/sie/es": "nahm auf",
-        "wir": "nahm aufen",
-        "ihr": "nahm auft",
-        "sie/Sie": "nahm aufen"
+        "wir": "nahmen auf",
+        "ihr": "nahmt auf",
+        "sie/Sie": "nahmen auf"
       },
       "perfekt": {
         "ich": "habe aufgenommen",
@@ -8086,7 +8086,7 @@
         "du": "behieltst",
         "er/sie/es": "behielt",
         "wir": "behielten",
-        "ihr": "behieltt",
+        "ihr": "behieltet",
         "sie/Sie": "behielten"
       },
       "perfekt": {
@@ -8155,11 +8155,11 @@
       },
       "prateritum_full": {
         "ich": "zog um",
-        "du": "zog umst",
+        "du": "zogst um",
         "er/sie/es": "zog um",
-        "wir": "zog umen",
-        "ihr": "zog umt",
-        "sie/Sie": "zog umen"
+        "wir": "zogen um",
+        "ihr": "zogt um",
+        "sie/Sie": "zogen um"
       },
       "perfekt": {
         "ich": "bin umgezogen",
@@ -8227,11 +8227,11 @@
       },
       "prateritum_full": {
         "ich": "zog an",
-        "du": "zog anst",
+        "du": "zogst an",
         "er/sie/es": "zog an",
-        "wir": "zog anen",
-        "ihr": "zog ant",
-        "sie/Sie": "zog anen"
+        "wir": "zogen an",
+        "ihr": "zogt an",
+        "sie/Sie": "zogen an"
       },
       "perfekt": {
         "ich": "habe angezogen",
@@ -8299,11 +8299,11 @@
       },
       "prateritum_full": {
         "ich": "kam zurück",
-        "du": "kam zurückst",
+        "du": "kamst zurück",
         "er/sie/es": "kam zurück",
-        "wir": "kam zurücken",
-        "ihr": "kam zurückt",
-        "sie/Sie": "kam zurücken"
+        "wir": "kamen zurück",
+        "ihr": "kamt zurück",
+        "sie/Sie": "kamen zurück"
       },
       "perfekt": {
         "ich": "bin zurückgekommen",
@@ -8371,11 +8371,11 @@
       },
       "prateritum_full": {
         "ich": "gab aus",
-        "du": "gab aust",
+        "du": "gabst aus",
         "er/sie/es": "gab aus",
-        "wir": "gab ausen",
-        "ihr": "gab aust",
-        "sie/Sie": "gab ausen"
+        "wir": "gaben aus",
+        "ihr": "gabt aus",
+        "sie/Sie": "gaben aus"
       },
       "perfekt": {
         "ich": "habe ausgegeben",
@@ -8446,7 +8446,7 @@
         "du": "tratst",
         "er/sie/es": "trat",
         "wir": "traten",
-        "ihr": "tratt",
+        "ihr": "tratet",
         "sie/Sie": "traten"
       },
       "perfekt": {
@@ -8518,7 +8518,7 @@
         "du": "botst",
         "er/sie/es": "bot",
         "wir": "boten",
-        "ihr": "bott",
+        "ihr": "botet",
         "sie/Sie": "boten"
       },
       "perfekt": {
@@ -8762,12 +8762,12 @@
         "sie/Sie": "werden erkennen"
       },
       "konjunktiv2": {
-        "ich": "erkannte",
-        "du": "erkanntest",
-        "er/sie/es": "erkannte",
-        "wir": "erkannten",
-        "ihr": "erkanntet",
-        "sie/Sie": "erkannten",
+        "ich": "erkennte",
+        "du": "erkenntest",
+        "er/sie/es": "erkennte",
+        "wir": "erkennten",
+        "ihr": "erkenntet",
+        "sie/Sie": "erkennten",
         "alternative": {
           "ich": "würde erkennen",
           "du": "würdest erkennen"
@@ -9379,11 +9379,11 @@
       },
       "prateritum_full": {
         "ich": "hielt auf",
-        "du": "hielt aufst",
+        "du": "hieltst auf",
         "er/sie/es": "hielt auf",
-        "wir": "hielt aufen",
-        "ihr": "hielt auft",
-        "sie/Sie": "hielt aufen"
+        "wir": "hielten auf",
+        "ihr": "hieltet auf",
+        "sie/Sie": "hielten auf"
       },
       "perfekt": {
         "ich": "habe aufgehalten",
@@ -9451,11 +9451,11 @@
       },
       "prateritum_full": {
         "ich": "lief weg",
-        "du": "lief wegst",
+        "du": "liefst weg",
         "er/sie/es": "lief weg",
-        "wir": "lief wegen",
-        "ihr": "lief wegt",
-        "sie/Sie": "lief wegen"
+        "wir": "liefen weg",
+        "ihr": "lieft weg",
+        "sie/Sie": "liefen weg"
       },
       "perfekt": {
         "ich": "bin weggelaufen",
@@ -9523,11 +9523,11 @@
       },
       "prateritum_full": {
         "ich": "las vor",
-        "du": "las vorst",
+        "du": "last vor",
         "er/sie/es": "las vor",
-        "wir": "las voren",
-        "ihr": "las vort",
-        "sie/Sie": "las voren"
+        "wir": "lasen vor",
+        "ihr": "last vor",
+        "sie/Sie": "lasen vor"
       },
       "perfekt": {
         "ich": "habe vorgelesen",
@@ -9595,11 +9595,11 @@
       },
       "prateritum_full": {
         "ich": "lieh aus",
-        "du": "lieh aust",
+        "du": "liehst aus",
         "er/sie/es": "lieh aus",
-        "wir": "lieh ausen",
-        "ihr": "lieh aust",
-        "sie/Sie": "lieh ausen"
+        "wir": "liehen aus",
+        "ihr": "lieht aus",
+        "sie/Sie": "liehen aus"
       },
       "perfekt": {
         "ich": "habe ausgeliehen",
@@ -9811,11 +9811,11 @@
       },
       "prateritum_full": {
         "ich": "kam an",
-        "du": "kam anst",
+        "du": "kamst an",
         "er/sie/es": "kam an",
-        "wir": "kam anen",
-        "ihr": "kam ant",
-        "sie/Sie": "kam anen"
+        "wir": "kamen an",
+        "ihr": "kamt an",
+        "sie/Sie": "kamen an"
       },
       "perfekt": {
         "ich": "bin angekommen",
@@ -9883,11 +9883,11 @@
       },
       "prateritum_full": {
         "ich": "fuhr ab",
-        "du": "fuhr abst",
+        "du": "fuhrst ab",
         "er/sie/es": "fuhr ab",
-        "wir": "fuhr aben",
-        "ihr": "fuhr abt",
-        "sie/Sie": "fuhr aben"
+        "wir": "fuhren ab",
+        "ihr": "fuhrt ab",
+        "sie/Sie": "fuhren ab"
       },
       "perfekt": {
         "ich": "bin abgefahren",
@@ -10171,11 +10171,11 @@
       },
       "prateritum_full": {
         "ich": "hatte vor",
-        "du": "hatte vorst",
+        "du": "hattest vor",
         "er/sie/es": "hatte vor",
-        "wir": "hatte voren",
-        "ihr": "hatte vort",
-        "sie/Sie": "hatte voren"
+        "wir": "hatten vor",
+        "ihr": "hattet vor",
+        "sie/Sie": "hatten vor"
       },
       "perfekt": {
         "ich": "habe vorgehabt",
@@ -10243,11 +10243,11 @@
       },
       "prateritum_full": {
         "ich": "schrieb auf",
-        "du": "schrieb aufst",
+        "du": "schriebst auf",
         "er/sie/es": "schrieb auf",
-        "wir": "schrieb aufen",
-        "ihr": "schrieb auft",
-        "sie/Sie": "schrieb aufen"
+        "wir": "schrieben auf",
+        "ihr": "schriebt auf",
+        "sie/Sie": "schrieben auf"
       },
       "perfekt": {
         "ich": "habe aufgeschrieben",
@@ -10315,11 +10315,11 @@
       },
       "prateritum_full": {
         "ich": "bot an",
-        "du": "bot anst",
+        "du": "botst an",
         "er/sie/es": "bot an",
-        "wir": "bot anen",
-        "ihr": "bot ant",
-        "sie/Sie": "bot anen"
+        "wir": "boten an",
+        "ihr": "botet an",
+        "sie/Sie": "boten an"
       },
       "perfekt": {
         "ich": "habe angeboten",
@@ -10531,11 +10531,11 @@
       },
       "prateritum_full": {
         "ich": "hielt ein",
-        "du": "hielt einst",
+        "du": "hieltst ein",
         "er/sie/es": "hielt ein",
-        "wir": "hielt einen",
-        "ihr": "hielt eint",
-        "sie/Sie": "hielt einen"
+        "wir": "hielten ein",
+        "ihr": "hieltet ein",
+        "sie/Sie": "hielten ein"
       },
       "perfekt": {
         "ich": "habe eingehalten",
@@ -10603,11 +10603,11 @@
       },
       "prateritum_full": {
         "ich": "gab auf",
-        "du": "gab aufst",
+        "du": "gabst auf",
         "er/sie/es": "gab auf",
-        "wir": "gab aufen",
-        "ihr": "gab auft",
-        "sie/Sie": "gab aufen"
+        "wir": "gaben auf",
+        "ihr": "gabt auf",
+        "sie/Sie": "gaben auf"
       },
       "perfekt": {
         "ich": "habe aufgegeben",
@@ -10675,11 +10675,11 @@
       },
       "prateritum_full": {
         "ich": "kam vorbei",
-        "du": "kam vorbeist",
+        "du": "kamst vorbei",
         "er/sie/es": "kam vorbei",
-        "wir": "kam vorbeien",
-        "ihr": "kam vorbeit",
-        "sie/Sie": "kam vorbeien"
+        "wir": "kamen vorbei",
+        "ihr": "kamt vorbei",
+        "sie/Sie": "kamen vorbei"
       },
       "perfekt": {
         "ich": "bin vorbeigekommen",
@@ -10729,6 +10729,757 @@
       }
     },
     {
+      "infinitiv": "machen",
+      "meaning": "yapmak",
+      "auxiliary": "haben",
+      "type": "weak",
+    "forms": { "prateritum": "machte", "partizip2": "gemacht" },
+    "prasens": { "ich": "mache", "du": "machst", "er/sie/es": "macht", "wir": "machen", "ihr": "macht", "sie/Sie": "machen" },
+    "prateritum_full": { "ich": "machte", "du": "machtest", "er/sie/es": "machte", "wir": "machten", "ihr": "machtet", "sie/Sie": "machten" },
+    "perfekt": { "ich": "habe gemacht", "du": "hast gemacht", "er/sie/es": "hat gemacht", "wir": "haben gemacht", "ihr": "habt gemacht", "sie/Sie": "haben gemacht" },
+    "plusquamperfekt": { "ich": "hatte gemacht", "du": "hattest gemacht", "er/sie/es": "hatte gemacht", "wir": "hatten gemacht", "ihr": "hattet gemacht", "sie/Sie": "hatten gemacht" },
+    "futur1": { "ich": "werde machen", "du": "wirst machen", "er/sie/es": "wird machen", "wir": "werden machen", "ihr": "werdet machen", "sie/Sie": "werden machen" },
+    "konjunktiv2": { "ich": "machte", "du": "machtest", "er/sie/es": "machte", "wir": "machten", "ihr": "machtet", "sie/Sie": "machten", "alternative": { "ich": "würde machen", "du": "würdest machen" } },
+    "imperativ": { "du": "mach!", "ihr": "macht!", "Sie": "machen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; Almancada en yaygın fiillerden biri." }
+  },
+  {
+    "infinitiv": "sagen",
+    "meaning": "söylemek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "sagte", "partizip2": "gesagt" },
+    "prasens": { "ich": "sage", "du": "sagst", "er/sie/es": "sagt", "wir": "sagen", "ihr": "sagt", "sie/Sie": "sagen" },
+    "prateritum_full": { "ich": "sagte", "du": "sagtest", "er/sie/es": "sagte", "wir": "sagten", "ihr": "sagtet", "sie/Sie": "sagten" },
+    "perfekt": { "ich": "habe gesagt", "du": "hast gesagt", "er/sie/es": "hat gesagt", "wir": "haben gesagt", "ihr": "habt gesagt", "sie/Sie": "haben gesagt" },
+    "plusquamperfekt": { "ich": "hatte gesagt", "du": "hattest gesagt", "er/sie/es": "hatte gesagt", "wir": "hatten gesagt", "ihr": "hattet gesagt", "sie/Sie": "hatten gesagt" },
+    "futur1": { "ich": "werde sagen", "du": "wirst sagen", "er/sie/es": "wird sagen", "wir": "werden sagen", "ihr": "werdet sagen", "sie/Sie": "werden sagen" },
+    "konjunktiv2": { "ich": "sagte", "du": "sagtest", "er/sie/es": "sagte", "wir": "sagten", "ihr": "sagtet", "sie/Sie": "sagten", "alternative": { "ich": "würde sagen", "du": "würdest sagen" } },
+    "imperativ": { "du": "sag!", "ihr": "sagt!", "Sie": "sagen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; konuşma dilinde çok yaygın." }
+  },
+  {
+    "infinitiv": "arbeiten",
+    "meaning": "çalışmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "arbeitete", "partizip2": "gearbeitet" },
+    "prasens": { "ich": "arbeite", "du": "arbeitest", "er/sie/es": "arbeitet", "wir": "arbeiten", "ihr": "arbeitet", "sie/Sie": "arbeiten" },
+    "prateritum_full": { "ich": "arbeitete", "du": "arbeitetest", "er/sie/es": "arbeitete", "wir": "arbeiteten", "ihr": "arbeitetet", "sie/Sie": "arbeiteten" },
+    "perfekt": { "ich": "habe gearbeitet", "du": "hast gearbeitet", "er/sie/es": "hat gearbeitet", "wir": "haben gearbeitet", "ihr": "habt gearbeitet", "sie/Sie": "haben gearbeitet" },
+    "plusquamperfekt": { "ich": "hatte gearbeitet", "du": "hattest gearbeitet", "er/sie/es": "hatte gearbeitet", "wir": "hatten gearbeitet", "ihr": "hattet gearbeitet", "sie/Sie": "hatten gearbeitet" },
+    "futur1": { "ich": "werde arbeiten", "du": "wirst arbeiten", "er/sie/es": "wird arbeiten", "wir": "werden arbeiten", "ihr": "werdet arbeiten", "sie/Sie": "werden arbeiten" },
+    "konjunktiv2": { "ich": "arbeitete", "du": "arbeitetest", "er/sie/es": "arbeitete", "wir": "arbeiteten", "ihr": "arbeitetet", "sie/Sie": "arbeiteten", "alternative": { "ich": "würde arbeiten", "du": "würdest arbeiten" } },
+    "imperativ": { "du": "arbeite!", "ihr": "arbeitet!", "Sie": "arbeiten Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Gövde -t ile biter; du/er'de türeme -e- eklenir: du arbeitest, er arbeitet." }
+  },
+  {
+    "infinitiv": "spielen",
+    "meaning": "oynamak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "spielte", "partizip2": "gespielt" },
+    "prasens": { "ich": "spiele", "du": "spielst", "er/sie/es": "spielt", "wir": "spielen", "ihr": "spielt", "sie/Sie": "spielen" },
+    "prateritum_full": { "ich": "spielte", "du": "spieltest", "er/sie/es": "spielte", "wir": "spielten", "ihr": "spieltet", "sie/Sie": "spielten" },
+    "perfekt": { "ich": "habe gespielt", "du": "hast gespielt", "er/sie/es": "hat gespielt", "wir": "haben gespielt", "ihr": "habt gespielt", "sie/Sie": "haben gespielt" },
+    "plusquamperfekt": { "ich": "hatte gespielt", "du": "hattest gespielt", "er/sie/es": "hatte gespielt", "wir": "hatten gespielt", "ihr": "hattet gespielt", "sie/Sie": "hatten gespielt" },
+    "futur1": { "ich": "werde spielen", "du": "wirst spielen", "er/sie/es": "wird spielen", "wir": "werden spielen", "ihr": "werdet spielen", "sie/Sie": "werden spielen" },
+    "konjunktiv2": { "ich": "spielte", "du": "spieltest", "er/sie/es": "spielte", "wir": "spielten", "ihr": "spieltet", "sie/Sie": "spielten", "alternative": { "ich": "würde spielen", "du": "würdest spielen" } },
+    "imperativ": { "du": "spiel!", "ihr": "spielt!", "Sie": "spielen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; oyun, spor ve müzik bağlamında kullanılır." }
+  },
+  {
+    "infinitiv": "lernen",
+    "meaning": "öğrenmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "lernte", "partizip2": "gelernt" },
+    "prasens": { "ich": "lerne", "du": "lernst", "er/sie/es": "lernt", "wir": "lernen", "ihr": "lernt", "sie/Sie": "lernen" },
+    "prateritum_full": { "ich": "lernte", "du": "lerntest", "er/sie/es": "lernte", "wir": "lernten", "ihr": "lerntet", "sie/Sie": "lernten" },
+    "perfekt": { "ich": "habe gelernt", "du": "hast gelernt", "er/sie/es": "hat gelernt", "wir": "haben gelernt", "ihr": "habt gelernt", "sie/Sie": "haben gelernt" },
+    "plusquamperfekt": { "ich": "hatte gelernt", "du": "hattest gelernt", "er/sie/es": "hatte gelernt", "wir": "hatten gelernt", "ihr": "hattet gelernt", "sie/Sie": "hatten gelernt" },
+    "futur1": { "ich": "werde lernen", "du": "wirst lernen", "er/sie/es": "wird lernen", "wir": "werden lernen", "ihr": "werdet lernen", "sie/Sie": "werden lernen" },
+    "konjunktiv2": { "ich": "lernte", "du": "lerntest", "er/sie/es": "lernte", "wir": "lernten", "ihr": "lerntet", "sie/Sie": "lernten", "alternative": { "ich": "würde lernen", "du": "würdest lernen" } },
+    "imperativ": { "du": "lern!", "ihr": "lernt!", "Sie": "lernen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; studieren'den farklı olarak genel öğrenme için kullanılır." }
+  },
+  {
+    "infinitiv": "kaufen",
+    "meaning": "satın almak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "kaufte", "partizip2": "gekauft" },
+    "prasens": { "ich": "kaufe", "du": "kaufst", "er/sie/es": "kauft", "wir": "kaufen", "ihr": "kauft", "sie/Sie": "kaufen" },
+    "prateritum_full": { "ich": "kaufte", "du": "kauftest", "er/sie/es": "kaufte", "wir": "kauften", "ihr": "kauftet", "sie/Sie": "kauften" },
+    "perfekt": { "ich": "habe gekauft", "du": "hast gekauft", "er/sie/es": "hat gekauft", "wir": "haben gekauft", "ihr": "habt gekauft", "sie/Sie": "haben gekauft" },
+    "plusquamperfekt": { "ich": "hatte gekauft", "du": "hattest gekauft", "er/sie/es": "hatte gekauft", "wir": "hatten gekauft", "ihr": "hattet gekauft", "sie/Sie": "hatten gekauft" },
+    "futur1": { "ich": "werde kaufen", "du": "wirst kaufen", "er/sie/es": "wird kaufen", "wir": "werden kaufen", "ihr": "werdet kaufen", "sie/Sie": "werden kaufen" },
+    "konjunktiv2": { "ich": "kaufte", "du": "kauftest", "er/sie/es": "kaufte", "wir": "kauften", "ihr": "kauftet", "sie/Sie": "kauften", "alternative": { "ich": "würde kaufen", "du": "würdest kaufen" } },
+    "imperativ": { "du": "kauf!", "ihr": "kauft!", "Sie": "kaufen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; karşıtı verkaufen (satmak)." }
+  },
+  {
+    "infinitiv": "bezahlen",
+    "meaning": "ödemek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "bezahlte", "partizip2": "bezahlt" },
+    "prasens": { "ich": "bezahle", "du": "bezahlst", "er/sie/es": "bezahlt", "wir": "bezahlen", "ihr": "bezahlt", "sie/Sie": "bezahlen" },
+    "prateritum_full": { "ich": "bezahlte", "du": "bezahltest", "er/sie/es": "bezahlte", "wir": "bezahlten", "ihr": "bezahltet", "sie/Sie": "bezahlten" },
+    "perfekt": { "ich": "habe bezahlt", "du": "hast bezahlt", "er/sie/es": "hat bezahlt", "wir": "haben bezahlt", "ihr": "habt bezahlt", "sie/Sie": "haben bezahlt" },
+    "plusquamperfekt": { "ich": "hatte bezahlt", "du": "hattest bezahlt", "er/sie/es": "hatte bezahlt", "wir": "hatten bezahlt", "ihr": "hattet bezahlt", "sie/Sie": "hatten bezahlt" },
+    "futur1": { "ich": "werde bezahlen", "du": "wirst bezahlen", "er/sie/es": "wird bezahlen", "wir": "werden bezahlen", "ihr": "werdet bezahlen", "sie/Sie": "werden bezahlen" },
+    "konjunktiv2": { "ich": "bezahlte", "du": "bezahltest", "er/sie/es": "bezahlte", "wir": "bezahlten", "ihr": "bezahltet", "sie/Sie": "bezahlten", "alternative": { "ich": "würde bezahlen", "du": "würdest bezahlen" } },
+    "imperativ": { "du": "bezahl!", "ihr": "bezahlt!", "Sie": "bezahlen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Ayrılamaz önek 'be-'; Partizip II 'ge-' almaz: bezahlt." }
+  },
+  {
+    "infinitiv": "öffnen",
+    "meaning": "açmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "öffnete", "partizip2": "geöffnet" },
+    "prasens": { "ich": "öffne", "du": "öffnest", "er/sie/es": "öffnet", "wir": "öffnen", "ihr": "öffnet", "sie/Sie": "öffnen" },
+    "prateritum_full": { "ich": "öffnete", "du": "öffnetest", "er/sie/es": "öffnete", "wir": "öffneten", "ihr": "öffnetet", "sie/Sie": "öffneten" },
+    "perfekt": { "ich": "habe geöffnet", "du": "hast geöffnet", "er/sie/es": "hat geöffnet", "wir": "haben geöffnet", "ihr": "habt geöffnet", "sie/Sie": "haben geöffnet" },
+    "plusquamperfekt": { "ich": "hatte geöffnet", "du": "hattest geöffnet", "er/sie/es": "hatte geöffnet", "wir": "hatten geöffnet", "ihr": "hattet geöffnet", "sie/Sie": "hatten geöffnet" },
+    "futur1": { "ich": "werde öffnen", "du": "wirst öffnen", "er/sie/es": "wird öffnen", "wir": "werden öffnen", "ihr": "werdet öffnen", "sie/Sie": "werden öffnen" },
+    "konjunktiv2": { "ich": "öffnete", "du": "öffnetest", "er/sie/es": "öffnete", "wir": "öffneten", "ihr": "öffnetet", "sie/Sie": "öffneten", "alternative": { "ich": "würde öffnen", "du": "würdest öffnen" } },
+    "imperativ": { "du": "öffne!", "ihr": "öffnet!", "Sie": "öffnen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Gövde -ffn ile biter; okunabilirlik için türeme -e- eklenir: du öffnest." }
+  },
+  {
+    "infinitiv": "warten",
+    "meaning": "beklemek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "wartete", "partizip2": "gewartet" },
+    "prasens": { "ich": "warte", "du": "wartest", "er/sie/es": "wartet", "wir": "warten", "ihr": "wartet", "sie/Sie": "warten" },
+    "prateritum_full": { "ich": "wartete", "du": "wartetest", "er/sie/es": "wartete", "wir": "warteten", "ihr": "wartetet", "sie/Sie": "warteten" },
+    "perfekt": { "ich": "habe gewartet", "du": "hast gewartet", "er/sie/es": "hat gewartet", "wir": "haben gewartet", "ihr": "habt gewartet", "sie/Sie": "haben gewartet" },
+    "plusquamperfekt": { "ich": "hatte gewartet", "du": "hattest gewartet", "er/sie/es": "hatte gewartet", "wir": "hatten gewartet", "ihr": "hattet gewartet", "sie/Sie": "hatten gewartet" },
+    "futur1": { "ich": "werde warten", "du": "wirst warten", "er/sie/es": "wird warten", "wir": "werden warten", "ihr": "werdet warten", "sie/Sie": "werden warten" },
+    "konjunktiv2": { "ich": "wartete", "du": "wartetest", "er/sie/es": "wartete", "wir": "warteten", "ihr": "wartetet", "sie/Sie": "warteten", "alternative": { "ich": "würde warten", "du": "würdest warten" } },
+    "imperativ": { "du": "warte!", "ihr": "wartet!", "Sie": "warten Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Gövde -t ile biter; tüm çekimlerde türeme -e- eklenir." }
+  },
+  {
+    "infinitiv": "leben",
+    "meaning": "yaşamak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "lebte", "partizip2": "gelebt" },
+    "prasens": { "ich": "lebe", "du": "lebst", "er/sie/es": "lebt", "wir": "leben", "ihr": "lebt", "sie/Sie": "leben" },
+    "prateritum_full": { "ich": "lebte", "du": "lebtest", "er/sie/es": "lebte", "wir": "lebten", "ihr": "lebtet", "sie/Sie": "lebten" },
+    "perfekt": { "ich": "habe gelebt", "du": "hast gelebt", "er/sie/es": "hat gelebt", "wir": "haben gelebt", "ihr": "habt gelebt", "sie/Sie": "haben gelebt" },
+    "plusquamperfekt": { "ich": "hatte gelebt", "du": "hattest gelebt", "er/sie/es": "hatte gelebt", "wir": "hatten gelebt", "ihr": "hattet gelebt", "sie/Sie": "hatten gelebt" },
+    "futur1": { "ich": "werde leben", "du": "wirst leben", "er/sie/es": "wird leben", "wir": "werden leben", "ihr": "werdet leben", "sie/Sie": "werden leben" },
+    "konjunktiv2": { "ich": "lebte", "du": "lebtest", "er/sie/es": "lebte", "wir": "lebten", "ihr": "lebtet", "sie/Sie": "lebten", "alternative": { "ich": "würde leben", "du": "würdest leben" } },
+    "imperativ": { "du": "leb!", "ihr": "lebt!", "Sie": "leben Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; wohnen'den farklı: genel 'yaşamak' anlamında kullanılır." }
+  },
+  {
+    "infinitiv": "wohnen",
+    "meaning": "ikamet etmek / oturmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "wohnte", "partizip2": "gewohnt" },
+    "prasens": { "ich": "wohne", "du": "wohnst", "er/sie/es": "wohnt", "wir": "wohnen", "ihr": "wohnt", "sie/Sie": "wohnen" },
+    "prateritum_full": { "ich": "wohnte", "du": "wohntest", "er/sie/es": "wohnte", "wir": "wohnten", "ihr": "wohntet", "sie/Sie": "wohnten" },
+    "perfekt": { "ich": "habe gewohnt", "du": "hast gewohnt", "er/sie/es": "hat gewohnt", "wir": "haben gewohnt", "ihr": "habt gewohnt", "sie/Sie": "haben gewohnt" },
+    "plusquamperfekt": { "ich": "hatte gewohnt", "du": "hattest gewohnt", "er/sie/es": "hatte gewohnt", "wir": "hatten gewohnt", "ihr": "hattet gewohnt", "sie/Sie": "hatten gewohnt" },
+    "futur1": { "ich": "werde wohnen", "du": "wirst wohnen", "er/sie/es": "wird wohnen", "wir": "werden wohnen", "ihr": "werdet wohnen", "sie/Sie": "werden wohnen" },
+    "konjunktiv2": { "ich": "wohnte", "du": "wohntest", "er/sie/es": "wohnte", "wir": "wohnten", "ihr": "wohntet", "sie/Sie": "wohnten", "alternative": { "ich": "würde wohnen", "du": "würdest wohnen" } },
+    "imperativ": { "du": "wohn!", "ihr": "wohnt!", "Sie": "wohnen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; belirli bir adreste yaşamayı ifade eder." }
+  },
+  {
+    "infinitiv": "gehören",
+    "meaning": "ait olmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "gehörte", "partizip2": "gehört" },
+    "prasens": { "ich": "gehöre", "du": "gehörst", "er/sie/es": "gehört", "wir": "gehören", "ihr": "gehört", "sie/Sie": "gehören" },
+    "prateritum_full": { "ich": "gehörte", "du": "gehörtest", "er/sie/es": "gehörte", "wir": "gehörten", "ihr": "gehörtet", "sie/Sie": "gehörten" },
+    "perfekt": { "ich": "habe gehört", "du": "hast gehört", "er/sie/es": "hat gehört", "wir": "haben gehört", "ihr": "habt gehört", "sie/Sie": "haben gehört" },
+    "plusquamperfekt": { "ich": "hatte gehört", "du": "hattest gehört", "er/sie/es": "hatte gehört", "wir": "hatten gehört", "ihr": "hattet gehört", "sie/Sie": "hatten gehört" },
+    "futur1": { "ich": "werde gehören", "du": "wirst gehören", "er/sie/es": "wird gehören", "wir": "werden gehören", "ihr": "werdet gehören", "sie/Sie": "werden gehören" },
+    "konjunktiv2": { "ich": "gehörte", "du": "gehörtest", "er/sie/es": "gehörte", "wir": "gehörten", "ihr": "gehörtet", "sie/Sie": "gehörten", "alternative": { "ich": "würde gehören", "du": "würdest gehören" } },
+    "imperativ": { "du": "gehör!", "ihr": "gehört!", "Sie": "gehören Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "'ge-' köke ait; Partizip II ek 'ge-' almaz: gehört." }
+  },
+  {
+    "infinitiv": "brauchen",
+    "meaning": "ihtiyaç duymak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "brauchte", "partizip2": "gebraucht" },
+    "prasens": { "ich": "brauche", "du": "brauchst", "er/sie/es": "braucht", "wir": "brauchen", "ihr": "braucht", "sie/Sie": "brauchen" },
+    "prateritum_full": { "ich": "brauchte", "du": "brauchtest", "er/sie/es": "brauchte", "wir": "brauchten", "ihr": "brauchtet", "sie/Sie": "brauchten" },
+    "perfekt": { "ich": "habe gebraucht", "du": "hast gebraucht", "er/sie/es": "hat gebraucht", "wir": "haben gebraucht", "ihr": "habt gebraucht", "sie/Sie": "haben gebraucht" },
+    "plusquamperfekt": { "ich": "hatte gebraucht", "du": "hattest gebraucht", "er/sie/es": "hatte gebraucht", "wir": "hatten gebraucht", "ihr": "hattet gebraucht", "sie/Sie": "hatten gebraucht" },
+    "futur1": { "ich": "werde brauchen", "du": "wirst brauchen", "er/sie/es": "wird brauchen", "wir": "werden brauchen", "ihr": "werdet brauchen", "sie/Sie": "werden brauchen" },
+    "konjunktiv2": { "ich": "brauchte", "du": "brauchtest", "er/sie/es": "brauchte", "wir": "brauchten", "ihr": "brauchtet", "sie/Sie": "brauchten", "alternative": { "ich": "würde brauchen", "du": "würdest brauchen" } },
+    "imperativ": { "du": "brauch!", "ihr": "braucht!", "Sie": "brauchen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Olumsuz cümlede 'brauchen' + 'zu' + Infinitiv kalıbı müssen'in yerini alabilir." }
+  },
+  {
+    "infinitiv": "zeigen",
+    "meaning": "göstermek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "zeigte", "partizip2": "gezeigt" },
+    "prasens": { "ich": "zeige", "du": "zeigst", "er/sie/es": "zeigt", "wir": "zeigen", "ihr": "zeigt", "sie/Sie": "zeigen" },
+    "prateritum_full": { "ich": "zeigte", "du": "zeigtest", "er/sie/es": "zeigte", "wir": "zeigten", "ihr": "zeigtet", "sie/Sie": "zeigten" },
+    "perfekt": { "ich": "habe gezeigt", "du": "hast gezeigt", "er/sie/es": "hat gezeigt", "wir": "haben gezeigt", "ihr": "habt gezeigt", "sie/Sie": "haben gezeigt" },
+    "plusquamperfekt": { "ich": "hatte gezeigt", "du": "hattest gezeigt", "er/sie/es": "hatte gezeigt", "wir": "hatten gezeigt", "ihr": "hattet gezeigt", "sie/Sie": "hatten gezeigt" },
+    "futur1": { "ich": "werde zeigen", "du": "wirst zeigen", "er/sie/es": "wird zeigen", "wir": "werden zeigen", "ihr": "werdet zeigen", "sie/Sie": "werden zeigen" },
+    "konjunktiv2": { "ich": "zeigte", "du": "zeigtest", "er/sie/es": "zeigte", "wir": "zeigten", "ihr": "zeigtet", "sie/Sie": "zeigten", "alternative": { "ich": "würde zeigen", "du": "würdest zeigen" } },
+    "imperativ": { "du": "zeig!", "ihr": "zeigt!", "Sie": "zeigen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; sich zeigen (kendini göstermek) dönüşlü halde de kullanılır." }
+  },
+  {
+    "infinitiv": "meinen",
+    "meaning": "düşünmek / kastetmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "meinte", "partizip2": "gemeint" },
+    "prasens": { "ich": "meine", "du": "meinst", "er/sie/es": "meint", "wir": "meinen", "ihr": "meint", "sie/Sie": "meinen" },
+    "prateritum_full": { "ich": "meinte", "du": "meintest", "er/sie/es": "meinte", "wir": "meinten", "ihr": "meintet", "sie/Sie": "meinten" },
+    "perfekt": { "ich": "habe gemeint", "du": "hast gemeint", "er/sie/es": "hat gemeint", "wir": "haben gemeint", "ihr": "habt gemeint", "sie/Sie": "haben gemeint" },
+    "plusquamperfekt": { "ich": "hatte gemeint", "du": "hattest gemeint", "er/sie/es": "hatte gemeint", "wir": "hatten gemeint", "ihr": "hattet gemeint", "sie/Sie": "hatten gemeint" },
+    "futur1": { "ich": "werde meinen", "du": "wirst meinen", "er/sie/es": "wird meinen", "wir": "werden meinen", "ihr": "werdet meinen", "sie/Sie": "werden meinen" },
+    "konjunktiv2": { "ich": "meinte", "du": "meintest", "er/sie/es": "meinte", "wir": "meinten", "ihr": "meintet", "sie/Sie": "meinten", "alternative": { "ich": "würde meinen", "du": "würdest meinen" } },
+    "imperativ": { "du": "mein!", "ihr": "meint!", "Sie": "meinen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Hem 'düşünmek' hem 'kastetmek' anlamında kullanılır." }
+  },
+  {
+    "infinitiv": "glauben",
+    "meaning": "inanmak / sanmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "glaubte", "partizip2": "geglaubt" },
+    "prasens": { "ich": "glaube", "du": "glaubst", "er/sie/es": "glaubt", "wir": "glauben", "ihr": "glaubt", "sie/Sie": "glauben" },
+    "prateritum_full": { "ich": "glaubte", "du": "glaubtest", "er/sie/es": "glaubte", "wir": "glaubten", "ihr": "glaubtet", "sie/Sie": "glaubten" },
+    "perfekt": { "ich": "habe geglaubt", "du": "hast geglaubt", "er/sie/es": "hat geglaubt", "wir": "haben geglaubt", "ihr": "habt geglaubt", "sie/Sie": "haben geglaubt" },
+    "plusquamperfekt": { "ich": "hatte geglaubt", "du": "hattest geglaubt", "er/sie/es": "hatte geglaubt", "wir": "hatten geglaubt", "ihr": "hattet geglaubt", "sie/Sie": "hatten geglaubt" },
+    "futur1": { "ich": "werde glauben", "du": "wirst glauben", "er/sie/es": "wird glauben", "wir": "werden glauben", "ihr": "werdet glauben", "sie/Sie": "werden glauben" },
+    "konjunktiv2": { "ich": "glaubte", "du": "glaubtest", "er/sie/es": "glaubte", "wir": "glaubten", "ihr": "glaubtet", "sie/Sie": "glaubten", "alternative": { "ich": "würde glauben", "du": "würdest glauben" } },
+    "imperativ": { "du": "glaub!", "ihr": "glaubt!", "Sie": "glauben Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; dini ve kişisel inanç için de kullanılır." }
+  },
+  {
+    "infinitiv": "hoffen",
+    "meaning": "ummak / ümit etmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "hoffte", "partizip2": "gehofft" },
+    "prasens": { "ich": "hoffe", "du": "hoffst", "er/sie/es": "hofft", "wir": "hoffen", "ihr": "hofft", "sie/Sie": "hoffen" },
+    "prateritum_full": { "ich": "hoffte", "du": "hofftest", "er/sie/es": "hoffte", "wir": "hofften", "ihr": "hofftet", "sie/Sie": "hofften" },
+    "perfekt": { "ich": "habe gehofft", "du": "hast gehofft", "er/sie/es": "hat gehofft", "wir": "haben gehofft", "ihr": "habt gehofft", "sie/Sie": "haben gehofft" },
+    "plusquamperfekt": { "ich": "hatte gehofft", "du": "hattest gehofft", "er/sie/es": "hatte gehofft", "wir": "hatten gehofft", "ihr": "hattet gehofft", "sie/Sie": "hatten gehofft" },
+    "futur1": { "ich": "werde hoffen", "du": "wirst hoffen", "er/sie/es": "wird hoffen", "wir": "werden hoffen", "ihr": "werdet hoffen", "sie/Sie": "werden hoffen" },
+    "konjunktiv2": { "ich": "hoffte", "du": "hofftest", "er/sie/es": "hoffte", "wir": "hofften", "ihr": "hofftet", "sie/Sie": "hofften", "alternative": { "ich": "würde hoffen", "du": "würdest hoffen" } },
+    "imperativ": { "du": "hoff!", "ihr": "hofft!", "Sie": "hoffen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Sıklıkla 'Ich hoffe, dass...' veya 'hoffen auf + Akk.' yapısıyla kullanılır." }
+  },
+  {
+    "infinitiv": "planen",
+    "meaning": "planlamak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "plante", "partizip2": "geplant" },
+    "prasens": { "ich": "plane", "du": "planst", "er/sie/es": "plant", "wir": "planen", "ihr": "plant", "sie/Sie": "planen" },
+    "prateritum_full": { "ich": "plante", "du": "plantest", "er/sie/es": "plante", "wir": "planten", "ihr": "plantet", "sie/Sie": "planten" },
+    "perfekt": { "ich": "habe geplant", "du": "hast geplant", "er/sie/es": "hat geplant", "wir": "haben geplant", "ihr": "habt geplant", "sie/Sie": "haben geplant" },
+    "plusquamperfekt": { "ich": "hatte geplant", "du": "hattest geplant", "er/sie/es": "hatte geplant", "wir": "hatten geplant", "ihr": "hattet geplant", "sie/Sie": "hatten geplant" },
+    "futur1": { "ich": "werde planen", "du": "wirst planen", "er/sie/es": "wird planen", "wir": "werden planen", "ihr": "werdet planen", "sie/Sie": "werden planen" },
+    "konjunktiv2": { "ich": "plante", "du": "plantest", "er/sie/es": "plante", "wir": "planten", "ihr": "plantet", "sie/Sie": "planten", "alternative": { "ich": "würde planen", "du": "würdest planen" } },
+    "imperativ": { "du": "plan!", "ihr": "plant!", "Sie": "planen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; 'einen Plan machen' anlamında yaygın kullanım." }
+  },
+  {
+    "infinitiv": "versuchen",
+    "meaning": "denemek / çalışmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "versuchte", "partizip2": "versucht" },
+    "prasens": { "ich": "versuche", "du": "versuchst", "er/sie/es": "versucht", "wir": "versuchen", "ihr": "versucht", "sie/Sie": "versuchen" },
+    "prateritum_full": { "ich": "versuchte", "du": "versuchtest", "er/sie/es": "versuchte", "wir": "versuchten", "ihr": "versuchtet", "sie/Sie": "versuchten" },
+    "perfekt": { "ich": "habe versucht", "du": "hast versucht", "er/sie/es": "hat versucht", "wir": "haben versucht", "ihr": "habt versucht", "sie/Sie": "haben versucht" },
+    "plusquamperfekt": { "ich": "hatte versucht", "du": "hattest versucht", "er/sie/es": "hatte versucht", "wir": "hatten versucht", "ihr": "hattet versucht", "sie/Sie": "hatten versucht" },
+    "futur1": { "ich": "werde versuchen", "du": "wirst versuchen", "er/sie/es": "wird versuchen", "wir": "werden versuchen", "ihr": "werdet versuchen", "sie/Sie": "werden versuchen" },
+    "konjunktiv2": { "ich": "versuchte", "du": "versuchtest", "er/sie/es": "versuchte", "wir": "versuchten", "ihr": "versuchtet", "sie/Sie": "versuchten", "alternative": { "ich": "würde versuchen", "du": "würdest versuchen" } },
+    "imperativ": { "du": "versuch!", "ihr": "versucht!", "Sie": "versuchen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Ayrılamaz önek 'ver-'; Partizip II 'ge-' almaz: versucht." }
+  },
+  {
+    "infinitiv": "erklären",
+    "meaning": "açıklamak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "erklärte", "partizip2": "erklärt" },
+    "prasens": { "ich": "erkläre", "du": "erklärst", "er/sie/es": "erklärt", "wir": "erklären", "ihr": "erklärt", "sie/Sie": "erklären" },
+    "prateritum_full": { "ich": "erklärte", "du": "erklärtest", "er/sie/es": "erklärte", "wir": "erklärten", "ihr": "erklärtet", "sie/Sie": "erklärten" },
+    "perfekt": { "ich": "habe erklärt", "du": "hast erklärt", "er/sie/es": "hat erklärt", "wir": "haben erklärt", "ihr": "habt erklärt", "sie/Sie": "haben erklärt" },
+    "plusquamperfekt": { "ich": "hatte erklärt", "du": "hattest erklärt", "er/sie/es": "hatte erklärt", "wir": "hatten erklärt", "ihr": "hattet erklärt", "sie/Sie": "hatten erklärt" },
+    "futur1": { "ich": "werde erklären", "du": "wirst erklären", "er/sie/es": "wird erklären", "wir": "werden erklären", "ihr": "werdet erklären", "sie/Sie": "werden erklären" },
+    "konjunktiv2": { "ich": "erklärte", "du": "erklärtest", "er/sie/es": "erklärte", "wir": "erklärten", "ihr": "erklärtet", "sie/Sie": "erklärten", "alternative": { "ich": "würde erklären", "du": "würdest erklären" } },
+    "imperativ": { "du": "erkläre!", "ihr": "erklärt!", "Sie": "erklären Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Ayrılamaz önek 'er-'; Partizip II 'ge-' almaz: erklärt." }
+  },
+  {
+    "infinitiv": "erzählen",
+    "meaning": "anlatmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "erzählte", "partizip2": "erzählt" },
+    "prasens": { "ich": "erzähle", "du": "erzählst", "er/sie/es": "erzählt", "wir": "erzählen", "ihr": "erzählt", "sie/Sie": "erzählen" },
+    "prateritum_full": { "ich": "erzählte", "du": "erzähltest", "er/sie/es": "erzählte", "wir": "erzählten", "ihr": "erzähltet", "sie/Sie": "erzählten" },
+    "perfekt": { "ich": "habe erzählt", "du": "hast erzählt", "er/sie/es": "hat erzählt", "wir": "haben erzählt", "ihr": "habt erzählt", "sie/Sie": "haben erzählt" },
+    "plusquamperfekt": { "ich": "hatte erzählt", "du": "hattest erzählt", "er/sie/es": "hatte erzählt", "wir": "hatten erzählt", "ihr": "hattet erzählt", "sie/Sie": "hatten erzählt" },
+    "futur1": { "ich": "werde erzählen", "du": "wirst erzählen", "er/sie/es": "wird erzählen", "wir": "werden erzählen", "ihr": "werdet erzählen", "sie/Sie": "werden erzählen" },
+    "konjunktiv2": { "ich": "erzählte", "du": "erzähltest", "er/sie/es": "erzählte", "wir": "erzählten", "ihr": "erzähltet", "sie/Sie": "erzählten", "alternative": { "ich": "würde erzählen", "du": "würdest erzählen" } },
+    "imperativ": { "du": "erzähl!", "ihr": "erzählt!", "Sie": "erzählen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Ayrılamaz önek 'er-'; Partizip II 'ge-' almaz: erzählt." }
+  },
+  {
+    "infinitiv": "antworten",
+    "meaning": "cevap vermek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "antwortete", "partizip2": "geantwortet" },
+    "prasens": { "ich": "antworte", "du": "antwortest", "er/sie/es": "antwortet", "wir": "antworten", "ihr": "antwortet", "sie/Sie": "antworten" },
+    "prateritum_full": { "ich": "antwortete", "du": "antwortetest", "er/sie/es": "antwortete", "wir": "antworteten", "ihr": "antwortetet", "sie/Sie": "antworteten" },
+    "perfekt": { "ich": "habe geantwortet", "du": "hast geantwortet", "er/sie/es": "hat geantwortet", "wir": "haben geantwortet", "ihr": "habt geantwortet", "sie/Sie": "haben geantwortet" },
+    "plusquamperfekt": { "ich": "hatte geantwortet", "du": "hattest geantwortet", "er/sie/es": "hatte geantwortet", "wir": "hatten geantwortet", "ihr": "hattet geantwortet", "sie/Sie": "hatten geantwortet" },
+    "futur1": { "ich": "werde antworten", "du": "wirst antworten", "er/sie/es": "wird antworten", "wir": "werden antworten", "ihr": "werdet antworten", "sie/Sie": "werden antworten" },
+    "konjunktiv2": { "ich": "antwortete", "du": "antwortetest", "er/sie/es": "antwortete", "wir": "antworteten", "ihr": "antwortetet", "sie/Sie": "antworteten", "alternative": { "ich": "würde antworten", "du": "würdest antworten" } },
+    "imperativ": { "du": "antworte!", "ihr": "antwortet!", "Sie": "antworten Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Gövde -t ile biter; türeme -e- eklenir: du antwortest, er antwortet." }
+  },
+  {
+    "infinitiv": "fragen",
+    "meaning": "sormak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "fragte", "partizip2": "gefragt" },
+    "prasens": { "ich": "frage", "du": "fragst", "er/sie/es": "fragt", "wir": "fragen", "ihr": "fragt", "sie/Sie": "fragen" },
+    "prateritum_full": { "ich": "fragte", "du": "fragtest", "er/sie/es": "fragte", "wir": "fragten", "ihr": "fragtet", "sie/Sie": "fragten" },
+    "perfekt": { "ich": "habe gefragt", "du": "hast gefragt", "er/sie/es": "hat gefragt", "wir": "haben gefragt", "ihr": "habt gefragt", "sie/Sie": "haben gefragt" },
+    "plusquamperfekt": { "ich": "hatte gefragt", "du": "hattest gefragt", "er/sie/es": "hatte gefragt", "wir": "hatten gefragt", "ihr": "hattet gefragt", "sie/Sie": "hatten gefragt" },
+    "futur1": { "ich": "werde fragen", "du": "wirst fragen", "er/sie/es": "wird fragen", "wir": "werden fragen", "ihr": "werdet fragen", "sie/Sie": "werden fragen" },
+    "konjunktiv2": { "ich": "fragte", "du": "fragtest", "er/sie/es": "fragte", "wir": "fragten", "ihr": "fragtet", "sie/Sie": "fragten", "alternative": { "ich": "würde fragen", "du": "würdest fragen" } },
+    "imperativ": { "du": "frag!", "ihr": "fragt!", "Sie": "fragen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; 'fragen nach + Dat.' veya 'fragen um + Akk.' kalıplarıyla kullanılır." }
+  },
+  {
+    "infinitiv": "danken",
+    "meaning": "teşekkür etmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "dankte", "partizip2": "gedankt" },
+    "prasens": { "ich": "danke", "du": "dankst", "er/sie/es": "dankt", "wir": "danken", "ihr": "dankt", "sie/Sie": "danken" },
+    "prateritum_full": { "ich": "dankte", "du": "danktest", "er/sie/es": "dankte", "wir": "dankten", "ihr": "danktet", "sie/Sie": "dankten" },
+    "perfekt": { "ich": "habe gedankt", "du": "hast gedankt", "er/sie/es": "hat gedankt", "wir": "haben gedankt", "ihr": "habt gedankt", "sie/Sie": "haben gedankt" },
+    "plusquamperfekt": { "ich": "hatte gedankt", "du": "hattest gedankt", "er/sie/es": "hatte gedankt", "wir": "hatten gedankt", "ihr": "hattet gedankt", "sie/Sie": "hatten gedankt" },
+    "futur1": { "ich": "werde danken", "du": "wirst danken", "er/sie/es": "wird danken", "wir": "werden danken", "ihr": "werdet danken", "sie/Sie": "werden danken" },
+    "konjunktiv2": { "ich": "dankte", "du": "danktest", "er/sie/es": "dankte", "wir": "dankten", "ihr": "danktet", "sie/Sie": "dankten", "alternative": { "ich": "würde danken", "du": "würdest danken" } },
+    "imperativ": { "du": "dank!", "ihr": "dankt!", "Sie": "danken Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "'danken + Dat.' alır: Ich danke dir. (Sana teşekkür ederim.)" }
+  },
+  {
+    "infinitiv": "feiern",
+    "meaning": "kutlamak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "feierte", "partizip2": "gefeiert" },
+    "prasens": { "ich": "feiere", "du": "feierst", "er/sie/es": "feiert", "wir": "feiern", "ihr": "feiert", "sie/Sie": "feiern" },
+    "prateritum_full": { "ich": "feierte", "du": "feiertest", "er/sie/es": "feierte", "wir": "feierten", "ihr": "feiertet", "sie/Sie": "feierten" },
+    "perfekt": { "ich": "habe gefeiert", "du": "hast gefeiert", "er/sie/es": "hat gefeiert", "wir": "haben gefeiert", "ihr": "habt gefeiert", "sie/Sie": "haben gefeiert" },
+    "plusquamperfekt": { "ich": "hatte gefeiert", "du": "hattest gefeiert", "er/sie/es": "hatte gefeiert", "wir": "hatten gefeiert", "ihr": "hattet gefeiert", "sie/Sie": "hatten gefeiert" },
+    "futur1": { "ich": "werde feiern", "du": "wirst feiern", "er/sie/es": "wird feiern", "wir": "werden feiern", "ihr": "werdet feiern", "sie/Sie": "werden feiern" },
+    "konjunktiv2": { "ich": "feierte", "du": "feiertest", "er/sie/es": "feierte", "wir": "feierten", "ihr": "feiertet", "sie/Sie": "feierten", "alternative": { "ich": "würde feiern", "du": "würdest feiern" } },
+    "imperativ": { "du": "feier!", "ihr": "feiert!", "Sie": "feiern Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Gövde -er ile biter; ich feiere (uzun form) ve ich feire (kısa form) ikisi de doğrudur." }
+  },
+  {
+    "infinitiv": "besuchen",
+    "meaning": "ziyaret etmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "besuchte", "partizip2": "besucht" },
+    "prasens": { "ich": "besuche", "du": "besuchst", "er/sie/es": "besucht", "wir": "besuchen", "ihr": "besucht", "sie/Sie": "besuchen" },
+    "prateritum_full": { "ich": "besuchte", "du": "besuchtest", "er/sie/es": "besuchte", "wir": "besuchten", "ihr": "besuchtet", "sie/Sie": "besuchten" },
+    "perfekt": { "ich": "habe besucht", "du": "hast besucht", "er/sie/es": "hat besucht", "wir": "haben besucht", "ihr": "habt besucht", "sie/Sie": "haben besucht" },
+    "plusquamperfekt": { "ich": "hatte besucht", "du": "hattest besucht", "er/sie/es": "hatte besucht", "wir": "hatten besucht", "ihr": "hattet besucht", "sie/Sie": "hatten besucht" },
+    "futur1": { "ich": "werde besuchen", "du": "wirst besuchen", "er/sie/es": "wird besuchen", "wir": "werden besuchen", "ihr": "werdet besuchen", "sie/Sie": "werden besuchen" },
+    "konjunktiv2": { "ich": "besuchte", "du": "besuchtest", "er/sie/es": "besuchte", "wir": "besuchten", "ihr": "besuchtet", "sie/Sie": "besuchten", "alternative": { "ich": "würde besuchen", "du": "würdest besuchen" } },
+    "imperativ": { "du": "besuch!", "ihr": "besucht!", "Sie": "besuchen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Ayrılamaz önek 'be-'; Partizip II 'ge-' almaz: besucht." }
+  },
+  {
+    "infinitiv": "reisen",
+    "meaning": "seyahat etmek",
+    "auxiliary": "sein",
+    "type": "weak",
+    "forms": { "prateritum": "reiste", "partizip2": "gereist" },
+    "prasens": { "ich": "reise", "du": "reist", "er/sie/es": "reist", "wir": "reisen", "ihr": "reist", "sie/Sie": "reisen" },
+    "prateritum_full": { "ich": "reiste", "du": "reistest", "er/sie/es": "reiste", "wir": "reisten", "ihr": "reistet", "sie/Sie": "reisten" },
+    "perfekt": { "ich": "bin gereist", "du": "bist gereist", "er/sie/es": "ist gereist", "wir": "sind gereist", "ihr": "seid gereist", "sie/Sie": "sind gereist" },
+    "plusquamperfekt": { "ich": "war gereist", "du": "warst gereist", "er/sie/es": "war gereist", "wir": "waren gereist", "ihr": "wart gereist", "sie/Sie": "waren gereist" },
+    "futur1": { "ich": "werde reisen", "du": "wirst reisen", "er/sie/es": "wird reisen", "wir": "werden reisen", "ihr": "werdet reisen", "sie/Sie": "werden reisen" },
+    "konjunktiv2": { "ich": "reiste", "du": "reistest", "er/sie/es": "reiste", "wir": "reisten", "ihr": "reistet", "sie/Sie": "reisten", "alternative": { "ich": "würde reisen", "du": "würdest reisen" } },
+    "imperativ": { "du": "reis!", "ihr": "reist!", "Sie": "reisen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Hareket fiili; Perfekt'te 'sein' kullanır. du reist (-s gövdede zaten var)." }
+  },
+  {
+    "infinitiv": "studieren",
+    "meaning": "üniversitede okumak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "studierte", "partizip2": "studiert" },
+    "prasens": { "ich": "studiere", "du": "studierst", "er/sie/es": "studiert", "wir": "studieren", "ihr": "studiert", "sie/Sie": "studieren" },
+    "prateritum_full": { "ich": "studierte", "du": "studiertest", "er/sie/es": "studierte", "wir": "studierten", "ihr": "studiertet", "sie/Sie": "studierten" },
+    "perfekt": { "ich": "habe studiert", "du": "hast studiert", "er/sie/es": "hat studiert", "wir": "haben studiert", "ihr": "habt studiert", "sie/Sie": "haben studiert" },
+    "plusquamperfekt": { "ich": "hatte studiert", "du": "hattest studiert", "er/sie/es": "hatte studiert", "wir": "hatten studiert", "ihr": "hattet studiert", "sie/Sie": "hatten studiert" },
+    "futur1": { "ich": "werde studieren", "du": "wirst studieren", "er/sie/es": "wird studieren", "wir": "werden studieren", "ihr": "werdet studieren", "sie/Sie": "werden studieren" },
+    "konjunktiv2": { "ich": "studierte", "du": "studiertest", "er/sie/es": "studierte", "wir": "studierten", "ihr": "studiertet", "sie/Sie": "studierten", "alternative": { "ich": "würde studieren", "du": "würdest studieren" } },
+    "imperativ": { "du": "studiere!", "ihr": "studiert!", "Sie": "studieren Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "-ieren soneki; Partizip II 'ge-' almaz: studiert." }
+  },
+  {
+    "infinitiv": "üben",
+    "meaning": "pratik yapmak / alıştırma yapmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "übte", "partizip2": "geübt" },
+    "prasens": { "ich": "übe", "du": "übst", "er/sie/es": "übt", "wir": "üben", "ihr": "übt", "sie/Sie": "üben" },
+    "prateritum_full": { "ich": "übte", "du": "übtest", "er/sie/es": "übte", "wir": "übten", "ihr": "übtet", "sie/Sie": "übten" },
+    "perfekt": { "ich": "habe geübt", "du": "hast geübt", "er/sie/es": "hat geübt", "wir": "haben geübt", "ihr": "habt geübt", "sie/Sie": "haben geübt" },
+    "plusquamperfekt": { "ich": "hatte geübt", "du": "hattest geübt", "er/sie/es": "hatte geübt", "wir": "hatten geübt", "ihr": "hattet geübt", "sie/Sie": "hatten geübt" },
+    "futur1": { "ich": "werde üben", "du": "wirst üben", "er/sie/es": "wird üben", "wir": "werden üben", "ihr": "werdet üben", "sie/Sie": "werden üben" },
+    "konjunktiv2": { "ich": "übte", "du": "übtest", "er/sie/es": "übte", "wir": "übten", "ihr": "übtet", "sie/Sie": "übten", "alternative": { "ich": "würde üben", "du": "würdest üben" } },
+    "imperativ": { "du": "üb!", "ihr": "übt!", "Sie": "üben Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; müzik, spor ve dil öğreniminde yaygın kullanım." }
+  },
+  {
+    "infinitiv": "kochen",
+    "meaning": "yemek pişirmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "kochte", "partizip2": "gekocht" },
+    "prasens": { "ich": "koche", "du": "kochst", "er/sie/es": "kocht", "wir": "kochen", "ihr": "kocht", "sie/Sie": "kochen" },
+    "prateritum_full": { "ich": "kochte", "du": "kochtest", "er/sie/es": "kochte", "wir": "kochten", "ihr": "kochtet", "sie/Sie": "kochten" },
+    "perfekt": { "ich": "habe gekocht", "du": "hast gekocht", "er/sie/es": "hat gekocht", "wir": "haben gekocht", "ihr": "habt gekocht", "sie/Sie": "haben gekocht" },
+    "plusquamperfekt": { "ich": "hatte gekocht", "du": "hattest gekocht", "er/sie/es": "hatte gekocht", "wir": "hatten gekocht", "ihr": "hattet gekocht", "sie/Sie": "hatten gekocht" },
+    "futur1": { "ich": "werde kochen", "du": "wirst kochen", "er/sie/es": "wird kochen", "wir": "werden kochen", "ihr": "werdet kochen", "sie/Sie": "werden kochen" },
+    "konjunktiv2": { "ich": "kochte", "du": "kochtest", "er/sie/es": "kochte", "wir": "kochten", "ihr": "kochtet", "sie/Sie": "kochten", "alternative": { "ich": "würde kochen", "du": "würdest kochen" } },
+    "imperativ": { "du": "koch!", "ihr": "kocht!", "Sie": "kochen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; hem 'yemek pişirmek' hem 'kaynamak' anlamında kullanılır." }
+  },
+  {
+    "infinitiv": "putzen",
+    "meaning": "temizlemek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "putzte", "partizip2": "geputzt" },
+    "prasens": { "ich": "putze", "du": "putzt", "er/sie/es": "putzt", "wir": "putzen", "ihr": "putzt", "sie/Sie": "putzen" },
+    "prateritum_full": { "ich": "putzte", "du": "putztest", "er/sie/es": "putzte", "wir": "putzten", "ihr": "putztet", "sie/Sie": "putzten" },
+    "perfekt": { "ich": "habe geputzt", "du": "hast geputzt", "er/sie/es": "hat geputzt", "wir": "haben geputzt", "ihr": "habt geputzt", "sie/Sie": "haben geputzt" },
+    "plusquamperfekt": { "ich": "hatte geputzt", "du": "hattest geputzt", "er/sie/es": "hatte geputzt", "wir": "hatten geputzt", "ihr": "hattet geputzt", "sie/Sie": "hatten geputzt" },
+    "futur1": { "ich": "werde putzen", "du": "wirst putzen", "er/sie/es": "wird putzen", "wir": "werden putzen", "ihr": "werdet putzen", "sie/Sie": "werden putzen" },
+    "konjunktiv2": { "ich": "putzte", "du": "putztest", "er/sie/es": "putzte", "wir": "putzten", "ihr": "putztet", "sie/Sie": "putzten", "alternative": { "ich": "würde putzen", "du": "würdest putzen" } },
+    "imperativ": { "du": "putz!", "ihr": "putzt!", "Sie": "putzen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; 'Zähne putzen' (diş fırçalamak) kalıbında çok yaygın." }
+  },
+  {
+    "infinitiv": "aufräumen",
+    "meaning": "toparlamak / düzenlemek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "räumte auf", "partizip2": "aufgeräumt" },
+    "prasens": { "ich": "räume auf", "du": "räumst auf", "er/sie/es": "räumt auf", "wir": "räumen auf", "ihr": "räumt auf", "sie/Sie": "räumen auf" },
+    "prateritum_full": { "ich": "räumte auf", "du": "räumtest auf", "er/sie/es": "räumte auf", "wir": "räumten auf", "ihr": "räumtet auf", "sie/Sie": "räumten auf" },
+    "perfekt": { "ich": "habe aufgeräumt", "du": "hast aufgeräumt", "er/sie/es": "hat aufgeräumt", "wir": "haben aufgeräumt", "ihr": "habt aufgeräumt", "sie/Sie": "haben aufgeräumt" },
+    "plusquamperfekt": { "ich": "hatte aufgeräumt", "du": "hattest aufgeräumt", "er/sie/es": "hatte aufgeräumt", "wir": "hatten aufgeräumt", "ihr": "hattet aufgeräumt", "sie/Sie": "hatten aufgeräumt" },
+    "futur1": { "ich": "werde aufräumen", "du": "wirst aufräumen", "er/sie/es": "wird aufräumen", "wir": "werden aufräumen", "ihr": "werdet aufräumen", "sie/Sie": "werden aufräumen" },
+    "konjunktiv2": { "ich": "räumte auf", "du": "räumtest auf", "er/sie/es": "räumte auf", "wir": "räumten auf", "ihr": "räumtet auf", "sie/Sie": "räumten auf", "alternative": { "ich": "würde aufräumen", "du": "würdest aufräumen" } },
+    "imperativ": { "du": "räum auf!", "ihr": "räumt auf!", "Sie": "räumen Sie auf!" },
+    "meta": { "separable": true, "reflexive": false, "notes": "Ayrılabilir önek 'auf-'; Partizip II: auf-ge-räumt. Cümlede önek sona gider." }
+  },
+  {
+    "infinitiv": "duschen",
+    "meaning": "duş almak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "duschte", "partizip2": "geduscht" },
+    "prasens": { "ich": "dusche", "du": "duschst", "er/sie/es": "duscht", "wir": "duschen", "ihr": "duscht", "sie/Sie": "duschen" },
+    "prateritum_full": { "ich": "duschte", "du": "duschtest", "er/sie/es": "duschte", "wir": "duschten", "ihr": "duschtet", "sie/Sie": "duschten" },
+    "perfekt": { "ich": "habe geduscht", "du": "hast geduscht", "er/sie/es": "hat geduscht", "wir": "haben geduscht", "ihr": "habt geduscht", "sie/Sie": "haben geduscht" },
+    "plusquamperfekt": { "ich": "hatte geduscht", "du": "hattest geduscht", "er/sie/es": "hatte geduscht", "wir": "hatten geduscht", "ihr": "hattet geduscht", "sie/Sie": "hatten geduscht" },
+    "futur1": { "ich": "werde duschen", "du": "wirst duschen", "er/sie/es": "wird duschen", "wir": "werden duschen", "ihr": "werdet duschen", "sie/Sie": "werden duschen" },
+    "konjunktiv2": { "ich": "duschte", "du": "duschtest", "er/sie/es": "duschte", "wir": "duschten", "ihr": "duschtet", "sie/Sie": "duschten", "alternative": { "ich": "würde duschen", "du": "würdest duschen" } },
+    "imperativ": { "du": "dusch!", "ihr": "duscht!", "Sie": "duschen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Dönüşlü olarak 'sich duschen' da kullanılır." }
+  },
+  {
+    "infinitiv": "baden",
+    "meaning": "banyo yapmak / yüzmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "badete", "partizip2": "gebadet" },
+    "prasens": { "ich": "bade", "du": "badest", "er/sie/es": "badet", "wir": "baden", "ihr": "badet", "sie/Sie": "baden" },
+    "prateritum_full": { "ich": "badete", "du": "badetest", "er/sie/es": "badete", "wir": "badeten", "ihr": "badetet", "sie/Sie": "badeten" },
+    "perfekt": { "ich": "habe gebadet", "du": "hast gebadet", "er/sie/es": "hat gebadet", "wir": "haben gebadet", "ihr": "habt gebadet", "sie/Sie": "haben gebadet" },
+    "plusquamperfekt": { "ich": "hatte gebadet", "du": "hattest gebadet", "er/sie/es": "hatte gebadet", "wir": "hatten gebadet", "ihr": "hattet gebadet", "sie/Sie": "hatten gebadet" },
+    "futur1": { "ich": "werde baden", "du": "wirst baden", "er/sie/es": "wird baden", "wir": "werden baden", "ihr": "werdet baden", "sie/Sie": "werden baden" },
+    "konjunktiv2": { "ich": "badete", "du": "badetest", "er/sie/es": "badete", "wir": "badeten", "ihr": "badetet", "sie/Sie": "badeten", "alternative": { "ich": "würde baden", "du": "würdest baden" } },
+    "imperativ": { "du": "bade!", "ihr": "badet!", "Sie": "baden Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Gövde -d ile biter; türeme -e- eklenir: du badest, er badet." }
+  },
+  {
+    "infinitiv": "parken",
+    "meaning": "park etmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "parkte", "partizip2": "geparkt" },
+    "prasens": { "ich": "parke", "du": "parkst", "er/sie/es": "parkt", "wir": "parken", "ihr": "parkt", "sie/Sie": "parken" },
+    "prateritum_full": { "ich": "parkte", "du": "parktest", "er/sie/es": "parkte", "wir": "parkten", "ihr": "parktet", "sie/Sie": "parkten" },
+    "perfekt": { "ich": "habe geparkt", "du": "hast geparkt", "er/sie/es": "hat geparkt", "wir": "haben geparkt", "ihr": "habt geparkt", "sie/Sie": "haben geparkt" },
+    "plusquamperfekt": { "ich": "hatte geparkt", "du": "hattest geparkt", "er/sie/es": "hatte geparkt", "wir": "hatten geparkt", "ihr": "hattet geparkt", "sie/Sie": "hatten geparkt" },
+    "futur1": { "ich": "werde parken", "du": "wirst parken", "er/sie/es": "wird parken", "wir": "werden parken", "ihr": "werdet parken", "sie/Sie": "werden parken" },
+    "konjunktiv2": { "ich": "parkte", "du": "parktest", "er/sie/es": "parkte", "wir": "parkten", "ihr": "parktet", "sie/Sie": "parkten", "alternative": { "ich": "würde parken", "du": "würdest parken" } },
+    "imperativ": { "du": "park!", "ihr": "parkt!", "Sie": "parken Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; İngilizceden alıntı." }
+  },
+  {
+    "infinitiv": "tanken",
+    "meaning": "yakıt almak / depoyu doldurmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "tankte", "partizip2": "getankt" },
+    "prasens": { "ich": "tanke", "du": "tankst", "er/sie/es": "tankt", "wir": "tanken", "ihr": "tankt", "sie/Sie": "tanken" },
+    "prateritum_full": { "ich": "tankte", "du": "tanktest", "er/sie/es": "tankte", "wir": "tankten", "ihr": "tanktet", "sie/Sie": "tankten" },
+    "perfekt": { "ich": "habe getankt", "du": "hast getankt", "er/sie/es": "hat getankt", "wir": "haben getankt", "ihr": "habt getankt", "sie/Sie": "haben getankt" },
+    "plusquamperfekt": { "ich": "hatte getankt", "du": "hattest getankt", "er/sie/es": "hatte getankt", "wir": "hatten getankt", "ihr": "hattet getankt", "sie/Sie": "hatten getankt" },
+    "futur1": { "ich": "werde tanken", "du": "wirst tanken", "er/sie/es": "wird tanken", "wir": "werden tanken", "ihr": "werdet tanken", "sie/Sie": "werden tanken" },
+    "konjunktiv2": { "ich": "tankte", "du": "tanktest", "er/sie/es": "tankte", "wir": "tankten", "ihr": "tanktet", "sie/Sie": "tankten", "alternative": { "ich": "würde tanken", "du": "würdest tanken" } },
+    "imperativ": { "du": "tank!", "ihr": "tankt!", "Sie": "tanken Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; 'voll tanken' (depoyu doldurmak) yaygın birleşik kullanım." }
+  },
+  {
+    "infinitiv": "reparieren",
+    "meaning": "tamir etmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "reparierte", "partizip2": "repariert" },
+    "prasens": { "ich": "repariere", "du": "reparierst", "er/sie/es": "repariert", "wir": "reparieren", "ihr": "repariert", "sie/Sie": "reparieren" },
+    "prateritum_full": { "ich": "reparierte", "du": "repariertest", "er/sie/es": "reparierte", "wir": "reparierten", "ihr": "repariertet", "sie/Sie": "reparierten" },
+    "perfekt": { "ich": "habe repariert", "du": "hast repariert", "er/sie/es": "hat repariert", "wir": "haben repariert", "ihr": "habt repariert", "sie/Sie": "haben repariert" },
+    "plusquamperfekt": { "ich": "hatte repariert", "du": "hattest repariert", "er/sie/es": "hatte repariert", "wir": "hatten repariert", "ihr": "hattet repariert", "sie/Sie": "hatten repariert" },
+    "futur1": { "ich": "werde reparieren", "du": "wirst reparieren", "er/sie/es": "wird reparieren", "wir": "werden reparieren", "ihr": "werdet reparieren", "sie/Sie": "werden reparieren" },
+    "konjunktiv2": { "ich": "reparierte", "du": "repariertest", "er/sie/es": "reparierte", "wir": "reparierten", "ihr": "repariertet", "sie/Sie": "reparierten", "alternative": { "ich": "würde reparieren", "du": "würdest reparieren" } },
+    "imperativ": { "du": "repariere!", "ihr": "repariert!", "Sie": "reparieren Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "-ieren soneki; Partizip II 'ge-' almaz: repariert." }
+  },
+  {
+    "infinitiv": "bestellen",
+    "meaning": "sipariş vermek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "bestellte", "partizip2": "bestellt" },
+    "prasens": { "ich": "bestelle", "du": "bestellst", "er/sie/es": "bestellt", "wir": "bestellen", "ihr": "bestellt", "sie/Sie": "bestellen" },
+    "prateritum_full": { "ich": "bestellte", "du": "bestelltest", "er/sie/es": "bestellte", "wir": "bestellten", "ihr": "bestelltet", "sie/Sie": "bestellten" },
+    "perfekt": { "ich": "habe bestellt", "du": "hast bestellt", "er/sie/es": "hat bestellt", "wir": "haben bestellt", "ihr": "habt bestellt", "sie/Sie": "haben bestellt" },
+    "plusquamperfekt": { "ich": "hatte bestellt", "du": "hattest bestellt", "er/sie/es": "hatte bestellt", "wir": "hatten bestellt", "ihr": "hattet bestellt", "sie/Sie": "hatten bestellt" },
+    "futur1": { "ich": "werde bestellen", "du": "wirst bestellen", "er/sie/es": "wird bestellen", "wir": "werden bestellen", "ihr": "werdet bestellen", "sie/Sie": "werden bestellen" },
+    "konjunktiv2": { "ich": "bestellte", "du": "bestelltest", "er/sie/es": "bestellte", "wir": "bestellten", "ihr": "bestelltet", "sie/Sie": "bestellten", "alternative": { "ich": "würde bestellen", "du": "würdest bestellen" } },
+    "imperativ": { "du": "bestell!", "ihr": "bestellt!", "Sie": "bestellen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Ayrılamaz önek 'be-'; Partizip II 'ge-' almaz: bestellt." }
+  },
+  {
+    "infinitiv": "reservieren",
+    "meaning": "rezervasyon yapmak / ayırtmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "reservierte", "partizip2": "reserviert" },
+    "prasens": { "ich": "reserviere", "du": "reservierst", "er/sie/es": "reserviert", "wir": "reservieren", "ihr": "reserviert", "sie/Sie": "reservieren" },
+    "prateritum_full": { "ich": "reservierte", "du": "reserviertest", "er/sie/es": "reservierte", "wir": "reservierten", "ihr": "reserviertet", "sie/Sie": "reservierten" },
+    "perfekt": { "ich": "habe reserviert", "du": "hast reserviert", "er/sie/es": "hat reserviert", "wir": "haben reserviert", "ihr": "habt reserviert", "sie/Sie": "haben reserviert" },
+    "plusquamperfekt": { "ich": "hatte reserviert", "du": "hattest reserviert", "er/sie/es": "hatte reserviert", "wir": "hatten reserviert", "ihr": "hattet reserviert", "sie/Sie": "hatten reserviert" },
+    "futur1": { "ich": "werde reservieren", "du": "wirst reservieren", "er/sie/es": "wird reservieren", "wir": "werden reservieren", "ihr": "werdet reservieren", "sie/Sie": "werden reservieren" },
+    "konjunktiv2": { "ich": "reservierte", "du": "reserviertest", "er/sie/es": "reservierte", "wir": "reservierten", "ihr": "reserviertet", "sie/Sie": "reservierten", "alternative": { "ich": "würde reservieren", "du": "würdest reservieren" } },
+    "imperativ": { "du": "reserviere!", "ihr": "reserviert!", "Sie": "reservieren Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "-ieren soneki; Partizip II 'ge-' almaz: reserviert." }
+  },
+  {
+    "infinitiv": "kündigen",
+    "meaning": "istifa etmek / sözleşmeyi feshetmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "kündigte", "partizip2": "gekündigt" },
+    "prasens": { "ich": "kündige", "du": "kündigst", "er/sie/es": "kündigt", "wir": "kündigen", "ihr": "kündigt", "sie/Sie": "kündigen" },
+    "prateritum_full": { "ich": "kündigte", "du": "kündigtest", "er/sie/es": "kündigte", "wir": "kündigten", "ihr": "kündigtet", "sie/Sie": "kündigten" },
+    "perfekt": { "ich": "habe gekündigt", "du": "hast gekündigt", "er/sie/es": "hat gekündigt", "wir": "haben gekündigt", "ihr": "habt gekündigt", "sie/Sie": "haben gekündigt" },
+    "plusquamperfekt": { "ich": "hatte gekündigt", "du": "hattest gekündigt", "er/sie/es": "hatte gekündigt", "wir": "hatten gekündigt", "ihr": "hattet gekündigt", "sie/Sie": "hatten gekündigt" },
+    "futur1": { "ich": "werde kündigen", "du": "wirst kündigen", "er/sie/es": "wird kündigen", "wir": "werden kündigen", "ihr": "werdet kündigen", "sie/Sie": "werden kündigen" },
+    "konjunktiv2": { "ich": "kündigte", "du": "kündigtest", "er/sie/es": "kündigte", "wir": "kündigten", "ihr": "kündigtet", "sie/Sie": "kündigten", "alternative": { "ich": "würde kündigen", "du": "würdest kündigen" } },
+    "imperativ": { "du": "kündige!", "ihr": "kündigt!", "Sie": "kündigen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "İş akdi veya abonelik iptali için kullanılır; 'jemandem kündigen' (birini işten çıkarmak) da mümkün." }
+  },
+  {
+    "infinitiv": "unterschreiben",
+    "meaning": "imzalamak",
+    "auxiliary": "haben",
+    "type": "strong",
+    "forms": { "prateritum": "unterschrieb", "partizip2": "unterschrieben" },
+    "prasens": { "ich": "unterschreibe", "du": "unterschreibst", "er/sie/es": "unterschreibt", "wir": "unterschreiben", "ihr": "unterschreibt", "sie/Sie": "unterschreiben" },
+    "prateritum_full": { "ich": "unterschrieb", "du": "unterschriebst", "er/sie/es": "unterschrieb", "wir": "unterschrieben", "ihr": "unterschriebt", "sie/Sie": "unterschrieben" },
+    "perfekt": { "ich": "habe unterschrieben", "du": "hast unterschrieben", "er/sie/es": "hat unterschrieben", "wir": "haben unterschrieben", "ihr": "habt unterschrieben", "sie/Sie": "haben unterschrieben" },
+    "plusquamperfekt": { "ich": "hatte unterschrieben", "du": "hattest unterschrieben", "er/sie/es": "hatte unterschrieben", "wir": "hatten unterschrieben", "ihr": "hattet unterschrieben", "sie/Sie": "hatten unterschrieben" },
+    "futur1": { "ich": "werde unterschreiben", "du": "wirst unterschreiben", "er/sie/es": "wird unterschreiben", "wir": "werden unterschreiben", "ihr": "werdet unterschreiben", "sie/Sie": "werden unterschreiben" },
+    "konjunktiv2": { "ich": "unterschriebe", "du": "unterschriebest", "er/sie/es": "unterschriebe", "wir": "unterschrieben", "ihr": "unterschriebet", "sie/Sie": "unterschrieben", "alternative": { "ich": "würde unterschreiben", "du": "würdest unterschreiben" } },
+    "imperativ": { "du": "unterschreib!", "ihr": "unterschreibt!", "Sie": "unterschreiben Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Güçlü fiil (schreiben kökünden); ayrılamaz önek 'unter-', Partizip II 'ge-' almaz: unterschrieben." }
+  },
+  {
+    "infinitiv": "verdienen",
+    "meaning": "kazanmak / hak etmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "verdiente", "partizip2": "verdient" },
+    "prasens": { "ich": "verdiene", "du": "verdienst", "er/sie/es": "verdient", "wir": "verdienen", "ihr": "verdient", "sie/Sie": "verdienen" },
+    "prateritum_full": { "ich": "verdiente", "du": "verdientest", "er/sie/es": "verdiente", "wir": "verdienten", "ihr": "verdientet", "sie/Sie": "verdienten" },
+    "perfekt": { "ich": "habe verdient", "du": "hast verdient", "er/sie/es": "hat verdient", "wir": "haben verdient", "ihr": "habt verdient", "sie/Sie": "haben verdient" },
+    "plusquamperfekt": { "ich": "hatte verdient", "du": "hattest verdient", "er/sie/es": "hatte verdient", "wir": "hatten verdient", "ihr": "hattet verdient", "sie/Sie": "hatten verdient" },
+    "futur1": { "ich": "werde verdienen", "du": "wirst verdienen", "er/sie/es": "wird verdienen", "wir": "werden verdienen", "ihr": "werdet verdienen", "sie/Sie": "werden verdienen" },
+    "konjunktiv2": { "ich": "verdiente", "du": "verdientest", "er/sie/es": "verdiente", "wir": "verdienten", "ihr": "verdientet", "sie/Sie": "verdienten", "alternative": { "ich": "würde verdienen", "du": "würdest verdienen" } },
+    "imperativ": { "du": "verdien!", "ihr": "verdient!", "Sie": "verdienen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Ayrılamaz önek 'ver-'; hem para kazanmak hem hak etmek anlamında kullanılır." }
+  },
+  {
+    "infinitiv": "sparen",
+    "meaning": "biriktirmek / tasarruf etmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "sparte", "partizip2": "gespart" },
+    "prasens": { "ich": "spare", "du": "sparst", "er/sie/es": "spart", "wir": "sparen", "ihr": "spart", "sie/Sie": "sparen" },
+    "prateritum_full": { "ich": "sparte", "du": "spartest", "er/sie/es": "sparte", "wir": "sparten", "ihr": "spartet", "sie/Sie": "sparten" },
+    "perfekt": { "ich": "habe gespart", "du": "hast gespart", "er/sie/es": "hat gespart", "wir": "haben gespart", "ihr": "habt gespart", "sie/Sie": "haben gespart" },
+    "plusquamperfekt": { "ich": "hatte gespart", "du": "hattest gespart", "er/sie/es": "hatte gespart", "wir": "hatten gespart", "ihr": "hattet gespart", "sie/Sie": "hatten gespart" },
+    "futur1": { "ich": "werde sparen", "du": "wirst sparen", "er/sie/es": "wird sparen", "wir": "werden sparen", "ihr": "werdet sparen", "sie/Sie": "werden sparen" },
+    "konjunktiv2": { "ich": "sparte", "du": "spartest", "er/sie/es": "sparte", "wir": "sparten", "ihr": "spartet", "sie/Sie": "sparten", "alternative": { "ich": "würde sparen", "du": "würdest sparen" } },
+    "imperativ": { "du": "spar!", "ihr": "spart!", "Sie": "sparen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; 'Zeit/Geld sparen' (zaman/para biriktirmek) yaygın kullanım." }
+  },
+  {
+    "infinitiv": "aussehen",
+    "meaning": "görünmek / göründüğü gibi olmak",
+    "auxiliary": "haben",
+    "type": "strong",
+    "forms": { "prateritum": "sah aus", "partizip2": "ausgesehen" },
+    "prasens": { "ich": "sehe aus", "du": "siehst aus", "er/sie/es": "sieht aus", "wir": "sehen aus", "ihr": "seht aus", "sie/Sie": "sehen aus" },
+    "prateritum_full": { "ich": "sah aus", "du": "sahst aus", "er/sie/es": "sah aus", "wir": "sahen aus", "ihr": "saht aus", "sie/Sie": "sahen aus" },
+    "perfekt": { "ich": "habe ausgesehen", "du": "hast ausgesehen", "er/sie/es": "hat ausgesehen", "wir": "haben ausgesehen", "ihr": "habt ausgesehen", "sie/Sie": "haben ausgesehen" },
+    "plusquamperfekt": { "ich": "hatte ausgesehen", "du": "hattest ausgesehen", "er/sie/es": "hatte ausgesehen", "wir": "hatten ausgesehen", "ihr": "hattet ausgesehen", "sie/Sie": "hatten ausgesehen" },
+    "futur1": { "ich": "werde aussehen", "du": "wirst aussehen", "er/sie/es": "wird aussehen", "wir": "werden aussehen", "ihr": "werdet aussehen", "sie/Sie": "werden aussehen" },
+    "konjunktiv2": { "ich": "sähe aus", "du": "sähest aus", "er/sie/es": "sähe aus", "wir": "sähen aus", "ihr": "sähet aus", "sie/Sie": "sähen aus", "alternative": { "ich": "würde aussehen", "du": "würdest aussehen" } },
+    "imperativ": { "du": "sieh aus!", "ihr": "seht aus!", "Sie": "sehen Sie aus!" },
+    "meta": { "separable": true, "reflexive": false, "notes": "Güçlü fiil (sehen kökünden); ayrılabilir önek 'aus-', Partizip II: aus-ge-sehen. e→ie değişimi Präsens'te korunur." }
+  },
+  {
+    "infinitiv": "funktionieren",
+    "meaning": "çalışmak / işlev görmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "funktionierte", "partizip2": "funktioniert" },
+    "prasens": { "ich": "funktioniere", "du": "funktionierst", "er/sie/es": "funktioniert", "wir": "funktionieren", "ihr": "funktioniert", "sie/Sie": "funktionieren" },
+    "prateritum_full": { "ich": "funktionierte", "du": "funktioniertest", "er/sie/es": "funktionierte", "wir": "funktionierten", "ihr": "funktioniertet", "sie/Sie": "funktionierten" },
+    "perfekt": { "ich": "habe funktioniert", "du": "hast funktioniert", "er/sie/es": "hat funktioniert", "wir": "haben funktioniert", "ihr": "habt funktioniert", "sie/Sie": "haben funktioniert" },
+    "plusquamperfekt": { "ich": "hatte funktioniert", "du": "hattest funktioniert", "er/sie/es": "hatte funktioniert", "wir": "hatten funktioniert", "ihr": "hattet funktioniert", "sie/Sie": "hatten funktioniert" },
+    "futur1": { "ich": "werde funktionieren", "du": "wirst funktionieren", "er/sie/es": "wird funktionieren", "wir": "werden funktionieren", "ihr": "werdet funktionieren", "sie/Sie": "werden funktionieren" },
+    "konjunktiv2": { "ich": "funktionierte", "du": "funktioniertest", "er/sie/es": "funktionierte", "wir": "funktionierten", "ihr": "funktioniertet", "sie/Sie": "funktionierten", "alternative": { "ich": "würde funktionieren", "du": "würdest funktionieren" } },
+    "imperativ": { "du": "funktioniere!", "ihr": "funktioniert!", "Sie": "funktionieren Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "-ieren soneki; Partizip II 'ge-' almaz: funktioniert." }
+  },
+  {
+    "infinitiv": "passen",
+    "meaning": "uymak / yakışmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "passte", "partizip2": "gepasst" },
+    "prasens": { "ich": "passe", "du": "passt", "er/sie/es": "passt", "wir": "passen", "ihr": "passt", "sie/Sie": "passen" },
+    "prateritum_full": { "ich": "passte", "du": "passtest", "er/sie/es": "passte", "wir": "passten", "ihr": "passtet", "sie/Sie": "passten" },
+    "perfekt": { "ich": "habe gepasst", "du": "hast gepasst", "er/sie/es": "hat gepasst", "wir": "haben gepasst", "ihr": "habt gepasst", "sie/Sie": "haben gepasst" },
+    "plusquamperfekt": { "ich": "hatte gepasst", "du": "hattest gepasst", "er/sie/es": "hatte gepasst", "wir": "hatten gepasst", "ihr": "hattet gepasst", "sie/Sie": "hatten gepasst" },
+    "futur1": { "ich": "werde passen", "du": "wirst passen", "er/sie/es": "wird passen", "wir": "werden passen", "ihr": "werdet passen", "sie/Sie": "werden passen" },
+    "konjunktiv2": { "ich": "passte", "du": "passtest", "er/sie/es": "passte", "wir": "passten", "ihr": "passtet", "sie/Sie": "passten", "alternative": { "ich": "würde passen", "du": "würdest passen" } },
+    "imperativ": { "du": "pass!", "ihr": "passt!", "Sie": "passen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Gövde -ss ile biter; du/er'de sadece -t eklenir: du passt, er passt." }
+  },
+  {
+    "infinitiv": "stören",
+    "meaning": "rahatsız etmek / bozmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "störte", "partizip2": "gestört" },
+    "prasens": { "ich": "störe", "du": "störst", "er/sie/es": "stört", "wir": "stören", "ihr": "stört", "sie/Sie": "stören" },
+    "prateritum_full": { "ich": "störte", "du": "störtest", "er/sie/es": "störte", "wir": "störten", "ihr": "störtet", "sie/Sie": "störten" },
+    "perfekt": { "ich": "habe gestört", "du": "hast gestört", "er/sie/es": "hat gestört", "wir": "haben gestört", "ihr": "habt gestört", "sie/Sie": "haben gestört" },
+    "plusquamperfekt": { "ich": "hatte gestört", "du": "hattest gestört", "er/sie/es": "hatte gestört", "wir": "hatten gestört", "ihr": "hattet gestört", "sie/Sie": "hatten gestört" },
+    "futur1": { "ich": "werde stören", "du": "wirst stören", "er/sie/es": "wird stören", "wir": "werden stören", "ihr": "werdet stören", "sie/Sie": "werden stören" },
+    "konjunktiv2": { "ich": "störte", "du": "störtest", "er/sie/es": "störte", "wir": "störten", "ihr": "störtet", "sie/Sie": "störten", "alternative": { "ich": "würde stören", "du": "würdest stören" } },
+    "imperativ": { "du": "stör!", "ihr": "stört!", "Sie": "stören Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; 'Stört es Sie, wenn...?' kalıbıyla yaygın kullanım." }
+  },
+  {
+    "infinitiv": "genügen",
+    "meaning": "yetmek / yeterli olmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "genügte", "partizip2": "genügt" },
+    "prasens": { "ich": "genüge", "du": "genügst", "er/sie/es": "genügt", "wir": "genügen", "ihr": "genügt", "sie/Sie": "genügen" },
+    "prateritum_full": { "ich": "genügte", "du": "genügtest", "er/sie/es": "genügte", "wir": "genügten", "ihr": "genügtet", "sie/Sie": "genügten" },
+    "perfekt": { "ich": "habe genügt", "du": "hast genügt", "er/sie/es": "hat genügt", "wir": "haben genügt", "ihr": "habt genügt", "sie/Sie": "haben genügt" },
+    "plusquamperfekt": { "ich": "hatte genügt", "du": "hattest genügt", "er/sie/es": "hatte genügt", "wir": "hatten genügt", "ihr": "hattet genügt", "sie/Sie": "hatten genügt" },
+    "futur1": { "ich": "werde genügen", "du": "wirst genügen", "er/sie/es": "wird genügen", "wir": "werden genügen", "ihr": "werdet genügen", "sie/Sie": "werden genügen" },
+    "konjunktiv2": { "ich": "genügte", "du": "genügtest", "er/sie/es": "genügte", "wir": "genügten", "ihr": "genügtet", "sie/Sie": "genügten", "alternative": { "ich": "würde genügen", "du": "würdest genügen" } },
+    "imperativ": { "du": "genüge!", "ihr": "genügt!", "Sie": "genügen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "'ge-' köke aittir; Partizip II ek 'ge-' almaz: genügt. Çoğunlukla öznesiz kullanılır: Das genügt." }
+  },
+  {
+    "infinitiv": "fehlen",
+    "meaning": "eksik olmak / özlenmek",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "fehlte", "partizip2": "gefehlt" },
+    "prasens": { "ich": "fehle", "du": "fehlst", "er/sie/es": "fehlt", "wir": "fehlen", "ihr": "fehlt", "sie/Sie": "fehlen" },
+    "prateritum_full": { "ich": "fehlte", "du": "fehltest", "er/sie/es": "fehlte", "wir": "fehlten", "ihr": "fehltet", "sie/Sie": "fehlten" },
+    "perfekt": { "ich": "habe gefehlt", "du": "hast gefehlt", "er/sie/es": "hat gefehlt", "wir": "haben gefehlt", "ihr": "habt gefehlt", "sie/Sie": "haben gefehlt" },
+    "plusquamperfekt": { "ich": "hatte gefehlt", "du": "hattest gefehlt", "er/sie/es": "hatte gefehlt", "wir": "hatten gefehlt", "ihr": "hattet gefehlt", "sie/Sie": "hatten gefehlt" },
+    "futur1": { "ich": "werde fehlen", "du": "wirst fehlen", "er/sie/es": "wird fehlen", "wir": "werden fehlen", "ihr": "werdet fehlen", "sie/Sie": "werden fehlen" },
+    "konjunktiv2": { "ich": "fehlte", "du": "fehltest", "er/sie/es": "fehlte", "wir": "fehlten", "ihr": "fehltet", "sie/Sie": "fehlten", "alternative": { "ich": "würde fehlen", "du": "würdest fehlen" } },
+    "imperativ": { "du": "fehl!", "ihr": "fehlt!", "Sie": "fehlen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "'Du fehlst mir.' = Seni özlüyorum. Dativ alır." }
+  },
+  {
+    "infinitiv": "reichen",
+    "meaning": "yetmek / uzanmak",
+    "auxiliary": "haben",
+    "type": "weak",
+    "forms": { "prateritum": "reichte", "partizip2": "gereicht" },
+    "prasens": { "ich": "reiche", "du": "reichst", "er/sie/es": "reicht", "wir": "reichen", "ihr": "reicht", "sie/Sie": "reichen" },
+    "prateritum_full": { "ich": "reichte", "du": "reichtest", "er/sie/es": "reichte", "wir": "reichten", "ihr": "reichtet", "sie/Sie": "reichten" },
+    "perfekt": { "ich": "habe gereicht", "du": "hast gereicht", "er/sie/es": "hat gereicht", "wir": "haben gereicht", "ihr": "habt gereicht", "sie/Sie": "haben gereicht" },
+    "plusquamperfekt": { "ich": "hatte gereicht", "du": "hattest gereicht", "er/sie/es": "hatte gereicht", "wir": "hatten gereicht", "ihr": "hattet gereicht", "sie/Sie": "hatten gereicht" },
+    "futur1": { "ich": "werde reichen", "du": "wirst reichen", "er/sie/es": "wird reichen", "wir": "werden reichen", "ihr": "werdet reichen", "sie/Sie": "werden reichen" },
+    "konjunktiv2": { "ich": "reichte", "du": "reichtest", "er/sie/es": "reichte", "wir": "reichten", "ihr": "reichtet", "sie/Sie": "reichten", "alternative": { "ich": "würde reichen", "du": "würdest reichen" } },
+    "imperativ": { "du": "reich!", "ihr": "reicht!", "Sie": "reichen Sie!" },
+    "meta": { "separable": false, "reflexive": false, "notes": "Zayıf fiil; 'Das reicht!' (Bu yeter!) gündelik kullanımda çok yaygın." }
+  },
+
+    {
       "infinitiv": "herausfinden",
       "meaning": "bulmak / keşfetmek",
       "auxiliary": "haben",
@@ -10747,11 +11498,11 @@
       },
       "prateritum_full": {
         "ich": "fand heraus",
-        "du": "fand heraust",
+        "du": "fandst heraus",
         "er/sie/es": "fand heraus",
-        "wir": "fand herausen",
-        "ihr": "fand heraust",
-        "sie/Sie": "fand herausen"
+        "wir": "fanden heraus",
+        "ihr": "fandet heraus",
+        "sie/Sie": "fanden heraus"
       },
       "perfekt": {
         "ich": "habe herausgefunden",
@@ -10800,10 +11551,13 @@
         "notes": "Ayrılabilen fiil; gövde -nd ile biter."
       }
     }
-  ],
+    ],
+  
   "meta": {
     "total": 150,
     "language": "de",
     "meaning_language": "tr"
   }
+
 }
+

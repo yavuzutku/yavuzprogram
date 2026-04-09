@@ -344,25 +344,38 @@ function cleanPart(s) {
 }
 
 /* ─── Yardımcılar (değişmedi) ────────────────────────────── */
+/* ─── Dil Tespiti — KESİN karakterlere göre ─────────────── */
+
+/** Sadece Türkçe'ye özgü harfler (Almanca'da YOKTUR) */
+function hasTurkishSpecific(s) {
+  return /[şğıçŞĞİÇ]/.test(s);
+}
+
+/** Sadece Almanca'ya özgü güçlü işaretler */
+function hasGermanSpecific(s) {
+  return /ß/.test(s) || ARTICLE_RE.test(s);
+}
+
 function looksLikeTurkish(s) {
   if (!s) return false;
-  if (/[şğıçŞĞİÇ]/.test(s)) return true;
-  if (/^[a-zäöü]/.test(s)) return true;
-  if (s.length < 30 && !/[A-ZÜÖÄ]/.test(s) && /[a-z]/.test(s)) return true;
-  return false;
+  // SADECE Türkçe'ye özgü karakterler — ü/ö/ä yeterli değil!
+  // auf, in, liegen gibi Almanca kelimeler de küçük harfle başlar
+  return hasTurkishSpecific(s);
 }
 
 function looksLikeGerman(s) {
   if (!s) return false;
-  if (/[ÄÖÜäöüß]/.test(s)) return true;
-  if (ARTICLE_RE.test(s)) return true;
-  if (/^[A-ZÜÖÄ]/.test(s)) return true;
+  if (/ß/.test(s)) return true;                          // ß = %100 Almanca
+  if (ARTICLE_RE.test(s)) return true;                   // der/die/das ile başlıyor
+  if (/^[A-ZÜÖÄ]/.test(s) && !hasTurkishSpecific(s)) return true; // büyük harf + Türkçe yok
   return false;
 }
 
 function maybeSwap(de, tr) {
-  // Eğer de Türkçe, tr Almanca görünüyorsa yer değiştir
-  if (de && tr && looksLikeTurkish(de) && looksLikeGerman(tr)) {
+  if (!de || !tr) return { de, tr };
+  // Sadece SOL tarafta KESİN Türkçe karakter varsa VE
+  // sağ taraf Almanca görünüyorsa yer değiştir
+  if (hasTurkishSpecific(de) && (hasGermanSpecific(tr) || /^[A-ZÜÖÄ]/.test(tr))) {
     return { de: tr, tr: de };
   }
   return { de, tr };

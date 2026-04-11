@@ -27,7 +27,7 @@ import {
 } from "./firebase.js";
 
 // ─── localStorage anahtar şablonu ──────────────────────────────
-const LS_KEY = (uid) => `srs_v2_${uid}`;
+const LS_KEY = (uid) => `ap_srs_v4_${uid}`;
 
 // ─── Varsayılan SM-2 kart değerleri ────────────────────────────
 export function defaultCard() {
@@ -120,7 +120,7 @@ export class SRSSync {
      save(wordId, srsData) — kart değerlendirmesi sonrası çağır
   ────────────────────────────────────────────────────────── */
   async save(wordId, srsData) {
-    const payload = { ...srsData, lastReview: Date.now() };
+    const payload = { ...srsData };
     this._cache[wordId] = payload;
     this._saveLocal(this._cache);
 
@@ -174,9 +174,9 @@ export class SRSSync {
   }
 
   _isNewer(a, b) {
-    // updatedAt serverTimestamp olabilir; lastReview ile karşılaştır
-    const aTime = a.lastReview ?? 0;
-    const bTime = b.lastReview ?? 0;
+    // flashcard.js "lastReviewed", srs-sync "lastReview" kullanıyor — ikisini de kontrol et
+    const aTime = a.lastReviewed ?? a.lastReview ?? 0;
+    const bTime = b.lastReviewed ?? b.lastReview ?? 0;
     return aTime > bTime;
   }
 

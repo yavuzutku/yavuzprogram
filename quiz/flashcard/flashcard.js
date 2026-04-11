@@ -17,7 +17,9 @@
  *  - Review Phase    : SM-2 algoritması ile gün bazlı uzun vadeli tekrar
  */
 
+// SONRA:
 import { getWords, onAuthChange }   from "../../js/firebase.js";
+import { SRSSync }                  from "../../js/srs-sync.js";
 import { getListeler }              from "../../js/listeler-firebase.js";
 
 /* ══════════════════════════════════════════════════
@@ -132,6 +134,8 @@ function updateCard(userId, wordId, quality) {
   card.lastReviewed = Date.now();
   store[wordId]     = card;
   saveSRSStore(userId, store);
+  state.srsSync?.save(wordId, card).catch(() => {});
+
   return card;
 }
 
@@ -458,6 +462,8 @@ function renderHeatmap(userId) {
    STATE
 ══════════════════════════════════════════════════ */
 let state = {
+  srsSync: null,   // ← YENİ
+
   userId:         null,
   allWords:       [],
   allLists:       [],
@@ -540,6 +546,8 @@ onAuthChange(async (user) => {
       .filter(d => d.word && d.meaning);
 
     state.allLists = Array.isArray(lists) ? lists : [];
+    state.srsSync = new SRSSync(user.uid);
+    await state.srsSync.init();
 
     refreshActiveWords();
     updateSetupSRSStrip();

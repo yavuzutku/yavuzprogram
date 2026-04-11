@@ -13,18 +13,10 @@ import {
   sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// YENİ:
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  updateDoc,
-  doc,
-  query,
-  orderBy,
-  writeBatch          // ← EKLENDİ
+  getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc,
+  doc, query, orderBy, writeBatch,
+  setDoc, serverTimestamp   // ← YENİ
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -359,5 +351,98 @@ export async function batchDeleteWords(userId, wordIds, onProgress) {
     }
     deleted += chunk.length;
     if (typeof onProgress === "function") onProgress(deleted, wordIds.length);
+  }
+}
+// ============================================================
+//  Bu bloğu mevcut firebase.js dosyanın EN ALTINA ekle
+//  (import'lar zaten dosyanın başında mevcut — tekrar ekleme)
+// ============================================================
+
+// Firestore import'larına şunları da eklemen gerekiyor (henüz yoksa):
+//   setDoc, getDoc, serverTimestamp
+// Mevcut import satırını şöyle güncelle:
+//
+// import {
+//   getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc,
+//   doc, query, orderBy, writeBatch,
+//   setDoc, getDoc, serverTimestamp          // ← YENİ
+// } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+//
+// ============================================================
+
+/* ============================
+   SRS — TEK KART KAYDET
+   srsData = { interval, repetitions, easeFactor, nextReview, lastReview }
+============================= */
+export async function saveSRSCard(userId, wordId, srsData) {
+  if (!userId || !wordId) throw new Error("Geçersiz parametre.");
+  try {
+    await setDoc(
+      doc(db, "users", userId, "srs", wordId),
+      { ...srsData, updatedAt: serverTimestamp() },
+      { merge: true }
+    );
+  } catch (err) {
+    console.error("[saveSRSCard] Firestore hatası:", err);
+    throw new Error("SRS verisi kaydedilemedi.");
+  }
+}
+
+/* ============================
+   SRS — TÜM KARTLARI GETİR
+   Döndürür: { wordId: { interval, repetitions, easeFactor, nextReview, lastReview }, … }
+============================= */
+export async function getSRSCards(userId) {
+  if (!userId) throw new Error("Kullanıcı kimliği bulunamadı.");
+  try {
+    const snap = await getDocs(collection(db, "users", userId, "srs"));
+    const result = {};
+    snap.docs.forEach(d => { result[d.id] = d.data(); });
+    return result;
+  } catch (err) {
+    console.error("[getSRSCards] Firestore hatası:", err);
+    throw new Error("SRS verileri yüklenemedi.");
+  }
+}
+
+/* ============================
+   SRS — TOPLU KAYDET  (localStorage → Firestore ilk senkronizasyon için)
+   cardsMap = { wordId: srsData, … }
+============================= */
+export async function batchSaveSRSCards(userId, cardsMap) {
+  if (!userId || !cardsMap) throw new Error("Geçersiz parametre.");
+  const entries = Object.entries(cardsMap);
+  if (!entries.length) return;
+
+  const BATCH_SIZE = 499;
+  for (let i = 0; i < entries.length; i += BATCH_SIZE) {
+    const chunk = entries.slice(i, i + BATCH_SIZE);
+    const batch = writeBatch(db);
+    chunk.forEach(([wordId, srsData]) => {
+      batch.set(
+        doc(db, "users", userId, "srs", wordId),
+        { ...srsData, updatedAt: serverTimestamp() },
+        { merge: true }
+      );
+    });
+    try {
+      await batch.commit();
+    } catch (err) {
+      console.error("[batchSaveSRSCards] batch.commit hatası:", err);
+      throw new Error("Toplu SRS kaydı sırasında hata oluştu.");
+    }
+  }
+}
+
+/* ============================
+   SRS — TEK KART SİL (kelime silinince SRS verisini de temizle)
+============================= */
+export async function deleteSRSCard(userId, wordId) {
+  if (!userId || !wordId) throw new Error("Geçersiz parametre.");
+  try {
+    await deleteDoc(doc(db, "users", userId, "srs", wordId));
+  } catch (err) {
+    console.error("[deleteSRSCard] Firestore hatası:", err);
+    // Sessizce geç — SRS verisi olmaması kritik değil
   }
 }

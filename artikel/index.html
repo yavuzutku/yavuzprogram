@@ -84,7 +84,6 @@
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="./artikel.css">
 
-  <!-- Preconnect: dış kaynakları önceden bağla -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://de.wiktionary.org">
@@ -112,6 +111,7 @@
 
     <div class="divider" aria-hidden="true"><div class="diamond"></div></div>
 
+    <!-- ── Arama ── -->
     <section aria-label="Artikel arama formu">
       <div class="input-group">
         <div class="input-wrapper">
@@ -134,38 +134,84 @@
       </div>
     </section>
 
+    <!-- ── Yükleniyor ── -->
     <div id="loading" class="loading hidden" aria-live="polite" aria-label="Aranıyor">
       <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
       <span>Wiktionary'de aranıyor…</span>
     </div>
 
+    <!-- ── Hata ── -->
     <div id="errorMsg" class="error-msg hidden" role="alert" aria-live="assertive"></div>
 
+    <!-- ── Sonuç kartı ── -->
     <section id="resultCard" class="result-card hidden" aria-live="polite" aria-label="Artikel sonucu">
+
+      <!-- Üst: artikel + kelime -->
       <div class="result-top">
         <div class="artikel-badge" id="artikelBadge" aria-hidden="true">–</div>
         <div class="result-word-block">
-          <div class="result-word" id="resultWord"></div>
+          <div class="result-word"        id="resultWord"></div>
           <div class="result-genus-label" id="resultLabel"></div>
         </div>
       </div>
+
+      <!-- Orta: pill + kopyala -->
       <div class="result-bottom">
         <span class="genus-pill" id="genusPill"></span>
         <span class="genus-name"  id="genusName"></span>
+        <button class="copy-btn hidden" id="copyBtn" type="button" aria-label="Artikel ve kelimeyi kopyala">
+          📋 Kopyala
+        </button>
       </div>
-      <!-- Wiktionary bağlantısı (gizli; JS kontrolünde) -->
-      <a id="wiktionaryLink" href="#" target="_blank" rel="noopener noreferrer" style="display:none" tabindex="-1"></a>
+
+      <!-- Ek bilgi: IPA, Çoğul, Anlam (JS tarafından doldurulur) -->
+      <div class="result-extra hidden" id="resultExtra" aria-label="Ek bilgi"></div>
+
+      <!-- Wiktionary linki -->
+      <div class="result-link-row">
+        <a id="wiktionaryLink"
+           href="#"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="wikt-link hidden"
+           aria-label="Wiktionary'de aç">
+          Wiktionary'de gör <span class="wikt-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+
     </section>
 
+    <!-- ── Örnek Cümleler ── -->
     <section id="sentenceSection" class="hidden" aria-live="polite" aria-label="Örnek cümleler"></section>
 
+    <!-- ── Oturum Geçmişi ── -->
+    <section id="historySection" class="hidden" aria-label="Bu oturumda aranan kelimeler"></section>
+
+    <!-- ── Quiz başlat (≥ 3 kelime aramasından sonra görünür) ── -->
+    <button id="quizStartBtn" class="hidden" type="button" aria-label="Quiz modunu başlat">
+      🎯 Quiz Başlat — Bu oturumda aranan kelimeler
+    </button>
+
+    <!-- ── Quiz bölümü ── -->
+    <section id="quizSection" class="hidden" aria-label="Quiz bölümü" aria-live="polite"></section>
+
+    <!-- ── Renk göstergesi ── -->
     <div class="legend" aria-label="Artikel renk göstergesi">
-      <div class="legend-item"><div class="legend-dot der" aria-hidden="true"></div><strong>der</strong> — maskulin</div>
-      <div class="legend-item"><div class="legend-dot die" aria-hidden="true"></div><strong>die</strong> — feminin</div>
-      <div class="legend-item"><div class="legend-dot das" aria-hidden="true"></div><strong>das</strong> — neutrum</div>
+      <div class="legend-item">
+        <div class="legend-dot der" aria-hidden="true"></div>
+        <strong>der</strong> — maskulin
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot die" aria-hidden="true"></div>
+        <strong>die</strong> — feminin
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot das" aria-hidden="true"></div>
+        <strong>das</strong> — neutrum
+      </div>
     </div>
 
-    <!-- SEO metin bloğu -->
+    <!-- ── SEO metin bloğu ── -->
     <aside aria-label="Almanca artikel hakkında bilgi" style="margin-top:28px;padding:20px 0;border-top:1px solid rgba(255,255,255,0.07);">
       <p style="font-size:12px;color:#5a5650;line-height:1.7;text-align:center;">
         Almancada her ismin bir artikeli vardır:
@@ -173,6 +219,7 @@
         <strong style="color:#d96b8a">die</strong> (feminin / dişil) veya
         <strong style="color:#6bbf8a">das</strong> (neutrum / nötr).
         Bu araç, istediğiniz Almanca kelimenin artikel bilgisini Wiktionary'den anında getirir,
+        çoğul formu, telaffuz ve anlamıyla birlikte gösterir;
         örnek cümleler ve Türkçe çevirilerle öğrenmenizi hızlandırır.
       </p>
     </aside>
@@ -180,14 +227,12 @@
   </main>
 </div>
 
-<!-- Ekran okuyucu için sr-only yardımcı sınıfı -->
+<!-- Ekran okuyucu yardımcı sınıfı -->
 <style>
   .sr-only {
     position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
     overflow: hidden;
     clip: rect(0,0,0,0);
     white-space: nowrap;

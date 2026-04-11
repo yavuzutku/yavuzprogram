@@ -92,167 +92,426 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/global.css">
 
 <style>
-:root {
-  --bg:#070709;--bg-card:rgba(255,255,255,0.03);--bg-card-h:rgba(255,255,255,0.055);
-  --border:rgba(255,255,255,0.07);--border-h:rgba(255,255,255,0.14);
-  --text:#f0eee8;--t2:rgba(240,238,232,0.52);--t3:rgba(240,238,232,0.28);
-  --gold:#c9a84c;--gold-l:#e8c97a;--tr:0.2s cubic-bezier(0.4,0,0.2,1);
-  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  /* ═══════════════════════════════════════════════════════════
+     KURAL 1 — Animasyonlar & efektler tamamen kaldırıldı:
+       .bg-orb, .bg-grid, shimmer (@keyframes), pulse (@keyframes)
+       hepsi silindi. Zemin düz ve sakin.
 
-.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 100% 70% at 50% 0%,black 5%,transparent 100%);}
-.bg-orb{position:absolute;border-radius:50%;filter:blur(100px);}
-.bg-orb-1{width:640px;height:640px;top:-280px;left:-200px;background:radial-gradient(circle,rgba(201,168,76,0.1),transparent 65%);animation:drift 18s ease-in-out infinite alternate;}
-.bg-orb-2{width:480px;height:480px;bottom:-80px;right:-160px;background:radial-gradient(circle,rgba(96,200,240,0.06),transparent 65%);animation:drift 22s ease-in-out infinite alternate-reverse;}
-@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,28px) scale(1.07)}}
+     KURAL 2 — Kurumsal renk paleti:
+       Zemin: #0f172a (slate-900)  Kart: #1e293b (slate-800)
+       Kart-hover: #273548          Metin: #f1f5f9 / #94a3b8
+       Ana renk: #2563eb (blue-600) — tek tutarlı vurgu
+       Pill'ler tek renk ailesinden: mavi tonları
 
-.page{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:80px 32px 120px;}
-@media(max-width:600px){.page{padding:72px 18px 80px;}}
+     KURAL 3 — Tipografi sadeleştirildi:
+       Syne tamamen kaldırıldı. Başlıklar dahil her şey DM Sans.
+       DM Mono sadece etiket/pill gibi monospace gereken yerlerde.
 
-/* HERO */
-.hero{padding:88px 0 100px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;}
-@media(max-width:780px){.hero{grid-template-columns:1fr;gap:48px;padding:64px 0 80px;}}
+     KURAL 4 — Butonlar temizlendi:
+       Gradient & parlak gölge kaldırıldı.
+       Düz mavi (#2563eb), hafif border-radius (8px),
+       hover'da ton koyulaşması.
 
-.hero-kicker{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
-.kicker-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:pulse 2.8s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)}}
+     KURAL 5 — Border'lar kaldırıldı / ton farkıyla ayrım:
+       Kartlar border yerine #1e293b arka plan tonu kullanır.
+       Çizgiler neredeyse görünmez ya da tamamen kaldırıldı.
+  ═══════════════════════════════════════════════════════════ */
 
-.hero-title{font-family:var(--fd);font-size:clamp(42px,5.8vw,70px);font-weight:800;letter-spacing:-0.045em;line-height:0.94;color:var(--text);margin-bottom:22px;}
-.title-em{display:block;background:linear-gradient(135deg,#c9a84c 0%,#f5dc8a 42%,#c9a84c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:shimmer 5s ease-in-out infinite;}
-@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  :root {
+    /* Zemin & Yüzeyler */
+    --bg:          #0f172a;
+    --bg-card:     #1e293b;
+    --bg-card-h:   #273548;
+    --bg-border:   rgba(148,163,184,0.10);   /* çok hafif ayraç çizgisi */
+    --bg-border-h: rgba(148,163,184,0.18);
 
-.hero-sub{font-size:15px;line-height:1.82;color:var(--t2);margin-bottom:38px;max-width:440px;}
-.hero-sub a{color:var(--gold);text-decoration:none;}
-.hero-sub a:hover{text-decoration:underline;}
-.hero-cta{display:flex;gap:10px;flex-wrap:wrap;}
+    /* Metin */
+    --text:   #f1f5f9;
+    --t2:     #94a3b8;
+    --t3:     #64748b;
 
-.btn-cta{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#0a0a0f;font-family:var(--fd);font-size:14px;font-weight:800;border-radius:10px;text-decoration:none;letter-spacing:-0.01em;box-shadow:0 6px 28px rgba(201,168,76,0.38);transition:var(--tr);}
-.btn-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,0.54);}
-.btn-cta svg{width:15px;height:15px;flex-shrink:0;}
-.btn-ghost{display:inline-flex;align-items:center;gap:7px;padding:13px 20px;background:var(--bg-card);border:1px solid var(--border);color:var(--t2);font-family:var(--fb);font-size:14px;font-weight:500;border-radius:10px;text-decoration:none;transition:var(--tr);}
-.btn-ghost:hover{border-color:var(--border-h);color:var(--text);background:var(--bg-card-h);}
+    /* Ana Vurgu — tek mavi */
+    --blue:   #2563eb;
+    --blue-h: #1d4ed8;
+    --blue-s: rgba(37,99,235,0.12);  /* soluk arka plan */
 
-.stat-table{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
-.stat-row{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--border);text-decoration:none;transition:background var(--tr);}
-.stat-row:last-child{border-bottom:none;}
-.stat-row:hover{background:rgba(255,255,255,0.04);}
-.stat-row:hover .stat-label{color:var(--text);}
-.stat-label{font-size:13px;color:var(--t2);transition:color var(--tr);}
-.pill{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.07em;padding:3px 9px;border-radius:5px;white-space:nowrap;}
-.pill-gold{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.22);color:var(--gold);}
-.pill-blue{background:rgba(96,200,240,0.1);border:1px solid rgba(96,200,240,0.2);color:#60c8f0;}
-.pill-violet{background:rgba(160,100,255,0.1);border:1px solid rgba(160,100,255,0.2);color:#a064ff;}
-.pill-green{background:rgba(79,214,156,0.1);border:1px solid rgba(79,214,156,0.2);color:#4fd69c;}
-.pill-rose{background:rgba(240,112,104,0.1);border:1px solid rgba(240,112,104,0.2);color:#f07068;}
+    /* Pill renkleri — mavi aile */
+    --pill-bg:    rgba(37,99,235,0.12);
+    --pill-text:  #93c5fd;
+    --pill-bdr:   rgba(37,99,235,0.22);
 
-/* SECTION */
-.section{padding:72px 0;border-bottom:1px solid var(--border);}
-.section:last-of-type{border-bottom:none;}
-.sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;gap:16px;flex-wrap:wrap;}
-.sec-eyebrow{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--t3);margin-bottom:7px;}
-.sec-title{font-family:var(--fd);font-size:clamp(20px,3vw,30px);font-weight:800;letter-spacing:-0.03em;color:var(--text);}
-.sec-link{font-size:13px;color:var(--gold);text-decoration:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:gap var(--tr);font-weight:500;}
-.sec-link:hover{gap:9px;}
-.sec-link svg{width:13px;height:13px;}
+    --green-pill-bg:  rgba(34,197,94,0.10);
+    --green-pill-txt: #86efac;
+    --green-pill-bdr: rgba(34,197,94,0.2);
 
-/* TOOLS */
-.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:14px;overflow:hidden;gap:1px;background:var(--border);}
-@media(max-width:680px){.tools-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:400px){.tools-grid{grid-template-columns:1fr;}}
-.tool-card{background:var(--bg);padding:24px 22px;text-decoration:none;display:flex;flex-direction:column;gap:8px;transition:background var(--tr);position:relative;overflow:hidden;}
-.tool-card:hover{background:rgba(255,255,255,0.024);}
-.tool-card:hover .tc-name{color:var(--gold);}
-.tool-card:hover .tc-icon{border-color:rgba(201,168,76,0.28);color:var(--gold);}
-.tc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--t2);margin-bottom:2px;transition:var(--tr);flex-shrink:0;}
-.tc-icon svg{width:15px;height:15px;}
-.tc-name{font-family:var(--fd);font-size:13.5px;font-weight:700;color:var(--text);letter-spacing:-0.01em;transition:color var(--tr);}
-.tc-meta{font-family:var(--fm);font-size:10.5px;color:var(--t3);line-height:1.45;}
-.tc-free{margin-top:2px;font-family:var(--fm);font-size:10px;color:rgba(79,214,156,0.65);}
-.tc-arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%) translateX(3px);font-size:13px;color:var(--t3);opacity:0;transition:var(--tr);}
-.tool-card:hover .tc-arrow{opacity:1;transform:translateY(-50%) translateX(0);}
+    /* Geçiş */
+    --tr: 0.18s ease;
 
-/* LEVELS */
-.levels{display:flex;gap:10px;flex-wrap:wrap;}
-.lv{flex:1;min-width:120px;padding:20px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;gap:5px;text-decoration:none;transition:var(--tr);}
-.lv:hover{background:var(--bg-card-h);transform:translateY(-2px);}
-.lv-code{font-family:var(--fd);font-size:18px;font-weight:800;}
-.lv-name{font-size:11.5px;color:var(--t3);}
-.lv-desc{font-size:11px;color:var(--t3);margin-top:2px;line-height:1.4;}
-.lv-a1 .lv-code{color:#22c55e;} .lv-a1:hover{border-color:rgba(34,197,94,0.28);}
-.lv-a2 .lv-code{color:#86efac;} .lv-a2:hover{border-color:rgba(134,239,172,0.22);}
-.lv-b1 .lv-code{color:#60c8f0;} .lv-b1:hover{border-color:rgba(96,200,240,0.28);}
-.lv-b2 .lv-code{color:#818cf8;} .lv-b2:hover{border-color:rgba(129,140,248,0.22);}
-.lv-c1 .lv-code{color:var(--gold);} .lv-c1:hover{border-color:rgba(201,168,76,0.28);}
-@media(max-width:480px){.lv{min-width:calc(50% - 5px);}}
+    /* Font */
+    --fb: 'DM Sans', system-ui, sans-serif;
+    --fm: 'DM Mono', monospace;
+  }
 
-/* PROSE/SEO */
-.prose-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:640px){.prose-grid{grid-template-columns:1fr;}}
-.prose-card{padding:28px 26px;background:var(--bg-card);border:1px solid var(--border);border-radius:13px;transition:border-color var(--tr);}
-.prose-card:hover{border-color:var(--border-h);}
-.prose-wide{grid-column:1/-1;}
-.prose-kicker{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);opacity:0.7;margin-bottom:10px;}
-.prose-card h2{font-family:var(--fd);font-size:clamp(15px,2vw,18px);font-weight:800;letter-spacing:-0.02em;color:var(--text);margin-bottom:13px;line-height:1.3;}
-.prose-card h3{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--text);margin:16px 0 8px;}
-.prose-card p{font-size:13.5px;line-height:1.82;color:var(--t2);margin-bottom:10px;}
-.prose-card p:last-child{margin-bottom:0;}
-.prose-card a{color:var(--gold);text-decoration:none;}
-.prose-card a:hover{text-decoration:underline;}
-.prose-card strong{color:var(--text);font-weight:600;}
-.prose-card ul{list-style:none;display:flex;flex-direction:column;gap:7px;margin:10px 0;}
-.prose-card ul li{font-size:13.5px;line-height:1.7;color:var(--t2);padding-left:16px;position:relative;}
-.prose-card ul li::before{content:'';position:absolute;left:0;top:9px;width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0.55;}
-.prose-card ul li a{color:var(--gold);text-decoration:none;}
-.prose-card ul li a:hover{text-decoration:underline;}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--fb);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
 
-/* FEATURE STRIP */
-.feature-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;}
-@media(max-width:640px){.feature-strip{grid-template-columns:repeat(2,1fr);}}
-.feature-cell{background:var(--bg);padding:22px 20px;display:flex;flex-direction:column;gap:6px;}
-.feat-num{font-family:var(--fd);font-size:26px;font-weight:800;color:var(--gold);letter-spacing:-0.03em;}
-.feat-label{font-size:12px;color:var(--t3);}
+  /* ── Zemin: tamamen düz, efekt yok ── */
+  .bg { display: none; }
 
-/* FAQ */
-.faq{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
-.faq-item{padding:16px 18px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:9px;transition:border-color var(--tr);}
-.faq-item:hover{border-color:var(--border-h);}
-.faq-q{font-family:var(--fd);font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.faq-a{font-size:13px;line-height:1.75;color:var(--t2);}
-.faq-a a{color:var(--gold);text-decoration:none;}
-.faq-a a:hover{text-decoration:underline;}
+  /* ── Sayfa ── */
+  .page { position: relative; z-index: 1; max-width: 1060px; margin: 0 auto; padding: 80px 32px 120px; }
+  @media(max-width:600px) { .page { padding: 72px 18px 80px; } }
 
-/* SITEMAP STRIP */
-.sitemap-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:36px 0 0;}
-@media(max-width:640px){.sitemap-strip{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:380px){.sitemap-strip{grid-template-columns:1fr;}}
-.sitemap-col h4{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;}
-.sitemap-col ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
-.sitemap-col ul li a{font-size:12.5px;color:var(--t2);text-decoration:none;transition:color var(--tr);}
-.sitemap-col ul li a:hover{color:var(--gold);}
+  /* ══ HERO ════════════════════════════════════════════ */
+  .hero {
+    padding: 88px 0 100px;
+    border-bottom: 1px solid var(--bg-border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: center;
+  }
+  @media(max-width:780px) { .hero { grid-template-columns: 1fr; gap: 48px; padding: 64px 0 80px; } }
 
-/* FOOTER */
-.footer{padding-top:48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;margin-top:0;}
-.footer-copy{font-size:12px;color:var(--t3);}
-.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
-.footer-links a{font-size:12px;color:var(--t3);text-decoration:none;transition:color var(--tr);}
-.footer-links a:hover{color:var(--gold);}
+  /* Kicker — animasyon yok, sadece statik etiket */
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--fm);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 20px;
+  }
+  .kicker-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); }
+
+  /* Başlık — Syne yok, DM Sans bold */
+  .hero-title {
+    font-family: var(--fb);
+    font-size: clamp(36px, 5.2vw, 62px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  /* title-em: shimmer animasyon kaldırıldı, düz mavi */
+  .title-em {
+    display: block;
+    color: #60a5fa;   /* mavi-400 — sabit, animasyon yok */
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--t2);
+    margin-bottom: 36px;
+    max-width: 440px;
+  }
+  .hero-sub a { color: #60a5fa; text-decoration: none; }
+  .hero-sub a:hover { text-decoration: underline; }
+
+  .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* KURAL 4 — CTA butonu: düz mavi, gradient yok, hafif shadow */
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--blue);
+    color: #fff;
+    font-family: var(--fb);
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    border: none;
+    transition: background var(--tr), transform var(--tr);
+  }
+  .btn-cta:hover { background: var(--blue-h); transform: translateY(-1px); }
+  .btn-cta svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* Ghost buton */
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid var(--bg-border-h);
+    color: var(--t2);
+    font-family: var(--fb);
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background var(--tr), color var(--tr);
+  }
+  .btn-ghost:hover { background: var(--bg-card); color: var(--text); }
+
+  /* KURAL 5 — stat-table: border yok, card arka planıyla ayrım */
+  .stat-table {
+    background: var(--bg-card);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--bg-border);
+    text-decoration: none;
+    transition: background var(--tr);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row:hover { background: var(--bg-card-h); }
+  .stat-row:hover .stat-label { color: var(--text); }
+  .stat-label { font-size: 13.5px; color: var(--t2); transition: color var(--tr); }
+
+  /* KURAL 2 — Pill'ler tek renk ailesinden */
+  .pill {
+    font-family: var(--fm);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    padding: 3px 9px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+  /* Tüm eski renkli pill'ler → mavi veya yeşil tona indirgendi */
+  .pill-gold, .pill-blue, .pill-violet {
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-bdr);
+    color: var(--pill-text);
+  }
+  .pill-green {
+    background: var(--green-pill-bg);
+    border: 1px solid var(--green-pill-bdr);
+    color: var(--green-pill-txt);
+  }
+  .pill-rose {
+    background: rgba(248,113,113,0.10);
+    border: 1px solid rgba(248,113,113,0.2);
+    color: #fca5a5;
+  }
+
+  /* ══ SECTION ══════════════════════════════════════════ */
+  .section { padding: 72px 0; border-bottom: 1px solid var(--bg-border); }
+  .section:last-of-type { border-bottom: none; }
+
+  .sec-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .sec-eyebrow {
+    font-family: var(--fm);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 7px;
+  }
+  .sec-title {
+    font-family: var(--fb);
+    font-size: clamp(19px, 2.8vw, 27px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .sec-link {
+    font-size: 13px;
+    color: #60a5fa;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    transition: gap var(--tr);
+    font-weight: 500;
+  }
+  .sec-link:hover { gap: 9px; }
+  .sec-link svg { width: 13px; height: 13px; }
+
+  /* KURAL 5 — TOOLS: border/grid çizgileri kaldırıldı, gap + bg tonu ile ayrım */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  @media(max-width:680px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media(max-width:400px) { .tools-grid { grid-template-columns: 1fr; } }
+
+  .tool-card {
+    background: var(--bg-card);
+    padding: 22px 20px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    transition: background var(--tr);
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card:hover { background: var(--bg-card-h); }
+  .tool-card:hover .tc-name { color: #60a5fa; }
+  .tool-card:hover .tc-icon { color: #60a5fa; }
+
+  .tc-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--blue-s);
+    color: #93c5fd;
+    margin-bottom: 2px;
+    transition: color var(--tr);
+    flex-shrink: 0;
+  }
+  .tc-icon svg { width: 15px; height: 15px; }
+  .tc-name { font-family: var(--fb); font-size: 13.5px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; transition: color var(--tr); }
+  .tc-meta { font-family: var(--fm); font-size: 10.5px; color: var(--t3); line-height: 1.45; }
+  .tc-free { margin-top: 2px; font-family: var(--fm); font-size: 10px; color: var(--green-pill-txt); }
+  .tc-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%) translateX(3px); font-size: 13px; color: var(--t3); opacity: 0; transition: var(--tr); }
+  .tool-card:hover .tc-arrow { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+  /* KURAL 5 — LEVELS: border kaldırıldı, bg-card ile ayrım */
+  .levels { display: flex; gap: 8px; flex-wrap: wrap; }
+  .lv {
+    flex: 1;
+    min-width: 120px;
+    padding: 18px 16px;
+    background: var(--bg-card);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-decoration: none;
+    transition: background var(--tr), transform var(--tr);
+  }
+  .lv:hover { background: var(--bg-card-h); transform: translateY(-2px); }
+  .lv-code { font-family: var(--fb); font-size: 17px; font-weight: 700; }
+  .lv-name { font-size: 11.5px; color: var(--t3); font-weight: 500; }
+  .lv-desc { font-size: 11px; color: var(--t3); margin-top: 2px; line-height: 1.4; }
+
+  /* Seviye renkleri korundu ama daha mat */
+  .lv-a1 .lv-code { color: #4ade80; }
+  .lv-a2 .lv-code { color: #86efac; }
+  .lv-b1 .lv-code { color: #7dd3fc; }
+  .lv-b2 .lv-code { color: #a5b4fc; }
+  .lv-c1 .lv-code { color: #93c5fd; }
+  @media(max-width:480px) { .lv { min-width: calc(50% - 4px); } }
+
+  /* KURAL 5 — PROSE CARDS: border yok, bg tonu ile ayrım */
+  .prose-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media(max-width:640px) { .prose-grid { grid-template-columns: 1fr; } }
+
+  .prose-card {
+    padding: 26px 24px;
+    background: var(--bg-card);
+    border-radius: 11px;
+    transition: background var(--tr);
+  }
+  .prose-card:hover { background: var(--bg-card-h); }
+  .prose-wide { grid-column: 1 / -1; }
+
+  .prose-kicker {
+    font-family: var(--fm);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    opacity: 0.9;
+    margin-bottom: 10px;
+  }
+  .prose-card h2 { font-family: var(--fb); font-size: clamp(14px, 2vw, 17px); font-weight: 700; letter-spacing: -0.02em; color: var(--text); margin-bottom: 12px; line-height: 1.35; }
+  .prose-card h3 { font-family: var(--fb); font-size: 14px; font-weight: 600; color: var(--text); margin: 16px 0 7px; }
+  .prose-card p { font-size: 13.5px; line-height: 1.82; color: var(--t2); margin-bottom: 10px; }
+  .prose-card p:last-child { margin-bottom: 0; }
+  .prose-card a { color: #60a5fa; text-decoration: none; }
+  .prose-card a:hover { text-decoration: underline; }
+  .prose-card strong { color: var(--text); font-weight: 600; }
+  .prose-card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; margin: 10px 0; }
+  .prose-card ul li { font-size: 13.5px; line-height: 1.7; color: var(--t2); padding-left: 14px; position: relative; }
+  .prose-card ul li::before { content: ''; position: absolute; left: 0; top: 9px; width: 4px; height: 4px; border-radius: 50%; background: var(--blue); opacity: 0.6; }
+  .prose-card ul li a { color: #60a5fa; text-decoration: none; }
+  .prose-card ul li a:hover { text-decoration: underline; }
+
+  /* Feature strip */
+  .feature-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  @media(max-width:640px) { .feature-strip { grid-template-columns: repeat(2, 1fr); } }
+  .feature-cell { background: var(--bg-card); padding: 20px 18px; display: flex; flex-direction: column; gap: 5px; }
+  .feat-num { font-family: var(--fb); font-size: 24px; font-weight: 700; color: #60a5fa; letter-spacing: -0.02em; }
+  .feat-label { font-size: 12px; color: var(--t3); }
+
+  /* FAQ */
+  .faq { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .faq-item {
+    padding: 15px 17px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    transition: background var(--tr);
+  }
+  .faq-item:hover { background: var(--bg-card-h); }
+  .faq-q { font-family: var(--fb); font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .faq-a { font-size: 13px; line-height: 1.75; color: var(--t2); }
+  .faq-a a { color: #60a5fa; text-decoration: none; }
+  .faq-a a:hover { text-decoration: underline; }
+
+  /* Sitemap */
+  .sitemap-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 36px 0 0; }
+  @media(max-width:640px) { .sitemap-strip { grid-template-columns: repeat(2, 1fr); } }
+  @media(max-width:380px) { .sitemap-strip { grid-template-columns: 1fr; } }
+  .sitemap-col h4 { font-family: var(--fm); font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--t3); margin-bottom: 12px; }
+  .sitemap-col ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .sitemap-col ul li a { font-size: 12.5px; color: var(--t2); text-decoration: none; transition: color var(--tr); }
+  .sitemap-col ul li a:hover { color: #60a5fa; }
+
+  /* Footer */
+  .footer { padding-top: 48px; border-top: 1px solid var(--bg-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; margin-top: 0; }
+  .footer-copy { font-size: 12px; color: var(--t3); }
+  .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+  .footer-links a { font-size: 12px; color: var(--t3); text-decoration: none; transition: color var(--tr); }
+  .footer-links a:hover { color: #60a5fa; }
 </style>
 </head>
 <body>
-
-<div class="bg">
-  <div class="bg-grid"></div>
-  <div class="bg-orb bg-orb-1"></div>
-  <div class="bg-orb bg-orb-2"></div>
-</div>
 
 <script type="module">
   import "./js/core.js";
@@ -397,7 +656,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
       </div>
     </div>
 
-    <!-- İstatistik şeridi -->
     <div class="feature-strip">
       <div class="feature-cell">
         <span class="feat-num">8+</span>
@@ -435,7 +693,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
         <p><a href="/ceviri/">Almanca-Türkçe çeviri aracı</a> hem tek kelime hem cümle düzeyinde çalışır; üstelik Wiktionary'den gelen artikel ve örnek cümle bilgisini de yanında gösterir. <a href="/wordsadd/">Yeni kelimeler ekleyebilir</a>, <a href="/gecmis/">metin geçmişine</a> dönebilirsin.</p>
       </div>
 
-      <!-- Araçlar detaylı açıklaması — tam sayfa genişliği -->
       <div class="prose-card prose-wide">
         <div class="prose-kicker">Araç Rehberi</div>
         <h2>Her araç ne işe yarar?</h2>
@@ -444,28 +701,27 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
         <p>Almancada her ismin bir cinsiyet eki — artikel — vardır: <strong>der</strong> (maskulin), <strong>die</strong> (feminin) veya <strong>das</strong> (nötrum). Bu üçlüyü kural ezberleyerek öğrenmek son derece zordur çünkü Almancada artikeli tahmin etmeyi sağlayan yeterince düzenli bir sistem yoktur. <a href="/artikel/">Artikel bulucu</a>, girdiğin kelimenin cinsiyetini Wiktionary'nin geniş veritabanından anında çekerek renkli rozetlerle gösterir: mavi der, kırmızı die, mor das. Özellikle A1 ve A2 aşamasında günlük olarak kullanmaya değer bir araç.</p>
 
         <h3><a href="/metin/">Almanca Metin Analizi</a></h3>
-        <p>Gerçek metinler okumak dil öğrenimini hızlandırır. <a href="/metin/">Metin analizi aracı</a>, yapıştırdığın Almanca metni interaktif bir okuma ortamına dönüştürür. Bilmediğin bir kelimeye tıkladığında çevirisi, artikeli ve Wiktionary'den gelen örnek cümleler anında karşına çıkar. Kelimeyi tek tıkla <a href="/kelimeler/">kişisel sözlüğüne</a> kaydedebilirsin. Okuma modu font büyüklüğünü ve temayı ayarlamana da izin verir — uzun metinleri rahatça okuyabilirsin.</p>
+        <p>Gerçek metinler okumak dil öğrenimini hızlandırır. <a href="/metin/">Metin analizi aracı</a>, yapıştırdığın Almanca metni interaktif bir okuma ortamına dönüştürür. Bilmediğin bir kelimeye tıkladığında çevirisi, artikeli ve Wiktionary'den gelen örnek cümleler anında karşına çıkar. Kelimeyi tek tıkla <a href="/kelimeler/">kişisel sözlüğüne</a> kaydedebilirsin.</p>
 
         <h3><a href="/quiz/">Almanca Kelime Quizi</a></h3>
-        <p><a href="/kelimeler/">Sözlüğüne kaydettiğin kelimelerden</a> otomatik quiz oluşturan <a href="/quiz/">quiz aracı</a>, iki farklı soru modunu destekler: çoktan seçmeli ve yazarak cevaplama. Sorular hem Almanca→Türkçe hem Türkçe→Almanca yönünde gelebilir. Soru sayısını 5'ten 50'ye kadar ayarlayabilirsin. Almanca kelime haznesini pekiştirmenin en etkili yollarından biri olan aralıklı tekrar prensibine dayanan bu araç, A1'den C1'e tüm seviyeler için uygundur.</p>
+        <p><a href="/kelimeler/">Sözlüğüne kaydettiğin kelimelerden</a> otomatik quiz oluşturan <a href="/quiz/">quiz aracı</a>, iki farklı soru modunu destekler: çoktan seçmeli ve yazarak cevaplama. Sorular hem Almanca→Türkçe hem Türkçe→Almanca yönünde gelebilir. Soru sayısını 5'ten 50'ye kadar ayarlayabilirsin.</p>
 
         <h3><a href="/cumlebul/">Cümle Örnekleri Aracı</a></h3>
-        <p>Bir kelimenin anlamını bilmek yetmez; o kelimenin cümle içindeki davranışını da görmek gerekir. <a href="/cumlebul/">Cümle örnekleri aracı</a> Wiktionary ve Tatoeba kaynaklarını sorgulayarak girdiğin kelimeyi içeren gerçek Almanca cümleler bulur. Cümle uzunluğunu minimum ve maksimum kelime sayısı ile filtreleyebilirsin. Özellikle B1 ve B2 seviyesinde kelime kullanımını derinleştirmek için idealdir.</p>
+        <p>Bir kelimenin anlamını bilmek yetmez; o kelimenin cümle içindeki davranışını da görmek gerekir. <a href="/cumlebul/">Cümle örnekleri aracı</a> Wiktionary ve Tatoeba kaynaklarını sorgulayarak girdiğin kelimeyi içeren gerçek Almanca cümleler bulur. Özellikle B1 ve B2 seviyesinde kelime kullanımını derinleştirmek için idealdir.</p>
 
         <h3><a href="/ceviri/">Almanca-Türkçe Çeviri</a></h3>
-        <p><a href="/ceviri/">Çeviri aracı</a> hem Almanca→Türkçe hem Türkçe→Almanca yönünde çalışır. Çevirinin yanı sıra Wiktionary'den gelen artikel bilgisi, kelime türü ve örnek cümleleri de gösterir. Alternatif çevirileri chip olarak sunar; beğendiğin anlamı tek tıkla <a href="/kelimeler/">sözlüğüne ekleyebilirsin</a>. Çeviri geçmişini de takip eder.</p>
+        <p><a href="/ceviri/">Çeviri aracı</a> hem Almanca→Türkçe hem Türkçe→Almanca yönünde çalışır. Çevirinin yanı sıra Wiktionary'den gelen artikel bilgisi, kelime türü ve örnek cümleleri de gösterir.</p>
 
         <h3><a href="/seviyeler/seviyetespit/">Almanca Seviye Testi</a></h3>
-        <p>Almancanda nereye geldiğini bilmek, doğru araçları ve içerikleri seçmek için şart. <a href="/seviyeler/seviyetespit/">25 soruluk ücretsiz seviye testi</a>, gramer ve kelime bilgisini A1'den C1'e beş bölümde ölçer. Her yanlış cevap için Türkçe açıklama gösterilir. Kayıt gerekmez, yaklaşık 10 dakika sürer. Sonuç sayfası hangi araçları ve <a href="/dersler/">ders içeriklerini</a> kullanman gerektiği hakkında da yol gösterir.</p>
+        <p><a href="/seviyeler/seviyetespit/">25 soruluk ücretsiz seviye testi</a>, gramer ve kelime bilgisini A1'den C1'e beş bölümde ölçer. Her yanlış cevap için Türkçe açıklama gösterilir. Kayıt gerekmez, yaklaşık 10 dakika sürer.</p>
 
         <h3><a href="/dersler/">Almanca Dersler</a></h3>
-        <p><a href="/dersler/">Dersler bölümü</a>, A1'den C1'e kadar seviyeye göre kategorize edilmiş yapılandırılmış Almanca ders içerikleri sunar. Gramer konuları, kelime grupları ve pratik metinler içerir. Okuma modu sayesinde dersteki kelimeleri de sözlüğüne ekleyebilirsin.</p>
+        <p><a href="/dersler/">Dersler bölümü</a>, A1'den C1'e kadar seviyeye göre kategorize edilmiş yapılandırılmış Almanca ders içerikleri sunar. Gramer konuları, kelime grupları ve pratik metinler içerir.</p>
 
         <h3><a href="/kelimeler/">Kelimelerim — Kişisel Sözlük</a></h3>
-        <p>Tüm araçlardan kaydettiğin kelimeler <a href="/kelimeler/">kişisel sözlük</a> sayfasında toplanır. Etiket sistemi ile kelimeleri kategorilere ayırabilir, arama ve filtre ile istediklerini hızlıca bulabilirsin. <a href="/wordsadd/">Kelime ekleme aracı</a> ile yeni kelimeler manuel olarak da eklenebilir.</p>
+        <p>Tüm araçlardan kaydettiğin kelimeler <a href="/kelimeler/">kişisel sözlük</a> sayfasında toplanır. Etiket sistemi ile kelimeleri kategorilere ayırabilir, arama ve filtre ile istediklerini hızlıca bulabilirsin.</p>
       </div>
 
-      <!-- İpuçları kartı -->
       <div class="prose-card">
         <div class="prose-kicker">Öğrenme İpuçları</div>
         <h2>Almancada hızlı ilerlemenin yolları</h2>
@@ -479,7 +735,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
         </ul>
       </div>
 
-      <!-- Seviyeler detay kartı -->
       <div class="prose-card">
         <div class="prose-kicker">Seviye Rehberi</div>
         <h2>CEFR seviyeleri ne anlama gelir?</h2>
@@ -512,7 +767,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
       </div>
       <div class="faq-item">
         <div class="faq-q">Der die das artikel bulucu nasıl çalışır?</div>
-        <p class="faq-a"><a href="/artikel/">Artikel bulucu</a>, Wiktionary veritabanını sorgulayarak girilen Almanca kelimenin maskulin (der), feminin (die) veya nötrum (das) olduğunu anında gösterir. Sonuç sayfasında kelimenin Wiktionary bağlantısı da yer alır.</p>
+        <p class="faq-a"><a href="/artikel/">Artikel bulucu</a>, Wiktionary veritabanını sorgulayarak girilen Almanca kelimenin maskulin (der), feminin (die) veya nötrum (das) olduğunu anında gösterir.</p>
       </div>
       <div class="faq-item">
         <div class="faq-q">Almanca metin analizi nasıl çalışır?</div>
@@ -524,15 +779,15 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
       </div>
       <div class="faq-item">
         <div class="faq-q">Almancada hangi seviye iş başvurularında yeterli kabul edilir?</div>
-        <p class="faq-a">Almanya, Avusturya ve İsviçre'deki iş pozisyonlarının büyük kısmı B2 seviyesini gerektirir. Akademik ortamlar genellikle C1 ister. <a href="/seviyeler/seviyetespit/">Seviye testini</a> çözerek nerede durduğunu öğren, <a href="/dersler/">dersler</a> ve <a href="/quiz/">quiz araçları</a> ile hedef seviyeye ulaş.</p>
+        <p class="faq-a">Almanya, Avusturya ve İsviçre'deki iş pozisyonlarının büyük kısmı B2 seviyesini gerektirir. Akademik ortamlar genellikle C1 ister. <a href="/seviyeler/seviyetespit/">Seviye testini</a> çözerek nerede durduğunu öğren.</p>
       </div>
       <div class="faq-item">
         <div class="faq-q">A2'den B1'e geçmek ne kadar sürer?</div>
-        <p class="faq-a">Günde 30-45 dakika düzenli çalışmayla bu geçiş ortalama 4-6 ayda gerçekleşebilir. Gerçek metinler okumak kritiktir. <a href="/metin/">Metin analizi aracını</a> düzenli kullan, <a href="/kelimeler/">sözlüğünü</a> besle ve <a href="/quiz/">quizle</a> pekiştir. <a href="/cumlebul/">Cümle örnekleri aracı</a> ile B1 kalıplarını bağlam içinde gözlemlemek bu süreci belirgin şekilde hızlandırır.</p>
+        <p class="faq-a">Günde 30-45 dakika düzenli çalışmayla bu geçiş ortalama 4-6 ayda gerçekleşebilir. <a href="/metin/">Metin analizi aracını</a> düzenli kullan, <a href="/kelimeler/">sözlüğünü</a> besle ve <a href="/quiz/">quizle</a> pekiştir.</p>
       </div>
       <div class="faq-item">
         <div class="faq-q">Almanca kelime quizi nasıl oluşturulur?</div>
-        <p class="faq-a"><a href="/wordsadd/">Kelime ekleme</a> veya <a href="/metin/">metin analizi</a> araçlarıyla sözlüğüne kelime kaydetmek yeterli. <a href="/quiz/">Quiz aracı</a> bu kelimelerden otomatik olarak çoktan seçmeli ve yazarak cevaplama sorularını oluşturur. Soru sayısını ve yönü (Almanca→Türkçe ya da Türkçe→Almanca) ayarlayabilirsin.</p>
+        <p class="faq-a"><a href="/wordsadd/">Kelime ekleme</a> veya <a href="/metin/">metin analizi</a> araçlarıyla sözlüğüne kelime kaydetmek yeterli. <a href="/quiz/">Quiz aracı</a> bu kelimelerden otomatik olarak sorular oluşturur.</p>
       </div>
     </div>
   </section>
@@ -576,7 +831,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
         </ul>
       </div>
       <div class="sitemap-col">
-        <h4>Hesap & Diğer</h4>
+        <h4>Hesap &amp; Diğer</h4>
         <ul>
           <li><a href="/pratik/">Platform Paneli</a></li>
           <li><a href="/login.html">Giriş Yap</a></li>
@@ -602,6 +857,5 @@ body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100
   </footer>
 
 </div>
-
 </body>
 </html>

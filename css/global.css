@@ -263,3 +263,45 @@ body {
   .fab-wrapper { bottom: 20px; right: 20px; }
   .fab-main { width: 50px; height: 50px; }
 }
+/* ── FAB Etiket Stilleri ── */
+.fab-item {
+  position: absolute;
+  /* ... diğer mevcut özellikler ... */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab-label {
+  position: absolute;
+  right: 55px; /* İkonun solunda durması için */
+  background: rgba(22, 22, 30, 0.95);
+  color: #f0eee8;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Menü açıldığında etiketleri göster */
+.fab-wrapper.active .fab-label {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.2s; /* İkonlar açıldıktan hemen sonra görünsün */
+}
+
+/* Mobilde etiketleri biraz daha belirgin yapalım */
+@media (max-width: 480px) {
+  .fab-label {
+    right: 50px;
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+}

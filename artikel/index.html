@@ -4,43 +4,81 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
-  <!-- ── Birincil SEO ── -->
-  <title>Almanca Artikel Bulucu — Der Die Das | AlmancaPratik</title>
-  <meta name="description" content="Almanca kelimelerin artikel bilgisini (der, die, das) anında öğren. Wiktionary tabanlı, ücretsiz, Türkçe arayüzlü artikel bulucu. Örnek cümleler ve otomatik çeviri ile öğren.">
-  <meta name="keywords" content="almanca artikel bulucu, der die das, almanca artikel öğren, almanca isim artikeli, der die das quiz türkçe, almanca cins öğren">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="AlmancaPratik">
+  <!-- ════════════════════════════════════════════
+       ① TITLE — odak kelime (Artikel Bulucu) EN ÖNDE
+       Google title'ın ilk sözcüklerine daha fazla
+       ağırlık verir; burası keyword sinyalinin %1'i.
+       ════════════════════════════════════════════ -->
+  <title>Artikel Bulucu — Almanca Der Die Das Öğren | AlmancaPratik</title>
+
+  <!-- ════════════════════════════════════════════
+       ② META DESCRIPTION — CTA + keyword tekrarı
+       Arama sonucu tıklama oranını (CTR) artırır;
+       dolaylı olarak sıralamaı etkiler.
+       ════════════════════════════════════════════ -->
+  <meta name="description"
+        content="Artikel bulucu ile Almanca kelimelerin der, die veya das olduğunu anında öğren. Ücretsiz, reklamsız, Türkçe arayüzlü artikel bulucu — telaffuz, çoğul, anlam ve örnek cümleler dahil.">
+
+  <!-- ════════════════════════════════════════════
+       ③ KEYWORDS — önce exact-match sorgu
+       ════════════════════════════════════════════ -->
+  <meta name="keywords"
+        content="artikel bulucu, almanca artikel bulucu, der die das bulucu, almanca der die das, almanca artikel öğren, almanca cins bulucu, der die das quiz türkçe, almanca artikel nedir">
+
+  <meta name="robots"  content="index, follow">
+  <meta name="author"  content="AlmancaPratik">
+
+  <!-- ════════════════════════════════════════════
+       ④ KANONİK URL — anasayfanın değil bu sayfanın
+       indekslenmesini garantiler.
+       ════════════════════════════════════════════ -->
   <link rel="canonical" href="https://almancapratik.com/artikel/">
 
-  <!-- ── Open Graph ── -->
+  <!-- ════════════════════════════════════════════
+       ⑤ OPEN GRAPH — keyword first
+       ════════════════════════════════════════════ -->
   <meta property="og:type"        content="website">
   <meta property="og:url"         content="https://almancapratik.com/artikel/">
-  <meta property="og:title"       content="Almanca Artikel Bulucu — Der Die Das | AlmancaPratik">
-  <meta property="og:description" content="Almanca der, die, das artikellerini anında bul. Örnek cümleler ve Türkçe çeviri ile pekiştir. Ücretsiz, reklamsız.">
+  <meta property="og:title"       content="Artikel Bulucu — Almanca Der Die Das | AlmancaPratik">
+  <meta property="og:description" content="Artikel bulucu ile Almanca kelimelerin der, die veya das olduğunu anında öğren. Wiktionary tabanlı, ücretsiz, Türkçe arayüz.">
   <meta property="og:locale"      content="tr_TR">
   <meta property="og:site_name"   content="AlmancaPratik">
 
-  <!-- ── Twitter Card ── -->
+  <!-- Twitter Card -->
   <meta name="twitter:card"        content="summary">
-  <meta name="twitter:title"       content="Almanca Artikel Bulucu — Der Die Das | AlmancaPratik">
-  <meta name="twitter:description" content="Almanca der, die, das artikellerini anında bul. Ücretsiz, Türkçe arayüz.">
+  <meta name="twitter:title"       content="Artikel Bulucu — Almanca Der Die Das | AlmancaPratik">
+  <meta name="twitter:description" content="Artikel bulucu ile Almanca kelimelerin der, die veya das olduğunu anında öğren.">
 
-  <!-- ── Yapısal Veri (Schema.org) ── -->
+  <!-- ════════════════════════════════════════════
+       ⑥ YAPISAL VERİ (Schema.org)
+       — WebApplication name = "Artikel Bulucu" (exact-match)
+       — FAQPage: 4 soru (keyword çeşitlemeli)
+       — BreadcrumbList
+       ════════════════════════════════════════════ -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "WebApplication",
-        "name": "Almanca Der Die Das Artikel Bulucu",
+        "name": "Artikel Bulucu",
+        "alternateName": "Almanca Der Die Das Bulucu",
         "url": "https://almancapratik.com/artikel/",
-        "description": "Almanca isimlerin artikel bilgisini (der, die, das) Wiktionary API kullanarak bulan, örnek cümleler ve Türkçe çeviri sunan ücretsiz araç.",
+        "description": "Almanca isimlerin artikel bilgisini (der, die, das) Wiktionary API kullanarak bulan, örnek cümleler ve Türkçe çeviri sunan ücretsiz artikel bulucu.",
         "applicationCategory": "EducationalApplication",
         "operatingSystem": "Web",
         "browserRequirements": "Requires JavaScript",
         "inLanguage": ["tr", "de"],
         "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+        "featureList": [
+          "Wiktionary API ile anlık artikel sorgulama",
+          "Telaffuz (IPA) bilgisi",
+          "Çoğul form gösterimi",
+          "Türkçe anlam ve örnek cümleler",
+          "Artikel quiz modu",
+          "Oturum geçmişi"
+        ],
         "publisher": {
           "@type": "Organization",
           "name": "AlmancaPratik",
@@ -60,10 +98,18 @@
         "mainEntity": [
           {
             "@type": "Question",
+            "name": "Artikel bulucu nedir ve nasıl çalışır?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Artikel bulucu, yazdığınız Almanca kelimenin der, die veya das artikelini Wiktionary veritabanından anında sorgulayan ücretsiz bir araçtır. Kelimenin cinsiyetini (genus), çoğul formunu, telaffuzunu ve Türkçe anlamını birlikte gösterir."
+            }
+          },
+          {
+            "@type": "Question",
             "name": "Almancada der die das nasıl öğrenilir?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Almancada artikel (der, die, das) ezberlemenin en etkili yolu kelimeleri artikelleriyle birlikte öğrenmektir. Bu araç, herhangi bir Almanca ismin artikelini Wiktionary veritabanından anında bulur ve örnek cümlelerle pekiştirmenizi sağlar."
+              "text": "Almancada artikel (der, die, das) öğrenmenin en etkili yolu kelimeleri artikelleriyle birlikte ezberlemektir. Bu artikel bulucu sayesinde her kelimenin artikelini anında bulabilir, örnek cümleler ve Türkçe çeviriyle pekiştirebilirsiniz."
             }
           },
           {
@@ -71,7 +117,15 @@
             "name": "Der die das arasındaki fark nedir?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Almancada 'der' eril (maskulin), 'die' dişil (feminin) ve 'das' nötr (neutrum) isimlerin tanımlı artikelidir. Türkçenin aksine Almancada her ismin belirli bir cinsiyeti vardır."
+              "text": "'Der' eril (maskulin), 'die' dişil (feminin) ve 'das' nötr (neutrum) isimlerin tanımlı artikelidir. Artikel bulucu ile herhangi bir Almanca ismin cinsiyetini saniyeler içinde öğrenebilirsiniz."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Ücretsiz artikel bulucu var mı?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Evet, AlmancaPratik'in artikel bulucu tamamen ücretsiz ve reklamsızdır. Wiktionary'nin açık veritabanını kullanarak binlerce Almanca kelimenin artikelini, çoğul formunu ve telaffuzunu gösterir."
             }
           }
         ]
@@ -99,20 +153,27 @@
 
   <main class="artikel-container" role="main">
 
+    <!-- ════════════════════════════════════════════
+         ⑦ H1 — "Artikel Bulucu" tam ve bölünmez
+         Önceki kodda <span>Artikel</span> şeklinde
+         bölünmüştü; crawler bunu zayıf sinyalliyordu.
+         ════════════════════════════════════════════ -->
     <header class="artikel-header">
       <div class="flag" aria-hidden="true">
         <div class="flag-stripe s1"></div>
         <div class="flag-stripe s2"></div>
         <div class="flag-stripe s3"></div>
       </div>
-      <h1>Almanca <span>Artikel</span> Bulucu</h1>
+      <h1>Almanca <span>Artikel Bulucu</span></h1>
       <p>Der · Die · Das — Wiktionary API ile anında bul</p>
     </header>
 
     <div class="divider" aria-hidden="true"><div class="diamond"></div></div>
 
-    <!-- ── Arama ── -->
-    <section aria-label="Artikel arama formu">
+    <!-- ════════════════════════════════════════════
+         ⑧ ARAMA FORMU — aria-label keyword içeriyor
+         ════════════════════════════════════════════ -->
+    <section aria-label="Artikel bulucu — Almanca kelime arama">
       <div class="input-group">
         <div class="input-wrapper">
           <label for="wordInput" class="sr-only">Almanca kelime girin</label>
@@ -124,7 +185,7 @@
             autocorrect="off"
             autocapitalize="none"
             spellcheck="false"
-            aria-label="Artikel aramak için Almanca kelime girin"
+            aria-label="Artikel bulucu: Almanca kelime girin"
             enterkeyhint="search"
           />
         </div>
@@ -134,19 +195,18 @@
       </div>
     </section>
 
-    <!-- ── Yükleniyor ── -->
+    <!-- Yükleniyor -->
     <div id="loading" class="loading hidden" aria-live="polite" aria-label="Aranıyor">
       <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
       <span>Wiktionary'de aranıyor…</span>
     </div>
 
-    <!-- ── Hata ── -->
+    <!-- Hata -->
     <div id="errorMsg" class="error-msg hidden" role="alert" aria-live="assertive"></div>
 
-    <!-- ── Sonuç kartı ── -->
+    <!-- Sonuç kartı -->
     <section id="resultCard" class="result-card hidden" aria-live="polite" aria-label="Artikel sonucu">
 
-      <!-- Üst: artikel + kelime -->
       <div class="result-top">
         <div class="artikel-badge" id="artikelBadge" aria-hidden="true">–</div>
         <div class="result-word-block">
@@ -155,7 +215,6 @@
         </div>
       </div>
 
-      <!-- Orta: pill + kopyala -->
       <div class="result-bottom">
         <span class="genus-pill" id="genusPill"></span>
         <span class="genus-name"  id="genusName"></span>
@@ -164,10 +223,8 @@
         </button>
       </div>
 
-      <!-- Ek bilgi: IPA, Çoğul, Anlam (JS tarafından doldurulur) -->
       <div class="result-extra hidden" id="resultExtra" aria-label="Ek bilgi"></div>
 
-      <!-- Wiktionary linki -->
       <div class="result-link-row">
         <a id="wiktionaryLink"
            href="#"
@@ -181,21 +238,21 @@
 
     </section>
 
-    <!-- ── Örnek Cümleler ── -->
+    <!-- Örnek Cümleler -->
     <section id="sentenceSection" class="hidden" aria-live="polite" aria-label="Örnek cümleler"></section>
 
-    <!-- ── Oturum Geçmişi ── -->
+    <!-- Oturum Geçmişi -->
     <section id="historySection" class="hidden" aria-label="Bu oturumda aranan kelimeler"></section>
 
-    <!-- ── Quiz başlat (≥ 3 kelime aramasından sonra görünür) ── -->
+    <!-- Quiz başlat -->
     <button id="quizStartBtn" class="hidden" type="button" aria-label="Quiz modunu başlat">
       🎯 Quiz Başlat — Bu oturumda aranan kelimeler
     </button>
 
-    <!-- ── Quiz bölümü ── -->
+    <!-- Quiz bölümü -->
     <section id="quizSection" class="hidden" aria-label="Quiz bölümü" aria-live="polite"></section>
 
-    <!-- ── Renk göstergesi ── -->
+    <!-- Renk göstergesi -->
     <div class="legend" aria-label="Artikel renk göstergesi">
       <div class="legend-item">
         <div class="legend-dot der" aria-hidden="true"></div>
@@ -211,18 +268,104 @@
       </div>
     </div>
 
-    <!-- ── SEO metin bloğu ── -->
-    <aside aria-label="Almanca artikel hakkında bilgi" style="margin-top:28px;padding:20px 0;border-top:1px solid rgba(255,255,255,0.07);">
-      <p style="font-size:12px;color:#5a5650;line-height:1.7;text-align:center;">
-        Almancada her ismin bir artikeli vardır:
+    <!-- ════════════════════════════════════════════
+         ⑨ SEO İÇERİK BLOĞU
+         — "artikel bulucu" 4 kez geçiyor (doğal yoğunluk)
+         — H2 subheading arama motoruna iç bağlam sinyali verir
+         — FAQ formatı rich snippet olasılığını artırır
+         ════════════════════════════════════════════ -->
+    <aside
+      aria-label="Artikel bulucu hakkında"
+      style="margin-top:28px; padding:20px 0; border-top:1px solid rgba(255,255,255,0.07);">
+
+      <!-- H2 — ikincil keyword sinyali -->
+      <h2 style="
+        font-family:'Playfair Display',serif;
+        font-size:0.85rem;
+        font-weight:700;
+        color:rgba(201,168,76,0.7);
+        letter-spacing:0.08em;
+        text-transform:uppercase;
+        margin:0 0 10px;
+        text-align:center;">
+        Artikel Bulucu Nasıl Kullanılır?
+      </h2>
+
+      <p style="font-size:12px;color:#5a5650;line-height:1.8;text-align:center;margin:0 0 10px;">
+        Bu <strong style="color:#7a7060">artikel bulucu</strong>, Almancada her ismin
+        hangi artikelle kullanıldığını —
         <strong style="color:#4a90d9">der</strong> (maskulin / eril),
         <strong style="color:#d96b8a">die</strong> (feminin / dişil) veya
-        <strong style="color:#6bbf8a">das</strong> (neutrum / nötr).
-        Bu araç, istediğiniz Almanca kelimenin artikel bilgisini Wiktionary'den anında getirir,
-        çoğul formu, telaffuz ve anlamıyla birlikte gösterir;
-        örnek cümleler ve Türkçe çevirilerle öğrenmenizi hızlandırır.
+        <strong style="color:#6bbf8a">das</strong> (neutrum / nötr) —
+        Wiktionary veritabanından anında getirir.
+        Kelimenin çoğul formu, IPA telaffuzu ve Türkçe anlamı
+        tek ekranda görüntülenir; örnek cümleler ve otomatik çeviri
+        ile öğrenme süreciniz hızlanır.
+      </p>
+
+      <p style="font-size:12px;color:#5a5650;line-height:1.8;text-align:center;margin:0;">
+        Arama kutusuna istediğiniz Almanca kelimeyi yazın ve
+        <em>Artikel Ara</em> butonuna tıklayın.
+        3 veya daha fazla kelime aradıktan sonra
+        <strong style="color:#7a7060">quiz modu</strong> devreye girerek
+        öğrendiklerinizi sınamanıza olanak tanır.
       </p>
     </aside>
+
+    <!-- ════════════════════════════════════════════
+         ⑩ INLINE FAQ — rich snippet için görünür içerik
+         (Schema FAQ'ye paralel; Google her ikisini de tarar)
+         ════════════════════════════════════════════ -->
+    <section
+      aria-label="Sık sorulan sorular"
+      style="margin-top:18px; padding:18px 0; border-top:1px solid rgba(255,255,255,0.07);">
+
+      <h2 style="
+        font-family:'Playfair Display',serif;
+        font-size:0.85rem;
+        font-weight:700;
+        color:rgba(201,168,76,0.7);
+        letter-spacing:0.08em;
+        text-transform:uppercase;
+        margin:0 0 14px;
+        text-align:center;">
+        Sık Sorulan Sorular
+      </h2>
+
+      <details style="margin-bottom:10px;">
+        <summary style="font-size:12px;color:#7a7060;cursor:pointer;list-style:none;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+          ▸ Artikel bulucu ücretsiz mi?
+        </summary>
+        <p style="font-size:11.5px;color:#5a5650;line-height:1.7;margin:8px 0 0 12px;">
+          Evet, bu artikel bulucu tamamen ücretsiz ve reklamsızdır.
+          Wiktionary'nin açık veritabanından yararlanarak binlerce
+          Almanca kelimenin artikel bilgisini sunmaktadır.
+        </p>
+      </details>
+
+      <details style="margin-bottom:10px;">
+        <summary style="font-size:12px;color:#7a7060;cursor:pointer;list-style:none;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+          ▸ Der die das nasıl öğrenilir?
+        </summary>
+        <p style="font-size:11.5px;color:#5a5650;line-height:1.7;margin:8px 0 0 12px;">
+          Almancada artikeli (der, die, das) ezberlemenin en verimli
+          yolu her kelimeyi artikeli ile birlikte öğrenmektir.
+          Artikel bulucu ile her aramanızda kelimeyi doğrudan
+          artikeliyle görür, quiz moduyla kendinizi test edebilirsiniz.
+        </p>
+      </details>
+
+      <details>
+        <summary style="font-size:12px;color:#7a7060;cursor:pointer;list-style:none;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+          ▸ Hangi kelimeler aranabilir?
+        </summary>
+        <p style="font-size:11.5px;color:#5a5650;line-height:1.7;margin:8px 0 0 12px;">
+          Wiktionary'de kayıtlı her Almanca isim bu artikel bulucu
+          ile sorgulanabilir. Sık kullanılan günlük kelimelerden
+          teknik terimlere kadar geniş bir kapsama sahiptir.
+        </p>
+      </details>
+    </section>
 
   </main>
 </div>
@@ -238,6 +381,9 @@
     white-space: nowrap;
     border: 0;
   }
+  /* details/summary oku oku görünümü iyileştir */
+  details summary::-webkit-details-marker { display:none; }
+  details[open] summary { color: #9a9080; }
 </style>
 
 <script type="module">

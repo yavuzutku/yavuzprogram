@@ -187,27 +187,28 @@ body {
   bottom: 30px;
   right: 30px;
   z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Konteynırı ana buton boyutuna sabitleyelim */
+  width: 56px;
+  height: 56px;
 }
 
 /* ANA BUTON */
 .fab-main {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   background: linear-gradient(135deg, #c9a84c, #e8c97a);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #0a0a0f;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   cursor: pointer;
   border: none;
-  font-size: 24px;
-  z-index: 10;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
+  z-index: 2010; /* Diğerlerinden üstte */
+  position: relative;
+  font-size: 22px;
+  transition: transform 0.3s ease-out, background 0.2s;
 }
 
 .fab-wrapper.active .fab-main {
@@ -218,15 +219,39 @@ body {
 /* ALT BUTONLARIN KONTEYNERI */
 .fab-items {
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2005;
+}
+
+/* HER BİR BUTON LİNKİ (Sadece Pozisyon ve Açılma Animasyonu) */
+.fab-item {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
+  opacity: 0;
+  visibility: hidden;
+  
+  /* Temel Geçiş: Sadece Opacity ve Visibility */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.fab-item {
-  position: absolute;
+/* Aktifken Görünürlük */
+.fab-wrapper.active .fab-item {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* İÇERİK KONTEYNIRI (Hover Efekti ve Renk Buraya Uygulanır - Titremeyi Çözen Kısım) */
+.fab-item-content {
   width: 48px;
   height: 48px;
   background: #1c1c26;
@@ -236,32 +261,43 @@ body {
   align-items: center;
   justify-content: center;
   color: #c9a84c;
-  text-decoration: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform: scale(0); /* Kapalıyken merkezde küçücük */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  
+  /* Hover animasyonu sadece burada */
+  transition: transform 0.2s ease, background 0.2s, color 0.2s;
+  
+  /* Başlangıçta merkezde */
+  transform: translate(0, 0) scale(0.8);
 }
 
-/* Hover */
-.fab-item:hover {
+/* HOVER EFEKTİ (Artık Titremez) */
+.fab-item:hover .fab-item-content {
   background: #c9a84c;
   color: #0a0a0f;
-  transform: scale(1.1) !important; /* Aktifken hover efekti */
+  transform: translate(0, 0) scale(1.1); /* Sadece olduğu yerde büyür */
 }
 
-/* RADYAL DİZİLİM (Matematiksel Simetri) */
-/* --d: mesafe, --a: açı (derece) */
-.fab-wrapper.active .fab-item {
-  opacity: 1;
-  visibility: visible;
+/* 🔥 KUSURSUZ SİMETRİK DİZİLİM (Radyal Mantık) 🔥 */
+/* --radius: merkezden uzaklık, --angle: yay üzerindeki açı (derece) */
+.fab-wrapper {
+  --radius: 100px; /* Mesafe (Mobil için aşağıda değişecek) */
 }
 
-/* 0° yukarıdır, 90° soldur. Aradaki butonları eşit açıyla diziyoruz */
-.fab-wrapper.active .item-1 { transform: translate(0, -100px) scale(1); }           /* 0 derece (Yukarı) */
-.fab-wrapper.active .item-2 { transform: translate(-70px, -70px) scale(1); }       /* 45 derece (Çapraz) */
-.fab-wrapper.active .item-4 { transform: translate(-100px, 0) scale(1); }          /* 90 derece (Sol) */
-.fab-wrapper.active .item-3 { transform: translate(-50px, -140px) scale(1); }      /* Alternatif üst-çapraz */
+/* Aktifken Merkezden Dışarı İt */
+.fab-wrapper.active .fab-item .fab-item-content {
+  /* Bu formül sihirli kısımdır: önce döndür, sonra it, sonra açıyı sıfırla */
+  transform: rotate(calc(var(--angle) * 1deg)) translate(var(--radius)) rotate(calc(var(--angle) * -1deg)) scale(1);
+}
+
+/* Açıları Tanımla (Yukarıdan Sola Doğru) */
+/* -90deg: Tam Yukarı
+   -135deg: Sol Üst Çapraz
+   -180deg: Tam Sol
+*/
+.item-1 { --angle: -90;  transition-delay: 0.0s; } /* Kelimelerim */
+.item-2 { --angle: -135; transition-delay: 0.05s; } /* Yeni Kelime */
+.item-3 { --angle: -180; transition-delay: 0.1s; } /* Quiz */
+.item-4 { --angle: -225; transition-delay: 0.15s; } /* Notlarım */ /* İsteğe bağlı 4. buton */
 
 /* ETİKETLER (LABEL) */
 .fab-label {
@@ -273,22 +309,36 @@ body {
   color: #0a0a0f;
   padding: 4px 10px;
   border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
+/* Sadece içeriğin üstüne gelince etiketi göster */
 .fab-item:hover .fab-label {
   opacity: 1;
 }
 
-/* Mobil için mesafeyi biraz daraltalım */
+/* MOBİL UYUM */
 @media (max-width: 480px) {
-  .fab-wrapper.active .item-1 { transform: translate(0, -90px) scale(1); }
-  .fab-wrapper.active .item-2 { transform: translate(-65px, -65px) scale(1); }
-  .fab-wrapper.active .item-4 { transform: translate(-90px, 0) scale(1); }
-  .fab-wrapper.active .item-3 { transform: translate(-45px, -125px) scale(1); }
+  .fab-wrapper {
+    bottom: 20px;
+    right: 20px;
+    --radius: 85px; /* Mobilde mesafeyi biraz daralt */
+  }
+  
+  .fab-main {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .fab-item-content {
+    width: 42px;
+    height: 42px;
+  }
 }

@@ -217,7 +217,7 @@ body {
   background: #f07068;
 }
 
-/* BUTONLARIN SESSİZ KATMANI */
+/* BUTONLAR */
 .fab-item {
   position: absolute;
   top: 0;
@@ -231,14 +231,13 @@ body {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease;
-  /* Fare olaylarını menü tam açılana kadar devre dışı bırakıyoruz (Kritik!) */
   pointer-events: none;
 }
 
 .fab-wrapper.active .fab-item {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto; /* Açılınca tıklanabilir olur */
+  pointer-events: auto;
 }
 
 /* İÇERİK KATMANI */
@@ -253,22 +252,17 @@ body {
   justify-content: center;
   color: #c9a84c;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  
-  /* Sadece transform animasyonu (Pozisyon için) */
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-              background 0.2s, color 0.2s, box-shadow 0.2s;
-  
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s;
   transform: translate(0, 0) scale(0.3);
+  position: relative; /* Label için referans */
 }
 
-/* HOVER DURUMU - Titremeyi bitiren ana değişiklik: 
-   Scale değerini 1.1 yerine 1.05'e çektik ve asıl vurguyu parlama (filter) ile yaptık */
+/* HOVER DURUMU */
 .fab-item:hover .fab-item-content {
   background: #c9a84c;
   color: #0a0a0f;
-  transform: rotate(calc(var(--angle) * 1deg)) translate(var(--radius)) rotate(calc(var(--angle) * -1deg)) scale(1.08) !important;
-  box-shadow: 0 0 15px rgba(201, 168, 76, 0.6);
-  filter: brightness(1.1);
+  /* Önemli: Pozisyonu koruyarak hafif büyü */
+  transform: rotate(calc(var(--angle) * 1deg)) translate(var(--radius)) rotate(calc(var(--angle) * -1deg)) scale(1.1) !important;
 }
 
 /* RADYAL POZİSYONLAMA */
@@ -276,35 +270,48 @@ body {
   transform: rotate(calc(var(--angle) * 1deg)) translate(var(--radius)) rotate(calc(var(--angle) * -1deg)) scale(1);
 }
 
-/* Açı Ayarları (Sarkmayı engelleyen dar açı) */
 .item-1 { --angle: -90;  transition-delay: 0.0s; }
-.item-2 { --angle: -120; transition-delay: 0.05s; }
-.item-3 { --angle: -150; transition-delay: 0.1s; }
-.item-4 { --angle: -180; transition-delay: 0.15s; }
+.item-2 { --angle: -125; transition-delay: 0.05s; }
+.item-3 { --angle: -155; transition-delay: 0.1s; }
+.item-4 { --angle: -190; transition-delay: 0.15s; }
 
-/* ETİKETLER */
+/* ETİKETLER (YUKARIYA ALINDI) */
 .fab-label {
   position: absolute;
-  right: calc(100% + 15px);
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: calc(100% + 12px); /* Butonun tam üstüne yerleştirir */
+  left: 50%;
+  transform: translateX(-50%); /* Yatayda ortalar */
   background: #c9a84c;
   color: #0a0a0f;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
+  white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, bottom 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Küçük bir ok işareti (isteğe bağlı) */
+.fab-label::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #c9a84c transparent transparent transparent;
 }
 
 .fab-item:hover .fab-label {
   opacity: 1;
+  bottom: calc(100% + 8px); /* Hafifçe yerine oturma efekti */
 }
 
 @media (max-width: 480px) {
-  .fab-wrapper { --radius: 90px; bottom: 20px; right: 20px; }
-  .fab-main { width: 50px; height: 50px; }
-  .fab-item-content { width: 42px; height: 42px; }
+  .fab-wrapper { --radius: 95px; }
+  .fab-item-content { width: 44px; height: 44px; }
 }

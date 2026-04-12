@@ -923,23 +923,17 @@ function loadFloatingMenu() {
   }
 
   document.body.appendChild(fabContainer);
-
   const toggleBtn = document.getElementById("fabToggle");
   toggleBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     fabContainer.classList.toggle("active");
   });
-
   document.addEventListener("click", (e) => {
     if (!fabContainer.contains(e.target)) fabContainer.classList.remove("active");
   });
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", loadFloatingMenu);
-} else {
-  loadFloatingMenu();
-}
+loadFloatingMenu();
 export { requireAuth, loadNavbar, getUserId };
 window.requireAuth  = requireAuth;
 window.loadNavbar   = loadNavbar;

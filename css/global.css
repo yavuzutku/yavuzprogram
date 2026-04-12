@@ -182,17 +182,18 @@ body {
   }
 }
 /* ══ FAB WRAPPER ══ */
+/* Ana Konteynır */
 .fab-wrapper {
   position: fixed;
   bottom: 30px;
   right: 30px;
   z-index: 2000;
-  /* Konteynırı ana buton boyutuna sabitleyelim */
   width: 56px;
   height: 56px;
+  --radius: 110px; /* Butonların açılma mesafesi */
 }
 
-/* ANA BUTON */
+/* Ana Buton (+) */
 .fab-main {
   width: 56px;
   height: 56px;
@@ -205,18 +206,19 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   cursor: pointer;
   border: none;
-  z-index: 2010; /* Diğerlerinden üstte */
+  z-index: 2010;
   position: relative;
-  font-size: 22px;
-  transition: transform 0.3s ease-out, background 0.2s;
+  font-size: 24px;
+  font-weight: bold;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
 }
 
 .fab-wrapper.active .fab-main {
   transform: rotate(135deg);
-  background: #f07068;
+  background: #f07068; /* Kapatma rengi */
 }
 
-/* ALT BUTONLARIN KONTEYNERI */
+/* Alt Butonların Konteynırı */
 .fab-items {
   position: absolute;
   top: 0;
@@ -226,7 +228,7 @@ body {
   z-index: 2005;
 }
 
-/* HER BİR BUTON LİNKİ (Sadece Pozisyon ve Açılma Animasyonu) */
+/* Her Bir Link Elemanı */
 .fab-item {
   position: absolute;
   top: 0;
@@ -239,18 +241,15 @@ body {
   text-decoration: none;
   opacity: 0;
   visibility: hidden;
-  
-  /* Temel Geçiş: Sadece Opacity ve Visibility */
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* Aktifken Görünürlük */
 .fab-wrapper.active .fab-item {
   opacity: 1;
   visibility: visible;
 }
 
-/* İÇERİK KONTEYNIRI (Hover Efekti ve Renk Buraya Uygulanır - Titremeyi Çözen Kısım) */
+/* İçerik Kutusu (Titremeyi önleyen asıl katman) */
 .fab-item-content {
   width: 48px;
   height: 48px;
@@ -261,84 +260,60 @@ body {
   align-items: center;
   justify-content: center;
   color: #c9a84c;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  
-  /* Hover animasyonu sadece burada */
-  transition: transform 0.2s ease, background 0.2s, color 0.2s;
-  
-  /* Başlangıçta merkezde */
-  transform: translate(0, 0) scale(0.8);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, color 0.2s;
+  transform: translate(0, 0) scale(0.5);
 }
 
-/* HOVER EFEKTİ (Artık Titremez) */
+/* Hover Efekti */
 .fab-item:hover .fab-item-content {
   background: #c9a84c;
   color: #0a0a0f;
-  transform: translate(0, 0) scale(1.1); /* Sadece olduğu yerde büyür */
+  transform: scale(1.15) !important;
 }
 
-/* 🔥 KUSURSUZ SİMETRİK DİZİLİM (Radyal Mantık) 🔥 */
-/* --radius: merkezden uzaklık, --angle: yay üzerindeki açı (derece) */
-.fab-wrapper {
-  --radius: 100px; /* Mesafe (Mobil için aşağıda değişecek) */
-}
-
-/* Aktifken Merkezden Dışarı İt */
+/* Radyal Yerleşim (Sadece Yukarı ve Sol Taraf) */
 .fab-wrapper.active .fab-item .fab-item-content {
-  /* Bu formül sihirli kısımdır: önce döndür, sonra it, sonra açıyı sıfırla */
+  /* Formül: Dön -> İt -> Ters Dön -> Görün */
   transform: rotate(calc(var(--angle) * 1deg)) translate(var(--radius)) rotate(calc(var(--angle) * -1deg)) scale(1);
 }
 
-/* Açıları Tanımla (Yukarıdan Sola Doğru) */
-/* -90deg: Tam Yukarı
-   -135deg: Sol Üst Çapraz
-   -180deg: Tam Sol
-*/
-.item-1 { --angle: -90;  transition-delay: 0.0s; } /* Kelimelerim */
-.item-2 { --angle: -135; transition-delay: 0.05s; } /* Yeni Kelime */
-.item-3 { --angle: -180; transition-delay: 0.1s; } /* Quiz */
-.item-4 { --angle: -225; transition-delay: 0.15s; } /* Notlarım */ /* İsteğe bağlı 4. buton */
+/* Açı Ayarları (Saat yönü tersine) */
+.item-1 { --angle: -90;  transition-delay: 0.0s; }  /* Tam Üst */
+.item-2 { --angle: -120; transition-delay: 0.05s; } /* Üst-Sol Çapraz */
+.item-3 { --angle: -150; transition-delay: 0.1s; }  /* Sol-Üst Çapraz */
+.item-4 { --angle: -180; transition-delay: 0.15s; } /* Tam Sol */
 
-/* ETİKETLER (LABEL) */
+/* Etiketler (Labels) */
 .fab-label {
   position: absolute;
   right: calc(100% + 15px);
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(201, 168, 76, 0.95);
+  background: #c9a84c;
   color: #0a0a0f;
-  padding: 4px 10px;
-  border-radius: 4px;
+  padding: 5px 12px;
+  border-radius: 6px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-/* Sadece içeriğin üstüne gelince etiketi göster */
 .fab-item:hover .fab-label {
   opacity: 1;
 }
 
-/* MOBİL UYUM */
+/* Mobil Düzenlemeler */
 @media (max-width: 480px) {
   .fab-wrapper {
     bottom: 20px;
     right: 20px;
-    --radius: 85px; /* Mobilde mesafeyi biraz daralt */
+    --radius: 90px;
   }
-  
-  .fab-main {
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-  }
-  
-  .fab-item-content {
-    width: 42px;
-    height: 42px;
-  }
+  .fab-main { width: 50px; height: 50px; }
+  .fab-item-content { width: 42px; height: 42px; }
 }

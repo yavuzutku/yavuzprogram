@@ -275,12 +275,10 @@ body {
 .item-3 { --angle: -155; transition-delay: 0.1s; }
 .item-4 { --angle: -190; transition-delay: 0.15s; }
 
-/* ETİKETLER (YUKARIYA ALINDI) */
+/* ETİKETLER GENEL */
 .fab-label {
   position: absolute;
-  bottom: calc(100% + 12px); /* Butonun tam üstüne yerleştirir */
-  left: 50%;
-  transform: translateX(-50%); /* Yatayda ortalar */
+  bottom: calc(100% + 12px);
   background: #c9a84c;
   color: #0a0a0f;
   padding: 4px 10px;
@@ -290,11 +288,38 @@ body {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, bottom 0.2s ease;
+  transition: opacity 0.2s ease, bottom 0.2s ease, transform 0.2s ease;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 2020;
 }
 
-/* Küçük bir ok işareti (isteğe bağlı) */
+/* 1. Kelimelerim: Tam Üstte */
+.item-1 .fab-label {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 2. Yeni Kelime: Üst-Sol Çapraz */
+.item-2 .fab-label {
+  left: 20%;
+  transform: translateX(-80%); 
+}
+
+/* 3. Quiz: Sol Çapraz (Biraz daha aşağı kaydırdık) */
+.item-3 .fab-label {
+  left: 0%;
+  transform: translateX(-105%) translateY(15px);
+}
+
+/* 4. Notlarım: Tam Sol */
+.item-4 .fab-label {
+  bottom: 50% !important; /* Üstte kalma kuralını ez */
+  right: calc(100% + 12px);
+  transform: translateY(50%);
+  left: auto;
+}
+
+/* OK İŞARETLERİ - Sadece üstte duranlar için (item 1, 2, 3) */
 .fab-label::after {
   content: '';
   position: absolute;
@@ -306,12 +331,23 @@ body {
   border-color: #c9a84c transparent transparent transparent;
 }
 
-.fab-item:hover .fab-label {
-  opacity: 1;
-  bottom: calc(100% + 8px); /* Hafifçe yerine oturma efekti */
+/* Notlarım (item 4) için ok işaretini sağa alalım ki butonu göstersin */
+.item-4 .fab-label::after {
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  border-color: transparent transparent transparent #c9a84c;
 }
 
+/* HOVER DURUMU */
+.fab-item:hover .fab-label {
+  opacity: 1;
+  /* Hoverda hafifçe butona yaklaşma efekti */
+  margin-bottom: -4px; 
+}
+
+/* Mobilde Radius Ayarı */
 @media (max-width: 480px) {
   .fab-wrapper { --radius: 95px; }
-  .fab-item-content { width: 44px; height: 44px; }
+  .fab-item-content { width: 42px; height: 42px; }
 }

@@ -181,14 +181,15 @@ body {
     height: 30px !important;
   }
 }
-/* ══ FAB KESİN ÇÖZÜM: TİTREME VE ÇAKIŞMA ENGELLİ ══ */
+/* ══ FAB WRAPPER ══ */
 .fab-wrapper {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  z-index: 2000; /* Her şeyin üstünde */
+  z-index: 2000;
 }
 
+/* ══ MAIN BUTTON ══ */
 .fab-main {
   width: 56px;
   height: 56px;
@@ -210,7 +211,12 @@ body {
   background: #f07068;
 }
 
-/* Alt Butonlar */
+/* ══ ITEMS CONTAINER ══ */
+.fab-items {
+  position: relative;
+}
+
+/* ══ ITEM ══ */
 .fab-item {
   position: absolute;
   bottom: 5px;
@@ -228,19 +234,23 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 2;
+  overflow: visible;
 }
 
-/* Hover'da titremeyi önleyen sabit büyüme */
+/* Hover */
 .fab-item:hover {
   background: #c9a84c;
   color: #0a0a0f;
   box-shadow: 0 0 15px rgba(201, 168, 76, 0.5);
 }
 
-/* Etiketler - Z-index eklendi ve konum sabitlendi */
+/* ══ LABEL (FIX BURADA) ══ */
 .fab-label {
   position: absolute;
-  right: 55px;
+  right: calc(100% + 10px); /* 🔥 ÇAKIŞMA BİTER */
+  top: 50%;
+  transform: translateY(-50%);
   background: #c9a84c;
   color: #0a0a0f;
   padding: 5px 12px;
@@ -252,26 +262,27 @@ body {
   opacity: 0;
   pointer-events: none;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  z-index: 100; /* Yazıların ikonun altında kalmasını engeller */
+  z-index: 1;
 }
 
+/* Açılınca label görünür */
 .fab-wrapper.active .fab-label {
   opacity: 1;
 }
 
-/* POZİSYONLAR: Titremeyi engellemek için sadece Wrapper üzerinden kontrol */
-.fab-wrapper.active .fab-item { opacity: 1; pointer-events: auto; }
+/* Açılınca item aktif */
+.fab-wrapper.active .fab-item {
+  opacity: 1;
+  pointer-events: auto;
+}
 
-/* Kelimelerim - En Üst */
-.fab-wrapper.active .item-1 { transform: translateY(-115px); z-index: 9; }
-/* Yeni Kelime - Çapraz */
-.fab-wrapper.active .item-2 { transform: translate(-65px, -95px); z-index: 8; }
-/* Quiz - Daha Yatay */
-.fab-wrapper.active .item-3 { transform: translate(-95px, -55px); z-index: 7; }
-/* Notlar - Tam Sol */
-.fab-wrapper.active .item-4 { transform: translateX(-115px); z-index: 6; }
+/* ══ POZİSYONLAR ══ */
+.fab-wrapper.active .item-1 { transform: translateY(-115px); }
+.fab-wrapper.active .item-2 { transform: translate(-65px, -95px); }
+.fab-wrapper.active .item-3 { transform: translate(-95px, -55px); }
+.fab-wrapper.active .item-4 { transform: translateX(-115px); }
 
-/* Mobilde butonların birbirine girmemesi için mesafeyi açtık */
+/* Mobil */
 @media (max-width: 480px) {
   .fab-wrapper.active .item-1 { transform: translateY(-130px); }
   .fab-wrapper.active .item-2 { transform: translate(-75px, -105px); }

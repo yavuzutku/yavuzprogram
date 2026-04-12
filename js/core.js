@@ -895,7 +895,6 @@ function getLoginHref(){ return "/login.html"; }
 function getUserId(){
   return auth.currentUser ? auth.currentUser.uid : null;
 }
-// ── YÜZEN MENÜ (FAB) YÜKLEYİCİ ──
 function loadFloatingMenu() {
   const fabContainer = document.createElement("div");
   fabContainer.className = "fab-wrapper";
@@ -905,34 +904,49 @@ function loadFloatingMenu() {
     <div class="fab-items">
       <a href="/kelimeler/" class="fab-item item-1">
         <span class="fab-label">Kelimelerim</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
       </a>
+
       <a href="/wordsadd/" class="fab-item item-2">
-        <span class="fab-label">Yeni Kelime Ekle</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span class="fab-label">Yeni Kelime</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
       </a>
+
       <a href="/quiz/" class="fab-item item-3">
-        <span class="fab-label">Kelime Quizi</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="fab-label">Quiz</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8"/>
+        </svg>
       </a>
+
       <a href="/notlarım/" class="fab-item item-4">
         <span class="fab-label">Notlarım</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/><polyline points="15 3 15 9 21 9"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/>
+        </svg>
       </a>
     </div>
-    <button class="fab-main" id="fabToggle" aria-label="Hızlı Menü">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+
+    <button class="fab-main" id="fabToggle">
+      +
     </button>
   `;
 
   document.body.appendChild(fabContainer);
 
   const toggleBtn = document.getElementById("fabToggle");
+
   toggleBtn.addEventListener("click", () => {
     fabContainer.classList.toggle("active");
   });
 
-  // Dışarı tıklandığında kapatma
   document.addEventListener("click", (e) => {
     if (!fabContainer.contains(e.target)) {
       fabContainer.classList.remove("active");
@@ -940,10 +954,7 @@ function loadFloatingMenu() {
   });
 }
 
-// core.js zaten her sayfada çağrıldığı için otomatik başlat:
-window.addEventListener("DOMContentLoaded", () => {
-    loadFloatingMenu();
-});
+window.addEventListener("DOMContentLoaded", loadFloatingMenu);
 export { requireAuth, loadNavbar, getUserId };
 window.requireAuth  = requireAuth;
 window.loadNavbar   = loadNavbar;

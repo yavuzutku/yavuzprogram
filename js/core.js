@@ -575,10 +575,11 @@ function loadNavbar(){
     .nav-mobile-overlay {
       display: none;
       position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      z-index: 998;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 997;
       backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
     }
     .nav-mobile-overlay.visible { display: block; }
 
@@ -605,38 +606,50 @@ function loadNavbar(){
       .logo__favicon { width: 22px; height: 22px; }
     }
 
-    /* ── Mobil (≤620px): hamburger slide-in panel ── */
+    /* ── Mobil (≤620px): navbar altından açılan dropdown panel ── */
     @media (max-width: 620px) {
       .navbar { padding: 0 16px; gap: 12px; }
       .nav-hamburger { display: flex; }
       .nav-vr { display: none; }
       .nav-cta { display: none; }
 
+      /* Panel: sağdan kaymaz, navbarın hemen altından aşağı açılır */
       .nav-links {
         position: fixed;
-        top: 0; right: 0;
-        width: min(300px, 85vw);
-        height: 100dvh;
-        background: #0d0d14;
-        border-left: 1px solid rgba(255,255,255,0.09);
-        box-shadow: -16px 0 48px rgba(0,0,0,0.7);
+        top: 68px;   /* navbar yüksekliği */
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: calc(100dvh - 68px);
+        background: rgba(10,10,16,0.97);
+        backdrop-filter: blur(24px) saturate(160%);
+        -webkit-backdrop-filter: blur(24px) saturate(160%);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.6);
         flex-direction: column;
         align-items: stretch;
-        gap: 4px;
-        padding: 80px 12px 32px;
-        z-index: 999;
+        gap: 3px;
+        padding: 10px 12px 20px;
+        z-index: 998;
         overflow-y: auto;
-        transform: translateX(100%);
-        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+        /* Animasyon: hafif aşağı kayma + fade */
+        opacity: 0;
+        transform: translateY(-6px);
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4,0,0.2,1);
       }
-      .nav-links.mobile-open { transform: translateX(0); }
+      .nav-links.mobile-open {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
 
       .nav-item {
         width: 100%;
-        padding: 12px 16px;
+        padding: 13px 16px;
         border-radius: 10px;
         font-size: 14px;
-        min-height: 48px; /* dokunma hedefi */
+        min-height: 48px;
       }
       .nav-item span { display: inline; }
       .nav-chevron { display: inline; }
@@ -679,7 +692,7 @@ function loadNavbar(){
     navLinks.classList.add("mobile-open");
     overlay.classList.add("visible");
     hamburger.setAttribute("aria-expanded", "true");
-    document.body.style.overflow = "hidden";
+    // body scroll kilitlemiyoruz — FAB ve sayfa erişilebilir kalır
   }
 
   function closeMobileMenu() {
@@ -687,7 +700,6 @@ function loadNavbar(){
     navLinks.classList.remove("mobile-open");
     overlay.classList.remove("visible");
     hamburger.setAttribute("aria-expanded", "false");
-    document.body.style.overflow = "";
   }
 
   hamburger.addEventListener("click", () => {

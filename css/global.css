@@ -187,23 +187,27 @@ body {
   bottom: 30px;
   right: 30px;
   z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* MAIN */
+/* ANA BUTON */
 .fab-main {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   background: linear-gradient(135deg, #c9a84c, #e8c97a);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #0a0a0f;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   cursor: pointer;
   border: none;
+  font-size: 24px;
   z-index: 10;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
 }
 
 .fab-wrapper.active .fab-main {
@@ -211,17 +215,20 @@ body {
   background: #f07068;
 }
 
-/* ITEMS */
+/* ALT BUTONLARIN KONTEYNERI */
 .fab-items {
-  position: relative;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .fab-item {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   background: #1c1c26;
   border: 1px solid #c9a84c;
   border-radius: 50%;
@@ -231,81 +238,57 @@ body {
   color: #c9a84c;
   text-decoration: none;
   opacity: 0;
-  pointer-events: none;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: scale(0); /* Kapalıyken merkezde küçücük */
 }
 
 /* Hover */
 .fab-item:hover {
   background: #c9a84c;
   color: #0a0a0f;
+  transform: scale(1.1) !important; /* Aktifken hover efekti */
 }
 
-/* LABEL BASE */
+/* RADYAL DİZİLİM (Matematiksel Simetri) */
+/* --d: mesafe, --a: açı (derece) */
+.fab-wrapper.active .fab-item {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 0° yukarıdır, 90° soldur. Aradaki butonları eşit açıyla diziyoruz */
+.fab-wrapper.active .item-1 { transform: translate(0, -100px) scale(1); }           /* 0 derece (Yukarı) */
+.fab-wrapper.active .item-2 { transform: translate(-70px, -70px) scale(1); }       /* 45 derece (Çapraz) */
+.fab-wrapper.active .item-4 { transform: translate(-100px, 0) scale(1); }          /* 90 derece (Sol) */
+.fab-wrapper.active .item-3 { transform: translate(-50px, -140px) scale(1); }      /* Alternatif üst-çapraz */
+
+/* ETİKETLER (LABEL) */
 .fab-label {
   position: absolute;
-  background: #c9a84c;
+  right: calc(100% + 15px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(201, 168, 76, 0.95);
   color: #0a0a0f;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.25s ease;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  transition: opacity 0.2s;
 }
 
-/* Açılınca görünür */
-.fab-wrapper.active .fab-item {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.fab-wrapper.active .fab-label {
+.fab-item:hover .fab-label {
   opacity: 1;
 }
 
-/* 🔥 HER ITEM’A ÖZEL LABEL KONUMU */
-
-/* Üst */
-.item-1 .fab-label {
-  bottom: 60px;
-  right: 50%;
-  transform: translateX(50%);
-}
-
-/* Çapraz */
-.item-2 .fab-label {
-  bottom: 50px;
-  right: 60px;
-}
-
-/* Yatay */
-.item-3 .fab-label {
-  right: 60px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* Tam sol */
-.item-4 .fab-label {
-  right: 60px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* POZİSYONLAR */
-.fab-wrapper.active .item-1 { transform: translateY(-110px); }
-.fab-wrapper.active .item-2 { transform: translate(-70px, -90px); }
-.fab-wrapper.active .item-3 { transform: translate(-100px, -50px); }
-.fab-wrapper.active .item-4 { transform: translateX(-120px); }
-
-/* Mobil */
+/* Mobil için mesafeyi biraz daraltalım */
 @media (max-width: 480px) {
-  .fab-wrapper.active .item-1 { transform: translateY(-130px); }
-  .fab-wrapper.active .item-2 { transform: translate(-80px, -110px); }
-  .fab-wrapper.active .item-3 { transform: translate(-110px, -70px); }
-  .fab-wrapper.active .item-4 { transform: translateX(-140px); }
+  .fab-wrapper.active .item-1 { transform: translate(0, -90px) scale(1); }
+  .fab-wrapper.active .item-2 { transform: translate(-65px, -65px) scale(1); }
+  .fab-wrapper.active .item-4 { transform: translate(-90px, 0) scale(1); }
+  .fab-wrapper.active .item-3 { transform: translate(-45px, -125px) scale(1); }
 }

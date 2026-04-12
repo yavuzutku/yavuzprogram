@@ -181,3 +181,85 @@ body {
     height: 30px !important;
   }
 }
+/* ══ YÜZEN YELPAZE MENÜ (FAB) ══ */
+.fab-wrapper {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1100; /* Navbar'dan yüksek olmalı */
+}
+
+.fab-main {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #c9a84c, #e8c97a);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0a0a0f;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+}
+
+.fab-main:hover {
+  transform: scale(1.05) rotate(90deg);
+  box-shadow: 0 6px 24px rgba(201,168,76,0.5);
+}
+
+.fab-wrapper.active .fab-main {
+  transform: scale(0.9) rotate(135deg);
+  background: #f07068; /* Kapatırken kırmızımsı ton */
+  color: #fff;
+}
+
+.fab-item {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 44px;
+  height: 44px;
+  background: #16161e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9a84c;
+  text-decoration: none;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.fab-item:hover {
+  background: #c9a84c;
+  color: #0a0a0f;
+  transform: scale(1.1);
+}
+
+/* Yelpaze Açılış Pozisyonları */
+.fab-wrapper.active .fab-item {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Kelimeler - En Üst */
+.fab-wrapper.active .item-1 { transform: translate(0, -90px); }
+/* Kelime Ekle - Çapraz */
+.fab-wrapper.active .item-2 { transform: translate(-65px, -65px); }
+/* Quiz - Yan */
+.fab-wrapper.active .item-3 { transform: translate(-90px, 0); }
+/* Notlar - Hafif Aşağı Yan */
+.fab-wrapper.active .item-4 { transform: translate(-75px, 60px); }
+
+/* Mobil Ayarı */
+@media (max-width: 480px) {
+  .fab-wrapper { bottom: 20px; right: 20px; }
+  .fab-main { width: 50px; height: 50px; }
+}

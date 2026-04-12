@@ -181,8 +181,12 @@ body {
     height: 30px !important;
   }
 }
-/* ══ FAB WRAPPER ══ */
-/* Ana Konteynır */
+
+/* ════════════════════════════════════════════════
+   FAB (Floating Action Button) — RADYAL MENÜ
+════════════════════════════════════════════════ */
+
+/* ══ Ana Konteynır ══ */
 .fab-wrapper {
   position: fixed;
   bottom: 30px;
@@ -193,7 +197,7 @@ body {
   --radius: 110px;
 }
 
-/* ANA BUTON */
+/* ── Ana Buton ── */
 .fab-main {
   width: 56px;
   height: 56px;
@@ -209,7 +213,11 @@ body {
   z-index: 2010;
   position: relative;
   font-size: 24px;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  line-height: 1;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              background 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .fab-wrapper.active .fab-main {
@@ -217,7 +225,7 @@ body {
   background: #f07068;
 }
 
-/* BUTONLAR */
+/* ── FAB Item (her alt buton) ── */
 .fab-item {
   position: absolute;
   top: 0;
@@ -230,7 +238,7 @@ body {
   text-decoration: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
   pointer-events: none;
 }
 
@@ -240,7 +248,7 @@ body {
   pointer-events: auto;
 }
 
-/* İÇERİK KATMANI */
+/* ── İçerik Katmanı (yuvarlak ikon) ── */
 .fab-item-content {
   width: 48px;
   height: 48px;
@@ -252,33 +260,46 @@ body {
   justify-content: center;
   color: #c9a84c;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              background 0.2s ease;
   transform: translate(0, 0) scale(0.3);
-  position: relative; /* Label için referans */
+  position: relative;
 }
 
-/* HOVER DURUMU */
-.fab-item:hover .fab-item-content {
-  background: #c9a84c;
-  color: #0a0a0f;
-  /* Önemli: Pozisyonu koruyarak hafif büyü */
-  transform: rotate(calc(var(--angle) * 1deg)) translate(var(--radius)) rotate(calc(var(--angle) * -1deg)) scale(1.1) !important;
-}
-
-/* RADYAL POZİSYONLAMA */
+/* ── Açık hâlde radyal konumlandırma ── */
 .fab-wrapper.active .fab-item .fab-item-content {
-  transform: rotate(calc(var(--angle) * 1deg)) translate(var(--radius)) rotate(calc(var(--angle) * -1deg)) scale(1);
+  transform:
+    rotate(calc(var(--angle) * 1deg))
+    translate(var(--radius))
+    rotate(calc(var(--angle) * -1deg))
+    scale(1);
 }
 
-.item-1 { --angle: -90;  transition-delay: 0.0s; }
+/* ── Hover (yalnızca masaüstü) ── */
+@media (hover: hover) {
+  .fab-item:hover .fab-item-content {
+    background: #c9a84c;
+    color: #0a0a0f;
+    transform:
+      rotate(calc(var(--angle) * 1deg))
+      translate(var(--radius))
+      rotate(calc(var(--angle) * -1deg))
+      scale(1.1) !important;
+  }
+}
+
+/* ── Açılarda geçikme (stagger) ── */
+.item-1 { --angle: -90;  transition-delay: 0.00s; }
 .item-2 { --angle: -125; transition-delay: 0.05s; }
-.item-3 { --angle: -155; transition-delay: 0.1s; }
+.item-3 { --angle: -155; transition-delay: 0.10s; }
 .item-4 { --angle: -190; transition-delay: 0.15s; }
 
-/* ETİKETLER GENEL */
+/* ════════════════════════
+   FAB — ETİKETLER
+════════════════════════ */
+
 .fab-label {
   position: absolute;
-  bottom: calc(100% + 12px);
   background: #c9a84c;
   color: #0a0a0f;
   padding: 4px 10px;
@@ -288,38 +309,17 @@ body {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, bottom 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   z-index: 2020;
-}
 
-/* 1. Kelimelerim: Tam Üstte */
-.item-1 .fab-label {
+  /* Varsayılan konum: üst */
+  bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
 }
 
-/* 2. Yeni Kelime: Üst-Sol Çapraz */
-.item-2 .fab-label {
-  left: 20%;
-  transform: translateX(-80%); 
-}
-
-/* 3. Quiz: Sol Çapraz (Biraz daha aşağı kaydırdık) */
-.item-3 .fab-label {
-  left: 0%;
-  transform: translateX(-105%) translateY(15px);
-}
-
-/* 4. Notlarım: Tam Sol */
-.item-4 .fab-label {
-  bottom: 50% !important; /* Üstte kalma kuralını ez */
-  right: calc(100% + 12px);
-  transform: translateY(50%);
-  left: auto;
-}
-
-/* OK İŞARETLERİ - Sadece üstte duranlar için (item 1, 2, 3) */
+/* Ok işareti — üste bakan (item-1, 2, 3) */
 .fab-label::after {
   content: '';
   position: absolute;
@@ -331,7 +331,25 @@ body {
   border-color: #c9a84c transparent transparent transparent;
 }
 
-/* Notlarım (item 4) için ok işaretini sağa alalım ki butonu göstersin */
+/* item-2: üst-sol köşe */
+.item-2 .fab-label {
+  left: 20%;
+  transform: translateX(-80%);
+}
+
+/* item-3: sol çapraz */
+.item-3 .fab-label {
+  left: 0%;
+  transform: translateX(-105%) translateY(15px);
+}
+
+/* item-4: tam sol ─ ok sağa baksın */
+.item-4 .fab-label {
+  bottom: 50% !important;
+  right: calc(100% + 12px);
+  left: auto;
+  transform: translateY(50%);
+}
 .item-4 .fab-label::after {
   top: 50%;
   left: 100%;
@@ -339,15 +357,60 @@ body {
   border-color: transparent transparent transparent #c9a84c;
 }
 
-/* HOVER DURUMU */
-.fab-item:hover .fab-label {
-  opacity: 1;
-  /* Hoverda hafifçe butona yaklaşma efekti */
-  margin-bottom: -4px; 
+/* Masaüstü hover'da etiket belir */
+@media (hover: hover) {
+  .fab-item:hover .fab-label {
+    opacity: 1;
+  }
 }
 
-/* Mobilde Radius Ayarı */
+/* ════════════════════════════════════════════════
+   FAB — MOBİL / DOKUNMATIK (hover desteklenmiyor)
+   Masaüstü davranışına dokunulmaz; sadece touch
+   cihazlarda geçerli.
+════════════════════════════════════════════════ */
+
+@media (hover: none) {
+  /* Açık olduğunda tüm etiketler görünsün */
+  .fab-wrapper.active .fab-item .fab-label {
+    opacity: 1;
+  }
+
+  /* item-4 etiketi ekran soluna taşmayabilir;
+     küçük ekranda açıyı biraz kıs */
+  .item-4 { --angle: -180; }
+
+  /* item-3 etiketini biraz sağa kaydır — sol kenar overflow önlemi */
+  .item-3 .fab-label {
+    transform: translateX(-90%) translateY(15px);
+  }
+
+  /* İkon büyütme efekti (dokunuş geri bildirimi) */
+  .fab-item:active .fab-item-content {
+    background: #c9a84c;
+    color: #0a0a0f;
+    transform:
+      rotate(calc(var(--angle) * 1deg))
+      translate(var(--radius))
+      rotate(calc(var(--angle) * -1deg))
+      scale(1.12) !important;
+  }
+}
+
+/* ── Küçük telefon radius ayarı ── */
 @media (max-width: 480px) {
-  .fab-wrapper { --radius: 95px; }
-  .fab-item-content { width: 42px; height: 42px; }
+  .fab-wrapper {
+    --radius: 100px;
+    bottom: 24px;
+    right: 20px;
+  }
+  .fab-item-content {
+    width: 44px;
+    height: 44px;
+  }
+  .fab-main {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+  }
 }

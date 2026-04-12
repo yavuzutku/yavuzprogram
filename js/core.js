@@ -14,19 +14,17 @@ function loadNavbar(){
   const path = window.location.pathname;
   const isDersler = path.includes("/dersler");
   const isBlog    = path.includes("/blog");
-  const isRoot    = path === "/" || path === "/index.html";
-  const isPratik = isRoot || ["/quiz/","/metin/","/kelimeler/","/wordsadd/","/singleadd/","/gecmis/"].some(p => path.includes(p));
+  const isMetin   = path.includes("/metin");
   const isCeviri  = path.includes("/ceviri/");
   const isArtikel = path.includes("/artikel/");
   const isCumle   = path.includes("/cumlebul/");
 
-  
-  
   navbar.innerHTML = `
     <a class="logo" href="/" aria-label="AlmancaPratik ana sayfa">
       <img class="logo__favicon" src="/favicon.png" alt="" aria-hidden="true">
       <span class="logo__text">Almanca<span class="logo__accent">Pratik</span></span>
     </a>
+
     <!-- Mobil hamburger -->
     <button class="nav-hamburger" id="navHamburger" aria-label="Menüyü aç" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -90,59 +88,30 @@ function loadNavbar(){
         </div>
       </div>
 
-      <!-- Pratik dropdown -->
-      <div class="nav-item-wrap" id="pratikDropWrap">
-        <a class="nav-item ${isPratik ? "nav-item--active" : ""}" id="pratikPill" href="/pratik/">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <span>Pratik</span>
-          <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </a>
-        <div class="nav-dropdown nav-dropdown--pratik" id="pratikDrop">
-          <div class="nav-dropdown-inner">
-            <div class="drop-two-col">
-              <a class="drop-tool-item" href="/metin/">
-                <span class="drop-tool-icon" style="background:rgba(160,100,255,0.1);border-color:rgba(160,100,255,0.2)">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a064ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                </span>
-                <div class="drop-item-title">Metin Analizi</div>
-              </a>
-              <a class="drop-tool-item" href="/quiz/">
-                <span class="drop-tool-icon" style="background:rgba(160,100,255,0.1);border-color:rgba(160,100,255,0.18)">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a064ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </span>
-                <div class="drop-item-title">Kelime Quizi</div>
-              </a>
-              <a class="drop-tool-item" href="/kelimeler/">
-                <span class="drop-tool-icon" style="background:rgba(79,214,156,0.1);border-color:rgba(79,214,156,0.18)">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4fd69c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                </span>
-                <div class="drop-item-title">Kelimelerim</div>
-              </a>
-              <a class="drop-tool-item" href="/wordsadd/">
-                <span class="drop-tool-icon" style="background:rgba(240,112,104,0.1);border-color:rgba(240,112,104,0.18)">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f07068" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                </span>
-                <div class="drop-item-title">Kelime Ekle</div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <a class="nav-item ${isCeviri ? 'nav-item--active' : ''}" href="/ceviri/">
+      <!-- Metin Analizi (Pratik'in yerinde, dropdown yok) -->
+      <a class="nav-item ${isMetin ? 'nav-item--active' : ''}" href="/metin/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Metin Analizi</span>
+      </a>
 
+      <!-- Çeviri -->
+      <a class="nav-item ${isCeviri ? 'nav-item--active' : ''}" href="/ceviri/">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
         <span>Çeviri</span>
       </a>
-      <a class="nav-item ${isArtikel ? 'nav-item--active' : ''}" href="/artikel/">
 
+      <!-- Artikel -->
+      <a class="nav-item ${isArtikel ? 'nav-item--active' : ''}" href="/artikel/">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span>Artikel</span>
       </a>
-      <a class="nav-item ${isCumle ? 'nav-item--active' : ''}" href="/cumlebul/">
 
+      <!-- Cümle -->
+      <a class="nav-item ${isCumle ? 'nav-item--active' : ''}" href="/cumlebul/">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         <span>Cümle</span>
       </a>
+
       <!-- Blog -->
       <a class="nav-item ${isBlog ? "nav-item--active" : ""}" href="/blog/">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -150,7 +119,6 @@ function loadNavbar(){
       </a>
 
     </nav>
-    
 
     <div class="nav-right">
 
@@ -170,11 +138,13 @@ function loadNavbar(){
 
       <div class="profile-wrapper" id="profileWrapper" style="display:none">
         <button class="profile-trigger" id="profileAvatar" aria-label="Profil menüsü">
-          <img class="profile-avatar-img" id="profileAvatarImg" src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64" alt="Profil"/>
+          <img class="profile-avatar-img" id="profileAvatarImg"
+            src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64" alt="Profil"/>
         </button>
         <div class="profile-dropdown" id="profileDropdown" role="menu">
           <div class="profile-dropdown__header">
-            <img class="profile-dropdown__avatar" id="profileAvatarSmall" src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64" alt=""/>
+            <img class="profile-dropdown__avatar" id="profileAvatarSmall"
+              src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64" alt=""/>
             <div>
               <div class="profile-dropdown__label">Giriş yapıldı</div>
               <span class="profile-email" id="profileEmail">Yükleniyor...</span>
@@ -191,18 +161,13 @@ function loadNavbar(){
   `;
 
   const style = document.createElement("style");
-
-
-
-
   style.textContent = `
-      .logo {
-      display: flex;        /* bunu ekle — resim ve yazı yan yana dursun */
+    .logo {
+      display: flex;
       align-items: center;
       gap: 8px;
       text-decoration: none;
     }
-
     .logo__favicon {
       width: 36px;
       height: 36px;
@@ -210,6 +175,7 @@ function loadNavbar(){
       border-radius: 5px;
       flex-shrink: 0;
     }
+
     /* ── NAVBAR SHELL ── */
     .navbar {
       position: sticky;
@@ -229,12 +195,6 @@ function loadNavbar(){
     }
 
     /* ── LOGO ── */
-    .logo {
-      text-decoration: none;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-    }
     .logo__text {
       font-family: 'Syne', sans-serif;
       font-size: 17px;
@@ -253,9 +213,7 @@ function loadNavbar(){
       border-radius: 2px;
       opacity: 0.65;
     }
-    .logo__accent {
-      color: #c9a84c;
-    }
+    .logo__accent { color: #c9a84c; }
 
     /* ── NAV LINKS (orta) ── */
     .nav-links {
@@ -291,14 +249,12 @@ function loadNavbar(){
       border-color: rgba(255,255,255,0.08);
     }
     .nav-item:hover svg { opacity: 1; }
-
     .nav-item--active {
       color: rgba(240,238,232,0.9);
       background: rgba(255,255,255,0.05);
       border-color: rgba(255,255,255,0.09);
     }
     .nav-item--active svg { opacity: 1; }
-
     .nav-chevron { opacity: 0.35; transition: transform 0.2s ease, opacity 0.18s; }
     .nav-item-wrap.open .nav-chevron { transform: rotate(180deg); opacity: 0.7; }
 
@@ -394,10 +350,6 @@ function loadNavbar(){
       pointer-events: all;
       transform: translateX(-50%) translateY(0);
     }
-    .nav-dropdown--pratik {
-      min-width: 280px;
-      left: 50%;
-    }
 
     .nav-dropdown-inner {
       background: #0d0d14;
@@ -422,7 +374,7 @@ function loadNavbar(){
       padding: 0;
     }
 
-    /* ── LEVEL GRID (Dersler dropdown) ── */
+    /* ── LEVEL GRID ── */
     .drop-level-grid {
       display: flex;
       flex-direction: column;
@@ -470,7 +422,6 @@ function loadNavbar(){
       margin-top: 1px;
     }
 
-    /* ── ALL LINK ── */
     .drop-all-link {
       display: flex;
       align-items: center;
@@ -487,82 +438,18 @@ function loadNavbar(){
     .drop-all-link:hover { background: rgba(255,255,255,0.05); color: rgba(240,238,232,0.8); }
     .drop-all-link svg { opacity: 0.45; }
 
-    /* ── DIVIDER ── */
     .drop-divider {
       height: 1px;
       background: rgba(255,255,255,0.06);
       margin: 6px 4px;
     }
 
-    /* ── PRATIK — TWO COL ── */
-    .drop-two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-      padding: 2px;
-    }
-    .drop-col { padding: 0 2px; }
-
-    /* ── TOOL ITEM ── */
-    .drop-tool-item {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: background 0.15s;
-      cursor: pointer;
-    }
-    .drop-tool-item:hover { background: rgba(255,255,255,0.05); }
-
-    .drop-tool-icon {
-      width: 34px; height: 34px;
-      border-radius: 9px;
-      border: 1px solid;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: transform 0.15s;
-    }
-    .drop-tool-item:hover .drop-tool-icon { transform: scale(1.08); }
-
-    /* ── FOOTER BANNER ── */
-    .drop-footer-banner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px 6px;
-    }
-    .drop-footer-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      color: rgba(240,238,232,0.35);
-    }
-    .drop-footer-cta {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      color: rgba(201,168,76,0.75);
-      text-decoration: none;
-      letter-spacing: -0.01em;
-      transition: color 0.15s;
-    }
-    .drop-footer-cta:hover { color: #c9a84c; }
-
     /* ══ PROFILE ══ */
     .profile-wrapper { position: relative; display: inline-flex; }
     .profile-trigger {
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
+      background: none; border: none;
+      padding: 0; cursor: pointer;
+      display: flex; align-items: center;
     }
     .profile-avatar-img {
       width: 34px; height: 34px;
@@ -577,7 +464,6 @@ function loadNavbar(){
       transform: scale(1.06);
       box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
     }
-
     .profile-dropdown {
       display: none;
       position: absolute;
@@ -598,12 +484,9 @@ function loadNavbar(){
       from { opacity:0; transform:translateY(-6px) scale(0.97); }
       to   { opacity:1; transform:translateY(0) scale(1); }
     }
-
     .profile-dropdown__header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px 8px;
+      display: flex; align-items: center;
+      gap: 10px; padding: 10px 12px 8px;
     }
     .profile-dropdown__avatar {
       width: 32px; height: 32px;
@@ -637,19 +520,14 @@ function loadNavbar(){
       margin: 2px 0;
     }
     .profile-dropdown .logout-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-      padding: 9px 12px;
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 9px 12px;
       background: transparent;
       color: rgba(240,112,104,0.75);
-      border: none;
-      border-radius: 9px;
+      border: none; border-radius: 9px;
       cursor: pointer;
       font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 13px; font-weight: 500;
       text-align: left;
       transition: background 0.15s, color 0.15s;
     }
@@ -658,10 +536,11 @@ function loadNavbar(){
       color: #f07068;
     }
 
-    /* ══ RESPONSIVE ══ */
-    
-    
-    /* ── Hamburger butonu (masaüstünde gizli) ── */
+    /* ══════════════════════════════════════
+       RESPONSIVE NAVBAR
+    ══════════════════════════════════════ */
+
+    /* ── Hamburger butonu ── */
     .nav-hamburger {
       display: none;
       flex-direction: column;
@@ -675,6 +554,7 @@ function loadNavbar(){
       cursor: pointer;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
       transition: border-color 0.2s;
       flex-shrink: 0;
     }
@@ -718,18 +598,12 @@ function loadNavbar(){
       .nav-cta { padding: 8px 10px; }
       .nav-dropdown { left: 0; transform: translateX(0) translateY(-6px); }
       .nav-item-wrap.open .nav-dropdown { transform: translateX(0) translateY(0); }
-      .nav-dropdown--pratik { min-width: 320px; left: 0; transform: translateX(0) translateY(-6px); }
-      .nav-item-wrap.open .nav-dropdown--pratik { transform: translateX(0) translateY(0); }
-      .drop-two-col { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 820px) {
       .logo__favicon { width: 26px; height: 26px; }
     }
 
     @media (max-width: 620px) {
       .logo__favicon { width: 22px; height: 22px; }
     }
-    
 
     /* ── Mobil (≤620px): hamburger slide-in panel ── */
     @media (max-width: 620px) {
@@ -738,7 +612,6 @@ function loadNavbar(){
       .nav-vr { display: none; }
       .nav-cta { display: none; }
 
-      /* Nav linkleri panel haline gelir */
       .nav-links {
         position: fixed;
         top: 0; right: 0;
@@ -754,22 +627,20 @@ function loadNavbar(){
         z-index: 999;
         overflow-y: auto;
         transform: translateX(100%);
-        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
       }
       .nav-links.mobile-open { transform: translateX(0); }
 
-      /* Panelde nav-item tam genişlikte */
       .nav-item {
         width: 100%;
         padding: 12px 16px;
         border-radius: 10px;
         font-size: 14px;
+        min-height: 48px; /* dokunma hedefi */
       }
-      
-      .nav-item span { display: inline; } /* metinleri geri göster */
+      .nav-item span { display: inline; }
       .nav-chevron { display: inline; }
 
-      /* Dropdown panelde statik açılır */
       .nav-item-wrap { flex-direction: column; width: 100%; }
       .nav-dropdown {
         position: static;
@@ -786,23 +657,19 @@ function loadNavbar(){
         margin: 4px 0 4px 8px;
         border-radius: 10px;
       }
-      .drop-two-col { grid-template-columns: 1fr; }
     }
   `;
 
-
-
-
-
-
   document.head.appendChild(style);
   document.body.prepend(navbar);
-  // Overlay'i body'ye doğrudan ekle, navbar'a değil
+
+  /* Overlay */
   const overlayEl = document.createElement("div");
   overlayEl.className = "nav-mobile-overlay";
   overlayEl.id = "navOverlay";
   document.body.appendChild(overlayEl);
-  /* ── Mobil hamburger ── */
+
+  /* ── Hamburger ── */
   const hamburger = document.getElementById("navHamburger");
   const navLinks  = document.querySelector(".nav-links");
   const overlay   = document.getElementById("navOverlay");
@@ -812,7 +679,7 @@ function loadNavbar(){
     navLinks.classList.add("mobile-open");
     overlay.classList.add("visible");
     hamburger.setAttribute("aria-expanded", "true");
-    document.body.style.overflow = "hidden"; // scroll kilidi
+    document.body.style.overflow = "hidden";
   }
 
   function closeMobileMenu() {
@@ -829,12 +696,12 @@ function loadNavbar(){
   overlay.addEventListener("click", closeMobileMenu);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeMobileMenu(); });
 
-  // Paneldeki bir bağlantıya tıklanınca kapat (dropdown değilse)
   navLinks.addEventListener("click", e => {
     const link = e.target.closest("a:not(.nav-item[id])");
     if (link && !e.target.closest(".nav-item-wrap")) closeMobileMenu();
   });
-  /* ── Dropdown hover ── */
+
+  /* ── Dropdown hover (masaüstü) + dokunuş (mobil) ── */
   const DELAY = 200;
   document.querySelectorAll(".nav-item-wrap").forEach(wrap => {
     let timer = null;
@@ -843,10 +710,9 @@ function loadNavbar(){
     wrap.addEventListener("mouseenter", open);
     wrap.addEventListener("mouseleave", close);
 
-    // Mobil: dokunuşla aç/kapat
     wrap.querySelector(".nav-item").addEventListener("click", e => {
       const isTouchDevice = window.matchMedia("(hover: none)").matches;
-      if (!isTouchDevice) return; // masaüstünde hover zaten çalışıyor
+      if (!isTouchDevice) return;
       if (wrap.querySelector(".nav-dropdown")) {
         e.preventDefault();
         const isOpen = wrap.classList.contains("open");
@@ -855,7 +721,9 @@ function loadNavbar(){
       }
     });
 
-    document.addEventListener("click", e => { if (!wrap.contains(e.target)) wrap.classList.remove("open"); });
+    document.addEventListener("click", e => {
+      if (!wrap.contains(e.target)) wrap.classList.remove("open");
+    });
   });
 
   /* ── Çıkış ── */
@@ -868,7 +736,7 @@ function loadNavbar(){
   const avatar   = document.getElementById("profileAvatar");
   const dropdown = document.getElementById("profileDropdown");
   avatar.addEventListener("click", e => { e.stopPropagation(); dropdown.classList.toggle("open"); });
-  document.addEventListener("keydown", e => { if(e.key==="Escape") dropdown.classList.remove("open"); });
+  document.addEventListener("keydown", e => { if(e.key === "Escape") dropdown.classList.remove("open"); });
   document.addEventListener("click", e => {
     if (!dropdown.contains(e.target) && e.target !== avatar) dropdown.classList.remove("open");
   });
@@ -881,7 +749,8 @@ function loadNavbar(){
       if (loginBtn)  loginBtn.style.display  = "none";
       if (profileWr) profileWr.style.display = "inline-flex";
       document.getElementById("profileEmail").textContent = user.email || "Kullanıcı";
-      const src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email || "U")}&background=1e1830&color=a064ff&size=64`;
+      const src = user.photoURL ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email || "U")}&background=1e1830&color=a064ff&size=64`;
       document.getElementById("profileAvatarImg").src    = src;
       document.getElementById("profileAvatarSmall").src = src;
     } else {
@@ -895,46 +764,86 @@ function getLoginHref(){ return "/login.html"; }
 function getUserId(){
   return auth.currentUser ? auth.currentUser.uid : null;
 }
+
 function loadFloatingMenu() {
   if (document.getElementById("globalFab")) return;
+
+  // ── Yardımcı: fab item HTML oluştur ──
+  function fabItem(href, label, cls, svgPath) {
+    return `
+      <a href="${href}" class="fab-item ${cls}" aria-label="${label}">
+        <div class="fab-item-content">
+          <span class="fab-label">${label}</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            ${svgPath}
+          </svg>
+        </div>
+      </a>`;
+  }
 
   const fabContainer = document.createElement("div");
   fabContainer.className = "fab-wrapper";
   fabContainer.id = "globalFab";
 
+  // Önemli: fab-item'lar doğrudan fab-wrapper içinde, wrapper div YOK
   fabContainer.innerHTML = `
-    <div class="fab-items">
-      ${createItem("/kelimeler/", "Kelimelerim", "item-1", '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>')}
-      ${createItem("/wordsadd/", "Yeni Kelime", "item-2", '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>')}
-      ${createItem("/quiz/", "Quiz", "item-3", '<polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8"/>')}
-      ${createItem("/notlarım/", "Notlarım", "item-4", '<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/>')}
-    </div>
-    <button class="fab-main" id="fabToggle">+</button>
+    ${fabItem("/kelimeler/", "Kelimelerim", "item-1",
+      '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>')}
+    ${fabItem("/wordsadd/", "Yeni Kelime", "item-2",
+      '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>')}
+    ${fabItem("/quiz/", "Quiz", "item-3",
+      '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>')}
+    ${fabItem("/notlarim/", "Notlarım", "item-4",
+      '<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/><polyline points="15 3 15 9 21 9"/>')}
+    <button class="fab-main" id="fabToggle" aria-label="Hızlı menü" aria-expanded="false">
+      +
+    </button>
   `;
 
-  function createItem(href, label, cls, svgPath) {
-    return `
-      <a href="${href}" class="fab-item ${cls}">
-        <div class="fab-item-content">
-          <span class="fab-label">${label}</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${svgPath}</svg>
-        </div>
-      </a>`;
+  document.body.appendChild(fabContainer);
+
+  const toggleBtn = document.getElementById("fabToggle");
+
+  function openFab() {
+    fabContainer.classList.add("active");
+    toggleBtn.setAttribute("aria-expanded", "true");
+  }
+  function closeFab() {
+    fabContainer.classList.remove("active");
+    toggleBtn.setAttribute("aria-expanded", "false");
+  }
+  function toggleFab() {
+    fabContainer.classList.contains("active") ? closeFab() : openFab();
   }
 
-  document.body.appendChild(fabContainer);
-  const toggleBtn = document.getElementById("fabToggle");
-  toggleBtn.addEventListener("click", (e) => {
+  toggleBtn.addEventListener("click", e => {
     e.stopPropagation();
-    fabContainer.classList.toggle("active");
+    toggleFab();
   });
-  document.addEventListener("click", (e) => {
-    if (!fabContainer.contains(e.target)) fabContainer.classList.remove("active");
+
+  // Dışarı tıklayınca kapat
+  document.addEventListener("click", e => {
+    if (!fabContainer.contains(e.target)) closeFab();
+  });
+
+  // ESC ile kapat
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeFab();
+  });
+
+  // Bir alt butona tıklanınca kapat (kısa gecikme — animasyon görünsün)
+  fabContainer.querySelectorAll(".fab-item").forEach(item => {
+    item.addEventListener("click", () => {
+      setTimeout(closeFab, 150);
+    });
   });
 }
 
 loadFloatingMenu();
+
 export { requireAuth, loadNavbar, getUserId };
-window.requireAuth  = requireAuth;
-window.loadNavbar   = loadNavbar;
-window.getUserId    = getUserId;
+window.requireAuth = requireAuth;
+window.loadNavbar  = loadNavbar;
+window.getUserId   = getUserId;

@@ -189,7 +189,7 @@ body {
   z-index: 2000;
 }
 
-/* ══ MAIN BUTTON ══ */
+/* MAIN */
 .fab-main {
   width: 56px;
   height: 56px;
@@ -211,12 +211,11 @@ body {
   background: #f07068;
 }
 
-/* ══ ITEMS CONTAINER ══ */
+/* ITEMS */
 .fab-items {
   position: relative;
 }
 
-/* ══ ITEM ══ */
 .fab-item {
   position: absolute;
   bottom: 5px;
@@ -233,59 +232,80 @@ body {
   text-decoration: none;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 2;
-  overflow: visible;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s;
 }
 
 /* Hover */
 .fab-item:hover {
   background: #c9a84c;
   color: #0a0a0f;
-  box-shadow: 0 0 15px rgba(201, 168, 76, 0.5);
 }
 
-/* ══ LABEL (FIX BURADA) ══ */
+/* LABEL BASE */
 .fab-label {
   position: absolute;
-  right: calc(100% + 10px); /* 🔥 ÇAKIŞMA BİTER */
-  top: 50%;
-  transform: translateY(-50%);
   background: #c9a84c;
   color: #0a0a0f;
-  padding: 5px 12px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
   font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-weight: 700;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  z-index: 1;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
 }
 
-/* Açılınca label görünür */
-.fab-wrapper.active .fab-label {
-  opacity: 1;
-}
-
-/* Açılınca item aktif */
+/* Açılınca görünür */
 .fab-wrapper.active .fab-item {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* ══ POZİSYONLAR ══ */
-.fab-wrapper.active .item-1 { transform: translateY(-115px); }
-.fab-wrapper.active .item-2 { transform: translate(-65px, -95px); }
-.fab-wrapper.active .item-3 { transform: translate(-95px, -55px); }
-.fab-wrapper.active .item-4 { transform: translateX(-115px); }
+.fab-wrapper.active .fab-label {
+  opacity: 1;
+}
+
+/* 🔥 HER ITEM’A ÖZEL LABEL KONUMU */
+
+/* Üst */
+.item-1 .fab-label {
+  bottom: 60px;
+  right: 50%;
+  transform: translateX(50%);
+}
+
+/* Çapraz */
+.item-2 .fab-label {
+  bottom: 50px;
+  right: 60px;
+}
+
+/* Yatay */
+.item-3 .fab-label {
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Tam sol */
+.item-4 .fab-label {
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* POZİSYONLAR */
+.fab-wrapper.active .item-1 { transform: translateY(-110px); }
+.fab-wrapper.active .item-2 { transform: translate(-70px, -90px); }
+.fab-wrapper.active .item-3 { transform: translate(-100px, -50px); }
+.fab-wrapper.active .item-4 { transform: translateX(-120px); }
 
 /* Mobil */
 @media (max-width: 480px) {
   .fab-wrapper.active .item-1 { transform: translateY(-130px); }
-  .fab-wrapper.active .item-2 { transform: translate(-75px, -105px); }
-  .fab-wrapper.active .item-3 { transform: translate(-105px, -65px); }
-  .fab-wrapper.active .item-4 { transform: translateX(-130px); }
+  .fab-wrapper.active .item-2 { transform: translate(-80px, -110px); }
+  .fab-wrapper.active .item-3 { transform: translate(-110px, -70px); }
+  .fab-wrapper.active .item-4 { transform: translateX(-140px); }
 }

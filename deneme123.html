@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Backend Test</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 30px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #output {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background: #f4f4f4;
+      padding: 15px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Sentence API Test</h2>
+
+  <input id="idInput" type="number" min="1" max="96" placeholder="1-96 arası sayı">
+  <button onclick="getData()">Getir</button>
+
+  <div id="output">Sonuç burada...</div>
+
+  <script>
+    async function getData() {
+      const id = document.getElementById("idInput").value;
+
+      const res = await fetch(`https://backend-api-ndl1.onrender.com/sentences/${id}`);
+      const data = await res.json();
+
+      document.getElementById("output").innerText =
+        JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>

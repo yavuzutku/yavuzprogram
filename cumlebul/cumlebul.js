@@ -133,57 +133,36 @@ async function fetchWiktionary(pageTitle) {
 // sentences_1.json → sentences_96.json sırayla taranır,
 // toplam 5 cümle bulununca durulur.
 // Her cümlenin hangi dosyadan geldiği console'a yazılır.
-async function getLocalExamples(word) {
-  const { min, max } = getWordRange();
-  const needle = word.toLowerCase();
+// ── Backend'ten cümle çekme ──
+async function getBackendExamples(word) {
+  const allResults = [];
 
-  // Kelimeyi tam kelime olarak ara (büyük/küçük harf duyarsız)
-  const wordRegex = new RegExp(`(?<![a-zA-ZäöüÄÖÜß])${needle}(?![a-zA-ZäöüÄÖÜß])`, 'i');
-
-  const collected = []; // { text, file }
-
-  for (let n = 1; n <= 96; n++) {
-    if (collected.length >= 5) break;
-
-    let sentences;
-    try {
-      const res = await fetch(`./datalar/sentences_${n}.json`);
+  try {
+    for (let i = 1; i <= 96; i++) {
+      const res = await fetch(`https://backend-api-ndl1.onrender.com/sentences/${i}`);
+      
       if (!res.ok) continue;
-      sentences = await res.json();
-    } catch {
-      continue;
-    }
 
-    for (const s of sentences) {
-      if (collected.length >= 5) break;
-      const text = s.t || '';
-      const wc = wordCount(text);
-      if (wc < min || wc > max) continue;
-      if (wordRegex.test(text)) {
-        collected.push({ text, file: `sentences_${n}.json` });
+      const data = await res.json();
+
+      for (const s of data) {
+        const text = s.t || '';
+
+        if (text.toLowerCase().includes(word.toLowerCase())) {
+          allResults.push(text);
+        }
+
+        if (allResults.length >= 5) break;
       }
+
+      if (allResults.length >= 5) break;
     }
+
+  } catch (err) {
+    console.error("Backend error:", err);
   }
 
-  // Console çıktısı: hangi dosyalardan kaç cümle alındı
-  if (collected.length > 0) {
-    const byFile = {};
-    collected.forEach(({ file }) => {
-      byFile[file] = (byFile[file] || 0) + 1;
-    });
-    console.group(`📂 "${word}" için lokal cümleler (${collected.length} adet):`);
-    collected.forEach(({ text, file }, i) => {
-      console.log(`[${i + 1}] [${file}] ${text}`);
-    });
-    console.groupEnd();
-    console.table(
-      Object.entries(byFile).map(([file, count]) => ({ Dosya: file, Adet: count }))
-    );
-  } else {
-    console.log(`❌ "${word}" için lokal JSON'larda cümle bulunamadı.`);
-  }
-
-  return collected.map(c => c.text);
+  return allResults;
 }
 
 // ── Ana arama fonksiyonu ──
@@ -232,7 +211,7 @@ async function getExamples() {
     } else {
       // Wiktionary'de bulunamadı → lokal JSON tarama
       res.innerHTML = '<p class="loading">📂 Lokal cümleler taranıyor...</p>';
-      const localSentences = await getLocalExamples(word);
+      const localSentences = await getBackendExamples(word);
 
       if (localSentences.length > 0) {
         res.innerHTML = localSentences.map((text, i) =>

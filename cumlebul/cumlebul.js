@@ -136,30 +136,53 @@ async function fetchWiktionary(pageTitle) {
 // ── Backend'ten cümle çekme ──
 async function getBackendExamples(word) {
   const allResults = [];
+  const wordLower = word.toLowerCase();
 
-  try {
-    for (let i = 1; i <= 96; i++) {
+  const BATCH_SIZE = 12; // aynı anda kaç dosya çekilecek
+
+  async function fetchFile(i) {
+    try {
       const res = await fetch(`https://backend-api-ndl1.onrender.com/sentences/${i}`);
-      
-      if (!res.ok) continue;
+      if (!res.ok) return [];
 
       const data = await res.json();
+      const matches = [];
 
       for (const s of data) {
-        const text = s.t || '';
+        const text = (s.t || '').toLowerCase();
 
-        if (text.toLowerCase().includes(word.toLowerCase())) {
-          allResults.push(text);
+        // hızlı kontrol
+        if (text.includes(wordLower)) {
+          matches.push(s.t);
+          if (matches.length + allResults.length >= 5) break;
         }
-
-        if (allResults.length >= 5) break;
       }
 
-      if (allResults.length >= 5) break;
+      return matches;
+    } catch {
+      return [];
+    }
+  }
+
+  // paralel batch tarama
+  for (let i = 1; i <= 96; i += BATCH_SIZE) {
+    const batch = [];
+
+    for (let j = i; j < i + BATCH_SIZE && j <= 96; j++) {
+      batch.push(fetchFile(j));
     }
 
-  } catch (err) {
-    console.error("Backend error:", err);
+    const results = await Promise.all(batch);
+
+    for (const arr of results) {
+      for (const text of arr) {
+        allResults.push(text);
+
+        if (allResults.length >= 5) {
+          return allResults;
+        }
+      }
+    }
   }
 
   return allResults;

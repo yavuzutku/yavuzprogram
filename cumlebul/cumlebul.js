@@ -1,9 +1,7 @@
 // ── cumlebul/cumlebul.js ──
 
 function getWordRange() {
-  const min = parseInt(document.getElementById('minWords').value) || 1;
-  const max = parseInt(document.getElementById('maxWords').value) || 999;
-  return { min, max };
+  return { min: 4, max: 20 };
 }
 
 function wordCount(text) {

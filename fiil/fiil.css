@@ -14,6 +14,7 @@ body {
     font-size: 18px;
     outline: none;
     transition: 0.3s;
+    box-sizing: border-box; /* Padding taşmasını engeller */
 }
 
 .search-wrapper input:focus {
@@ -35,7 +36,27 @@ body {
     align-items: center; 
     border-bottom: 2px solid #f0f0f0; 
     margin-bottom: 20px; 
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+}
+
+/* Zaman Başlıkları (Präsens, Präteritum vb.) */
+.time-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #475569;
+    margin: 20px 0 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.time-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: #2563eb;
+    margin-right: 10px;
+    border-radius: 2px;
 }
 
 .badge { 
@@ -53,12 +74,27 @@ body {
     gap: 12px; 
 }
 
+/* Präteritum Grubu için Özel Arka Plan */
+.praeteritum-group {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
 .item { 
     padding: 12px; 
-    background: #f8f9fa; 
+    background: #ffffff; /* Kart içindeki itemlar beyaz olsun */
     border-radius: 10px; 
     border-left: 4px solid #dee2e6;
     font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.item strong {
+    color: #64748b;
+    font-size: 0.85rem;
+    text-transform: uppercase;
 }
 
 .highlight { 
@@ -72,4 +108,6 @@ body {
 /* Mobil uyum */
 @media (max-width: 600px) {
     .grid { grid-template-columns: 1fr; }
+    .card { padding: 20px; }
+    .card-header { flex-direction: column; align-items: flex-start; gap: 10px; }
 }

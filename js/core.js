@@ -17,6 +17,8 @@ function loadNavbar(){
   const isMetin   = path.includes("/metin");
   const isArtikel = path.includes("/artikel/");
   const isCumle   = path.includes("/cumlebul/");
+  const isFiil    = path.includes("/fiil");
+
 
   navbar.innerHTML = `
     <a class="logo" href="/" aria-label="AlmancaPratik ana sayfa">
@@ -87,13 +89,11 @@ function loadNavbar(){
         </div>
       </div>
 
-      <!-- Metin Analizi (Pratik'in yerinde, dropdown yok) -->
+      <!-- Metin Analizi -->
       <a class="nav-item ${isMetin ? 'nav-item--active' : ''}" href="/metin/">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         <span>Metin Analizi</span>
       </a>
-
-      
 
       <!-- Artikel -->
       <a class="nav-item ${isArtikel ? 'nav-item--active' : ''}" href="/artikel/">
@@ -105,6 +105,12 @@ function loadNavbar(){
       <a class="nav-item ${isCumle ? 'nav-item--active' : ''}" href="/cumlebul/">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         <span>Cümle</span>
+      </a>
+
+      <!-- Fiil Çekimleme -->
+      <a class="nav-item ${isFiil ? 'nav-item--active' : ''}" href="/fiil/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span>Fiil Çekimleme</span>
       </a>
 
       <!-- Blog -->
@@ -155,6 +161,7 @@ function loadNavbar(){
     </div>
   `;
 
+
   const style = document.createElement("style");
   style.textContent = `
     .logo {
@@ -189,7 +196,6 @@ function loadNavbar(){
       box-shadow: 0 1px 0 rgba(201,168,76,0.07), 0 8px 32px rgba(0,0,0,0.4);
     }
 
-    /* ── LOGO ── */
     .logo__text {
       font-family: 'Syne', sans-serif;
       font-size: 17px;
@@ -210,14 +216,12 @@ function loadNavbar(){
     }
     .logo__accent { color: #c9a84c; }
 
-    /* ── NAV LINKS (orta) ── */
     .nav-links {
       display: flex;
       align-items: center;
       gap: 2px;
     }
 
-    /* ── NAV ITEM ── */
     .nav-item {
       display: inline-flex;
       align-items: center;
@@ -253,7 +257,6 @@ function loadNavbar(){
     .nav-chevron { opacity: 0.35; transition: transform 0.2s ease, opacity 0.18s; }
     .nav-item-wrap.open .nav-chevron { transform: rotate(180deg); opacity: 0.7; }
 
-    /* ── RIGHT SIDE ── */
     .nav-right {
       display: flex;
       align-items: center;
@@ -261,7 +264,6 @@ function loadNavbar(){
       flex-shrink: 0;
     }
 
-    /* ── SEVIYE CTA ── */
     .nav-cta {
       display: inline-flex;
       align-items: center;
@@ -287,7 +289,6 @@ function loadNavbar(){
     }
     .nav-cta:hover svg { stroke: #60c8f0; }
 
-    /* ── LOGIN BTN ── */
     .nav-login-btn {
       display: inline-flex;
       align-items: center;
@@ -313,14 +314,12 @@ function loadNavbar(){
       background: linear-gradient(135deg, #d9b85c, #f0d480);
     }
 
-    /* ── VERTICAL RULE ── */
     .nav-vr {
       width: 1px; height: 22px;
       background: rgba(255,255,255,0.07);
       flex-shrink: 0;
     }
 
-    /* ══ DROPDOWN BASE ══ */
     .nav-item-wrap { position: relative; display: inline-flex; }
 
     .nav-dropdown {
@@ -357,7 +356,6 @@ function loadNavbar(){
         inset 0 1px 0 rgba(255,255,255,0.04);
     }
 
-    /* ── SECTION LABEL ── */
     .drop-section-label {
       font-family: 'DM Sans', sans-serif;
       font-size: 10px;
@@ -369,7 +367,6 @@ function loadNavbar(){
       padding: 0;
     }
 
-    /* ── LEVEL GRID ── */
     .drop-level-grid {
       display: flex;
       flex-direction: column;
@@ -439,7 +436,6 @@ function loadNavbar(){
       margin: 6px 4px;
     }
 
-    /* ══ PROFILE ══ */
     .profile-wrapper { position: relative; display: inline-flex; }
     .profile-trigger {
       background: none; border: none;
@@ -531,11 +527,6 @@ function loadNavbar(){
       color: #f07068;
     }
 
-    /* ══════════════════════════════════════
-       RESPONSIVE NAVBAR
-    ══════════════════════════════════════ */
-
-    /* ── Hamburger butonu ── */
     .nav-hamburger {
       display: none;
       flex-direction: column;
@@ -566,7 +557,6 @@ function loadNavbar(){
     .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
     .nav-hamburger:hover { border-color: rgba(255,255,255,0.25); }
 
-    /* ── Mobil overlay ── */
     .nav-mobile-overlay {
       display: none;
       position: fixed;
@@ -578,13 +568,11 @@ function loadNavbar(){
     }
     .nav-mobile-overlay.visible { display: block; }
 
-    /* ── Tablet (≤1000px) ── */
     @media (max-width: 1000px) {
       .navbar { padding: 0 28px; }
       .drop-item-sub { display: none; }
     }
 
-    /* ── Küçük tablet (≤820px) ── */
     @media (max-width: 820px) {
       .navbar { padding: 0 20px; height: 62px; }
       .nav-item span { display: none; }
@@ -601,17 +589,15 @@ function loadNavbar(){
       .logo__favicon { width: 22px; height: 22px; }
     }
 
-    /* ── Mobil (≤620px): navbar altından açılan dropdown panel ── */
     @media (max-width: 620px) {
       .navbar { padding: 0 16px; gap: 12px; }
       .nav-hamburger { display: flex; }
       .nav-vr { display: none; }
       .nav-cta { display: none; }
 
-      /* Panel: sağdan kaymaz, navbarın hemen altından aşağı açılır */
       .nav-links {
         position: fixed;
-        top: 68px;   /* navbar yüksekliği */
+        top: 68px;
         left: 0;
         right: 0;
         width: 100%;
@@ -627,7 +613,6 @@ function loadNavbar(){
         padding: 10px 12px 20px;
         z-index: 998;
         overflow-y: auto;
-        /* Animasyon: hafif aşağı kayma + fade */
         opacity: 0;
         transform: translateY(-6px);
         pointer-events: none;
@@ -671,13 +656,11 @@ function loadNavbar(){
   document.head.appendChild(style);
   document.body.prepend(navbar);
 
-  /* Overlay */
   const overlayEl = document.createElement("div");
   overlayEl.className = "nav-mobile-overlay";
   overlayEl.id = "navOverlay";
   document.body.appendChild(overlayEl);
 
-  /* ── Hamburger ── */
   const hamburger = document.getElementById("navHamburger");
   const navLinks  = document.querySelector(".nav-links");
   const overlay   = document.getElementById("navOverlay");
@@ -687,7 +670,6 @@ function loadNavbar(){
     navLinks.classList.add("mobile-open");
     overlay.classList.add("visible");
     hamburger.setAttribute("aria-expanded", "true");
-    // body scroll kilitlemiyoruz — FAB ve sayfa erişilebilir kalır
   }
 
   function closeMobileMenu() {
@@ -708,7 +690,6 @@ function loadNavbar(){
     if (link && !e.target.closest(".nav-item-wrap")) closeMobileMenu();
   });
 
-  /* ── Dropdown hover (masaüstü) + dokunuş (mobil) ── */
   const DELAY = 200;
   document.querySelectorAll(".nav-item-wrap").forEach(wrap => {
     let timer = null;
@@ -733,13 +714,11 @@ function loadNavbar(){
     });
   });
 
-  /* ── Çıkış ── */
   document.getElementById("logoutBtn").addEventListener("click", async () => {
     try { await logoutFirebase(); } catch(e){ console.error(e); }
     finally { window.location.href = "/"; }
   });
 
-  /* ── Profil dropdown ── */
   const avatar   = document.getElementById("profileAvatar");
   const dropdown = document.getElementById("profileDropdown");
   avatar.addEventListener("click", e => { e.stopPropagation(); dropdown.classList.toggle("open"); });
@@ -748,7 +727,6 @@ function loadNavbar(){
     if (!dropdown.contains(e.target) && e.target !== avatar) dropdown.classList.remove("open");
   });
 
-  /* ── Auth durumu ── */
   onAuthChange((user) => {
     const loginBtn  = document.getElementById("navLoginBtn");
     const profileWr = document.getElementById("profileWrapper");
@@ -775,7 +753,6 @@ function getUserId(){
 function loadFloatingMenu() {
   if (document.getElementById("globalFab")) return;
 
-  // ── Yardımcı: fab item HTML oluştur ──
   function fabItem(href, label, cls, svgPath) {
     return `
       <a href="${href}" class="fab-item ${cls}" aria-label="${label}">
@@ -794,7 +771,6 @@ function loadFloatingMenu() {
   fabContainer.className = "fab-wrapper";
   fabContainer.id = "globalFab";
 
-  // Önemli: fab-item'lar doğrudan fab-wrapper içinde, wrapper div YOK
   fabContainer.innerHTML = `
     ${fabItem("/kelimeler/", "Kelimelerim", "item-1",
       '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>')}
@@ -830,17 +806,14 @@ function loadFloatingMenu() {
     toggleFab();
   });
 
-  // Dışarı tıklayınca kapat
   document.addEventListener("click", e => {
     if (!fabContainer.contains(e.target)) closeFab();
   });
 
-  // ESC ile kapat
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") closeFab();
   });
 
-  // Bir alt butona tıklanınca kapat (kısa gecikme — animasyon görünsün)
   fabContainer.querySelectorAll(".fab-item").forEach(item => {
     item.addEventListener("click", () => {
       setTimeout(closeFab, 150);

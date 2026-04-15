@@ -35,7 +35,7 @@ const LEVELS = [
   { min:13, max:17, code:"B1", name:"Orta Seviye", emoji:"📘", color:"#60c8f0", bg:"rgba(96,200,240,0.08)", border:"rgba(96,200,240,0.2)",
     desc:`Günlük hayatın büyük bölümünde Almancayı kullanabilirsin. <a href="/cumlebul/">Cümle örnekleri aracıyla</a> kelimeleri bağlamında öğrenmek, <a href="/dersler/">B1 derslerini</a> takip etmek B2'ye geçişini destekleyecek.` },
   { min:18, max:22, code:"B2", name:"Üst Orta Seviye", emoji:"📙", color:"#818cf8", bg:"rgba(129,140,248,0.08)", border:"rgba(129,140,248,0.2)",
-    desc:`Karmaşık konularda Almanca anlayabilir ve ifade edebilirsin. <a href="/metin/">Gerçek Almanca metinler</a> okuyarak ve <a href="/ceviri/">çeviri aracını</a> kullanarak C1'e hazırlanabilirsin.` },
+    desc:`Karmaşık konularda Almanca anlayabilir ve ifade edebilirsin. <a href="/metin/">Gerçek Almanca metinler</a> okuyarak öğrenebilirsin` },
   { min:23, max:25, code:"C1", name:"İleri Seviye", emoji:"🏆", color:"#c9a84c", bg:"rgba(201,168,76,0.1)", border:"rgba(201,168,76,0.25)",
     desc:`Almancayı akıcı ve etkili kullanabiliyorsun. Tebrikler! <a href="/cumlebul/">Cümle örnekleri</a> ve <a href="/blog/">blog yazıları</a> ile nüanslı ifadeleri geliştirmeye devam edebilirsin.` }
 ];

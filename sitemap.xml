@@ -33,13 +33,7 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- Almanca-Türkçe çeviri -->
-  <url>
-    <loc>https://almancapratik.com/ceviri/</loc>
-    <lastmod>2026-03-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
+  
 
   <!-- Kelime quizi -->
   <url>

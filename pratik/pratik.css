@@ -404,10 +404,7 @@ body {
 .action-card--sponsor:hover .card-icon { color:var(--amber); border-color:rgba(255,210,80,0.25); }
 .action-card--sponsor:hover .card-tag  { color:var(--amber); border-color:rgba(255,210,80,0.25); }
 
-.action-card--ceviri .card-glow    { background: #38bdf8; }
-.action-card--ceviri:hover         { border-color:rgba(56,189,248,0.3); box-shadow:0 20px 40px -10px rgba(56,189,248,0.12); }
-.action-card--ceviri:hover .card-icon { color:#38bdf8; border-color:rgba(56,189,248,0.25); }
-.action-card--ceviri:hover .card-tag  { color:#38bdf8; border-color:rgba(56,189,248,0.25); }
+
 
 .action-card--ai .card-glow     { background: #a064ff; }
 .action-card--ai:hover          { border-color:rgba(160,100,255,0.3); box-shadow:0 20px 40px -10px rgba(160,100,255,0.12); }

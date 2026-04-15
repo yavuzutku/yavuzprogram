@@ -1,25 +1,343 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Almanca Fiil Çekimleyici</title>
-    <link rel="stylesheet" href="./fiil.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ═══ SEO CORE ═══ -->
+  <title>Almanca Fiil Çekimi | Almanca Fiil Çekimleme Tablosu – AlmancaPratik</title>
+  <meta name="description" content="Almanca fiil çekimi tablosu: Präsens, Präteritum, Partizip II, Konjunktiv II ve İmperativ formlarını anında görün. Sesli telaffuz desteği ile doğru Almanca öğrenin.">
+  <meta name="keywords" content="almanca fiil çekimi, almanca fiil tablosu, almanca conjugation, almanca fiiller, präteritum, präsens, partizip II, konjunktiv II, almanca öğren, almanca fiil çekimleme">
+  <meta name="author" content="AlmancaPratik">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://almancapratik.com/fiil/">
+
+  <!-- ═══ OPEN GRAPH ═══ -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Almanca Fiil Çekimi – Tüm Zamanlar | AlmancaPratik">
+  <meta property="og:description" content="Almanca fiillerin tüm çekimlerini anında görün. Sesli telaffuz, Präsens, Präteritum, Partizip II ve daha fazlası.">
+  <meta property="og:url" content="https://almancapratik.com/fiil/">
+  <meta property="og:site_name" content="AlmancaPratik">
+
+  <!-- ═══ TWITTER CARD ═══ -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Almanca Fiil Çekimi | AlmancaPratik">
+  <meta name="twitter:description" content="Almanca fiil çekimleri: Präsens, Präteritum, Partizip II, Konjunktiv II ve İmperativ formları anında.">
+
+  <!-- ═══ SCHEMA.ORG ═══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Almanca Fiil Çekimleme Aracı",
+    "description": "Almanca fiillerin Präsens, Präteritum, Partizip II, Konjunktiv II ve İmperativ çekimlerini gösteren interaktif araç.",
+    "url": "https://almancapratik.com/fiil/",
+    "applicationCategory": "EducationalApplication",
+    "inLanguage": ["tr", "de"],
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AlmancaPratik",
+      "url": "https://almancapratik.com"
+    }
+  }
+  </script>
+
+  <!-- ═══ FONTS ═══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./fiil.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Almanca Fiil Sözlüğü</h1>
-            <div class="search-wrapper">
-                <input type="text" id="searchInput" placeholder="Bir fiil yazın (örn: klieben)..." autocomplete="off">
-            </div>
-        </header>
+  <!-- Navbar buraya yüklenecek (navbar.js) -->
 
-        <main id="verbContent" class="hidden">
-            </main>
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" aria-label="Fiil Arama">
+    <div class="hero-bg-grid" aria-hidden="true"></div>
+    <div class="hero-glow" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>500+ Fiil Veritabanı</span>
+      </div>
+
+      <h1 class="hero-title">
+        Almanca Fiil<br>
+        <span class="hero-accent">Çekimleme</span>
+      </h1>
+      <p class="hero-sub">
+        Präsens · Präteritum · Partizip II · Konjunktiv II · İmperativ<br>
+        Sesli telaffuz ile doğru Almanca öğrenin
+      </p>
+
+      <!-- SEARCH -->
+      <div class="search-shell" role="search">
+        <div class="search-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Fiil girin… (örn: gehen, laufen, sein)"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Almanca fiil arama"
+          aria-describedby="searchHint"
+        >
+        <div class="search-shortcut" aria-hidden="true">
+          <kbd>↵</kbd>
+        </div>
+      </div>
+      <p class="search-hint" id="searchHint">En az 2 harf yazın — sonuçlar anında görünür</p>
+
+      <!-- QUICK VERBS -->
+      <div class="quick-verbs" aria-label="Hızlı fiil seçimi">
+        <span class="quick-label">Sık kullanılan:</span>
+        <button class="quick-chip" data-verb="sein">sein</button>
+        <button class="quick-chip" data-verb="haben">haben</button>
+        <button class="quick-chip" data-verb="werden">werden</button>
+        <button class="quick-chip" data-verb="gehen">gehen</button>
+        <button class="quick-chip" data-verb="kommen">kommen</button>
+        <button class="quick-chip" data-verb="machen">machen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VERB RESULT ═══ -->
+  <main class="main-content">
+    <div id="verbContent" class="verb-wrapper hidden" aria-live="polite" role="region" aria-label="Fiil çekimi sonucu">
+
+      <!-- VERB HEADER -->
+      <div class="verb-header">
+        <div class="verb-meta">
+          <h2 class="verb-title" id="verbTitle">—</h2>
+          <div class="verb-tags">
+            <span class="tag tag--hilf" id="tagHilf">Hilfsverb: —</span>
+            <span class="tag tag--type" id="tagType">—</span>
+          </div>
+        </div>
+        <div class="verb-actions">
+          <button class="action-btn" id="btnSpeakAll" title="Tüm çekimi sesli oku" aria-label="Tüm çekimi sesli oku">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            </svg>
+            <span>Tümünü Dinle</span>
+          </button>
+          <button class="action-btn" id="btnCopyAll" title="Çekimi kopyala" aria-label="Çekimi panoya kopyala">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span>Kopyala</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SPEECH SPEED -->
+      <div class="speech-bar">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <span class="speech-label">Telaffuz Hızı</span>
+        <div class="speed-pills">
+          <button class="speed-pill" data-speed="0.7">Yavaş</button>
+          <button class="speed-pill active" data-speed="1">Normal</button>
+          <button class="speed-pill" data-speed="1.4">Hızlı</button>
+        </div>
+      </div>
+
+      <!-- ════ TENSES ════ -->
+      <!-- PRÄSENS -->
+      <div class="tense-block">
+        <div class="tense-header">
+          <div class="tense-title-row">
+            <span class="tense-marker" style="--clr:#60c8f0"></span>
+            <h3 class="tense-name">Präsens</h3>
+            <span class="tense-tr">Şimdiki Zaman</span>
+          </div>
+          <button class="mini-speak-btn" data-tense="praesens" title="Präsens çekimini dinle" aria-label="Präsens çekimini sesli oku">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </button>
+        </div>
+        <div class="conj-grid" id="praesensGrid">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- PRÄTERITUM -->
+      <div class="tense-block">
+        <div class="tense-header">
+          <div class="tense-title-row">
+            <span class="tense-marker" style="--clr:#c9a84c"></span>
+            <h3 class="tense-name">Präteritum</h3>
+            <span class="tense-tr">Geçmiş Zaman</span>
+          </div>
+          <button class="mini-speak-btn" data-tense="praeteritum" title="Präteritum çekimini dinle" aria-label="Präteritum çekimini sesli oku">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </button>
+        </div>
+        <div class="conj-grid" id="praeteritumGrid">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- OTHER FORMS -->
+      <div class="tense-block forms-block">
+        <div class="tense-header">
+          <div class="tense-title-row">
+            <span class="tense-marker" style="--clr:#a78bfa"></span>
+            <h3 class="tense-name">Diğer Formlar</h3>
+            <span class="tense-tr">Partizip · Konjunktiv · İmperativ</span>
+          </div>
+        </div>
+        <div class="forms-grid" id="formsGrid">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- PERFECT HELPER -->
+      <div class="perfect-bar" id="perfectBar">
+        <div class="perfect-label">Perfekt (Geçmiş Zaman - Konuşma):</div>
+        <div class="perfect-form" id="perfectForm">—</div>
+        <button class="speak-icon-btn" id="btnSpeakPerfect" aria-label="Perfekt formunu sesli oku">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+      </div>
+
+    </div><!-- /verb-wrapper -->
+
+    <!-- ═══ NOT FOUND ═══ -->
+    <div id="notFound" class="not-found hidden" aria-live="polite">
+      <div class="nf-icon" aria-hidden="true">∅</div>
+      <p class="nf-text">Bu fiil veritabanında bulunamadı.</p>
+      <p class="nf-sub">Kelimenin sözlük biçimini (infinitiv) girdiğinizden emin olun.</p>
     </div>
 
-    <script src="./fiil.js"></script> 
+    <!-- ═══ SEO CONTENT ═══ -->
+    <section class="seo-section" aria-label="Almanca Fiil Çekimi Hakkında Bilgi">
+      <div class="seo-grid">
+
+        <article class="seo-card">
+          <div class="seo-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <h3>Präsens Nedir?</h3>
+          <p>Almancada şimdiki zaman için kullanılan Präsens, hem süregelen hem de alışkanlık ifade eden eylemleri kapsar. <em>ich gehe</em> (ben gidiyorum / giderim) gibi.</p>
+        </article>
+
+        <article class="seo-card">
+          <div class="seo-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <h3>Präteritum vs. Perfekt</h3>
+          <p>Yazı dilinde geçmiş anlatım için Präteritum (<em>ich ging</em>) tercih edilirken, konuşma dilinde Perfekt (<em>ich bin gegangen</em>) daha yaygındır.</p>
+        </article>
+
+        <article class="seo-card">
+          <div class="seo-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+          <h3>Partizip II Kullanımı</h3>
+          <p>Partizip II hem Perfekt/Plusquamperfekt yapılarında hem de pasif cümlelerde kullanılır. Düzenli fiiller <em>-t</em>, düzensiz fiiller farklı ekler alır.</p>
+        </article>
+
+        <article class="seo-card">
+          <div class="seo-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <h3>Konjunktiv II</h3>
+          <p>Konjunktiv II kibarca ricada, varsayım ve irreal cümlelerde kullanılır. <em>ich würde gehen</em> (giderdim) yapısı günlük dilde çok yaygındır.</p>
+        </article>
+
+        <article class="seo-card">
+          <div class="seo-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+              <line x1="6" y1="1" x2="6" y2="4"/>
+              <line x1="10" y1="1" x2="10" y2="4"/>
+              <line x1="14" y1="1" x2="14" y2="4"/>
+            </svg>
+          </div>
+          <h3>Hilfsverb: haben mi, sein mi?</h3>
+          <p>Perfekt cümlelerinde hangi yardımcı fiilin kullanıldığı kritiktir. Hareket ve durum değişikliği bildiren fiiller genellikle <em>sein</em>, diğerleri <em>haben</em> alır.</p>
+        </article>
+
+        <article class="seo-card">
+          <div class="seo-card-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            </svg>
+          </div>
+          <h3>Doğru Telaffuz</h3>
+          <p>Her fiil formunun üzerindeki 🔊 butonuna basarak Almanca telaffuzu anında dinleyebilirsiniz. Hızı "Yavaş" konuma getirerek sesleri daha net duyun.</p>
+        </article>
+
+      </div>
+
+      <!-- COMMON VERBS TABLE -->
+      <div class="common-verbs-section">
+        <h2 class="cv-title">En Çok Kullanılan Almanca Fiiller</h2>
+        <div class="cv-table-wrap" role="region" aria-label="Sık kullanılan Almanca fiiller tablosu">
+          <table class="cv-table">
+            <thead>
+              <tr>
+                <th>Infinitiv</th>
+                <th>Türkçe</th>
+                <th>Hilfsverb</th>
+                <th>Partizip II</th>
+                <th>Präteritum (ich)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><button class="cv-link" data-verb="sein">sein</button></td><td>olmak</td><td>—</td><td>gewesen</td><td>war</td></tr>
+              <tr><td><button class="cv-link" data-verb="haben">haben</button></td><td>sahip olmak</td><td>haben</td><td>gehabt</td><td>hatte</td></tr>
+              <tr><td><button class="cv-link" data-verb="werden">werden</button></td><td>olmak / -ecek</td><td>sein</td><td>geworden</td><td>wurde</td></tr>
+              <tr><td><button class="cv-link" data-verb="gehen">gehen</button></td><td>gitmek</td><td>sein</td><td>gegangen</td><td>ging</td></tr>
+              <tr><td><button class="cv-link" data-verb="kommen">kommen</button></td><td>gelmek</td><td>sein</td><td>gekommen</td><td>kam</td></tr>
+              <tr><td><button class="cv-link" data-verb="machen">machen</button></td><td>yapmak</td><td>haben</td><td>gemacht</td><td>machte</td></tr>
+              <tr><td><button class="cv-link" data-verb="sehen">sehen</button></td><td>görmek</td><td>haben</td><td>gesehen</td><td>sah</td></tr>
+              <tr><td><button class="cv-link" data-verb="wissen">wissen</button></td><td>bilmek</td><td>haben</td><td>gewusst</td><td>wusste</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="./fiil.js"></script>
 </body>
 </html>

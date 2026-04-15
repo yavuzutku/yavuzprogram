@@ -12,6 +12,18 @@
    "Hilfsverb": "haben"
  },
  {
+   "Infinitive": "sein",
+   "Präsens_ich": "bin",
+   "Präsens_du": "bist",
+   "Präsens_er, sie, es": "ist",
+   "Präteritum_ich": "war",
+   "Partizip II": "gewesen",
+   "Konjunktiv II_ich": "wäre",
+   "Imperativ Singular": "sei",
+   "Imperativ Plural": "seid",
+   "Hilfsverb": "sein"
+ },
+ {
    "Infinitive": "klieben",
    "Präsens_ich": "kliebe",
    "Präsens_du": "kliebst",

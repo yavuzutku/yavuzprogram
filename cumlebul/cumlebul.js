@@ -157,7 +157,14 @@ async function getBackendExamples(word) {
       8000
     );
     if (!res.ok) return [];
-    return await res.json();
+    const data = await res.json();
+
+    // Sadece aralığa uygun olanları filtrele (Sıralama kaldırıldı)
+    const { min, max } = getWordRange();
+    return data.filter(e => {
+      const wc = wordCount(e);
+      return wc >= min && wc <= max;
+    });
   } catch {
     return [];
   }
@@ -185,10 +192,10 @@ async function getExamples() {
   if (!word) { err.textContent = 'Lütfen bir kelime gir.'; return; }
 
   btn.disabled = true;
-  res.innerHTML = '<p class="loading">🔍 Wiktionary aranıyor…</p>';
+  res.innerHTML = '<p class="loading">🔍 Cümleler hazırlanıyor…</p>';
 
   try {
-    // Wiktionary dene
+    // 1. ADIM: Wiktionary'den çek
     const capitalized = word.charAt(0).toUpperCase() + word.slice(1);
     const attempts = word === capitalized ? [word] : [word, capitalized];
     let wikitext = null;
@@ -197,29 +204,40 @@ async function getExamples() {
       if (wikitext) break;
     }
 
-    const examples = wikitext ? parseExamples(wikitext) : [];
+    let finalSentences = wikitext ? parseExamples(wikitext) : [];
+    let sourceText = "Kaynak: Wiktionary";
 
-    if (examples.length > 0) {
-      res.innerHTML =
-        buildResultsHTML(examples) +
-        `<p class="source">Kaynak: <a href="https://de.wiktionary.org/wiki/${encodeURIComponent(capitalized)}" target="_blank">Wiktionary</a></p>`;
-      // Paralel çeviri — DOM hazır olduktan sonra
-      await renderTranslations(examples);
-
-    } else {
-      // Backend'e düş
-      res.innerHTML = '<p class="loading">📂 Lokal cümleler aranıyor…</p>';
-      const local = await getBackendExamples(word);
-
-      if (local.length > 0) {
-        res.innerHTML =
-          buildResultsHTML(local) +
-          `<p class="source">Kaynak: Lokal Tatoeba verisi</p>`;
-        await renderTranslations(local);
-      } else {
-        err.textContent = `"${word}" için sonuç bulunamadı.`;
-        res.innerHTML = '';
+    // 2. ADIM: Eğer 5'ten azsa Local Backend ile tamamla
+    if (finalSentences.length < 5) {
+      const localResults = await getBackendExamples(word);
+      
+      // Wiktionary'de zaten olan cümleleri tekrar eklememek için kontrol et
+      for (const s of localResults) {
+        if (finalSentences.length >= 5) break;
+        if (!finalSentences.includes(s)) {
+          finalSentences.push(s);
+        }
       }
+      
+      // Kaynak bilgisini güncelle
+      if (finalSentences.length > 0) {
+        sourceText = finalSentences.length > (wikitext ? parseExamples(wikitext).length : 0) 
+          ? "Kaynak: Wiktionary + Lokal Veri" 
+          : "Kaynak: Wiktionary";
+      }
+    }
+
+    // 3. ADIM: Ekranda Göster
+    if (finalSentences.length > 0) {
+      res.innerHTML =
+        buildResultsHTML(finalSentences) +
+        `<p class="source">${sourceText}</p>`;
+      
+      // Çevirileri başlat
+      await renderTranslations(finalSentences);
+    } else {
+      err.textContent = `"${word}" için hiçbir kaynakta sonuç bulunamadı.`;
+      res.innerHTML = '';
     }
 
   } catch (e) {

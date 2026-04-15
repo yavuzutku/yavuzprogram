@@ -1,12 +1,75 @@
-body { font-family: 'Inter', sans-serif; background: #f0f2f5; padding: 20px; }
-.container { max-width: 800px; margin: 0 auto; }
-.search-wrapper input { 
-    width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; font-size: 18px;
+body { 
+    font-family: 'Inter', sans-serif; 
+    background: #f0f2f5; 
+    padding: 20px; 
+    color: #333;
 }
-.card { background: white; padding: 30px; border-radius: 20px; margin-top: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-.card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; margin-bottom: 20px; }
-.aux-verb { background: #e3f2fd; color: #1976d2; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
-.conjugation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.box { padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #ddd; }
-.highlight { border-left-color: #2563eb; background: #eff6ff; }
+.container { max-width: 800px; margin: 0 auto; }
+
+.search-wrapper input { 
+    width: 100%; 
+    padding: 18px; 
+    border-radius: 15px; 
+    border: 2px solid #e0e0e0; 
+    font-size: 18px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-wrapper input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.1);
+}
+
+.card { 
+    background: white; 
+    padding: 30px; 
+    border-radius: 20px; 
+    margin-top: 20px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+}
+
+.card-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 2px solid #f0f0f0; 
+    margin-bottom: 20px; 
+    padding-bottom: 10px;
+}
+
+.badge { 
+    background: #e3f2fd; 
+    color: #1976d2; 
+    padding: 6px 16px; 
+    border-radius: 20px; 
+    font-weight: 700; 
+    font-size: 14px;
+}
+
+.grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+}
+
+.item { 
+    padding: 12px; 
+    background: #f8f9fa; 
+    border-radius: 10px; 
+    border-left: 4px solid #dee2e6;
+    font-size: 15px;
+}
+
+.highlight { 
+    border-left-color: #2563eb; 
+    background: #eff6ff; 
+    font-weight: 600;
+}
+
 .hidden { display: none; }
+
+/* Mobil uyum */
+@media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+}

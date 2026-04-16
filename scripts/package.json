@@ -1,0 +1,13 @@
+{
+  "name": "almancapratik-ssg",
+  "version": "1.0.0",
+  "description": "AlmancaPratik — statik ders HTML üretici",
+  "type": "module",
+  "scripts": {
+    "generate": "node generate-lessons.js",
+    "generate:all": "node generate-lessons.js --all"
+  },
+  "dependencies": {
+    "firebase": "^10.12.2"
+  }
+}

@@ -1,0 +1,173 @@
+/* lesson-static.css
+ * Statik ders sayfaları için paylaşılan stiller.
+ * Konum: /dersler/lesson-static.css
+ * Her /dersler/{slug}/index.html buraya referans verir.
+ */
+
+/* ── Arka plan ── */
+.bg-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 20%, transparent 100%);
+}
+.bg-glow {
+  position: absolute; border-radius: 50%;
+  filter: blur(120px); opacity: 0.08;
+  animation: drift 14s ease-in-out infinite alternate;
+}
+.bg-glow--1 {
+  width: 600px; height: 600px; top: -200px; left: -100px;
+  background: radial-gradient(circle, #c9a84c, transparent 70%);
+}
+.bg-glow--2 {
+  width: 400px; height: 400px; top: 30%; right: -120px;
+  background: radial-gradient(circle, #60c8f0, transparent 70%);
+  animation-delay: -7s; opacity: 0.06;
+}
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(30px, 20px) scale(1.06); }
+}
+
+/* ── Sayfa düzeni ── */
+.lesson-wrap {
+  position: relative; z-index: 1;
+  max-width: 740px; margin: 0 auto;
+  padding: 40px 24px 100px;
+}
+
+/* ── Breadcrumb ── */
+.lesson-nav-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 36px;
+}
+.lesson-back {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13px; color: var(--text-muted);
+  background: none; border: none; padding: 0;
+  text-decoration: none;
+  transition: color var(--transition, 0.2s);
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+}
+.lesson-back:hover { color: var(--text-primary); }
+
+/* ── Kapak görseli ── */
+.lesson-hero-img {
+  width: 100%; max-height: 420px; object-fit: cover;
+  border-radius: 16px; margin-bottom: 36px;
+  border: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
+  display: block;
+}
+
+/* ── Meta satırı ── */
+.lesson-meta-row {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 16px;
+  font-family: var(--font-mono, 'DM Mono', monospace);
+  font-size: 11px; color: var(--text-muted, rgba(240,238,232,0.4));
+}
+.lesson-card-dot {
+  width: 2px; height: 2px; border-radius: 50%;
+  background: var(--text-muted, rgba(240,238,232,0.4));
+}
+
+/* ── Kategori badge ── */
+.lesson-cat-badge {
+  padding: 2px 9px; border-radius: 5px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.lesson-cat-badge[data-cat="A1"] { background: rgba(34,197,94,0.1);   border: 1px solid rgba(34,197,94,0.25);   color: #22c55e; }
+.lesson-cat-badge[data-cat="A2"] { background: rgba(134,239,172,0.1); border: 1px solid rgba(134,239,172,0.25); color: #86efac; }
+.lesson-cat-badge[data-cat="B1"] { background: rgba(96,200,240,0.1);  border: 1px solid rgba(96,200,240,0.25);  color: #60c8f0; }
+.lesson-cat-badge[data-cat="B2"] { background: rgba(129,140,248,0.1); border: 1px solid rgba(129,140,248,0.25); color: #818cf8; }
+.lesson-cat-badge[data-cat="C1"] { background: rgba(201,168,76,0.1);  border: 1px solid rgba(201,168,76,0.25);  color: #c9a84c; }
+.lesson-cat-badge:not([data-cat]),
+.lesson-cat-badge[data-cat=""]   { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text-secondary, rgba(240,238,232,0.6)); }
+
+/* ── Başlık ── */
+.lesson-heading {
+  font-family: var(--font-display, 'Syne', sans-serif);
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+  color: var(--text-primary, #f0eee8);
+  margin-bottom: 28px;
+}
+
+/* ── İçerik ── */
+.lesson-body {
+  font-size: 17px; line-height: 1.9;
+  color: rgba(240,238,232,0.82);
+  font-family: 'Lora', Georgia, serif;
+}
+.lesson-body h2 {
+  font-family: var(--font-display, 'Syne', sans-serif);
+  font-size: 22px; font-weight: 800;
+  color: var(--text-primary, #f0eee8);
+  margin: 36px 0 14px; letter-spacing: -0.02em;
+}
+.lesson-body h3 {
+  font-family: var(--font-display, 'Syne', sans-serif);
+  font-size: 18px; font-weight: 700;
+  color: var(--text-primary, #f0eee8);
+  margin: 28px 0 10px;
+}
+.lesson-body p        { margin-bottom: 20px; }
+.lesson-body strong   { color: var(--text-primary, #f0eee8); font-weight: 600; }
+.lesson-body em       { font-style: italic; color: rgba(240,238,232,0.7); }
+.lesson-body a        { color: var(--gold, #c9a84c); text-decoration: underline; text-underline-offset: 3px; }
+.lesson-body ul,
+.lesson-body ol       { margin: 0 0 20px 24px; }
+.lesson-body li       { margin-bottom: 8px; line-height: 1.75; }
+.lesson-body blockquote {
+  border-left: 3px solid var(--gold, #c9a84c);
+  padding: 12px 20px; margin: 24px 0;
+  background: rgba(201,168,76,0.05);
+  border-radius: 0 10px 10px 0;
+  color: rgba(240,238,232,0.65); font-style: italic;
+}
+.lesson-body code {
+  font-family: var(--font-mono, 'DM Mono', monospace);
+  background: rgba(255,255,255,0.07);
+  padding: 2px 7px; border-radius: 4px;
+  font-size: 14px; color: #60c8f0;
+}
+.lesson-body hr {
+  border: none;
+  border-top: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
+  margin: 32px 0;
+}
+.lesson-body table    { width: 100%; border-collapse: collapse; margin: 20px 0; }
+.lesson-body th,
+.lesson-body td       {
+  border: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
+  padding: 10px 14px; font-size: 15px; text-align: left;
+}
+.lesson-body th {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-primary, #f0eee8);
+  font-weight: 600;
+  font-family: var(--font-display, 'Syne', sans-serif);
+}
+.lesson-body td       { color: rgba(240,238,232,0.75); }
+.lesson-body img      {
+  max-width: 100%; border-radius: 10px;
+  margin: 12px 0;
+  border: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
+}
+.lesson-body mark     {
+  background: rgba(255,210,80,0.28);
+  color: var(--text-primary, #f0eee8);
+  border-radius: 2px; padding: 0 2px;
+}
+
+@media (max-width: 480px) {
+  .lesson-wrap { padding: 24px 16px 80px; }
+}

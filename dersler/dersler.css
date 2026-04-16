@@ -615,3 +615,7 @@ mark { background: rgba(255,210,80,0.28); color: var(--text-primary); border-rad
   .editor-wrap { padding: 16px 14px 60px; }
   .tb-btn { width: 28px; height: 28px; }
 }
+
+.editor-main {
+  padding-top: 70px;
+}

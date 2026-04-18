@@ -8,6 +8,6 @@
     "generate:all": "node generate-lessons.js --all"
   },
   "dependencies": {
-    "firebase": "^10.12.2"
+    "firebase": "^10.14.1"
   }
 }

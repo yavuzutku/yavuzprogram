@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html class="dark" lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -89,762 +89,633 @@
 }
 </script>
 
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<!-- Global CSS (navbar + FAB) -->
 <link rel="stylesheet" href="css/global.css">
 
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "error-container": "#93000a",
+        "on-tertiary": "#581e00",
+        "tertiary-container": "#bc4800",
+        "surface-container-low": "#131b2e",
+        "surface-dim": "#0b1326",
+        "secondary-fixed": "#d8e3fb",
+        "secondary": "#bcc7de",
+        "inverse-primary": "#0053db",
+        "on-tertiary-container": "#ffede6",
+        "on-primary-container": "#eeefff",
+        "surface-container-high": "#222a3d",
+        "surface-container": "#171f33",
+        "surface-container-lowest": "#060e20",
+        "tertiary-fixed-dim": "#ffb596",
+        "error": "#ffb4ab",
+        "on-secondary": "#263143",
+        "tertiary": "#ffb596",
+        "on-error": "#690005",
+        "primary-container": "#2563eb",
+        "tertiary-fixed": "#ffdbcd",
+        "secondary-container": "#3e495d",
+        "on-background": "#dae2fd",
+        "inverse-surface": "#dae2fd",
+        "on-tertiary-fixed-variant": "#7d2d00",
+        "on-secondary-fixed-variant": "#3c475a",
+        "background": "#0b1326",
+        "surface-container-highest": "#2d3449",
+        "surface-tint": "#b4c5ff",
+        "primary-fixed-dim": "#b4c5ff",
+        "secondary-fixed-dim": "#bcc7de",
+        "on-secondary-fixed": "#111c2d",
+        "on-primary": "#002a78",
+        "outline": "#8d90a0",
+        "on-surface": "#dae2fd",
+        "on-surface-variant": "#c3c6d7",
+        "on-primary-fixed-variant": "#003ea8",
+        "on-primary-fixed": "#00174b",
+        "primary-fixed": "#dbe1ff",
+        "surface": "#0b1326",
+        "primary": "#b4c5ff",
+        "on-error-container": "#ffdad6",
+        "surface-variant": "#2d3449",
+        "on-secondary-container": "#aeb9d0",
+        "on-tertiary-fixed": "#360f00",
+        "outline-variant": "#434655",
+        "inverse-on-surface": "#283044",
+        "surface-bright": "#31394d"
+      },
+      borderRadius: {
+        DEFAULT: "0.25rem",
+        lg: "0.5rem",
+        xl: "0.75rem",
+        full: "9999px"
+      },
+      fontFamily: {
+        headline: ["Manrope"],
+        body: ["Manrope"],
+        label: ["Space Grotesk"]
+      }
+    }
+  }
+}
+</script>
+
 <style>
-  /* ═══════════════════════════════════════════════════════════
-     KURAL 1 — Animasyonlar & efektler tamamen kaldırıldı:
-       .bg-orb, .bg-grid, shimmer (@keyframes), pulse (@keyframes)
-       hepsi silindi. Zemin düz ve sakin.
+  body { font-family: 'Manrope', sans-serif; }
+  .font-mono-label { font-family: 'Space Grotesk', monospace; }
 
-     KURAL 2 — Kurumsal renk paleti:
-       Zemin: #0f172a (slate-900)  Kart: #1e293b (slate-800)
-       Kart-hover: #273548          Metin: #f1f5f9 / #94a3b8
-       Ana renk: #2563eb (blue-600) — tek tutarlı vurgu
-       Pill'ler tek renk ailesinden: mavi tonları
+  /* Navbar yüksekliği offset — global.css'deki navbar sticky olduğu için */
+  .main-offset { padding-top: 62px; }
 
-     KURAL 3 — Tipografi sadeleştirildi:
-       Syne tamamen kaldırıldı. Başlıklar dahil her şey DM Sans.
-       DM Mono sadece etiket/pill gibi monospace gereken yerlerde.
+  /* Side nav scroll */
+  .side-nav { overflow-y: auto; }
 
-     KURAL 4 — Butonlar temizlendi:
-       Gradient & parlak gölge kaldırıldı.
-       Düz mavi (#2563eb), hafif border-radius (8px),
-       hover'da ton koyulaşması.
+  /* Prose card link renkleri */
+  .prose-link { color: #93c5fd; text-decoration: none; }
+  .prose-link:hover { text-decoration: underline; }
 
-     KURAL 5 — Border'lar kaldırıldı / ton farkıyla ayrım:
-       Kartlar border yerine #1e293b arka plan tonu kullanır.
-       Çizgiler neredeyse görünmez ya da tamamen kaldırıldı.
-  ═══════════════════════════════════════════════════════════ */
+  /* FAQ accordion benzeri hover */
+  .faq-item { transition: background 0.18s ease; }
 
-  :root {
-    /* Zemin & Yüzeyler */
-    --bg:          #0f172a;
-    --bg-card:     #1e293b;
-    --bg-card-h:   #273548;
-    --bg-border:   rgba(148,163,184,0.10);   /* çok hafif ayraç çizgisi */
-    --bg-border-h: rgba(148,163,184,0.18);
+  /* Level card hover */
+  .lv-card { transition: background 0.18s ease, transform 0.18s ease; }
+  .lv-card:hover { transform: translateY(-2px); }
 
-    /* Metin */
-    --text:   #f1f5f9;
-    --t2:     #94a3b8;
-    --t3:     #64748b;
-
-    /* Ana Vurgu — tek mavi */
-    --blue:   #2563eb;
-    --blue-h: #1d4ed8;
-    --blue-s: rgba(37,99,235,0.12);  /* soluk arka plan */
-
-    /* Pill renkleri — mavi aile */
-    --pill-bg:    rgba(37,99,235,0.12);
-    --pill-text:  #93c5fd;
-    --pill-bdr:   rgba(37,99,235,0.22);
-
-    --green-pill-bg:  rgba(34,197,94,0.10);
-    --green-pill-txt: #86efac;
-    --green-pill-bdr: rgba(34,197,94,0.2);
-
-    /* Geçiş */
-    --tr: 0.18s ease;
-
-    /* Font */
-    --fb: 'DM Sans', system-ui, sans-serif;
-    --fm: 'DM Mono', monospace;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: var(--fb);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ── Zemin: tamamen düz, efekt yok ── */
-  .bg { display: none; }
-
-  /* ── Sayfa ── */
-  .page { position: relative; z-index: 1; max-width: 1060px; margin: 0 auto; padding: 1px 32px 240px; }
-  @media(max-width:600px) { .page { padding: 72px 18px 80px; } }
-
-  /* ══ HERO ════════════════════════════════════════════ */
-  .hero {
-    padding: 88px 0 100px;
-    border-bottom: 1px solid var(--bg-border);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 72px;
-    align-items: center;
-  }
-  @media(max-width:780px) { .hero { grid-template-columns: 1fr; gap: 48px; padding: 64px 0 80px; } }
-
-  /* Kicker — animasyon yok, sadece statik etiket */
-  .hero-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--fm);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--t3);
-    margin-bottom: 20px;
-  }
-  .kicker-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); }
-
-  /* Başlık — Syne yok, DM Sans bold */
-  .hero-title {
-    font-family: var(--fb);
-    font-size: clamp(36px, 5.2vw, 62px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.08;
-    color: var(--text);
-    margin-bottom: 20px;
-  }
-  /* title-em: shimmer animasyon kaldırıldı, düz mavi */
-  .title-em {
-    display: block;
-    color: #60a5fa;   /* mavi-400 — sabit, animasyon yok */
-  }
-
-  .hero-sub {
-    font-size: 15px;
-    line-height: 1.8;
-    color: var(--t2);
-    margin-bottom: 36px;
-    max-width: 440px;
-  }
-  .hero-sub a { color: #60a5fa; text-decoration: none; }
-  .hero-sub a:hover { text-decoration: underline; }
-
-  .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
-
-  /* KURAL 4 — CTA butonu: düz mavi, gradient yok, hafif shadow */
-  .btn-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    background: var(--blue);
-    color: #fff;
-    font-family: var(--fb);
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
-    text-decoration: none;
-    letter-spacing: -0.01em;
-    border: none;
-    transition: background var(--tr), transform var(--tr);
-  }
-  .btn-cta:hover { background: var(--blue-h); transform: translateY(-1px); }
-  .btn-cta svg { width: 15px; height: 15px; flex-shrink: 0; }
-
-  /* Ghost buton */
-  .btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 12px 20px;
-    background: transparent;
-    border: 1px solid var(--bg-border-h);
-    color: var(--t2);
-    font-family: var(--fb);
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background var(--tr), color var(--tr);
-  }
-  .btn-ghost:hover { background: var(--bg-card); color: var(--text); }
-
-  /* KURAL 5 — stat-table: border yok, card arka planıyla ayrım */
-  .stat-table {
-    background: var(--bg-card);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .stat-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--bg-border);
-    text-decoration: none;
-    transition: background var(--tr);
-  }
-  .stat-row:last-child { border-bottom: none; }
-  .stat-row:hover { background: var(--bg-card-h); }
-  .stat-row:hover .stat-label { color: var(--text); }
-  .stat-label { font-size: 13.5px; color: var(--t2); transition: color var(--tr); }
-
-  /* KURAL 2 — Pill'ler tek renk ailesinden */
-  .pill {
-    font-family: var(--fm);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.07em;
-    padding: 3px 9px;
-    border-radius: 5px;
-    white-space: nowrap;
-  }
-  /* Tüm eski renkli pill'ler → mavi veya yeşil tona indirgendi */
-  .pill-gold, .pill-blue, .pill-violet {
-    background: var(--pill-bg);
-    border: 1px solid var(--pill-bdr);
-    color: var(--pill-text);
-  }
-  .pill-green {
-    background: var(--green-pill-bg);
-    border: 1px solid var(--green-pill-bdr);
-    color: var(--green-pill-txt);
-  }
-  .pill-rose {
-    background: rgba(248,113,113,0.10);
-    border: 1px solid rgba(248,113,113,0.2);
-    color: #fca5a5;
-  }
-
-  /* ══ SECTION ══════════════════════════════════════════ */
-  .section { padding: 72px 0; border-bottom: 1px solid var(--bg-border); }
-  .section:last-of-type { border-bottom: none; }
-
-  .sec-head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 32px;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .sec-eyebrow {
-    font-family: var(--fm);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--t3);
-    margin-bottom: 7px;
-  }
-  .sec-title {
-    font-family: var(--fb);
-    font-size: clamp(19px, 2.8vw, 27px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-  .sec-link {
-    font-size: 13px;
-    color: #60a5fa;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-    transition: gap var(--tr);
-    font-weight: 500;
-  }
-  .sec-link:hover { gap: 9px; }
-  .sec-link svg { width: 13px; height: 13px; }
-
-  /* KURAL 5 — TOOLS: border/grid çizgileri kaldırıldı, gap + bg tonu ile ayrım */
-  .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--bg);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  @media(max-width:680px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media(max-width:400px) { .tools-grid { grid-template-columns: 1fr; } }
-
-  .tool-card {
-    background: var(--bg-card);
-    padding: 22px 20px;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    transition: background var(--tr);
-    position: relative;
-    overflow: hidden;
-  }
-  .tool-card:hover { background: var(--bg-card-h); }
-  .tool-card:hover .tc-name { color: #60a5fa; }
-  .tool-card:hover .tc-icon { color: #60a5fa; }
-
-  .tc-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--blue-s);
-    color: #93c5fd;
-    margin-bottom: 2px;
-    transition: color var(--tr);
-    flex-shrink: 0;
-  }
-  .tc-icon svg { width: 15px; height: 15px; }
-  .tc-name { font-family: var(--fb); font-size: 13.5px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; transition: color var(--tr); }
-  .tc-meta { font-family: var(--fm); font-size: 10.5px; color: var(--t3); line-height: 1.45; }
-  .tc-free { margin-top: 2px; font-family: var(--fm); font-size: 10px; color: var(--green-pill-txt); }
-  .tc-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%) translateX(3px); font-size: 13px; color: var(--t3); opacity: 0; transition: var(--tr); }
-  .tool-card:hover .tc-arrow { opacity: 1; transform: translateY(-50%) translateX(0); }
-
-  /* KURAL 5 — LEVELS: border kaldırıldı, bg-card ile ayrım */
-  .levels { display: flex; gap: 8px; flex-wrap: wrap; }
-  .lv {
-    flex: 1;
-    min-width: 120px;
-    padding: 18px 16px;
-    background: var(--bg-card);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    text-decoration: none;
-    transition: background var(--tr), transform var(--tr);
-  }
-  .lv:hover { background: var(--bg-card-h); transform: translateY(-2px); }
-  .lv-code { font-family: var(--fb); font-size: 17px; font-weight: 700; }
-  .lv-name { font-size: 11.5px; color: var(--t3); font-weight: 500; }
-  .lv-desc { font-size: 11px; color: var(--t3); margin-top: 2px; line-height: 1.4; }
-
-  /* Seviye renkleri korundu ama daha mat */
-  .lv-a1 .lv-code { color: #4ade80; }
-  .lv-a2 .lv-code { color: #86efac; }
-  .lv-b1 .lv-code { color: #7dd3fc; }
-  .lv-b2 .lv-code { color: #a5b4fc; }
-  .lv-c1 .lv-code { color: #93c5fd; }
-  @media(max-width:480px) { .lv { min-width: calc(50% - 4px); } }
-
-  /* KURAL 5 — PROSE CARDS: border yok, bg tonu ile ayrım */
-  .prose-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media(max-width:640px) { .prose-grid { grid-template-columns: 1fr; } }
-
-  .prose-card {
-    padding: 26px 24px;
-    background: var(--bg-card);
-    border-radius: 11px;
-    transition: background var(--tr);
-  }
-  .prose-card:hover { background: var(--bg-card-h); }
-  .prose-wide { grid-column: 1 / -1; }
-
-  .prose-kicker {
-    font-family: var(--fm);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--blue);
-    opacity: 0.9;
-    margin-bottom: 10px;
-  }
-  .prose-card h2 { font-family: var(--fb); font-size: clamp(14px, 2vw, 17px); font-weight: 700; letter-spacing: -0.02em; color: var(--text); margin-bottom: 12px; line-height: 1.35; }
-  .prose-card h3 { font-family: var(--fb); font-size: 14px; font-weight: 600; color: var(--text); margin: 16px 0 7px; }
-  .prose-card p { font-size: 13.5px; line-height: 1.82; color: var(--t2); margin-bottom: 10px; }
-  .prose-card p:last-child { margin-bottom: 0; }
-  .prose-card a { color: #60a5fa; text-decoration: none; }
-  .prose-card a:hover { text-decoration: underline; }
-  .prose-card strong { color: var(--text); font-weight: 600; }
-  .prose-card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; margin: 10px 0; }
-  .prose-card ul li { font-size: 13.5px; line-height: 1.7; color: var(--t2); padding-left: 14px; position: relative; }
-  .prose-card ul li::before { content: ''; position: absolute; left: 0; top: 9px; width: 4px; height: 4px; border-radius: 50%; background: var(--blue); opacity: 0.6; }
-  .prose-card ul li a { color: #60a5fa; text-decoration: none; }
-  .prose-card ul li a:hover { text-decoration: underline; }
-
-  /* Feature strip */
-  .feature-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2px;
-    background: var(--bg);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 18px;
-  }
-  @media(max-width:640px) { .feature-strip { grid-template-columns: repeat(2, 1fr); } }
-  .feature-cell { background: var(--bg-card); padding: 20px 18px; display: flex; flex-direction: column; gap: 5px; }
-  .feat-num { font-family: var(--fb); font-size: 24px; font-weight: 700; color: #60a5fa; letter-spacing: -0.02em; }
-  .feat-label { font-size: 12px; color: var(--t3); }
-
-  /* FAQ */
-  .faq { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
-  .faq-item {
-    padding: 15px 17px;
-    background: var(--bg-card);
-    border-radius: 8px;
-    transition: background var(--tr);
-  }
-  .faq-item:hover { background: var(--bg-card-h); }
-  .faq-q { font-family: var(--fb); font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-  .faq-a { font-size: 13px; line-height: 1.75; color: var(--t2); }
-  .faq-a a { color: #60a5fa; text-decoration: none; }
-  .faq-a a:hover { text-decoration: underline; }
-
-  /* Sitemap */
-  .sitemap-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 36px 0 0; }
-  @media(max-width:640px) { .sitemap-strip { grid-template-columns: repeat(2, 1fr); } }
-  @media(max-width:380px) { .sitemap-strip { grid-template-columns: 1fr; } }
-  .sitemap-col h4 { font-family: var(--fm); font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--t3); margin-bottom: 12px; }
-  .sitemap-col ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-  .sitemap-col ul li a { font-size: 12.5px; color: var(--t2); text-decoration: none; transition: color var(--tr); }
-  .sitemap-col ul li a:hover { color: #60a5fa; }
-
-  /* Footer */
-  .footer { padding-top: 48px; border-top: 1px solid var(--bg-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; margin-top: 0; }
-  .footer-copy { font-size: 12px; color: var(--t3); }
-  .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-  .footer-links a { font-size: 12px; color: var(--t3); text-decoration: none; transition: color var(--tr); }
-  .footer-links a:hover { color: #60a5fa; }
+  /* Scrollbar gizle (side nav) */
+  .side-nav::-webkit-scrollbar { width: 4px; }
+  .side-nav::-webkit-scrollbar-track { background: transparent; }
+  .side-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
 </style>
 </head>
-<body>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
 
+<!-- ═══════════════════════════════════════════
+     NAVBAR — global.css + core.js ile yüklenir
+═══════════════════════════════════════════ -->
 <script type="module">
   import "./js/core.js";
   window.loadNavbar();
 </script>
 
-<div class="page">
+
+
+<!-- ═══════════════════════════════════════════
+     ANA İÇERİK
+═══════════════════════════════════════════ -->
+<main class="main-offset flex-grow pb-24 px-5 w-full flex flex-col gap-20 max-w-screen-xl mx-auto">
 
   <!-- ══ HERO ══════════════════════════════════════════ -->
-  <section class="hero">
-    <div>
-      <div class="hero-kicker"><span class="kicker-dot"></span>Türkçe · Ücretsiz · A1–C1</div>
-      <h1 class="hero-title">
+  <section class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-14 pt-14 pb-10 border-b border-outline-variant/20">
+    <!-- Sol: Metin -->
+    <div class="lg:w-1/2 flex flex-col items-start gap-7">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-primary-container"></span>
+        <span class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant">Türkçe · Ücretsiz · A1–C1</span>
+      </div>
+
+      <h1 class="text-5xl lg:text-6xl font-bold font-headline leading-tight tracking-tight text-on-surface">
         Almancayı<br>
-        <span class="title-em">pratikle öğren.</span>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container to-primary">pratikle öğren.</span>
       </h1>
-      <p class="hero-sub">
-        <a href="/artikel/">Artikel bulucu</a>, <a href="/quiz/">kelime quizleri</a>,
-        <a href="/metin/">metin analizi</a> ile
+
+      <p class="text-base text-on-surface-variant leading-relaxed max-w-lg">
+        <a class="prose-link" href="/artikel/">Artikel bulucu</a>,
+        <a class="prose-link" href="/quiz/">kelime quizleri</a>,
+        <a class="prose-link" href="/metin/">metin analizi</a> ile
         Almancanda hızla ilerle. Araçların büyük kısmı giriş gerektirmez.
       </p>
-      <div class="hero-cta">
-        <a class="btn-cta" href="/pratik/">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+
+      <div class="flex gap-3 flex-wrap">
+        <a href="/pratik/" class="inline-flex items-center gap-2 bg-primary-container text-on-primary-container px-7 py-3.5 rounded-xl font-headline font-bold text-sm hover:brightness-110 transition-all">
+          <span class="material-symbols-outlined text-base" style="font-size:17px">grid_view</span>
           Tüm Araçlar
         </a>
-        <a class="btn-ghost" href="/seviyeler/seviyetespit/">Seviyemi Öğren →</a>
+        <a href="/seviyeler/seviyetespit/" class="inline-flex items-center gap-2 border border-outline-variant bg-surface-container-low text-primary px-7 py-3.5 rounded-xl font-headline font-bold text-sm hover:bg-surface-container transition-all">
+          Seviyemi Öğren →
+        </a>
       </div>
     </div>
 
-    <nav class="stat-table" aria-label="Platform araçları">
-      <a class="stat-row" href="/artikel/"><span class="stat-label">Der Die Das Artikel Bulucu</span></a>
-      <a class="stat-row" href="/quiz/"><span class="stat-label">Almanca Kelime Quizi</span></a>
-      <a class="stat-row" href="/metin/"><span class="stat-label">Metin Analizi &amp; Okuma</span></a>
-      <a class="stat-row" href="/cumlebul/"><span class="stat-label">Cümle Örnekleri</span></a>
-      <a class="stat-row" href="/seviyeler/seviyetespit/"><span class="stat-label">Seviye Testi</span></a>
-    </nav>
-  </section>
-
-  <!-- ══ ARAÇLAR ════════════════════════════════════════ -->
-  <section class="section" aria-labelledby="tools-heading">
-    <div class="sec-head">
-      <div>
-        <div class="sec-eyebrow">Araçlar</div>
-        <h2 class="sec-title" id="tools-heading">Tüm araçlara tek yerden eriş</h2>
-      </div>
-      <a class="sec-link" href="/pratik/">
-        Panele Git <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    <!-- Sağ: Hızlı erişim kartı -->
+    <nav class="lg:w-5/12 w-full bg-surface-container-low border border-outline-variant/15 rounded-2xl overflow-hidden shadow-xl" aria-label="Platform araçları">
+      <a class="flex items-center justify-between px-5 py-3.5 border-b border-outline-variant/10 hover:bg-surface-container transition-colors group" href="/artikel/">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">search_check</span>
+          <span class="text-on-surface text-sm font-medium">Der Die Das Artikel Bulucu</span>
+        </div>
+        <span class="text-on-surface-variant group-hover:text-primary text-xs font-mono-label transition-colors">→</span>
       </a>
-    </div>
-    <nav class="tools-grid" aria-label="Araç listesi">
-      <a class="tool-card" href="/artikel/">
-        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <div class="tc-name">Artikel Bul</div>
-        <div class="tc-meta">der / die / das — Wiktionary</div>
-        <span class="tc-free">✓ Giriş gerektirmez</span>
-        <span class="tc-arrow">→</span>
+      <a class="flex items-center justify-between px-5 py-3.5 border-b border-outline-variant/10 hover:bg-surface-container transition-colors group" href="/quiz/">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">quiz</span>
+          <span class="text-on-surface text-sm font-medium">Almanca Kelime Quizi</span>
+        </div>
+        <span class="text-on-surface-variant group-hover:text-primary text-xs font-mono-label transition-colors">→</span>
       </a>
-      <a class="tool-card" href="/cumlebul/">
-        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <div class="tc-name">Cümle Örnekleri</div>
-        <div class="tc-meta">Wiktionary · Tatoeba</div>
-        <span class="tc-free">✓ Giriş gerektirmez</span>
-        <span class="tc-arrow">→</span>
+      <a class="flex items-center justify-between px-5 py-3.5 border-b border-outline-variant/10 hover:bg-surface-container transition-colors group" href="/metin/">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">analytics</span>
+          <span class="text-on-surface text-sm font-medium">Metin Analizi &amp; Okuma</span>
+        </div>
+        <span class="text-on-surface-variant group-hover:text-primary text-xs font-mono-label transition-colors">→</span>
       </a>
-      
-      <a class="tool-card" href="/metin/">
-        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div>
-        <div class="tc-name">Metin Analizi</div>
-        <div class="tc-meta">Oku, tıkla, sözlüğüne kaydet</div>
-        <span class="tc-arrow">→</span>
+      <a class="flex items-center justify-between px-5 py-3.5 border-b border-outline-variant/10 hover:bg-surface-container transition-colors group" href="/cumlebul/">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">segment</span>
+          <span class="text-on-surface text-sm font-medium">Cümle Örnekleri</span>
+        </div>
+        <span class="text-on-surface-variant group-hover:text-primary text-xs font-mono-label transition-colors">→</span>
       </a>
-      <a class="tool-card" href="/quiz/">
-        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <div class="tc-name">Kelime Quizi</div>
-        <div class="tc-meta">Kendi listenden test — A1 → C1</div>
-        <span class="tc-arrow">→</span>
-      </a>
-      <a class="tool-card" href="/seviyeler/seviyetespit/">
-        <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></div>
-        <div class="tc-name">Seviye Testi</div>
-        <div class="tc-meta">25 soru — A1 · A2 · B1 · B2 · C1</div>
-        <span class="tc-free">✓ Giriş gerektirmez</span>
-        <span class="tc-arrow">→</span>
+      <a class="flex items-center justify-between px-5 py-3.5 hover:bg-surface-container transition-colors group" href="/seviyeler/seviyetespit/">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">school</span>
+          <span class="text-on-surface text-sm font-medium">Seviye Testi</span>
+        </div>
+        <span class="text-on-surface-variant group-hover:text-primary text-xs font-mono-label transition-colors">→</span>
       </a>
     </nav>
   </section>
 
-  <!-- ══ SEVİYELER ══════════════════════════════════════ -->
-  <section class="section" aria-labelledby="levels-heading">
-    <div class="sec-head">
+  <!-- ══ ARAÇLAR (BENTO GRID) ══════════════════════════ -->
+  <section aria-labelledby="tools-heading" class="flex flex-col gap-8">
+    <div class="flex items-end justify-between gap-4 flex-wrap">
       <div>
-        <div class="sec-eyebrow">CEFR Seviyeleri</div>
-        <h2 class="sec-title" id="levels-heading">Hangi seviyedesin?</h2>
+        <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Araçlar</p>
+        <h2 id="tools-heading" class="text-3xl font-bold font-headline text-on-surface tracking-tight">Tüm araçlara tek yerden eriş</h2>
       </div>
-      <a class="sec-link" href="/seviyeler/seviyetespit/">
-        Ücretsiz test çöz <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <a href="/pratik/" class="text-primary text-sm font-mono-label font-medium hover:underline inline-flex items-center gap-1">
+        Panele Git <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
       </a>
     </div>
-    <div class="levels">
-      <a class="lv lv-a1" href="/seviyeler/seviyetespit/">
-        <span class="lv-code">A1</span>
-        <span class="lv-name">Başlangıç</span>
-        <span class="lv-desc">Temel kelimeler ve tanışma cümleleri</span>
+
+    <nav class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" aria-label="Araç listesi">
+
+      <!-- Artikel Bulucu -->
+      <a href="/artikel/" class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl flex flex-col gap-5 hover:bg-surface-container transition-all group cursor-pointer">
+        <div class="w-12 h-12 bg-surface-container-highest rounded-xl flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+          <span class="material-symbols-outlined" style="font-size:22px">search_check</span>
+        </div>
+        <div>
+          <h3 class="text-base font-bold font-headline text-on-surface mb-1">Artikel Bul</h3>
+          <p class="text-on-surface-variant text-sm leading-relaxed">der / die / das — Wiktionary tabanlı, anında sonuç.</p>
+        </div>
+        <div class="flex items-center gap-2 mt-auto pt-2">
+          <span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2.5 py-1 rounded-lg">Wiktionary</span>
+          <span class="font-mono-label text-xs text-green-400">✓ Giriş gerekmez</span>
+        </div>
       </a>
-      <a class="lv lv-a2" href="/seviyeler/seviyetespit/">
-        <span class="lv-code">A2</span>
-        <span class="lv-name">Temel</span>
-        <span class="lv-desc">Günlük hayat ve basit iletişim</span>
+
+      <!-- Cümle Örnekleri — geniş -->
+      <a href="/cumlebul/" class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl flex flex-col gap-5 hover:bg-surface-container transition-all group cursor-pointer lg:col-span-2">
+        <div class="w-12 h-12 bg-surface-container-highest rounded-xl flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+          <span class="material-symbols-outlined" style="font-size:22px">segment</span>
+        </div>
+        <div>
+          <h3 class="text-base font-bold font-headline text-on-surface mb-1">Cümle Örnekleri</h3>
+          <p class="text-on-surface-variant text-sm leading-relaxed max-w-md">Gerçek bağlamda kelime kullanımı — Wiktionary ve Tatoeba kaynakları.</p>
+        </div>
+        <div class="flex gap-2 mt-auto pt-2">
+          <span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2.5 py-1 rounded-lg">Tatoeba</span>
+          <span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2.5 py-1 rounded-lg">Wiktionary</span>
+          <span class="font-mono-label text-xs text-green-400">✓ Giriş gerekmez</span>
+        </div>
       </a>
-      <a class="lv lv-b1" href="/seviyeler/seviyetespit/">
-        <span class="lv-code">B1</span>
-        <span class="lv-name">Orta</span>
-        <span class="lv-desc">Seyahat, iş ve güncel konular</span>
+
+      <!-- Metin Analizi — yüksek -->
+      <a href="/metin/" class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl flex flex-col gap-5 hover:bg-surface-container transition-all group cursor-pointer lg:row-span-2">
+        <div class="w-12 h-12 bg-surface-container-highest rounded-xl flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+          <span class="material-symbols-outlined" style="font-size:22px">analytics</span>
+        </div>
+        <div class="flex-grow">
+          <h3 class="text-base font-bold font-headline text-on-surface mb-1">Metin Analizi</h3>
+          <p class="text-on-surface-variant text-sm leading-relaxed">Oku, tıkla, sözlüğüne kaydet. Herhangi bir Almanca metni interaktif okuma ortamına dönüştür.</p>
+        </div>
+        <div class="flex gap-2 mt-auto pt-2 flex-wrap">
+          <span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2.5 py-1 rounded-lg">NLP</span>
+          <span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2.5 py-1 rounded-lg">Wiktionary</span>
+        </div>
       </a>
-      <a class="lv lv-b2" href="/seviyeler/seviyetespit/">
-        <span class="lv-code">B2</span>
-        <span class="lv-name">Üst Orta</span>
-        <span class="lv-desc">Karmaşık metinler ve tartışma</span>
+
+      <!-- Kelime Quizi -->
+      <a href="/quiz/" class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl flex flex-col gap-5 hover:bg-surface-container transition-all group cursor-pointer">
+        <div class="w-12 h-12 bg-surface-container-highest rounded-xl flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+          <span class="material-symbols-outlined" style="font-size:22px">quiz</span>
+        </div>
+        <div>
+          <h3 class="text-base font-bold font-headline text-on-surface mb-1">Kelime Quizi</h3>
+          <p class="text-on-surface-variant text-sm leading-relaxed">Kişisel listenden dinamik quiz — çoktan seçmeli veya yazarak.</p>
+        </div>
+        <div class="flex gap-2 mt-auto pt-2">
+          <span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2.5 py-1 rounded-lg">A1–C1</span>
+        </div>
       </a>
-      <a class="lv lv-c1" href="/seviyeler/seviyetespit/">
-        <span class="lv-code">C1</span>
-        <span class="lv-name">İleri</span>
-        <span class="lv-desc">Akademik ve profesyonel dil</span>
+
+      <!-- Seviye Testi -->
+      <a href="/seviyeler/seviyetespit/" class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl flex flex-col gap-5 hover:bg-surface-container transition-all group cursor-pointer">
+        <div class="w-12 h-12 bg-surface-container-highest rounded-xl flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+          <span class="material-symbols-outlined" style="font-size:22px">school</span>
+        </div>
+        <div>
+          <h3 class="text-base font-bold font-headline text-on-surface mb-1">Seviye Testi</h3>
+          <p class="text-on-surface-variant text-sm leading-relaxed">25 soru ile A1–C1 seviyeni öğren. Sonuçlar anında gösterilir.</p>
+        </div>
+        <div class="flex gap-2 mt-auto pt-2">
+          <span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2.5 py-1 rounded-lg">CEFR</span>
+          <span class="font-mono-label text-xs text-green-400">✓ Giriş gerekmez</span>
+        </div>
+      </a>
+
+    </nav>
+  </section>
+
+  <!-- ══ CEFR SEVİYELER ════════════════════════════════ -->
+  <section aria-labelledby="levels-heading" class="bg-surface-container-low border border-outline-variant/15 rounded-2xl p-8 lg:p-10 flex flex-col gap-8">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-5">
+      <div>
+        <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-2">CEFR Seviyeleri</p>
+        <h2 id="levels-heading" class="text-3xl font-bold font-headline text-on-surface tracking-tight">Hangi seviyedesin?</h2>
+        <p class="text-on-surface-variant text-sm mt-1.5">Avrupa Ortak Dil Çerçevesi'ne uygun içerikler.</p>
+      </div>
+      <a href="/seviyeler/seviyetespit/" class="text-primary font-mono-label text-sm hover:underline inline-flex items-center gap-1 shrink-0">
+        Ücretsiz test çöz <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <a href="/seviyeler/seviyetespit/" class="lv-card flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-5 rounded-xl flex flex-col gap-1 hover:bg-surface-container-highest">
+        <span class="text-2xl font-black font-headline text-green-400">A1</span>
+        <span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label font-semibold">Başlangıç</span>
+        <span class="text-xs text-on-surface-variant leading-snug mt-1">Temel kelimeler ve tanışma cümleleri</span>
+      </a>
+      <a href="/seviyeler/seviyetespit/" class="lv-card flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-5 rounded-xl flex flex-col gap-1 hover:bg-surface-container-highest">
+        <span class="text-2xl font-black font-headline text-secondary-fixed-dim">A2</span>
+        <span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label font-semibold">Temel</span>
+        <span class="text-xs text-on-surface-variant leading-snug mt-1">Günlük hayat ve basit iletişim</span>
+      </a>
+      <a href="/seviyeler/seviyetespit/" class="lv-card flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-5 rounded-xl flex flex-col gap-1 hover:bg-surface-container-highest">
+        <span class="text-2xl font-black font-headline text-primary-fixed">B1</span>
+        <span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label font-semibold">Orta</span>
+        <span class="text-xs text-on-surface-variant leading-snug mt-1">Seyahat, iş ve güncel konular</span>
+      </a>
+      <a href="/seviyeler/seviyetespit/" class="lv-card flex-1 min-w-[120px] bg-surface-container border-t-2 border-primary p-5 rounded-xl flex flex-col gap-1 hover:bg-surface-container-highest">
+        <span class="text-2xl font-black font-headline text-primary">B2</span>
+        <span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label font-semibold">Üst Orta</span>
+        <span class="text-xs text-on-surface-variant leading-snug mt-1">Karmaşık metinler ve tartışma</span>
+      </a>
+      <a href="/seviyeler/seviyetespit/" class="lv-card flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-5 rounded-xl flex flex-col gap-1 hover:bg-surface-container-highest">
+        <span class="text-2xl font-black font-headline text-primary-fixed-dim">C1</span>
+        <span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label font-semibold">İleri</span>
+        <span class="text-xs text-on-surface-variant leading-snug mt-1">Akademik ve profesyonel dil</span>
       </a>
     </div>
   </section>
 
-  <!-- ══ PLATFORM HAKKINDA (SEO İÇERİK) ═══════════════ -->
-  <section class="section" aria-labelledby="about-heading">
-    <div class="sec-head">
-      <div>
-        <div class="sec-eyebrow">Platform</div>
-        <h2 class="sec-title" id="about-heading">AlmancaPratik nedir?</h2>
+  <!-- ══ PLATFORM HAKKINDA ════════════════════════════ -->
+  <section aria-labelledby="about-heading" class="flex flex-col gap-8">
+    <div>
+      <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Platform</p>
+      <h2 id="about-heading" class="text-3xl font-bold font-headline text-on-surface tracking-tight">AlmancaPratik nedir?</h2>
+    </div>
+
+    <!-- İstatistik şeridi -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-0.5 bg-surface rounded-xl overflow-hidden">
+      <div class="bg-surface-container-low p-5 flex flex-col gap-1">
+        <span class="text-3xl font-bold font-headline text-primary tracking-tight">8+</span>
+        <span class="text-xs text-on-surface-variant">Ücretsiz araç</span>
+      </div>
+      <div class="bg-surface-container-low p-5 flex flex-col gap-1">
+        <span class="text-3xl font-bold font-headline text-primary tracking-tight">5</span>
+        <span class="text-xs text-on-surface-variant">CEFR seviyesi</span>
+      </div>
+      <div class="bg-surface-container-low p-5 flex flex-col gap-1">
+        <span class="text-3xl font-bold font-headline text-primary tracking-tight">A1–C1</span>
+        <span class="text-xs text-on-surface-variant">Kapsamı</span>
+      </div>
+      <div class="bg-surface-container-low p-5 flex flex-col gap-1">
+        <span class="text-3xl font-bold font-headline text-primary tracking-tight">Türkçe</span>
+        <span class="text-xs text-on-surface-variant">Arayüz dili</span>
       </div>
     </div>
 
-    <div class="feature-strip">
-      <div class="feature-cell">
-        <span class="feat-num">8+</span>
-        <span class="feat-label">Ücretsiz araç</span>
-      </div>
-      <div class="feature-cell">
-        <span class="feat-num">5</span>
-        <span class="feat-label">CEFR seviyesi</span>
-      </div>
-      <div class="feature-cell">
-        <span class="feat-num">A1–C1</span>
-        <span class="feat-label">Kapsamı</span>
-      </div>
-      <div class="feature-cell">
-        <span class="feat-num">Türkçe</span>
-        <span class="feat-label">Arayüz dili</span>
-      </div>
-    </div>
+    <!-- Prose grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-    <div class="prose-grid">
-
-      <div class="prose-card">
-        <div class="prose-kicker">Neden AlmancaPratik</div>
-        <h2>Türkçe düşünen öğrenciler için tasarlandı</h2>
-        <p>AlmancaPratik, Türkçe konuşanların Almanca öğrenirken karşılaştığı somut sorunlara odaklanır. <strong>Der, die, das</strong> artikellerini ezberlemek mi? <a href="/artikel/">Artikel bulucu</a> ile herhangi bir kelimenin cinsiyetini anında öğren. Bir kelimeyi cümle içinde görmek mi? <a href="/cumlebul/">Cümle örnekleri aracı</a> Wiktionary ve Tatoeba'dan gerçek kullanım örneklerini saniyeler içinde sunar.</p>
-        <p>Almanca öğrenmek yalnızca kelime ezberlemekten ibaret değil. Bir sözcüğün hangi artikelle yazıldığını, hangi fiil rejimine girdiğini, hangi önekle anlam değiştirdiğini de bilmek gerekiyor. Platform tam da bu derinliği, anlaşılır bir Türkçe arayüz aracılığıyla sunar.</p>
-        <p><a href="/dersler/">Dersler bölümünden</a> A1'den C1'e kadar yapılandırılmış Almanca ders içeriklerine ulaşabilir, <a href="/blog/">blog yazıları</a> ile Almanca öğrenme ipuçlarını takip edebilirsin.</p>
+      <!-- Neden AlmancaPratik -->
+      <div class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl">
+        <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-primary/80 mb-3">Neden AlmancaPratik</p>
+        <h3 class="text-lg font-bold font-headline text-on-surface mb-3 leading-snug">Türkçe düşünen öğrenciler için tasarlandı</h3>
+        <div class="space-y-3 text-sm text-on-surface-variant leading-relaxed">
+          <p>AlmancaPratik, Türkçe konuşanların Almanca öğrenirken karşılaştığı somut sorunlara odaklanır. <strong class="text-on-surface font-semibold">Der, die, das</strong> artikellerini ezberlemek mi? <a class="prose-link" href="/artikel/">Artikel bulucu</a> ile herhangi bir kelimenin cinsiyetini anında öğren.</p>
+          <p>Bir sözcüğün hangi artikelle yazıldığını, hangi fiil rejimine girdiğini, hangi önekle anlam değiştirdiğini de bilmek gerekiyor. Platform tam da bu derinliği, anlaşılır bir Türkçe arayüz aracılığıyla sunar.</p>
+          <p><a class="prose-link" href="/dersler/">Dersler bölümünden</a> A1'den C1'e kadar yapılandırılmış içeriklere ulaşabilir, <a class="prose-link" href="/blog/">blog yazıları</a> ile öğrenme ipuçlarını takip edebilirsin.</p>
+        </div>
       </div>
 
-      <div class="prose-card">
-        <div class="prose-kicker">Nasıl Çalışır</div>
-        <h2>Oku, öğren, pekiştir döngüsü</h2>
-        <p>En etkili Almanca çalışma yöntemi üç adımda özetlenebilir: gerçek metinler okumak, bilmediğin kelimeleri kaydetmek ve bunları test etmek. AlmancaPratik bu döngüyü sorunsuz hale getirir.</p>
-        <p>Bir Almanca gazete haberi, roman bölümü ya da herhangi bir metin yapıştır — <a href="/metin/">metin analizi aracı</a> onu interaktif bir okuma ortamına dönüştürür. Yabancı bir kelimeye tıkladığında anlamı, artikeli ve örnek cümleler hemen görünür. <a href="/kelimeler/">Kişisel sözlüğüne</a> kaydettiğin kelimeler, <a href="/quiz/">quiz aracında</a> otomatik test sorularına dönüşür.</p>
-        <p> <a href="/wordsadd/">Yeni kelimeler ekleyebilir</a>, <a href="/gecmis/">metin geçmişine</a> dönebilirsin.</p>
+      <!-- Nasıl Çalışır -->
+      <div class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl">
+        <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-primary/80 mb-3">Nasıl Çalışır</p>
+        <h3 class="text-lg font-bold font-headline text-on-surface mb-3 leading-snug">Oku, öğren, pekiştir döngüsü</h3>
+        <div class="space-y-3 text-sm text-on-surface-variant leading-relaxed">
+          <p>En etkili Almanca çalışma yöntemi üç adımda özetlenebilir: gerçek metinler okumak, bilmediğin kelimeleri kaydetmek ve bunları test etmek.</p>
+          <p>Bir Almanca metin yapıştır — <a class="prose-link" href="/metin/">metin analizi aracı</a> onu interaktif okuma ortamına dönüştürür. Yabancı bir kelimeye tıkladığında anlamı, artikeli ve örnek cümleler anında görünür.</p>
+          <p><a class="prose-link" href="/kelimeler/">Kişisel sözlüğüne</a> kaydettiğin kelimeler, <a class="prose-link" href="/quiz/">quiz aracında</a> otomatik test sorularına dönüşür.</p>
+        </div>
       </div>
 
-      <div class="prose-card prose-wide">
-        <div class="prose-kicker">Araç Rehberi</div>
-        <h2>Her araç ne işe yarar?</h2>
-
-        <h3><a href="/artikel/">Der Die Das Artikel Bulucu</a></h3>
-        <p>Almancada her ismin bir cinsiyet eki — artikel — vardır: <strong>der</strong> (maskulin), <strong>die</strong> (feminin) veya <strong>das</strong> (nötrum). Bu üçlüyü kural ezberleyerek öğrenmek son derece zordur çünkü Almancada artikeli tahmin etmeyi sağlayan yeterince düzenli bir sistem yoktur. <a href="/artikel/">Artikel bulucu</a>, girdiğin kelimenin cinsiyetini Wiktionary'nin geniş veritabanından anında çekerek renkli rozetlerle gösterir: mavi der, kırmızı die, mor das. Özellikle A1 ve A2 aşamasında günlük olarak kullanmaya değer bir araç.</p>
-
-        <h3><a href="/metin/">Almanca Metin Analizi</a></h3>
-        <p>Gerçek metinler okumak dil öğrenimini hızlandırır. <a href="/metin/">Metin analizi aracı</a>, yapıştırdığın Almanca metni interaktif bir okuma ortamına dönüştürür. Bilmediğin bir kelimeye tıkladığında çevirisi, artikeli ve Wiktionary'den gelen örnek cümleler anında karşına çıkar. Kelimeyi tek tıkla <a href="/kelimeler/">kişisel sözlüğüne</a> kaydedebilirsin.</p>
-
-        <h3><a href="/quiz/">Almanca Kelime Quizi</a></h3>
-        <p><a href="/kelimeler/">Sözlüğüne kaydettiğin kelimelerden</a> otomatik quiz oluşturan <a href="/quiz/">quiz aracı</a>, iki farklı soru modunu destekler: çoktan seçmeli ve yazarak cevaplama. Sorular hem Almanca→Türkçe hem Türkçe→Almanca yönünde gelebilir. Soru sayısını 5'ten 50'ye kadar ayarlayabilirsin.</p>
-
-        <h3><a href="/cumlebul/">Cümle Örnekleri Aracı</a></h3>
-        <p>Bir kelimenin anlamını bilmek yetmez; o kelimenin cümle içindeki davranışını da görmek gerekir. <a href="/cumlebul/">Cümle örnekleri aracı</a> Wiktionary ve Tatoeba kaynaklarını sorgulayarak girdiğin kelimeyi içeren gerçek Almanca cümleler bulur. Özellikle B1 ve B2 seviyesinde kelime kullanımını derinleştirmek için idealdir.</p>
-
-
-        <h3><a href="/seviyeler/seviyetespit/">Almanca Seviye Testi</a></h3>
-        <p><a href="/seviyeler/seviyetespit/">25 soruluk ücretsiz seviye testi</a>, gramer ve kelime bilgisini A1'den C1'e beş bölümde ölçer. Her yanlış cevap için Türkçe açıklama gösterilir. Kayıt gerekmez, yaklaşık 10 dakika sürer.</p>
-
-        <h3><a href="/dersler/">Almanca Dersler</a></h3>
-        <p><a href="/dersler/">Dersler bölümü</a>, A1'den C1'e kadar seviyeye göre kategorize edilmiş yapılandırılmış Almanca ders içerikleri sunar. Gramer konuları, kelime grupları ve pratik metinler içerir.</p>
-
-        <h3><a href="/kelimeler/">Kelimelerim — Kişisel Sözlük</a></h3>
-        <p>Tüm araçlardan kaydettiğin kelimeler <a href="/kelimeler/">kişisel sözlük</a> sayfasında toplanır. Etiket sistemi ile kelimeleri kategorilere ayırabilir, arama ve filtre ile istediklerini hızlıca bulabilirsin.</p>
+      <!-- Araç Rehberi — geniş -->
+      <div class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl md:col-span-2">
+        <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-primary/80 mb-3">Araç Rehberi</p>
+        <h3 class="text-lg font-bold font-headline text-on-surface mb-5 leading-snug">Her araç ne işe yarar?</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 text-sm text-on-surface-variant leading-relaxed">
+          <div>
+            <h4 class="font-semibold text-on-surface mb-1"><a class="prose-link" href="/artikel/">Der Die Das Artikel Bulucu</a></h4>
+            <p>Almancada her ismin bir cinsiyet eki — artikel — vardır: <strong class="text-on-surface">der</strong> (maskulin), <strong class="text-on-surface">die</strong> (feminin) veya <strong class="text-on-surface">das</strong> (nötrum). Artikel bulucu, girdiğin kelimenin cinsiyetini Wiktionary'nin geniş veritabanından anında gösterir.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-on-surface mb-1"><a class="prose-link" href="/metin/">Almanca Metin Analizi</a></h4>
+            <p>Yapıştırdığın Almanca metni interaktif okuma ortamına dönüştürür. Bilmediğin bir kelimeye tıkladığında çevirisi, artikeli ve örnek cümleler anında karşına çıkar.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-on-surface mb-1"><a class="prose-link" href="/quiz/">Almanca Kelime Quizi</a></h4>
+            <p>Sözlüğündeki kelimelerden otomatik quiz oluşturur. Çoktan seçmeli ve yazarak cevaplama modlarını destekler. Soru sayısını 5'ten 50'ye kadar ayarlayabilirsin.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-on-surface mb-1"><a class="prose-link" href="/cumlebul/">Cümle Örnekleri Aracı</a></h4>
+            <p>Wiktionary ve Tatoeba kaynaklarından girdiğin kelimeyi içeren gerçek Almanca cümleler bulur. B1 ve B2 seviyesinde kelime kullanımını derinleştirmek için idealdir.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-on-surface mb-1"><a class="prose-link" href="/seviyeler/seviyetespit/">Almanca Seviye Testi</a></h4>
+            <p>25 soruluk ücretsiz seviye testi, gramer ve kelime bilgisini A1'den C1'e beş bölümde ölçer. Her yanlış cevap için Türkçe açıklama gösterilir. Kayıt gerekmez.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-on-surface mb-1"><a class="prose-link" href="/kelimeler/">Kelimelerim — Kişisel Sözlük</a></h4>
+            <p>Tüm araçlardan kaydettiğin kelimeler kişisel sözlük sayfasında toplanır. Etiket sistemi ile kategorilere ayırabilir, filtre ile hızlıca bulabilirsin.</p>
+          </div>
+        </div>
       </div>
 
-      <div class="prose-card">
-        <div class="prose-kicker">Öğrenme İpuçları</div>
-        <h2>Almancada hızlı ilerlemenin yolları</h2>
-        <ul>
-          <li><a href="/metin/">Gerçek Almanca metinler oku</a> — gazete, blog, kısa hikaye. Seviyene 1-2 kademe üstündeki metinler en hızlı ilerlemeyi sağlar.</li>
-          <li>Her yeni kelimeyi <a href="/artikel/">artikeli ile birlikte öğren</a>. "Hund" değil, "der Hund" olarak kaydet.</li>
-          <li><a href="/cumlebul/">Cümle örnekleri aracını</a> kullanarak kelimelerin bağlamdaki davranışını gözlemle.</li>
-          <li><a href="/quiz/">Quiz aracı ile</a> haftalık tekrar yap. Kelime haznesinin yüzde doksanı pekiştirme olmadan kaybolur.</li>
-          <li><a href="/seviyeler/seviyetespit/">Seviye testini</a> her iki-üç ayda bir tekrarla. İlerlemeyi görmek motivasyonu artırır.</li>
-          <li><a href="/dersler/">Yapılandırılmış dersleri</a> düzenli takip et, gramer boşluklarını kapat.</li>
+      <!-- Öğrenme İpuçları -->
+      <div class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl">
+        <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-primary/80 mb-3">Öğrenme İpuçları</p>
+        <h3 class="text-lg font-bold font-headline text-on-surface mb-4 leading-snug">Almancada hızlı ilerlemenin yolları</h3>
+        <ul class="space-y-3 text-sm text-on-surface-variant">
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><a class="prose-link" href="/metin/">Gerçek Almanca metinler oku</a> — seviyene 1-2 kademe üstündeki metinler en hızlı ilerlemeyi sağlar.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span>Her yeni kelimeyi <a class="prose-link" href="/artikel/">artikeli ile birlikte öğren</a>. "Hund" değil, "der Hund" olarak kaydet.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><a class="prose-link" href="/cumlebul/">Cümle örnekleri aracını</a> kullanarak kelimelerin bağlamdaki davranışını gözlemle.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><a class="prose-link" href="/quiz/">Quiz aracı ile</a> haftalık tekrar yap. Kelime haznesinin yüzde doksanı pekiştirme olmadan kaybolur.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><a class="prose-link" href="/seviyeler/seviyetespit/">Seviye testini</a> her iki-üç ayda bir tekrarla. İlerlemeyi görmek motivasyonu artırır.</span>
+          </li>
         </ul>
       </div>
 
-      <div class="prose-card">
-        <div class="prose-kicker">Seviye Rehberi</div>
-        <h2>CEFR seviyeleri ne anlama gelir?</h2>
-        <p>Avrupa Ortak Dil Çerçevesi (CEFR), altı seviyeyi tanımlar. AlmancaPratik A1'den C1'e beş seviyeyi kapsar.</p>
-        <ul>
-          <li><strong>A1 Başlangıç:</strong> Kendini tanıtabilir, basit sorular sorabilirsin. <a href="/seviyeler/seviyetespit/">Test et →</a></li>
-          <li><strong>A2 Temel:</strong> Aile, alışveriş, çevre gibi konularda iletişim kurarsın.</li>
-          <li><strong>B1 Orta:</strong> Seyahat, iş ve güncel olaylar hakkında konuşabilirsin.</li>
-          <li><strong>B2 Üst Orta:</strong> Karmaşık metinleri anlayabilir, akıcı konuşabilirsin. Almanya'daki çoğu iş pozisyonu bu seviyeyi gerektirir.</li>
-          <li><strong>C1 İleri:</strong> Akademik ve profesyonel dil. Üniversite kayıtları için genellikle bu seviye gerekir.</li>
+      <!-- CEFR Rehberi -->
+      <div class="bg-surface-container-low border border-outline-variant/15 p-7 rounded-xl">
+        <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-primary/80 mb-3">Seviye Rehberi</p>
+        <h3 class="text-lg font-bold font-headline text-on-surface mb-3 leading-snug">CEFR seviyeleri ne anlama gelir?</h3>
+        <p class="text-sm text-on-surface-variant mb-4 leading-relaxed">Avrupa Ortak Dil Çerçevesi (CEFR) altı seviye tanımlar. AlmancaPratik A1'den C1'e beş seviyeyi kapsar.</p>
+        <ul class="space-y-2.5 text-sm text-on-surface-variant">
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><strong class="text-on-surface">A1 Başlangıç:</strong> Kendini tanıtabilir, basit sorular sorabilirsin.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><strong class="text-on-surface">A2 Temel:</strong> Aile, alışveriş, çevre gibi konularda iletişim kurarsın.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><strong class="text-on-surface">B1 Orta:</strong> Seyahat, iş ve güncel olaylar hakkında konuşabilirsin.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><strong class="text-on-surface">B2 Üst Orta:</strong> Karmaşık metinleri anlayabilir, akıcı konuşabilirsin. Almanya'daki çoğu iş pozisyonu bu seviyeyi gerektirir.</span>
+          </li>
+          <li class="flex gap-2.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span>
+            <span><strong class="text-on-surface">C1 İleri:</strong> Akademik ve profesyonel dil. Üniversite kayıtları için genellikle bu seviye gerekir.</span>
+          </li>
         </ul>
-        <p>Hangi seviyede olduğundan emin değilsen <a href="/seviyeler/seviyetespit/">ücretsiz seviye testini</a> çöz.</p>
+        <p class="text-sm text-on-surface-variant mt-4">Hangi seviyede olduğundan emin değilsen <a class="prose-link" href="/seviyeler/seviyetespit/">ücretsiz seviye testini</a> çöz.</p>
       </div>
 
     </div>
   </section>
 
   <!-- ══ SSS ════════════════════════════════════════════ -->
-  <section class="section" aria-labelledby="faq-heading">
-    <div class="sec-head">
-      <div>
-        <div class="sec-eyebrow">SSS</div>
-        <h2 class="sec-title" id="faq-heading">Sık sorulan sorular</h2>
-      </div>
+  <section aria-labelledby="faq-heading" class="flex flex-col gap-8">
+    <div>
+      <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-2">SSS</p>
+      <h2 id="faq-heading" class="text-3xl font-bold font-headline text-on-surface tracking-tight">Sık sorulan sorular</h2>
     </div>
-    <div class="faq">
-      <div class="faq-item">
-        <div class="faq-q">AlmancaPratik ücretsiz mi?</div>
-        <p class="faq-a"><a href="/artikel/">Artikel bulucu</a>, <a href="/cumlebul/">cümle örnekleri</a>, ve <a href="/seviyeler/seviyetespit/">seviye testi</a> tamamen ücretsiz, hesap gerektirmez. Kişisel <a href="/kelimeler/">sözlük</a> ve <a href="/quiz/">quiz</a> özellikleri için ücretsiz kayıt yeterli.</p>
+
+    <div class="flex flex-col gap-2">
+      <div class="faq-item bg-surface-container-low border border-outline-variant/10 rounded-xl p-5 hover:bg-surface-container">
+        <p class="text-sm font-bold font-headline text-on-surface mb-2">AlmancaPratik ücretsiz mi?</p>
+        <p class="text-sm text-on-surface-variant leading-relaxed"><a class="prose-link" href="/artikel/">Artikel bulucu</a>, <a class="prose-link" href="/cumlebul/">cümle örnekleri</a> ve <a class="prose-link" href="/seviyeler/seviyetespit/">seviye testi</a> tamamen ücretsiz, hesap gerektirmez. Kişisel <a class="prose-link" href="/kelimeler/">sözlük</a> ve <a class="prose-link" href="/quiz/">quiz</a> özellikleri için ücretsiz kayıt yeterli.</p>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Der die das artikel bulucu nasıl çalışır?</div>
-        <p class="faq-a"><a href="/artikel/">Artikel bulucu</a>, Wiktionary veritabanını sorgulayarak girilen Almanca kelimenin maskulin (der), feminin (die) veya nötrum (das) olduğunu anında gösterir.</p>
+      <div class="faq-item bg-surface-container-low border border-outline-variant/10 rounded-xl p-5 hover:bg-surface-container">
+        <p class="text-sm font-bold font-headline text-on-surface mb-2">Der die das artikel bulucu nasıl çalışır?</p>
+        <p class="text-sm text-on-surface-variant leading-relaxed"><a class="prose-link" href="/artikel/">Artikel bulucu</a>, Wiktionary veritabanını sorgulayarak girilen Almanca kelimenin maskulin (der), feminin (die) veya nötrum (das) olduğunu anında gösterir.</p>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Almanca metin analizi nasıl çalışır?</div>
-        <p class="faq-a"><a href="/metin/">Metin analizi aracına</a> Almanca bir metin yapıştır. Okuma modunda bilmediğin kelimeye tıkla — çevirisi, artikeli ve örnek cümleleri anında görünür. İstediğin kelimeyi tek tıkla <a href="/kelimeler/">sözlüğüne ekle</a> ve sonra <a href="/quiz/">quizle</a> pekiştir.</p>
+      <div class="faq-item bg-surface-container-low border border-outline-variant/10 rounded-xl p-5 hover:bg-surface-container">
+        <p class="text-sm font-bold font-headline text-on-surface mb-2">Almanca metin analizi nasıl çalışır?</p>
+        <p class="text-sm text-on-surface-variant leading-relaxed"><a class="prose-link" href="/metin/">Metin analizi aracına</a> Almanca bir metin yapıştır. Okuma modunda bilmediğin kelimeye tıkla — çevirisi, artikeli ve örnek cümleler anında görünür. <a class="prose-link" href="/kelimeler/">Sözlüğüne ekle</a> ve <a class="prose-link" href="/quiz/">quizle</a> pekiştir.</p>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Almanca seviye testi ne kadar sürer?</div>
-        <p class="faq-a"><a href="/seviyeler/seviyetespit/">25 soruluk seviye testi</a> yaklaşık 10 dakika sürer. Tüm CEFR seviyeleri (A1, A2, B1, B2, C1) kapsanır. Kayıt gerekmez, sonuçlar anında gösterilir ve her yanlış cevap için Türkçe açıklama verilir.</p>
+      <div class="faq-item bg-surface-container-low border border-outline-variant/10 rounded-xl p-5 hover:bg-surface-container">
+        <p class="text-sm font-bold font-headline text-on-surface mb-2">Almanca seviye testi ne kadar sürer?</p>
+        <p class="text-sm text-on-surface-variant leading-relaxed"><a class="prose-link" href="/seviyeler/seviyetespit/">25 soruluk seviye testi</a> yaklaşık 10 dakika sürer. Tüm CEFR seviyeleri (A1, A2, B1, B2, C1) kapsanır. Kayıt gerekmez, her yanlış cevap için Türkçe açıklama verilir.</p>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Almancada hangi seviye iş başvurularında yeterli kabul edilir?</div>
-        <p class="faq-a">Almanya, Avusturya ve İsviçre'deki iş pozisyonlarının büyük kısmı B2 seviyesini gerektirir. Akademik ortamlar genellikle C1 ister. <a href="/seviyeler/seviyetespit/">Seviye testini</a> çözerek nerede durduğunu öğren.</p>
+      <div class="faq-item bg-surface-container-low border border-outline-variant/10 rounded-xl p-5 hover:bg-surface-container">
+        <p class="text-sm font-bold font-headline text-on-surface mb-2">Almancada hangi seviye iş başvurularında yeterli kabul edilir?</p>
+        <p class="text-sm text-on-surface-variant leading-relaxed">Almanya, Avusturya ve İsviçre'deki iş pozisyonlarının büyük kısmı B2 seviyesini gerektirir. Akademik ortamlar genellikle C1 ister. <a class="prose-link" href="/seviyeler/seviyetespit/">Seviye testini</a> çözerek nerede durduğunu öğren.</p>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">A2'den B1'e geçmek ne kadar sürer?</div>
-        <p class="faq-a">Günde 30-45 dakika düzenli çalışmayla bu geçiş ortalama 4-6 ayda gerçekleşebilir. <a href="/metin/">Metin analizi aracını</a> düzenli kullan, <a href="/kelimeler/">sözlüğünü</a> besle ve <a href="/quiz/">quizle</a> pekiştir.</p>
+      <div class="faq-item bg-surface-container-low border border-outline-variant/10 rounded-xl p-5 hover:bg-surface-container">
+        <p class="text-sm font-bold font-headline text-on-surface mb-2">A2'den B1'e geçmek ne kadar sürer?</p>
+        <p class="text-sm text-on-surface-variant leading-relaxed">Günde 30-45 dakika düzenli çalışmayla bu geçiş ortalama 4-6 ayda gerçekleşebilir. <a class="prose-link" href="/metin/">Metin analizi aracını</a> düzenli kullan, <a class="prose-link" href="/kelimeler/">sözlüğünü</a> besle ve <a class="prose-link" href="/quiz/">quizle</a> pekiştir.</p>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Almanca kelime quizi nasıl oluşturulur?</div>
-        <p class="faq-a"><a href="/wordsadd/">Kelime ekleme</a> veya <a href="/metin/">metin analizi</a> araçlarıyla sözlüğüne kelime kaydetmek yeterli. <a href="/quiz/">Quiz aracı</a> bu kelimelerden otomatik olarak sorular oluşturur.</p>
+      <div class="faq-item bg-surface-container-low border border-outline-variant/10 rounded-xl p-5 hover:bg-surface-container">
+        <p class="text-sm font-bold font-headline text-on-surface mb-2">Almanca kelime quizi nasıl oluşturulur?</p>
+        <p class="text-sm text-on-surface-variant leading-relaxed"><a class="prose-link" href="/wordsadd/">Kelime ekleme</a> veya <a class="prose-link" href="/metin/">metin analizi</a> araçlarıyla sözlüğüne kelime kaydetmek yeterli. <a class="prose-link" href="/quiz/">Quiz aracı</a> bu kelimelerden otomatik olarak sorular oluşturur.</p>
       </div>
     </div>
   </section>
 
-  <!-- ══ SİTE HARİTASI ══════════════════════════════════ -->
-  <section class="section" aria-labelledby="sitemap-heading">
-    <div class="sec-head">
-      <div>
-        <div class="sec-eyebrow">Site Haritası</div>
-        <h2 class="sec-title" id="sitemap-heading">Tüm sayfalar</h2>
-      </div>
+  <!-- ══ SİTE HARİTASI ═════════════════════════════════ -->
+  <section aria-labelledby="sitemap-heading" class="flex flex-col gap-8 pb-4">
+    <div>
+      <p class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-2">Site Haritası</p>
+      <h2 id="sitemap-heading" class="text-3xl font-bold font-headline text-on-surface tracking-tight">Tüm sayfalar</h2>
     </div>
-    <div class="sitemap-strip">
-      <div class="sitemap-col">
-        <h4>Araçlar</h4>
-        <ul>
-          <li><a href="/artikel/">Artikel Bulucu</a></li>
-          <li><a href="/cumlebul/">Cümle Örnekleri</a></li>
-          <li><a href="/metin/">Metin Analizi</a></li>
-          <li><a href="/okuma/">Okuma Modu</a></li>
-          <li><a href="/quiz/">Kelime Quizi</a></li>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8">
+      <div>
+        <h4 class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-4">Araçlar</h4>
+        <ul class="space-y-2.5">
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/artikel/">Artikel Bulucu</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/cumlebul/">Cümle Örnekleri</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/metin/">Metin Analizi</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/okuma/">Okuma Modu</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/quiz/">Kelime Quizi</a></li>
         </ul>
       </div>
-      <div class="sitemap-col">
-        <h4>Sözlük</h4>
-        <ul>
-          <li><a href="/kelimeler/">Kelimelerim</a></li>
-          <li><a href="/wordsadd/">Kelime Ekle</a></li>
-          <li><a href="/singleadd/">Tek Kelime Ekle</a></li>
-          <li><a href="/gecmis/">Metin Geçmişi</a></li>
+      <div>
+        <h4 class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-4">Sözlük</h4>
+        <ul class="space-y-2.5">
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/kelimeler/">Kelimelerim</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/wordsadd/">Kelime Ekle</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/singleadd/">Tek Kelime Ekle</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/gecmis/">Metin Geçmişi</a></li>
         </ul>
       </div>
-      <div class="sitemap-col">
-        <h4>İçerik</h4>
-        <ul>
-          <li><a href="/dersler/">Almanca Dersler</a></li>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/seviyeler/seviyetespit/">Seviye Testi</a></li>
-          <li><a href="/sponsorlar/">Sponsorlar</a></li>
+      <div>
+        <h4 class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-4">İçerik</h4>
+        <ul class="space-y-2.5">
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/dersler/">Almanca Dersler</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/blog/">Blog</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/seviyeler/seviyetespit/">Seviye Testi</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/sponsorlar/">Sponsorlar</a></li>
         </ul>
       </div>
-      <div class="sitemap-col">
-        <h4>Hesap &amp; Diğer</h4>
-        <ul>
-          <li><a href="/pratik/">Platform Paneli</a></li>
-          <li><a href="/login.html">Giriş Yap</a></li>
-          <li><a href="/privacy.html">Gizlilik Politikası</a></li>
-          <li><a href="/kullanim-sartlari.html">Kullanım Koşulları</a></li>
+      <div>
+        <h4 class="font-mono-label text-xs font-semibold tracking-widest uppercase text-on-surface-variant mb-4">Hesap &amp; Diğer</h4>
+        <ul class="space-y-2.5">
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/pratik/">Platform Paneli</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/login.html">Giriş Yap</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/privacy.html">Gizlilik Politikası</a></li>
+          <li><a class="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/kullanim-sartlari.html">Kullanım Koşulları</a></li>
         </ul>
       </div>
     </div>
   </section>
 
   <!-- ── FOOTER ──────────────────────────────────────── -->
-  <footer class="footer">
-    <span class="footer-copy">© 2026 AlmancaPratik — Tüm hakları saklıdır.</span>
-    <nav class="footer-links">
-      <a href="/pratik/">Araçlar</a>
-      <a href="/dersler/">Dersler</a>
-      <a href="/blog/">Blog</a>
-      <a href="/seviyeler/seviyetespit/">Seviye Testi</a>
-      <a href="/privacy.html">Gizlilik</a>
-      <a href="/kullanim-sartlari.html">Kullanım Koşulları</a>
-      <a href="/login.html">Giriş Yap</a>
+  <footer class="border-t border-outline-variant/20 pt-8 flex items-center justify-between flex-wrap gap-5">
+    <span class="text-xs text-on-surface-variant font-mono-label">© 2026 AlmancaPratik — Tüm hakları saklıdır.</span>
+    <nav class="flex flex-wrap gap-5">
+      <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/pratik/">Araçlar</a>
+      <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/dersler/">Dersler</a>
+      <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/blog/">Blog</a>
+      <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/seviyeler/seviyetespit/">Seviye Testi</a>
+      <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/privacy.html">Gizlilik</a>
+      <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/kullanim-sartlari.html">Kullanım Koşulları</a>
+      <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/login.html">Giriş Yap</a>
     </nav>
   </footer>
 
+</main>
+
+<!-- ═══════════════════════════════════════════
+     FAB — global.css stilleriyle çalışır
+═══════════════════════════════════════════ -->
+<div class="fab-wrapper" id="fabWrapper">
+  <button class="fab-main" id="fabMain" aria-label="Hızlı erişim menüsü" aria-expanded="false">+</button>
+
+  <a class="fab-item item-1" href="/artikel/" aria-label="Artikel Bulucu">
+    <div class="fab-item-content">
+      <span class="material-symbols-outlined" style="font-size:20px">search_check</span>
+    </div>
+    <span class="fab-label">Artikel Bul</span>
+  </a>
+  <a class="fab-item item-2" href="/quiz/" aria-label="Kelime Quizi">
+    <div class="fab-item-content">
+      <span class="material-symbols-outlined" style="font-size:20px">quiz</span>
+    </div>
+    <span class="fab-label">Quiz</span>
+  </a>
+  <a class="fab-item item-3" href="/metin/" aria-label="Metin Analizi">
+    <div class="fab-item-content">
+      <span class="material-symbols-outlined" style="font-size:20px">analytics</span>
+    </div>
+    <span class="fab-label">Metin</span>
+  </a>
+  <a class="fab-item item-4" href="/seviyeler/seviyetespit/" aria-label="Seviye Testi">
+    <div class="fab-item-content">
+      <span class="material-symbols-outlined" style="font-size:20px">school</span>
+    </div>
+    <span class="fab-label">Seviye Testi</span>
+  </a>
 </div>
+
+<!-- FAB toggle script -->
+<script>
+  const fabWrapper = document.getElementById('fabWrapper');
+  const fabMain    = document.getElementById('fabMain');
+  fabMain.addEventListener('click', () => {
+    const isActive = fabWrapper.classList.toggle('active');
+    fabMain.setAttribute('aria-expanded', isActive);
+  });
+  document.addEventListener('click', (e) => {
+    if (!fabWrapper.contains(e.target)) {
+      fabWrapper.classList.remove('active');
+      fabMain.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
 </body>
 </html>

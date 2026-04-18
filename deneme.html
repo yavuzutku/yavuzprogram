@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Almancayı Pratikle Öğren - AlmancaPratik</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error-container": "#93000a",
+                      "on-tertiary": "#581e00",
+                      "tertiary-container": "#bc4800",
+                      "surface-container-low": "#131b2e",
+                      "surface-dim": "#0b1326",
+                      "secondary-fixed": "#d8e3fb",
+                      "secondary": "#bcc7de",
+                      "inverse-primary": "#0053db",
+                      "on-tertiary-container": "#ffede6",
+                      "on-primary-container": "#eeefff",
+                      "surface-container-high": "#222a3d",
+                      "surface-container": "#171f33",
+                      "surface-container-lowest": "#060e20",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "error": "#ffb4ab",
+                      "on-secondary": "#263143",
+                      "tertiary": "#ffb596",
+                      "on-error": "#690005",
+                      "primary-container": "#2563eb",
+                      "tertiary-fixed": "#ffdbcd",
+                      "secondary-container": "#3e495d",
+                      "on-background": "#dae2fd",
+                      "inverse-surface": "#dae2fd",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "background": "#0b1326",
+                      "surface-container-highest": "#2d3449",
+                      "surface-tint": "#b4c5ff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "on-secondary-fixed": "#111c2d",
+                      "on-primary": "#002a78",
+                      "outline": "#8d90a0",
+                      "on-surface": "#dae2fd",
+                      "on-surface-variant": "#c3c6d7",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-primary-fixed": "#00174b",
+                      "primary-fixed": "#dbe1ff",
+                      "surface": "#0b1326",
+                      "primary": "#b4c5ff",
+                      "on-error-container": "#ffdad6",
+                      "surface-variant": "#2d3449",
+                      "on-secondary-container": "#aeb9d0",
+                      "on-tertiary-fixed": "#360f00",
+                      "outline-variant": "#434655",
+                      "inverse-on-surface": "#283044",
+                      "surface-bright": "#31394d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Manrope"
+                      ],
+                      "body": [
+                              "Manrope"
+                      ],
+                      "label": [
+                              "Space Grotesk"
+                      ]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #0b1326; /* surface */
+            color: #dae2fd; /* on-surface */
+        }
+        .font-mono-label {
+            font-family: 'Space Grotesk', monospace;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-950/70 backdrop-blur-2xl">
+<div class="bg-slate-900/40 backdrop-blur-md shadow-none">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-black text-slate-50 tracking-tighter">
+                    Scholarly Atelier
+                </div>
+<nav class="hidden md:flex gap-8 items-center font-manrope text-slate-50 tracking-tight leading-relaxed">
+<a class="text-blue-500 font-bold border-b-2 border-blue-500 pb-1 scale-95 transition-transform hover:bg-slate-800/50 transition-all duration-300" href="#">Kurslar</a>
+<a class="text-slate-400 hover:text-slate-200 transition-colors hover:bg-slate-800/50 transition-all duration-300" href="#">Kütüphane</a>
+<a class="text-slate-400 hover:text-slate-200 transition-colors hover:bg-slate-800/50 transition-all duration-300" href="#">İlerleme</a>
+</nav>
+<div class="flex items-center text-blue-600 dark:text-blue-500 hover:bg-slate-800/50 transition-all duration-300 rounded-full p-2 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed left-0 top-0 h-full w-64 z-40 flex flex-col pt-24 bg-slate-900/80 backdrop-blur-3xl rounded-r-2xl h-[calc(100vh-80px)] mt-20 shadow-2xl shadow-blue-900/10" style="background-color: var(--color-surface-container-low);">
+<div class="px-6 mb-8">
+<h2 class="font-manrope font-black text-blue-500 text-xl tracking-tight">Polymath Tools</h2>
+<p class="font-manrope uppercase tracking-widest text-xs font-bold text-slate-400 mt-1">German Precision</p>
+</div>
+<div class="flex flex-col gap-2 px-4 flex-grow">
+<a class="flex items-center gap-4 py-3 px-4 bg-blue-600/20 text-blue-400 rounded-lg mx-2 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">search_check</span>
+<span class="font-manrope font-medium text-sm">Artikel Bulucu</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-400 hover:text-slate-100 hover:bg-slate-800/40 transition-all duration-200 rounded-lg mx-2" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-manrope font-medium text-sm">Kelime Quizi</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-400 hover:text-slate-100 hover:bg-slate-800/40 transition-all duration-200 rounded-lg mx-2" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-manrope font-medium text-sm">Metin Analizi</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-400 hover:text-slate-100 hover:bg-slate-800/40 transition-all duration-200 rounded-lg mx-2" href="#">
+<span class="material-symbols-outlined">segment</span>
+<span class="font-manrope font-medium text-sm">Cümle Örnekleri</span>
+</a>
+</div>
+<div class="p-6">
+<button class="w-full bg-primary-container text-on-primary-container font-manrope font-bold py-3 rounded-lg hover:brightness-110 transition-all text-sm uppercase tracking-wider">
+                Yeni Analiz Başlat
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-32 pb-24 px-6 md:pl-72 max-w-screen-2xl mx-auto w-full flex flex-col gap-24">
+<!-- Hero Section -->
+<section class="flex flex-col lg:flex-row items-center justify-between gap-16">
+<div class="lg:w-1/2 flex flex-col items-start gap-8">
+<h1 class="text-5xl lg:text-7xl font-bold font-headline leading-tight tracking-tight text-on-surface">
+                    Almancayı <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container to-primary">pratikle öğren.</span>
+</h1>
+<p class="text-lg text-on-surface-variant font-body leading-relaxed max-w-xl">
+                    Dil öğrenimini bir atölye ciddiyetiyle ele alın. Artikel Bulucu, Kelime Quizi ve Derin Metin Analizi araçlarımızla Almanca bilginizi akademik bir hassasiyetle inşa edin.
+                </p>
+<div class="flex gap-4 w-full sm:w-auto">
+<button class="bg-primary-container text-on-primary-container px-8 py-4 rounded-lg font-bold hover:brightness-110 transition-all flex items-center gap-2">
+<span>Tüm Araçlar</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="border border-outline-variant bg-surface-container-low text-primary px-8 py-4 rounded-lg font-bold hover:bg-surface-container transition-all">
+                        Seviyemi Öğren
+                    </button>
+</div>
+</div>
+<div class="lg:w-1/2 w-full relative">
+<div class="absolute inset-0 bg-primary-container/20 blur-[100px] rounded-full"></div>
+<div class="relative bg-surface-container-highest border border-outline-variant/15 rounded-2xl overflow-hidden shadow-2xl">
+<img alt="Scholarly Atelier Concept" class="w-full h-[400px] object-cover opacity-80 mix-blend-luminosity" data-alt="abstract architectural space with moody blue lighting, glass panels reflecting light, scholarly and futuristic fusion, high quality render" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXDp4MZvX2yk8__TTgDpK3VfMcG4ZKRlVo_HrCEgRV9ltKWqK4mSt69ZOnWa6ub_yQQL5pKIvkArD4wrn9YlybandwIpXoOWmGQLDKnYoRoTgoP1l2xQ01kcH99BGFCHxAFrySDy9TxxXqkX6tutzbE3h7zWtbxnAqorSE-Hy85TEVAVtnYvVUI_43SSlwY7HvmsmgDbVsOEI0TVT7naJIcSAigInR7D1oX68ed6SofCgSxx15vXQI1ycGQFB9KjxhDpSJ9HDV1UI"/>
+</div>
+</div>
+</section>
+<!-- Tools Grid (Bento Style) -->
+<section class="flex flex-col gap-12">
+<div class="flex flex-col gap-4">
+<h2 class="text-3xl font-bold font-headline text-on-surface tracking-tight">Akademik Araç Seti</h2>
+<p class="text-on-surface-variant font-body max-w-2xl">Öğrenme sürecinizi destekleyen, veriye dayalı ve hassas analiz araçları.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Tool 1 -->
+<div class="bg-surface-container-low border border-outline-variant/15 p-8 rounded-xl flex flex-col gap-6 hover:bg-surface-container transition-all group cursor-pointer relative overflow-hidden">
+<div class="w-14 h-14 bg-surface-container-highest rounded-lg flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-3xl">search_check</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline text-on-surface mb-2">Artikel Bulucu</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Kelimenin artikeli ve çoğulu (Wiktionary tabanlı).</p>
+</div>
+<div class="mt-auto pt-4 flex gap-2">
+<span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2 py-1 rounded">Wiktionary</span>
+</div>
+</div>
+<!-- Tool 2 -->
+<div class="bg-surface-container-low border border-outline-variant/15 p-8 rounded-xl flex flex-col gap-6 hover:bg-surface-container transition-all group cursor-pointer lg:col-span-2">
+<div class="w-14 h-14 bg-surface-container-highest rounded-lg flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-3xl">segment</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline text-on-surface mb-2">Cümle Örnekleri</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed max-w-md">Gerçek bağlamda kelime kullanımı (Tatoeba / DeepL).</p>
+</div>
+<div class="mt-auto pt-4 flex gap-2">
+<span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2 py-1 rounded">Tatoeba</span>
+<span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2 py-1 rounded">Context</span>
+</div>
+</div>
+<!-- Tool 3 -->
+<div class="bg-surface-container-low border border-outline-variant/15 p-8 rounded-xl flex flex-col gap-6 hover:bg-surface-container transition-all group cursor-pointer lg:row-span-2">
+<div class="w-14 h-14 bg-surface-container-highest rounded-lg flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-3xl">analytics</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline text-on-surface mb-2">Metin Analizi</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Metindeki kelimelerin seviyesi ve türü (Spacy / NLTK).</p>
+</div>
+<div class="mt-auto pt-4 flex gap-2 flex-wrap">
+<span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2 py-1 rounded">Spacy</span>
+<span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2 py-1 rounded">NLP</span>
+</div>
+</div>
+<!-- Tool 4 -->
+<div class="bg-surface-container-low border border-outline-variant/15 p-8 rounded-xl flex flex-col gap-6 hover:bg-surface-container transition-all group cursor-pointer">
+<div class="w-14 h-14 bg-surface-container-highest rounded-lg flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-3xl">quiz</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline text-on-surface mb-2">Kelime Quizi</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Seviyene göre dinamik quiz (Kişiselleştirilmiş).</p>
+</div>
+<div class="mt-auto pt-4 flex gap-2">
+<span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2 py-1 rounded">A1-C1</span>
+</div>
+</div>
+<!-- Tool 5 -->
+<div class="bg-surface-container-low border border-outline-variant/15 p-8 rounded-xl flex flex-col gap-6 hover:bg-surface-container transition-all group cursor-pointer">
+<div class="w-14 h-14 bg-surface-container-highest rounded-lg flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-3xl">school</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline text-on-surface mb-2">Seviye Testi</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Hızlıca A1-C1 seviyeni öğren (Adaptif).</p>
+</div>
+<div class="mt-auto pt-4 flex gap-2">
+<span class="font-mono-label text-xs bg-surface-container-highest text-primary px-2 py-1 rounded">CEFR</span>
+</div>
+</div>
+</div>
+</section>
+<!-- CEFR Levels Section -->
+<section class="flex flex-col gap-12 bg-surface-container-low p-10 rounded-2xl border border-outline-variant/15">
+<div class="flex flex-col md:flex-row justify-between items-end gap-6">
+<div class="flex flex-col gap-4">
+<h2 class="text-3xl font-bold font-headline text-on-surface tracking-tight">CEFR Standartları</h2>
+<p class="text-on-surface-variant font-body max-w-2xl">Avrupa Dilleri Ortak Çerçeve Programı'na uygun içerikler.</p>
+</div>
+<button class="text-primary font-mono-label text-sm hover:underline">Tüm Seviyeleri İncele</button>
+</div>
+<div class="flex flex-wrap gap-4">
+<div class="flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-6 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-container-highest transition-colors cursor-pointer">
+<span class="text-2xl font-black font-headline text-secondary-fixed">A1</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label">Başlangıç</span>
+</div>
+<div class="flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-6 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-container-highest transition-colors cursor-pointer">
+<span class="text-2xl font-black font-headline text-secondary-fixed-dim">A2</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label">Temel</span>
+</div>
+<div class="flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-6 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-container-highest transition-colors cursor-pointer">
+<span class="text-2xl font-black font-headline text-primary-fixed">B1</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label">Orta</span>
+</div>
+<div class="flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-6 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-container-highest transition-colors cursor-pointer border-t-2 border-t-primary">
+<span class="text-2xl font-black font-headline text-primary">B2</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label">İleri Orta</span>
+</div>
+<div class="flex-1 min-w-[120px] bg-surface-container border border-outline-variant/20 p-6 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-container-highest transition-colors cursor-pointer">
+<span class="text-2xl font-black font-headline text-primary-fixed-dim">C1</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-wider font-mono-label">İleri</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Radial FAB (Floating Action Button) -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-16 h-16 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center shadow-[0_0_32px_rgba(0,62,168,0.3)] hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl">compass_calibration</span>
+</button>
+</div>
+</body></html>

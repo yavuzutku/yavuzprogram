@@ -1,227 +1,238 @@
-/* ══════════════════════════════════════════════════════════════════
-   @import — MUTLAKA EN ÜSTTE OLMALI (CSS standardı gereği)
-   Aşağıda body / reset tanımlandıktan sonra yazılmış @import
-   tarayıcılar tarafından yoksayılır. Buraya alındı. ✔
-══════════════════════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-/* ══════════════════════════════════════════════════════════════════
-   CSS CUSTOM PROPERTIES (Design Tokens)
-══════════════════════════════════════════════════════════════════ */
-:root {
-  --clr-bg:          #0a0a0f;
-  --clr-surface:     #0d0d14;
-  --clr-surface-2:   #131320;
-  --clr-gold:        #c9a84c;
-  --clr-gold-light:  #e8c97a;
-  --clr-gold-dim:    rgba(201, 168, 76, 0.15);
-  --clr-text:        #f0eee8;
-  --clr-text-muted:  rgba(240, 238, 232, 0.45);
-  --clr-text-dim:    rgba(240, 238, 232, 0.22);
-  --clr-border:      rgba(255, 255, 255, 0.07);
-  --clr-border-gold: rgba(201, 168, 76, 0.25);
-  --clr-blue:        #60c8f0;
-  --clr-danger:      #f07068;
-
-  --radius-sm:  8px;
-  --radius-md:  12px;
-  --radius-lg:  16px;
-  --radius-xl:  22px;
-  --radius-pill: 999px;
-
-  --nav-height: 68px;
-  --nav-height-mobile: 60px;
-
-  --transition-fast:   0.15s ease;
-  --transition-base:   0.22s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md:  0 8px 32px rgba(0, 0, 0, 0.45);
-  --shadow-lg:  0 20px 56px rgba(0, 0, 0, 0.65);
-  --shadow-gold: 0 4px 20px rgba(201, 168, 76, 0.25);
-}
-
-/* ══════════════════════════════════════════════════════════════════
+/* =========================
    BASE RESET
-══════════════════════════════════════════════════════════════════ */
+   (Tüm sayfalarda geçerli — sayfa CSS'lerinde tekrar yazmaya gerek yok)
+========================= */
+
 *, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
 }
 
 body {
+  margin: 0;
   font-family: 'DM Sans', sans-serif;
-  background: var(--clr-bg);
-  color: var(--clr-text);
+  background: #0a0a0f;
+  color: #fff;
   min-height: 100vh;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; }
-img, svg { display: block; }
+/* =========================
+   NAVBAR
+========================= */
 
-/* ══════════════════════════════════════════════════════════════════
-   BENTO GRID — Utility Classes
-   Kullanım: <div class="bento-grid"> içinde .bento-card ekle
-══════════════════════════════════════════════════════════════════ */
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 44px;
+  height: 62px;
+
+  background: rgba(7,7,9,0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    0 1px 0 0 rgba(201,168,76,0.08),
+    0 4px 24px rgba(0,0,0,0.35);
+
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.bento-grid--3 { grid-template-columns: repeat(3, 1fr); }
-.bento-grid--4 { grid-template-columns: repeat(4, 1fr); }
-
-.bento-card {
-  background: var(--clr-surface);
-  border: 1px solid var(--clr-border);
-  border-radius: var(--radius-xl);
-  padding: 24px;
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+/* ── Logo ── */
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f0eee8;
   position: relative;
-  overflow: hidden;
+  user-select: none;
+  flex-shrink: 0;
 }
 
-.bento-card::before {
+.logo::after {
   content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at top left, rgba(201,168,76,0.04) 0%, transparent 60%);
-  pointer-events: none;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: linear-gradient(90deg, #c9a84c, transparent);
+  border-radius: 2px;
+  opacity: 0.7;
 }
 
-.bento-card:hover {
-  border-color: var(--clr-border-gold);
-  box-shadow: 0 0 0 1px rgba(201,168,76,0.08), var(--shadow-md);
-}
-
-/* span helpers */
-.bento-col-2 { grid-column: span 2; }
-.bento-col-3 { grid-column: span 3; }
-.bento-row-2 { grid-row: span 2; }
-
-@media (max-width: 768px) {
-  .bento-grid--3,
-  .bento-grid--4 { grid-template-columns: repeat(2, 1fr); }
-  .bento-col-2,
-  .bento-col-3 { grid-column: span 1; }
-}
-
-@media (max-width: 480px) {
-  .bento-grid,
-  .bento-grid--3,
-  .bento-grid--4 { grid-template-columns: 1fr; gap: 12px; }
-  .bento-row-2 { grid-row: span 1; }
-}
-
-/* ══════════════════════════════════════════════════════════════════
-   TAG CHIPS
-══════════════════════════════════════════════════════════════════ */
-.tag-chip {
-  display: inline-flex;
+/* ── Nav Right ── */
+.navbar > div:last-child {
+  display: flex;
+  gap: 10px;
   align-items: center;
+}
+
+/* ── Anamenü Button ── */
+.home-btn {
+  padding: 7px 16px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  cursor: pointer;
+
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(240,238,232,0.65);
+  letter-spacing: 0.01em;
+
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  /* Minimum dokunma hedefi */
+  min-height: 36px;
+  min-width: 44px;
+}
+
+.home-btn:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.2);
+  color: #f0eee8;
+  transform: translateY(-1px);
+}
+
+.home-btn:active {
+  transform: translateY(0);
+}
+
+/* ── Tag chips ── */
+.tag-chip {
   padding: 5px 12px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--clr-border);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--clr-text-muted);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(240,238,232,0.45);
   font-size: 12px;
   font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .tag-chip:hover {
-  border-color: var(--clr-border-gold);
-  color: var(--clr-gold);
-  background: var(--clr-gold-dim);
+  border-color: rgba(201,168,76,0.5);
+  color: #c9a84c;
+  background: rgba(201,168,76,0.06);
 }
 
 .tag-chip.selected {
-  background: var(--clr-gold-dim);
-  border-color: var(--clr-border-gold);
-  color: var(--clr-gold);
+  background: rgba(201,168,76,0.15);
+  border-color: rgba(201,168,76,0.5);
+  color: #c9a84c;
   font-weight: 600;
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   NAVBAR — core.js içinde inject edilir; bu dosyada yalnızca
-   global.css'e özgü override'lar / yedekler bulunur.
-   Asıl navbar stilleri core.js'deki <style> bloğundadır.
-══════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   NAVBAR — RESPONSIVE
+══════════════════════════════════════════════ */
 
-/* ══════════════════════════════════════════════════════════════════
+/* ── Tablet (≤768px) ── */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 20px;
+    height: 56px;
+  }
+
+  .logo {
+    font-size: 15px;
+  }
+
+  .home-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* ── Mobil (≤480px) ── */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 14px;
+    height: 52px;
+  }
+
+  .logo {
+    font-size: 14px;
+  }
+
+  .home-btn .home-btn-label {
+    display: none;
+  }
+
+  .home-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .profile-avatar-img {
+    width: 30px !important;
+    height: 30px !important;
+  }
+}
+
+/* ════════════════════════════════════════════════
    FAB (Floating Action Button) — RADYAL MENÜ
-   ❌ HATA DÜZELTMESİ:
-     .fab-label, .fab-item-content içinde değil,
-     .fab-item'ın direkt çocuğu olmalı; aksi takdirde
-     transform uygulanan eleman içinde position:absolute
-     beklenmedik şekilde davranır. core.js DOM'u düzeltildi.
-══════════════════════════════════════════════════════════════════ */
+════════════════════════════════════════════════ */
 
-/* ── Konteynır ── */
+/* ══ Ana Konteynır ══ */
 .fab-wrapper {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
+  bottom: 30px;
+  right: 30px;
   z-index: 2000;
   width: 56px;
   height: 56px;
-  --radius: 112px;
+  --radius: 110px;
+  /* Kendi stacking context'ini oluştur — transform'lar dışarıya taşmasın */
   isolation: isolate;
 }
 
-/* ── Ana Buton ── */
+/* ── Ana Buton ──
+   position: absolute + en yüksek z-index ile fab-item'ların
+   DAIMA üstünde kalır; transform animasyonları butonun
+   üstüne çıkamaz.                                         */
 .fab-main {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, var(--clr-gold), var(--clr-gold-light));
+  background: linear-gradient(135deg, #c9a84c, #e8c97a);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--clr-bg);
-  box-shadow: var(--shadow-gold), var(--shadow-sm);
+  color: #0a0a0f;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   cursor: pointer;
   border: none;
+  /* fab-item z-index: 1 → fab-main z-index: 10 → her zaman üstte */
   z-index: 10;
   font-size: 24px;
   line-height: 1;
-  transition:
-    transform var(--transition-bounce),
-    background var(--transition-base),
-    box-shadow var(--transition-base);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              background 0.3s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-.fab-main:hover {
-  box-shadow: 0 6px 28px rgba(201, 168, 76, 0.45), var(--shadow-sm);
-}
-
 .fab-wrapper.active .fab-main {
   transform: rotate(135deg);
-  background: linear-gradient(135deg, #e0605a, #f07068);
-  box-shadow: 0 4px 20px rgba(240, 112, 104, 0.4);
+  background: #f07068;
 }
 
-/* ── FAB Item ── */
+/* ── FAB Item (her alt buton) ── */
 .fab-item {
   position: absolute;
   top: 0;
@@ -234,38 +245,37 @@ img, svg { display: block; }
   text-decoration: none;
   opacity: 0;
   visibility: hidden;
-  /* ❌ HATA: pointer-events: all → pointer-events: auto ✔ */
+  transition: opacity 0.25s ease;
   pointer-events: none;
+  /* fab-main'in altında kalır */
   z-index: 1;
-  transition: opacity var(--transition-fast);
 }
 
 .fab-wrapper.active .fab-item {
   opacity: 1;
   visibility: visible;
-  /* ❌ HATA: pointer-events: all → pointer-events: auto ✔ */
   pointer-events: auto;
 }
 
-/* ── İçerik Katmanı ── */
+/* ── İçerik Katmanı (yuvarlak ikon) ── */
 .fab-item-content {
   width: 48px;
   height: 48px;
-  background: var(--clr-surface-2);
-  border: 1px solid var(--clr-gold);
+  background: #1c1c26;
+  border: 1px solid #c9a84c;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--clr-gold);
-  box-shadow: var(--shadow-md);
-  transition:
-    transform var(--transition-bounce),
-    background var(--transition-fast),
-    color var(--transition-fast);
+  color: #c9a84c;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              background 0.2s ease;
   transform: translate(0, 0) scale(0.3);
+  position: relative;
 }
 
+/* ── Açık hâlde radyal konumlandırma ── */
 .fab-wrapper.active .fab-item .fab-item-content {
   transform:
     rotate(calc(var(--angle) * 1deg))
@@ -274,10 +284,11 @@ img, svg { display: block; }
     scale(1);
 }
 
+/* ── Hover (yalnızca masaüstü) ── */
 @media (hover: hover) {
   .fab-item:hover .fab-item-content {
-    background: var(--clr-gold);
-    color: var(--clr-bg);
+    background: #c9a84c;
+    color: #0a0a0f;
     transform:
       rotate(calc(var(--angle) * 1deg))
       translate(var(--radius))
@@ -286,112 +297,107 @@ img, svg { display: block; }
   }
 }
 
-/* ── Stagger gecikmeler ── */
+/* ── Açılarda geçikme (stagger) ── */
 .item-1 { --angle: -90;  transition-delay: 0.00s; }
-.item-2 { --angle: -128; transition-delay: 0.05s; }
-.item-3 { --angle: -158; transition-delay: 0.10s; }
-.item-4 { --angle: -192; transition-delay: 0.15s; }
+.item-2 { --angle: -125; transition-delay: 0.05s; }
+.item-3 { --angle: -155; transition-delay: 0.10s; }
+.item-4 { --angle: -190; transition-delay: 0.15s; }
 
-/* ══════════════════════════════════════════════════════════════════
+/* ════════════════════════
    FAB — ETİKETLER
-   ❌ HATA DÜZELTMESİ: Etiket artık .fab-item'ın direkt çocuğu,
-   .fab-item-content'in değil. Transform context dışında.
-══════════════════════════════════════════════════════════════════ */
+════════════════════════ */
+
 .fab-label {
   position: absolute;
-  background: var(--clr-gold);
-  color: var(--clr-bg);
+  background: #c9a84c;
+  color: #0a0a0f;
   padding: 4px 10px;
-  border-radius: 5px;
-  font-family: 'DM Sans', sans-serif;
+  border-radius: 4px;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
   white-space: nowrap;
-  letter-spacing: 0.02em;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  transition: opacity 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   z-index: 2020;
 
   /* Varsayılan konum: üst */
-  bottom: calc(100% + 14px);
+  bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
 }
 
+/* Ok işareti — üste bakan (item-1, 2, 3) */
 .fab-label::after {
   content: '';
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: var(--clr-gold);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #c9a84c transparent transparent transparent;
 }
 
-/* item-2: sol-üst */
+/* item-2: üst-sol köşe */
 .item-2 .fab-label {
-  left: 10%;
-  transform: translateX(-85%);
-}
-.item-2 .fab-label::after {
-  left: auto;
-  right: 14px;
-  transform: none;
+  left: 20%;
+  transform: translateX(-80%);
 }
 
 /* item-3: sol çapraz */
 .item-3 .fab-label {
   left: 0%;
-  transform: translateX(-100%) translateY(10px);
-  bottom: auto;
-  top: 50%;
-}
-.item-3 .fab-label::after {
-  top: 50%;
-  left: 100%;
-  transform: translateY(-50%);
-  border-top-color: transparent;
-  border-left-color: var(--clr-gold);
+  transform: translateX(-105%) translateY(15px);
 }
 
-/* item-4: tam sol */
+/* item-4: tam sol ─ ok sağa baksın */
 .item-4 .fab-label {
-  bottom: 50%;
-  right: calc(100% + 14px);
+  bottom: 50% !important;
+  right: calc(100% + 12px);
   left: auto;
-  top: auto;
   transform: translateY(50%);
 }
 .item-4 .fab-label::after {
   top: 50%;
   left: 100%;
   transform: translateY(-50%);
-  border-top-color: transparent;
-  border-left-color: var(--clr-gold);
+  border-color: transparent transparent transparent #c9a84c;
 }
 
+/* Masaüstü hover'da etiket belir */
 @media (hover: hover) {
-  .fab-item:hover .fab-label { opacity: 1; }
+  .fab-item:hover .fab-label {
+    opacity: 1;
+  }
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   FAB — MOBİL / DOKUNMATIK
-══════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   FAB — MOBİL / DOKUNMATIK (hover desteklenmiyor)
+   Masaüstü davranışına dokunulmaz; sadece touch
+   cihazlarda geçerli.
+════════════════════════════════════════════════ */
+
 @media (hover: none) {
-  .fab-wrapper.active .fab-item .fab-label { opacity: 1; }
-
-  /* Ekranın sol kenarına taşmayı önle */
-  .item-4 { --angle: -180; }
-
-  .item-3 .fab-label {
-    transform: translateX(-85%) translateY(10px);
+  /* Açık olduğunda tüm etiketler görünsün */
+  .fab-wrapper.active .fab-item .fab-label {
+    opacity: 1;
   }
 
+  /* item-4 etiketi ekran soluna taşmayabilir;
+     küçük ekranda açıyı biraz kıs */
+  .item-4 { --angle: -180; }
+
+  /* item-3 etiketini biraz sağa kaydır — sol kenar overflow önlemi */
+  .item-3 .fab-label {
+    transform: translateX(-90%) translateY(15px);
+  }
+
+  /* İkon büyütme efekti (dokunuş geri bildirimi) */
   .fab-item:active .fab-item-content {
-    background: var(--clr-gold);
-    color: var(--clr-bg);
+    background: #c9a84c;
+    color: #0a0a0f;
     transform:
       rotate(calc(var(--angle) * 1deg))
       translate(var(--radius))
@@ -400,19 +406,17 @@ img, svg { display: block; }
   }
 }
 
-/* ── Küçük telefon ── */
+/* ── Küçük telefon radius ayarı ── */
 @media (max-width: 480px) {
   .fab-wrapper {
     --radius: 100px;
-    bottom: 22px;
-    right: 18px;
+    bottom: 24px;
+    right: 20px;
   }
-
   .fab-item-content {
     width: 44px;
     height: 44px;
   }
-
   .fab-main {
     width: 52px;
     height: 52px;

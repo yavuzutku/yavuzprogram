@@ -1,894 +1,743 @@
 import { auth, logoutFirebase, onAuthChange } from "./firebase.js";
 
-/* ─────────────────────────────────────────────
-   requireAuth — sayfayı giriş yapmış kullanıcıya kısıtla
-───────────────────────────────────────────── */
-function requireAuth() {
+function requireAuth(){
   const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost";
   onAuthChange((user) => {
-    if (!user && !isLocal) window.location.href = "/login.html";
+    if(!user && !isLocal) window.location.href = "/login.html";
   });
 }
 
-/* ─────────────────────────────────────────────
-   loadNavbar — YAN NAVBAR (eski top bar kaldırıldı)
-   • Masaüstü: fixed left sidebar (260px)
-   • Mobil:    gizli + hamburger açar
-   • Tüm eski işlev korundu:
-       Dersler accordion, auth state, logout,
-       aktif sayfa vurgulama
-───────────────────────────────────────────── */
-function loadNavbar() {
-  if (document.getElementById("sideNav")) return;
+function loadNavbar(){
+  const navbar = document.createElement("div");
+  navbar.className = "navbar";
 
-  /* ── Aktif sayfa tespiti ── */
-  const p          = window.location.pathname;
-  const isDersler  = p.includes("/dersler");
-  const isBlog     = p.includes("/blog");
-  const isMetin    = p.includes("/metin");
-  const isArtikel  = p.includes("/artikel/");
-  const isCumle    = p.includes("/cumlebul/");
-  const isFiil     = p.includes("/fiil");
-  const isQuiz     = p.includes("/quiz");
-  const isKelimeler= p.includes("/kelimeler");
+  const path = window.location.pathname;
+  const isDersler = path.includes("/dersler");
+  const isBlog    = path.includes("/blog");
+  const isMetin   = path.includes("/metin");
+  const isArtikel = path.includes("/artikel/");
+  const isCumle   = path.includes("/cumlebul/");
+  const isFiil    = path.includes("/fiil");
 
-  /* ══════════════════════════════════════════
-     STYLES
-  ══════════════════════════════════════════ */
+
+  navbar.innerHTML = `
+    <a class="logo" href="/" aria-label="AlmancaPratik ana sayfa">
+      <img class="logo__favicon" src="/favicon.png" alt="" aria-hidden="true">
+      <span class="logo__text">Almanca<span class="logo__accent">Pratik</span></span>
+    </a>
+
+    <!-- Mobil hamburger -->
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menüyü aç" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav-links" role="navigation">
+
+      <!-- Dersler dropdown -->
+      <div class="nav-item-wrap" id="derslerDropWrap">
+        <a class="nav-item ${isDersler ? "nav-item--active" : ""}" href="/dersler/" id="derslerPill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Dersler</span>
+          <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="nav-dropdown" id="derslerDrop">
+          <div class="nav-dropdown-inner">
+            <p class="drop-section-label">Seviyeye Göre</p>
+            <div class="drop-level-grid">
+              <a class="drop-level-card" href="/dersler/?cat=A1">
+                <span class="level-badge level-badge--a1">A1</span>
+                <div>
+                  <div class="drop-item-title">Başlangıç</div>
+                  <div class="drop-item-sub">Temel kelimeler</div>
+                </div>
+              </a>
+              <a class="drop-level-card" href="/dersler/?cat=A2">
+                <span class="level-badge level-badge--a2">A2</span>
+                <div>
+                  <div class="drop-item-title">Temel</div>
+                  <div class="drop-item-sub">Günlük konuşma</div>
+                </div>
+              </a>
+              <a class="drop-level-card" href="/dersler/?cat=B1">
+                <span class="level-badge level-badge--b1">B1</span>
+                <div>
+                  <div class="drop-item-title">Orta</div>
+                  <div class="drop-item-sub">Karmaşık cümleler</div>
+                </div>
+              </a>
+              <a class="drop-level-card" href="/dersler/?cat=B2">
+                <span class="level-badge level-badge--b2">B2</span>
+                <div>
+                  <div class="drop-item-title">Üst Orta</div>
+                  <div class="drop-item-sub">İleri gramer</div>
+                </div>
+              </a>
+              <a class="drop-level-card" href="/dersler/?cat=C1">
+                <span class="level-badge level-badge--c1">C1</span>
+                <div>
+                  <div class="drop-item-title">İleri</div>
+                  <div class="drop-item-sub">Akademik Almanca</div>
+                </div>
+              </a>
+            </div>
+            <div class="drop-divider"></div>
+            <a class="drop-all-link" href="/dersler/">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              Tüm Dersleri Gör
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metin Analizi -->
+      <a class="nav-item ${isMetin ? 'nav-item--active' : ''}" href="/metin/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Metin Analizi</span>
+      </a>
+
+      <!-- Artikel -->
+      <a class="nav-item ${isArtikel ? 'nav-item--active' : ''}" href="/artikel/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Artikel</span>
+      </a>
+
+      <!-- Cümle -->
+      <a class="nav-item ${isCumle ? 'nav-item--active' : ''}" href="/cumlebul/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Cümle</span>
+      </a>
+
+      <!-- Fiil Çekimleme -->
+      <a class="nav-item ${isFiil ? 'nav-item--active' : ''}" href="/fiil/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span>Fiil Çekimleme</span>
+      </a>
+
+      <!-- Blog -->
+      <a class="nav-item ${isBlog ? "nav-item--active" : ""}" href="/blog/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span>Blog</span>
+      </a>
+
+    </nav>
+
+    <div class="nav-right">
+
+      <!-- Seviye testi CTA -->
+      <a class="nav-cta" href="/seviyeler/seviyetespit/">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+        <span>Seviye Testi</span>
+      </a>
+
+      <div class="nav-vr" aria-hidden="true"></div>
+
+      <!-- Auth -->
+      <a class="nav-login-btn" id="navLoginBtn" href="/login.html" style="display:none">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>Giriş Yap</span>
+      </a>
+
+      <div class="profile-wrapper" id="profileWrapper" style="display:none">
+        <button class="profile-trigger" id="profileAvatar" aria-label="Profil menüsü">
+          <img class="profile-avatar-img" id="profileAvatarImg"
+            src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64" alt="Profil"/>
+        </button>
+        <div class="profile-dropdown" id="profileDropdown" role="menu">
+          <div class="profile-dropdown__header">
+            <img class="profile-dropdown__avatar" id="profileAvatarSmall"
+              src="https://ui-avatars.com/api/?name=User&background=555&color=fff&size=64" alt=""/>
+            <div>
+              <div class="profile-dropdown__label">Giriş yapıldı</div>
+              <span class="profile-email" id="profileEmail">Yükleniyor...</span>
+            </div>
+          </div>
+          <div class="profile-dropdown__divider"></div>
+          <button class="logout-btn" id="logoutBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Çıkış Yap
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+
   const style = document.createElement("style");
   style.textContent = `
-    /* ── Değişkenler ── */
-    :root {
-      --sn-w:        260px;
-      --sn-mobile-h: 58px;
-      --sn-bg:       rgba(10, 15, 30, 0.97);
-      --sn-surf:     #171f33;
-      --sn-surf-h:   rgba(34, 42, 61, 0.75);
-      --sn-border:   rgba(67, 70, 85, 0.38);
-      --sn-text:     #dae2fd;
-      --sn-muted:    #6b7280;
-      --sn-primary:  #b4c5ff;
-      --sn-pc:       #2563eb;
-      --sn-pc-on:    #eeefff;
-      --sn-radius:   11px;
-      --sn-tr:       0.17s ease;
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .logo__favicon {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 5px;
+      flex-shrink: 0;
     }
 
-    /* ── Body offset ── */
-    body.has-sidenav {
-      padding-left: var(--sn-w) !important;
-      min-height: 100vh;
-    }
-    @media (max-width: 680px) {
-      body.has-sidenav {
-        padding-left: 0 !important;
-        padding-top: var(--sn-mobile-h) !important;
-      }
-    }
-
-    /* ══════════════════════
-       SIDE NAV SHELL
-    ══════════════════════ */
-    #sideNav {
-      position: fixed;
-      inset: 0 auto 0 0;
-      width: var(--sn-w);
+    /* ── NAVBAR SHELL ── */
+    .navbar {
+      position: sticky;
+      top: 0;
       z-index: 1000;
       display: flex;
-      flex-direction: column;
-      background: var(--sn-bg);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      border-right: 1px solid var(--sn-border);
-      border-radius: 0 20px 20px 0;
-      overflow: hidden;
-      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 0 48px;
+      height: 68px;
+      background: rgba(8,8,12,0.88);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.055);
+      box-shadow: 0 1px 0 rgba(201,168,76,0.07), 0 8px 32px rgba(0,0,0,0.4);
     }
 
-    /* ── Logo Wrap ── */
-    .sn-logo-wrap {
-      padding: 18px 14px 14px;
-      border-bottom: 1px solid var(--sn-border);
-      flex-shrink: 0;
-    }
-    .sn-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-    .sn-favicon {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-    .sn-brand-name {
-      font-family: 'Manrope', 'DM Sans', system-ui, sans-serif;
-      font-size: 15px;
+    .logo__text {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
       font-weight: 800;
-      color: var(--sn-text);
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-    .sn-brand-accent { color: var(--sn-primary); }
-    .sn-brand-tag {
-      display: block;
-      font-family: 'Space Grotesk', 'DM Mono', monospace;
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--sn-muted);
-      margin-top: 2px;
-    }
-
-    /* ── Scroll Area ── */
-    .sn-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px 10px 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-    .sn-scroll::-webkit-scrollbar { width: 3px; }
-    .sn-scroll::-webkit-scrollbar-track { background: transparent; }
-    .sn-scroll::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.07);
-      border-radius: 3px;
-    }
-
-    /* ── Section Label ── */
-    .sn-sec-label {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 9.5px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--sn-muted);
-      padding: 10px 12px 3px;
-    }
-
-    /* ── Nav Item (link + button) ── */
-    .sn-item {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 9px 12px;
-      border-radius: var(--sn-radius);
-      font-family: 'Manrope', 'DM Sans', system-ui, sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: rgba(195, 198, 215, 0.72);
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      width: 100%;
-      text-align: left;
-      transition: background var(--sn-tr), color var(--sn-tr);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
+      color: #f0eee8;
+      user-select: none;
       position: relative;
     }
-    .sn-item svg {
-      flex-shrink: 0;
-      opacity: 0.6;
-      transition: opacity var(--sn-tr);
-    }
-    .sn-item:hover {
-      color: var(--sn-text);
-      background: var(--sn-surf-h);
-    }
-    .sn-item:hover svg { opacity: 1; }
-
-    /* Aktif item */
-    .sn-item--active {
-      color: var(--sn-primary);
-      background: rgba(37, 99, 235, 0.12);
-    }
-    .sn-item--active svg { opacity: 1; }
-    .sn-item--active::before {
+    .logo__text::after {
       content: '';
       position: absolute;
-      left: 0;
-      top: 22%;
-      bottom: 22%;
-      width: 3px;
-      background: var(--sn-pc);
-      border-radius: 0 3px 3px 0;
+      bottom: -2px; left: 0;
+      width: 100%; height: 1.5px;
+      background: linear-gradient(90deg, #c9a84c, transparent);
+      border-radius: 2px;
+      opacity: 0.65;
     }
+    .logo__accent { color: #c9a84c; }
 
-    /* ── Chevron ── */
-    .sn-chevron {
-      margin-left: auto;
-      opacity: 0.3;
-      transition: transform 0.22s ease, opacity var(--sn-tr);
-    }
-    .sn-group.open .sn-chevron {
-      transform: rotate(180deg);
-      opacity: 0.6;
-    }
-
-    /* ── Accordion Sub ── */
-    .sn-sub {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.26s ease;
-      padding-left: 6px;
+    .nav-links {
       display: flex;
-      flex-direction: column;
-      gap: 1px;
+      align-items: center;
+      gap: 2px;
     }
-    .sn-group.open .sn-sub { max-height: 420px; }
 
-    /* ── Level Cards ── */
-    .sn-level-card {
+    .nav-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(240,238,232,0.55);
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      position: relative;
+      letter-spacing: -0.01em;
+    }
+    .nav-item svg { flex-shrink: 0; opacity: 0.6; transition: opacity 0.18s; }
+    .nav-item:hover {
+      color: rgba(240,238,232,0.9);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.08);
+    }
+    .nav-item:hover svg { opacity: 1; }
+    .nav-item--active {
+      color: rgba(240,238,232,0.9);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.09);
+    }
+    .nav-item--active svg { opacity: 1; }
+    .nav-chevron { opacity: 0.35; transition: transform 0.2s ease, opacity 0.18s; }
+    .nav-item-wrap.open .nav-chevron { transform: rotate(180deg); opacity: 0.7; }
+
+    .nav-right {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 7px 10px;
-      border-radius: 9px;
-      text-decoration: none;
-      transition: background var(--sn-tr);
-    }
-    .sn-level-card:hover { background: var(--sn-surf-h); }
-
-    .sn-lv-badge {
-      font-family: 'Manrope', sans-serif;
-      font-size: 10.5px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
       flex-shrink: 0;
-      min-width: 30px;
-      text-align: center;
-      letter-spacing: 0.02em;
     }
-    .lv-a1 { background: rgba(34,197,94,0.1);   border: 1px solid rgba(34,197,94,0.2);   color: #4ade80; }
-    .lv-a2 { background: rgba(134,239,172,0.08); border: 1px solid rgba(134,239,172,0.16); color: #86efac; }
-    .lv-b1 { background: rgba(125,211,252,0.09); border: 1px solid rgba(125,211,252,0.18); color: #7dd3fc; }
-    .lv-b2 { background: rgba(165,180,252,0.09); border: 1px solid rgba(165,180,252,0.18); color: #a5b4fc; }
-    .lv-c1 { background: rgba(180,197,255,0.09); border: 1px solid rgba(180,197,255,0.18); color: #b4c5ff; }
 
-    .sn-lv-title {
-      font-family: 'Manrope', sans-serif;
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 15px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
       font-size: 12.5px;
       font-weight: 600;
-      color: rgba(218, 226, 253, 0.82);
-      line-height: 1.2;
-    }
-    .sn-lv-sub {
-      font-size: 11px;
-      color: var(--sn-muted);
-      margin-top: 1px;
-    }
-
-    .sn-all-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 10px;
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 600;
-      color: rgba(195, 198, 215, 0.42);
+      color: rgba(96,200,240,0.72);
       text-decoration: none;
-      transition: all var(--sn-tr);
-      margin-top: 1px;
+      border: 1px solid rgba(96,200,240,0.16);
+      background: rgba(96,200,240,0.05);
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      letter-spacing: -0.01em;
     }
-    .sn-all-link:hover {
-      background: var(--sn-surf-h);
-      color: rgba(218, 226, 253, 0.78);
+    .nav-cta svg { stroke: rgba(96,200,240,0.72); transition: stroke 0.18s; }
+    .nav-cta:hover {
+      color: #60c8f0;
+      border-color: rgba(96,200,240,0.3);
+      background: rgba(96,200,240,0.1);
+    }
+    .nav-cta:hover svg { stroke: #60c8f0; }
+
+    .nav-login-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0a0a0f;
+      text-decoration: none;
+      background: linear-gradient(135deg, #c9a84c, #e8c97a);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 3px 16px rgba(201,168,76,0.3);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .nav-login-btn svg { stroke: #0a0a0f; opacity: 0.8; }
+    .nav-login-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(201,168,76,0.45);
+      background: linear-gradient(135deg, #d9b85c, #f0d480);
     }
 
-    /* ── Divider ── */
-    .sn-divider {
-      height: 1px;
-      background: var(--sn-border);
-      margin: 5px 4px;
+    .nav-vr {
+      width: 1px; height: 22px;
+      background: rgba(255,255,255,0.07);
+      flex-shrink: 0;
     }
 
-    /* ══════════════════════
-       FOOTER (CTA + AUTH)
-    ══════════════════════ */
-    .sn-footer {
-      padding: 10px 10px 14px;
-      border-top: 1px solid var(--sn-border);
+    .nav-item-wrap { position: relative; display: inline-flex; }
+
+    .nav-dropdown {
+      position: absolute;
+      top: calc(100% + 14px);
+      left: 50%;
+      transform: translateX(-50%) translateY(-6px);
+      min-width: 260px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s ease, transform 0.18s cubic-bezier(0.4,0,0.2,1);
+      z-index: 9999;
+    }
+    .nav-dropdown::before {
+      content: '';
+      position: absolute;
+      top: -14px; left: 0; right: 0;
+      height: 14px;
+    }
+    .nav-item-wrap.open .nav-dropdown {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav-dropdown-inner {
+      background: #0d0d14;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow:
+        0 24px 64px rgba(0,0,0,0.72),
+        0 4px 16px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .drop-section-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(240,238,232,0.22);
+      margin: 6px 10px 6px;
+      padding: 0;
+    }
+
+    .drop-level-grid {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      flex-shrink: 0;
+      gap: 2px;
     }
-
-    /* CTA Seviye Testi */
-    .sn-cta {
+    .drop-level-card {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 10px 14px;
-      background: var(--sn-pc);
-      color: var(--sn-pc-on);
-      font-family: 'Manrope', sans-serif;
-      font-size: 12.5px;
-      font-weight: 700;
+      gap: 12px;
+      padding: 9px 12px;
       border-radius: 10px;
       text-decoration: none;
-      letter-spacing: 0.01em;
-      transition: filter var(--sn-tr), transform var(--sn-tr);
+      transition: background 0.15s;
     }
-    .sn-cta:hover {
-      filter: brightness(1.14);
-      transform: translateY(-1px);
+    .drop-level-card:hover { background: rgba(255,255,255,0.05); }
+
+    .level-badge {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 7px;
+      flex-shrink: 0;
+      min-width: 36px;
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+    .level-badge--a1 { background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.22); color:#22c55e; }
+    .level-badge--a2 { background:rgba(134,239,172,0.08); border:1px solid rgba(134,239,172,0.18); color:#86efac; }
+    .level-badge--b1 { background:rgba(96,200,240,0.09); border:1px solid rgba(96,200,240,0.2); color:#60c8f0; }
+    .level-badge--b2 { background:rgba(129,140,248,0.09); border:1px solid rgba(129,140,248,0.18); color:#818cf8; }
+    .level-badge--c1 { background:rgba(201,168,76,0.09); border:1px solid rgba(201,168,76,0.2); color:#c9a84c; }
+
+    .drop-item-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(240,238,232,0.85);
+      line-height: 1.2;
+    }
+    .drop-item-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11.5px;
+      color: rgba(240,238,232,0.3);
+      margin-top: 1px;
     }
 
-    /* Giriş Yap */
-    .sn-login-btn {
+    .drop-all-link {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 9px 14px;
-      background: transparent;
-      border: 1px solid var(--sn-border);
+      padding: 9px 12px;
       border-radius: 10px;
-      color: rgba(195, 198, 215, 0.7);
-      font-family: 'Manrope', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 12.5px;
       font-weight: 600;
+      color: rgba(240,238,232,0.4);
       text-decoration: none;
-      cursor: pointer;
-      transition: background var(--sn-tr), color var(--sn-tr), border-color var(--sn-tr);
+      transition: all 0.15s;
     }
-    .sn-login-btn:hover {
-      background: var(--sn-surf);
-      color: var(--sn-text);
-      border-color: rgba(67, 70, 85, 0.65);
+    .drop-all-link:hover { background: rgba(255,255,255,0.05); color: rgba(240,238,232,0.8); }
+    .drop-all-link svg { opacity: 0.45; }
+
+    .drop-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 6px 4px;
     }
 
-    /* Profile trigger */
-    .sn-profile-wrap { position: relative; }
-    .sn-profile-trigger {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 7px 10px;
-      background: transparent;
-      border: 1px solid var(--sn-border);
-      border-radius: 10px;
-      cursor: pointer;
-      width: 100%;
-      transition: background var(--sn-tr);
+    .profile-wrapper { position: relative; display: inline-flex; }
+    .profile-trigger {
+      background: none; border: none;
+      padding: 0; cursor: pointer;
+      display: flex; align-items: center;
     }
-    .sn-profile-trigger:hover { background: var(--sn-surf); }
-    .sn-avatar {
-      width: 30px;
-      height: 30px;
+    .profile-avatar-img {
+      width: 34px; height: 34px;
       border-radius: 50%;
       object-fit: cover;
-      flex-shrink: 0;
-      border: 1.5px solid rgba(180, 197, 255, 0.18);
-    }
-    .sn-profile-info { flex: 1; min-width: 0; text-align: left; }
-    .sn-profile-lbl {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 9.5px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--sn-muted);
-    }
-    .sn-profile-email {
+      border: 1.5px solid rgba(255,255,255,0.1);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
       display: block;
-      font-size: 11.5px;
+    }
+    .profile-trigger:hover .profile-avatar-img {
+      border-color: rgba(201,168,76,0.55);
+      transform: scale(1.06);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+    }
+    .profile-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 12px);
+      background: #0d0d14;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 6px;
+      min-width: 220px;
+      box-shadow: 0 20px 48px rgba(0,0,0,0.65);
+      z-index: 9999;
+      animation: profileDropIn 0.18s cubic-bezier(0.4,0,0.2,1) both;
+    }
+    .profile-dropdown.open { display: block; }
+
+    @keyframes profileDropIn {
+      from { opacity:0; transform:translateY(-6px) scale(0.97); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    .profile-dropdown__header {
+      display: flex; align-items: center;
+      gap: 10px; padding: 10px 12px 8px;
+    }
+    .profile-dropdown__avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.09);
+      flex-shrink: 0;
+    }
+    .profile-dropdown__label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(240,238,232,0.25);
+      margin-bottom: 2px;
+    }
+    .profile-email {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
       font-weight: 500;
-      color: rgba(195, 198, 215, 0.7);
+      color: rgba(240,238,232,0.55);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 148px;
+      max-width: 160px;
     }
-
-    /* Profile dropdown */
-    .sn-profile-drop {
-      position: absolute;
-      bottom: calc(100% + 8px);
-      left: 0;
-      right: 0;
-      background: #0a0f1e;
-      border: 1px solid var(--sn-border);
-      border-radius: 12px;
-      padding: 5px;
-      box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.55);
-      display: none;
-      z-index: 10;
+    .profile-dropdown__divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 2px 0;
     }
-    .sn-profile-drop.open { display: block; }
-    .sn-logout-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-      padding: 9px 12px;
+    .profile-dropdown .logout-btn {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 9px 12px;
       background: transparent;
-      border: none;
-      border-radius: 8px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      color: rgba(240, 112, 104, 0.72);
+      color: rgba(240,112,104,0.75);
+      border: none; border-radius: 9px;
       cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500;
       text-align: left;
-      transition: background var(--sn-tr), color var(--sn-tr);
+      transition: background 0.15s, color 0.15s;
     }
-    .sn-logout-btn:hover {
-      background: rgba(240, 112, 104, 0.09);
+    .profile-dropdown .logout-btn:hover {
+      background: rgba(240,112,104,0.08);
       color: #f07068;
     }
 
-    /* ══════════════════════
-       MOBİL TOP BAR
-    ══════════════════════ */
-    #snMobileBar {
+    .nav-hamburger {
       display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--sn-mobile-h);
-      z-index: 1001;
-      background: rgba(10, 15, 30, 0.95);
-      backdrop-filter: blur(22px) saturate(180%);
-      -webkit-backdrop-filter: blur(22px) saturate(180%);
-      border-bottom: 1px solid var(--sn-border);
-      padding: 0 16px;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    /* Hamburger */
-    .sn-hamburger {
-      display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       gap: 5px;
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 10px;
       cursor: pointer;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
+      transition: border-color 0.2s;
       flex-shrink: 0;
-      transition: border-color var(--sn-tr);
     }
-    .sn-hamburger span {
+    .nav-hamburger span {
       display: block;
-      width: 18px;
-      height: 1.5px;
-      background: rgba(218, 226, 253, 0.7);
+      width: 18px; height: 1.5px;
+      background: rgba(240,238,232,0.7);
       border-radius: 2px;
-      transition: all 0.24s ease;
+      transition: all 0.25s ease;
       transform-origin: center;
     }
-    .sn-hamburger:hover { border-color: rgba(255,255,255,0.22); }
-    .sn-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-    .sn-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .sn-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav-hamburger:hover { border-color: rgba(255,255,255,0.25); }
 
-    /* Overlay */
-    #snOverlay {
+    .nav-mobile-overlay {
       display: none;
       position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      z-index: 999;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 997;
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
     }
-    #snOverlay.visible { display: block; }
+    .nav-mobile-overlay.visible { display: block; }
 
-    /* ══════════════════════
-       MOBİL RESPONSIVE
-    ══════════════════════ */
-    @media (max-width: 680px) {
-      #sideNav {
-        transform: translateX(-100%);
-        top: 0;
-        height: 100dvh;
-        z-index: 1002;
-        width: min(var(--sn-w), 86vw);
-        border-radius: 0 20px 20px 0;
-      }
-      #sideNav.mobile-open { transform: translateX(0); }
-      #snMobileBar { display: flex; }
+    @media (max-width: 1000px) {
+      .navbar { padding: 0 28px; }
+      .drop-item-sub { display: none; }
     }
 
-    /* ══════════════════════
-       FAB — MAVİ TEMA
-       (global.css altın rengi eziyor)
-    ══════════════════════ */
-    .fab-main {
-      background: linear-gradient(140deg, #1d4ed8, #3b82f6) !important;
-      color: #eeefff !important;
-      box-shadow: 0 4px 24px rgba(37, 99, 235, 0.45) !important;
+    @media (max-width: 820px) {
+      .navbar { padding: 0 20px; height: 62px; }
+      .nav-item span { display: none; }
+      .nav-chevron { display: none; }
+      .nav-item { padding: 8px 10px; }
+      .nav-cta span { display: none; }
+      .nav-cta { padding: 8px 10px; }
+      .nav-dropdown { left: 0; transform: translateX(0) translateY(-6px); }
+      .nav-item-wrap.open .nav-dropdown { transform: translateX(0) translateY(0); }
+      .logo__favicon { width: 26px; height: 26px; }
     }
-    .fab-wrapper.active .fab-main {
-      background: rgba(239, 68, 68, 0.88) !important;
-      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35) !important;
+
+    @media (max-width: 620px) {
+      .logo__favicon { width: 22px; height: 22px; }
     }
-    .fab-item-content {
-      background: #0f1829 !important;
-      border-color: rgba(37, 99, 235, 0.4) !important;
-      color: #93c5fd !important;
-    }
-    .fab-label {
-      background: #1d4ed8 !important;
-      color: #eeefff !important;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.35) !important;
-    }
-    .fab-label::after {
-      border-color: #1d4ed8 transparent transparent transparent !important;
-    }
-    .item-4 .fab-label::after {
-      border-color: transparent transparent transparent #1d4ed8 !important;
-    }
-    @media (hover: hover) {
-      .fab-item:hover .fab-item-content {
-        background: #2563eb !important;
-        color: #eeefff !important;
+
+    @media (max-width: 620px) {
+      .navbar { padding: 0 16px; gap: 12px; }
+      .nav-hamburger { display: flex; }
+      .nav-vr { display: none; }
+      .nav-cta { display: none; }
+
+      .nav-links {
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: calc(100dvh - 68px);
+        background: rgba(10,10,16,0.97);
+        backdrop-filter: blur(24px) saturate(160%);
+        -webkit-backdrop-filter: blur(24px) saturate(160%);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 3px;
+        padding: 10px 12px 20px;
+        z-index: 998;
+        overflow-y: auto;
+        opacity: 0;
+        transform: translateY(-6px);
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4,0,0.2,1);
       }
-    }
-    @media (hover: none) {
-      .fab-item:active .fab-item-content {
-        background: #2563eb !important;
-        color: #eeefff !important;
+      .nav-links.mobile-open {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .nav-item {
+        width: 100%;
+        padding: 13px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        min-height: 48px;
+      }
+      .nav-item span { display: inline; }
+      .nav-chevron { display: inline; }
+
+      .nav-item-wrap { flex-direction: column; width: 100%; }
+      .nav-dropdown {
+        position: static;
+        transform: none !important;
+        opacity: 1;
+        pointer-events: all;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease;
+        min-width: 0;
+      }
+      .nav-item-wrap.open .nav-dropdown { max-height: 600px; }
+      .nav-dropdown-inner {
+        margin: 4px 0 4px 8px;
+        border-radius: 10px;
       }
     }
   `;
+
   document.head.appendChild(style);
+  document.body.prepend(navbar);
 
-  /* ── Body offset sınıfı ── */
-  document.body.classList.add("has-sidenav");
+  const overlayEl = document.createElement("div");
+  overlayEl.className = "nav-mobile-overlay";
+  overlayEl.id = "navOverlay";
+  document.body.appendChild(overlayEl);
 
-  /* ══════════════════════════════════════════
-     SIDE NAV HTML
-  ══════════════════════════════════════════ */
-  const sidenav = document.createElement("aside");
-  sidenav.id = "sideNav";
-  sidenav.setAttribute("aria-label", "Ana gezinti");
+  const hamburger = document.getElementById("navHamburger");
+  const navLinks  = document.querySelector(".nav-links");
+  const overlay   = document.getElementById("navOverlay");
 
-  sidenav.innerHTML = `
-    <!-- Logo -->
-    <div class="sn-logo-wrap">
-      <a class="sn-logo" href="/" aria-label="AlmancaPratik ana sayfa">
-        <img class="sn-favicon" src="/favicon.png" alt="" aria-hidden="true">
-        <div>
-          <span class="sn-brand-name">Almanca<span class="sn-brand-accent">Pratik</span></span>
-          <span class="sn-brand-tag">Türkçe · Ücretsiz · A1–C1</span>
-        </div>
-      </a>
-    </div>
-
-    <!-- Scroll Nav -->
-    <div class="sn-scroll" role="navigation" aria-label="Sayfa gezintisi">
-
-      <!-- Dersler Accordion -->
-      <div class="sn-group${isDersler ? " open" : ""}" id="snDerslerGroup">
-        <button
-          class="sn-item${isDersler ? " sn-item--active" : ""}"
-          id="snDerslerToggle"
-          aria-expanded="${isDersler ? "true" : "false"}"
-          aria-controls="snDerslerSub"
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-          </svg>
-          <span>Dersler</span>
-          <svg class="sn-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-
-        <div class="sn-sub" id="snDerslerSub" role="region" aria-label="Ders seviyeleri">
-          <a class="sn-level-card" href="/dersler/?cat=A1">
-            <span class="sn-lv-badge lv-a1">A1</span>
-            <div>
-              <div class="sn-lv-title">Başlangıç</div>
-              <div class="sn-lv-sub">Temel kelimeler</div>
-            </div>
-          </a>
-          <a class="sn-level-card" href="/dersler/?cat=A2">
-            <span class="sn-lv-badge lv-a2">A2</span>
-            <div>
-              <div class="sn-lv-title">Temel</div>
-              <div class="sn-lv-sub">Günlük konuşma</div>
-            </div>
-          </a>
-          <a class="sn-level-card" href="/dersler/?cat=B1">
-            <span class="sn-lv-badge lv-b1">B1</span>
-            <div>
-              <div class="sn-lv-title">Orta</div>
-              <div class="sn-lv-sub">Karmaşık cümleler</div>
-            </div>
-          </a>
-          <a class="sn-level-card" href="/dersler/?cat=B2">
-            <span class="sn-lv-badge lv-b2">B2</span>
-            <div>
-              <div class="sn-lv-title">Üst Orta</div>
-              <div class="sn-lv-sub">İleri gramer</div>
-            </div>
-          </a>
-          <a class="sn-level-card" href="/dersler/?cat=C1">
-            <span class="sn-lv-badge lv-c1">C1</span>
-            <div>
-              <div class="sn-lv-title">İleri</div>
-              <div class="sn-lv-sub">Akademik Almanca</div>
-            </div>
-          </a>
-          <div class="sn-divider"></div>
-          <a class="sn-all-link" href="/dersler/">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="7" height="7" rx="1"/>
-              <rect x="14" y="3" width="7" height="7" rx="1"/>
-              <rect x="3" y="14" width="7" height="7" rx="1"/>
-              <rect x="14" y="14" width="7" height="7" rx="1"/>
-            </svg>
-            Tüm Dersleri Gör
-          </a>
-        </div>
-      </div>
-
-      <!-- Metin Analizi -->
-      <a class="sn-item${isMetin ? " sn-item--active" : ""}" href="/metin/">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
-        <span>Metin Analizi</span>
-      </a>
-
-      <!-- Artikel Bulucu -->
-      <a class="sn-item${isArtikel ? " sn-item--active" : ""}" href="/artikel/">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <span>Artikel Bulucu</span>
-      </a>
-
-      <!-- Cümle Örnekleri -->
-      <a class="sn-item${isCumle ? " sn-item--active" : ""}" href="/cumlebul/">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-        <span>Cümle Örnekleri</span>
-      </a>
-
-      <!-- Fiil Çekimleme -->
-      <a class="sn-item${isFiil ? " sn-item--active" : ""}" href="/fiil/">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-        </svg>
-        <span>Fiil Çekimleme</span>
-      </a>
-
-      <!-- Kelime Quizi -->
-      <a class="sn-item${isQuiz ? " sn-item--active" : ""}" href="/quiz/">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-        <span>Kelime Quizi</span>
-      </a>
-
-      <!-- Kelimelerim -->
-      <a class="sn-item${isKelimeler ? " sn-item--active" : ""}" href="/kelimeler/">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-        </svg>
-        <span>Kelimelerim</span>
-      </a>
-
-      <div class="sn-divider"></div>
-
-      <!-- Blog -->
-      <a class="sn-item${isBlog ? " sn-item--active" : ""}" href="/blog/">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-          <polyline points="22,6 12,13 2,6"/>
-        </svg>
-        <span>Blog</span>
-      </a>
-
-    </div><!-- /sn-scroll -->
-
-    <!-- Footer: CTA + Auth -->
-    <div class="sn-footer">
-
-      <!-- Seviye Testi CTA -->
-      <a class="sn-cta" href="/seviyeler/seviyetespit/">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 20V10"/>
-          <path d="M18 20V4"/>
-          <path d="M6 20v-4"/>
-        </svg>
-        Seviye Testi — Ücretsiz
-      </a>
-
-      <!-- Giriş Yap (giriş yapılmamışsa) -->
-      <a class="sn-login-btn" id="snLoginBtn" href="/login.html" style="display:none">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-          <polyline points="10 17 15 12 10 7"/>
-          <line x1="15" y1="12" x2="3" y2="12"/>
-        </svg>
-        Giriş Yap
-      </a>
-
-      <!-- Profil (giriş yapılmışsa) -->
-      <div class="sn-profile-wrap" id="snProfileWrap" style="display:none">
-        <button class="sn-profile-trigger" id="snProfileTrigger" aria-label="Profil menüsü" aria-expanded="false">
-          <img
-            class="sn-avatar"
-            id="snAvatarImg"
-            src="https://ui-avatars.com/api/?name=U&background=131b2e&color=b4c5ff&size=64"
-            alt="Profil">
-          <div class="sn-profile-info">
-            <span class="sn-profile-lbl">Giriş yapıldı</span>
-            <span class="sn-profile-email" id="snProfileEmail">Yükleniyor...</span>
-          </div>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.3">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-
-        <!-- Profil Dropdown -->
-        <div class="sn-profile-drop" id="snProfileDrop" role="menu">
-          <button class="sn-logout-btn" id="snLogoutBtn" role="menuitem">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Çıkış Yap
-          </button>
-        </div>
-      </div>
-
-    </div><!-- /sn-footer -->
-  `;
-
-  document.body.prepend(sidenav);
-
-  /* ── Mobil Top Bar ── */
-  const mobileBar = document.createElement("div");
-  mobileBar.id = "snMobileBar";
-  mobileBar.innerHTML = `
-    <a class="sn-logo" href="/" aria-label="AlmancaPratik ana sayfa">
-      <img class="sn-favicon" src="/favicon.png" alt="" aria-hidden="true" style="width:28px;height:28px;border-radius:7px;">
-      <span class="sn-brand-name" style="font-size:14px;">
-        Almanca<span class="sn-brand-accent">Pratik</span>
-      </span>
-    </a>
-    <button class="sn-hamburger" id="snHamburger" aria-label="Menüyü aç" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-  `;
-  document.body.prepend(mobileBar);
-
-  /* ── Overlay ── */
-  const overlay = document.createElement("div");
-  overlay.id = "snOverlay";
-  document.body.appendChild(overlay);
-
-  /* ══════════════════════════════════════════
-     ETKILEŞIM
-  ══════════════════════════════════════════ */
-
-  /* Dersler accordion */
-  const derslerGroup  = document.getElementById("snDerslerGroup");
-  const derslerToggle = document.getElementById("snDerslerToggle");
-
-  derslerToggle.addEventListener("click", () => {
-    const isOpen = derslerGroup.classList.toggle("open");
-    derslerToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  });
-
-  /* Mobil hamburger */
-  const hamburger  = document.getElementById("snHamburger");
-  const navOverlay = document.getElementById("snOverlay");
-
-  function openSideNav() {
-    sidenav.classList.add("mobile-open");
+  function openMobileMenu() {
     hamburger.classList.add("open");
-    navOverlay.classList.add("visible");
+    navLinks.classList.add("mobile-open");
+    overlay.classList.add("visible");
     hamburger.setAttribute("aria-expanded", "true");
-    document.body.style.overflow = "hidden";
   }
-  function closeSideNav() {
-    sidenav.classList.remove("mobile-open");
+
+  function closeMobileMenu() {
     hamburger.classList.remove("open");
-    navOverlay.classList.remove("visible");
+    navLinks.classList.remove("mobile-open");
+    overlay.classList.remove("visible");
     hamburger.setAttribute("aria-expanded", "false");
-    document.body.style.overflow = "";
   }
 
   hamburger.addEventListener("click", () => {
-    sidenav.classList.contains("mobile-open") ? closeSideNav() : openSideNav();
+    hamburger.classList.contains("open") ? closeMobileMenu() : openMobileMenu();
   });
-  navOverlay.addEventListener("click", closeSideNav);
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeSideNav();
-  });
+  overlay.addEventListener("click", closeMobileMenu);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeMobileMenu(); });
 
-  /* Mobilde nav linke tıklayınca kapat */
-  sidenav.querySelectorAll("a:not(.sn-all-link)").forEach((link) => {
-    link.addEventListener("click", () => {
-      if (window.innerWidth <= 680) closeSideNav();
-    });
+  navLinks.addEventListener("click", e => {
+    const link = e.target.closest("a:not(.nav-item[id])");
+    if (link && !e.target.closest(".nav-item-wrap")) closeMobileMenu();
   });
 
-  /* Profil dropdown */
-  const profileTrigger = document.getElementById("snProfileTrigger");
-  const profileDrop    = document.getElementById("snProfileDrop");
+  const DELAY = 200;
+  document.querySelectorAll(".nav-item-wrap").forEach(wrap => {
+    let timer = null;
+    const open  = () => { clearTimeout(timer); wrap.classList.add("open"); };
+    const close = () => { timer = setTimeout(() => wrap.classList.remove("open"), DELAY); };
+    wrap.addEventListener("mouseenter", open);
+    wrap.addEventListener("mouseleave", close);
 
-  if (profileTrigger) {
-    profileTrigger.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isOpen = profileDrop.classList.toggle("open");
-      profileTrigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
-    document.addEventListener("click", (e) => {
-      if (!profileDrop.contains(e.target) && e.target !== profileTrigger) {
-        profileDrop.classList.remove("open");
-        profileTrigger.setAttribute("aria-expanded", "false");
+    wrap.querySelector(".nav-item").addEventListener("click", e => {
+      const isTouchDevice = window.matchMedia("(hover: none)").matches;
+      if (!isTouchDevice) return;
+      if (wrap.querySelector(".nav-dropdown")) {
+        e.preventDefault();
+        const isOpen = wrap.classList.contains("open");
+        document.querySelectorAll(".nav-item-wrap").forEach(w => w.classList.remove("open"));
+        if (!isOpen) wrap.classList.add("open");
       }
     });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        profileDrop.classList.remove("open");
-        profileTrigger.setAttribute("aria-expanded", "false");
-      }
-    });
-  }
 
-  /* Logout */
-  const logoutBtn = document.getElementById("snLogoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try { await logoutFirebase(); } catch (e) { console.error(e); }
-      finally { window.location.href = "/"; }
+    document.addEventListener("click", e => {
+      if (!wrap.contains(e.target)) wrap.classList.remove("open");
     });
-  }
+  });
 
-  /* Auth state izle */
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    try { await logoutFirebase(); } catch(e){ console.error(e); }
+    finally { window.location.href = "/"; }
+  });
+
+  const avatar   = document.getElementById("profileAvatar");
+  const dropdown = document.getElementById("profileDropdown");
+  avatar.addEventListener("click", e => { e.stopPropagation(); dropdown.classList.toggle("open"); });
+  document.addEventListener("keydown", e => { if(e.key === "Escape") dropdown.classList.remove("open"); });
+  document.addEventListener("click", e => {
+    if (!dropdown.contains(e.target) && e.target !== avatar) dropdown.classList.remove("open");
+  });
+
   onAuthChange((user) => {
-    const loginBtn  = document.getElementById("snLoginBtn");
-    const profileWr = document.getElementById("snProfileWrap");
-
+    const loginBtn  = document.getElementById("navLoginBtn");
+    const profileWr = document.getElementById("profileWrapper");
     if (user) {
       if (loginBtn)  loginBtn.style.display  = "none";
-      if (profileWr) profileWr.style.display = "block";
-
-      const emailEl = document.getElementById("snProfileEmail");
-      if (emailEl) emailEl.textContent = user.email || "Kullanıcı";
-
-      const avatarSrc = user.photoURL ||
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(
-          user.displayName || user.email || "U"
-        )}&background=131b2e&color=b4c5ff&size=64`;
-
-      const avatarImg = document.getElementById("snAvatarImg");
-      if (avatarImg) avatarImg.src = avatarSrc;
+      if (profileWr) profileWr.style.display = "inline-flex";
+      document.getElementById("profileEmail").textContent = user.email || "Kullanıcı";
+      const src = user.photoURL ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email || "U")}&background=1e1830&color=a064ff&size=64`;
+      document.getElementById("profileAvatarImg").src    = src;
+      document.getElementById("profileAvatarSmall").src = src;
     } else {
       if (loginBtn)  loginBtn.style.display  = "flex";
       if (profileWr) profileWr.style.display = "none";
@@ -896,10 +745,11 @@ function loadNavbar() {
   });
 }
 
-/* ─────────────────────────────────────────────
-   loadFloatingMenu — RADYAL FAB (mavi tema)
-   Eskiyle birebir aynı işlev; görünüş mavi.
-───────────────────────────────────────────── */
+function getLoginHref(){ return "/login.html"; }
+function getUserId(){
+  return auth.currentUser ? auth.currentUser.uid : null;
+}
+
 function loadFloatingMenu() {
   if (document.getElementById("globalFab")) return;
 
@@ -922,23 +772,17 @@ function loadFloatingMenu() {
   fabContainer.id = "globalFab";
 
   fabContainer.innerHTML = `
-    ${fabItem(
-      "/kelimeler/", "Kelimelerim", "item-1",
-      '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'
-    )}
-    ${fabItem(
-      "/wordsadd/", "Yeni Kelime", "item-2",
-      '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>'
-    )}
-    ${fabItem(
-      "/quiz/", "Quiz", "item-3",
-      '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'
-    )}
-    ${fabItem(
-      "/notlarim/", "Notlarım", "item-4",
-      '<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/><polyline points="15 3 15 9 21 9"/>'
-    )}
-    <button class="fab-main" id="fabToggle" aria-label="Hızlı menü" aria-expanded="false">+</button>
+    ${fabItem("/kelimeler/", "Kelimelerim", "item-1",
+      '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>')}
+    ${fabItem("/wordsadd/", "Yeni Kelime", "item-2",
+      '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>')}
+    ${fabItem("/quiz/", "Quiz", "item-3",
+      '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>')}
+    ${fabItem("/notlarim/", "Notlarım", "item-4",
+      '<path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"/><polyline points="15 3 15 9 21 9"/>')}
+    <button class="fab-main" id="fabToggle" aria-label="Hızlı menü" aria-expanded="false">
+      +
+    </button>
   `;
 
   document.body.appendChild(fabContainer);
@@ -953,40 +797,32 @@ function loadFloatingMenu() {
     fabContainer.classList.remove("active");
     toggleBtn.setAttribute("aria-expanded", "false");
   }
-
-  toggleBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
+  function toggleFab() {
     fabContainer.classList.contains("active") ? closeFab() : openFab();
+  }
+
+  toggleBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    toggleFab();
   });
 
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", e => {
     if (!fabContainer.contains(e.target)) closeFab();
   });
 
-  document.addEventListener("keydown", (e) => {
+  document.addEventListener("keydown", e => {
     if (e.key === "Escape") closeFab();
   });
 
-  fabContainer.querySelectorAll(".fab-item").forEach((item) => {
-    item.addEventListener("click", () => setTimeout(closeFab, 150));
+  fabContainer.querySelectorAll(".fab-item").forEach(item => {
+    item.addEventListener("click", () => {
+      setTimeout(closeFab, 150);
+    });
   });
 }
 
-/* ─────────────────────────────────────────────
-   Yardımcı fonksiyonlar
-───────────────────────────────────────────── */
-function getUserId() {
-  return auth.currentUser ? auth.currentUser.uid : null;
-}
-
-/* ─────────────────────────────────────────────
-   Otomatik başlat (tüm sayfalarda)
-───────────────────────────────────────────── */
 loadFloatingMenu();
 
-/* ─────────────────────────────────────────────
-   Export
-───────────────────────────────────────────── */
 export { requireAuth, loadNavbar, getUserId };
 window.requireAuth = requireAuth;
 window.loadNavbar  = loadNavbar;
